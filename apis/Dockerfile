@@ -1,8 +1,10 @@
-FROM node:16
+FROM node:18.13.0
 
 # Create app directory
-
 WORKDIR /usr/src/app
+
+# install Nest Cli globally
+RUN npm install -g @nestjs/cli
 
 # Install app dependencies
 COPY package*.json ./
