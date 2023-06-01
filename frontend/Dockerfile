@@ -1,4 +1,4 @@
-FROM node:20
+FROM node:18.13.0
 
 # Create app directory
 
