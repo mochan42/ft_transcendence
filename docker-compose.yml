@@ -1,33 +1,25 @@
 version: "3.8"
+
 services:
+
 #database container
   db:
     image: postgres:13.1
-    container_name: db
     environment:
-      - POSTGRES_PASSWORD=$DB_PASSWORD
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_DB=${DB_NAME}
     ports:
       - $DB_PORT:$DB_PORT
     volumes:
       - ./db/data:/var/lib/postgresql/data
     restart: always
     networks:
-    - app-network
+      - app-network
 
 #backend container
   apis:
-    depends_on:
-      - db
-    build:
-      context: ./apis
-      dockerfile: Dockerfile
-    container_name: apis
-    environment:
-      - NODE_ENV=${API_NODE_ENV}
-      - PGHOST=db
-      - PGDATABASE=${DB_NAME}
-      - PGPASSWORD=${DB_PASSWORD}
-      - PGPORT=${DB_PORT}
+    build: ./apis
     ports:
       - ${API_PORT}:${API_PORT}
     volumes:
@@ -35,34 +27,39 @@ services:
       - /app/node_modules
     networks:
     - app-network
+    depends_on:
+      - db
   
 #frontend container
   frontend:
-    build: 
-      context: ./frontend
-      dockerfile: Dockerfile
-    environment:
-      - NODE_ENV=$CLIENT_NODE_ENV
-      - PORT=$CLIENT_PORT
-      - API_BASE_URL=${API_BASE_URL} 
+    build: ./frontend
     ports:
       - $EX_CLIENT_PORT:$CLIENT_PORT
     volumes:
       - ./frontend:/usr/src/client
       - /client/node_modules
     networks:
-    - app-network
+      - app-network
+    depends_on:
+      - apis
     stdin_open: true
 
+
 #database admin
-  # adminer:
-  #   image: adminer
-  #   restart: always
-  #   ports:
-  #     - 8000:8000
-  #   networks:
-  #    - app-network
-  #   depends_on:
-  #    - db
+  pgadmin:
+    image: dpage/pgadmin4
+    restart: always
+    ports:
+      - ${ADMIN_PORT}:80
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=${ADMIN_USER}
+      - PGADMIN_DEFAULT_PASSWORD=${ADMIN_PASSWORD}
+    depends_on:
+      - db
+    networks:
+      - app-network
+
+# define network
 networks:
   app-network:
+
