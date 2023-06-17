@@ -16,3 +16,28 @@ describe('UsersService', () => {
     expect(service).toBeDefined();
   });
 });
+
+describe('UsersService', () => {
+  let service: UsersService;
+
+  beforeEach(async () => {
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [UsersService],
+    }).compile();
+
+    const testUsers = [
+      {
+
+      },
+
+      {
+
+      }
+    ]
+    
+  });
+
+  it('should be defined', () => {
+    expect(testUsers).toEqual(service.findAll());
+  });
+});

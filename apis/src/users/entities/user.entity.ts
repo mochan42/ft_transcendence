@@ -41,3 +41,5 @@ export class User {
   @Column()
   lastSeen: Date;
 }
+
+export default User;

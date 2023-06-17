@@ -20,11 +20,14 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
+    "@hapi/joi": "^17.1.1",
     "@nestjs/common": "^9.0.0",
+    "@nestjs/config": "^2.3.3",
     "@nestjs/core": "^9.0.0",
     "@nestjs/mapped-types": "*",
     "@nestjs/platform-express": "^9.0.0",
     "@nestjs/typeorm": "^9.0.1",
+    "@types/hapi__joi": "^17.1.9",
     "pg": "^8.11.0",
     "postgre": "^0.1.8",
     "postgres": "^3.3.4",
