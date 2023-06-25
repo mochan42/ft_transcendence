@@ -12,7 +12,12 @@ export class UsersService {
     private UserRepository: Repository<User>,
   ) {}
   async create(createUserDto: CreateUserDto) {
-    return this.UserRepository.save(createUserDto);
+    //createUserDto.lastSeen = 'COOL';
+    const newUser = {
+      ...createUserDto,
+      lastSeen: 'COOOL',
+    };
+    return await this.UserRepository.save(newUser);
   }
 
   async findAll(): Promise<User[]> {

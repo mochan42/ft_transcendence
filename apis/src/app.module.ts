@@ -5,6 +5,8 @@ import { UsersModule } from './users/users.module';
 import { DatabaseModule } from './database/database.module';
 import * as Joi from '@hapi/joi';
 import { ConfigModule } from '@nestjs/config';
+import { StatModule } from './stat/stat.module';
+import { PMatchModule } from './p_match/p_match.module';
 
 @Module({
   imports: [
@@ -20,6 +22,8 @@ import { ConfigModule } from '@nestjs/config';
       }),
     }),
     DatabaseModule,
+    StatModule,
+    PMatchModule,
   ],
   controllers: [AppController],
   providers: [AppService],

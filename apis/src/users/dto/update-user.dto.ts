@@ -1,9 +1,7 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { CreateUserDto } from './create-user.dto';
-import { PrimaryGeneratedColumn } from 'typeorm';
 
 export class UpdateUserDto extends PartialType(CreateUserDto) {
-  @PrimaryGeneratedColumn()
   id: number;
   userName?: string;
   userNameLoc?: string;
@@ -15,6 +13,6 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
   secret2Fa?: string;
   avatar?: string;
   xp?: number;
-  lastSeen?: Date;
+  lastSeen?: string;
   isLogged?: boolean;
 }

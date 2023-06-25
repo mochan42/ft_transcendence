@@ -4,7 +4,7 @@ import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 export class User {
   @PrimaryGeneratedColumn()
   id: number;
-
+  
   @Column()
   userName: string;
 
@@ -39,7 +39,7 @@ export class User {
   isLogged: boolean;
 
   @Column()
-  lastSeen: Date;
+  lastSeen?: string;
 }
 
 export default User;
