@@ -29,7 +29,7 @@ services:
     volumes:
       - ./apis:/usr/src/app
       - /app/node_modules
-  frontend:
+  frontend_new:
     build: ./frontend
     environment:
       - NODE_ENV=$CLIENT_NODE_ENV
