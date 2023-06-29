@@ -1,16 +1,26 @@
-// import logo from 'logo.svg';
+import { useState } from 'react';
 import './App.css';
 import Navbar from './components/Navbar';
+import LandingPage from './components/LandingPage'
 
 function App() {
-  return (
-	<div>
-		<h1 className="text-3xl font-bold underline">
-		Hello world!
-		</h1>
-		<Navbar/>
-	</div>
-  );
+
+	const [signedInStatus, setSignedInStatus] = useState(false)
+	if (!signedInStatus)
+		return (
+			<div>
+				<LandingPage/>
+			</div>
+		)
+	if (signedInStatus)
+		return (
+			<div>
+				<h1 className="text-3xl font-bold underline text-white">
+				Hello world!
+				</h1>
+				<Navbar/>
+			</div>
+		);
 }
 
 export default App;
