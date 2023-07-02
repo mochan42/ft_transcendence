@@ -2,20 +2,22 @@ import Button from './ui/Button'
 
 const LandingPage = () => {
 	return (
-		<div className='fixed backdrop-blur-sm bg-white/75 dark:bg-slate-900 z-50 top-0 left-0 right-0 h-20 border-m border-slate-300 dark:border-slate-700 shadow-sm flex item-center justify-between'>
-			<div className='container max-w-7xl mx-auto w-full flex justify-start items-center'>
-				<Button className='inset-inline-end: 0px; rounded-md h-10 py-2 px-4 text-black bg-transparent dark:bg-transparent underline-offset-4 hover:underline dark:text-slate-100 hover:bg-transparent dark:hover:bg-transparent'>
-					<span>
-						Documentation
-					</span>
-				</Button>
-			</div>
-			<div className='container max-w-7xl mx-auto w-full flex justify-end items-center'>
-				<Button className='inset-inline-end: 0px; rounded-md h-10 py-2 px-4 text-white bg-transparent hover:bg-slate-100 dark:hover:bg-slate-800 dark:text-slate-200 data-[state=open]:bg-transparent dark:data-[state=open]:bg-transparent'>
-					<span>
-						Sign In!
-					</span>
-				</Button>
+		<div>
+			<div className='fixed backdrop-blur-sm bg-white/75 dark:bg-slate-900 z-50 top-0 left-0 right-0 h-20 border-m border-slate-300 dark:border-slate-700 shadow-sm flex item-center justify-between'>
+				<div className='container max-w-7xl mx-auto w-full flex justify-start items-center'>
+					<Button className='inset-inline-end: 0px; rounded-md h-10 py-2 px-4 text-black bg-transparent dark:bg-transparent underline-offset-4 hover:underline dark:text-slate-100 hover:bg-transparent dark:hover:bg-transparent'>
+						<span>
+							Documentation
+						</span>
+					</Button>
+				</div>
+				<div className='container max-w-7xl mx-auto w-full flex justify-end items-center'>
+					<Button className='inset-inline-end: 0px; rounded-md h-10 py-2 px-4 text-black bg-transparent hover:bg-slate-100 dark:hover:bg-slate-800 dark:text-slate-200 data-[state=open]:bg-transparent dark:data-[state=open]:bg-transparent'>
+						<span>
+							Sign In
+						</span>
+					</Button>
+				</div>
 			</div>
 		</div>
 		// <div>
