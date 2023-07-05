@@ -1,10 +1,11 @@
-version: "3.8"
+version: "3.7"
 services:
   db:
     image: postgres:13.1
     environment:
       - POSTGRES_USER=$DB_USER
       - POSTGRES_PASSWORD=$DB_PASSWORD
+      - POSTGRES_DB=$DB_NAME
     ports:
       - $DB_PORT:$DB_PORT
     volumes:
@@ -28,7 +29,7 @@ services:
     volumes:
       - ./apis:/usr/src/app
       - /app/node_modules
-  frontend:
+  frontend_new:
     build: ./frontend
     environment:
       - NODE_ENV=$CLIENT_NODE_ENV
@@ -40,13 +41,13 @@ services:
       - ./frontend:/usr/src/client
       - /client/node_modules
     stdin_open: true
-  # pgadmin:
-  #  image: dpage/pgadmin4
-  #  restart: always
-  #  environment:
-  #   - PGADMIN_DEFAULT_EMAIL=$PGADMIN_EMAIL
-  #   - PGADMIN_DEFAULT_PASSWORD=$PGADMIN_PASSWORD
-  #  ports:
-  #    - 5050:80
-  #  depends_on:
-  #   - db
+  pgadmin:
+   image: dpage/pgadmin4
+   restart: always
+   environment:
+    - PGADMIN_DEFAULT_EMAIL=$PGADMIN_EMAIL
+    - PGADMIN_DEFAULT_PASSWORD=$PGADMIN_PASSWORD
+   ports:
+     - $PGADMIN_PORT:$PGADMIN_PORT
+   depends_on:
+    - db
