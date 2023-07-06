@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import { useState } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import './App.css';
@@ -8,10 +8,11 @@ import ProtectedRoute from './components/ProtectedRoute';
 import Home from './components/pages/Home';
 import Profile from './components/pages/Profile';
 import LandingPage from './components/pages/LandingPage';
-import About from './components/pages/About'
+import About from './components/pages/About';
+import PageNotFound from './components/pages/PageNotFound';
 
 const App: React.FC = () => {
-	const [isAuth, setIsAuth] = useState(false)
+	const [isAuth, setIsAuth] = useState(true)
 
 		return (
 			<Router>
@@ -25,6 +26,7 @@ const App: React.FC = () => {
 							<Route path='/profile' element={<ProtectedRoute isAuth={isAuth} path='/profile' element={<Profile />} />} />
 							<Route path='/landingpage' element={<ProtectedRoute isAuth={isAuth} path='/landingpage' element={<LandingPage />} />} />
 							<Route path='about' element={<About />} />
+							<Route path='/*' element={<PageNotFound />}/>
 						</Routes>
 					</div>
 				</div>
