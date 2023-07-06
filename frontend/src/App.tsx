@@ -16,9 +16,9 @@ const App: React.FC = () => {
 
 		return (
 			<Router>
-				<div>
+				<div className='flex flex-col max-w-screen-xl px-4 mx-auto md:items-center md:justify-between md:flex-row md:px-6 lg:px-8'>
 					<Navbar setIsAuth={setIsAuth} isAuth={isAuth}/>
-					<div className='h-screen bg-gray-200 w-full grid place-items-center'>
+					<div className='h-screen bg-gray-200 w-full '>
 						<Routes>
 							<Route path='/' element={<ProtectedRoute isAuth={isAuth} path='/' element={<Home />} />} />
 							<Route path='/login' element={<Login setIsAuth={setIsAuth} />} />

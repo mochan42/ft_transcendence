@@ -22,7 +22,7 @@ const Navbar: React.FC<Props> = ({ setIsAuth, isAuth}) => {
 	var msg: string;
 	isAuth ? msg = 'Log out' : msg = 'Log in';
 	return(
-		<div className='fixed backdrop-blur-sm bg-white/75 dark:bg-slate-900 z-50 top-0 left-0 right-0 h-20 border-b border-slate-300 dark:border-slate-700 shadow-sm flex item-center justify-between'>
+		<div className='flex backdrop-blur-sm bg-white/75 dark:bg-slate-900 z-50 top-0 left-0 right-0 h-20 border-b border-slate-300 dark:border-slate-700 shadow-sm item-center justify-between'>
 			<div className='container max-w-7xl mx-auto w-full flex justify-between items-center'>
 				<Button
 					className='text-black bg-transparent dark:bg-transparent underline-offset-4 hover:underline dark:text-slate-100 hover:bg-transparent dark:hover:bg-transparent'
