@@ -1,15 +1,13 @@
-<<<<<<< HEAD
 FROM node:18.13.0
-=======
-FROM node:18.3.0
->>>>>>> f3d09d43a8bf83492b61d31605cd9782fe503f8c
 
 # Create app directory
 WORKDIR /usr/src/app
-RUN npm install -g @nestjs/cli
 
 # Install app dependencies
 COPY package*.json ./
+
+RUN npm install -g @nestjs/cli
+# RUN npm install @nestjs/common
 
 RUN npm install
 

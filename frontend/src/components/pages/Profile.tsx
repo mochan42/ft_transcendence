@@ -1,8 +1,10 @@
 import Button from "../ui/Button"
 import SmallHeading from "../ui/SmallHeading"
+import { Fetcher } from "react-router-dom";
 
 const Profile = () => {
-	var name = 'Bill'
+	var name = 'Bill';
+	// var userImage = sendRequestImage;
 	return (
 		<div className='h-screen grid grid-cols-6 gap-5 shadow-xl backdrop-blur-sm bg-white/75 dark:bg-slate-700'>
 			<div className='col-span-2 grid items-center justify-evenly max-h-80 min-h-50 border-3'>

@@ -4,15 +4,9 @@ services:
   db:
     container_name: db
     environment:
-<<<<<<< HEAD
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=mysecretpassword
     image: postgres:13
-=======
-      - POSTGRES_USER=$DB_USER
-      - POSTGRES_PASSWORD=$DB_PASSWORD
-      - POSTGRES_DB=$DB_NAME
->>>>>>> f3d09d43a8bf83492b61d31605cd9782fe503f8c
     ports:
       - "5432:5432"
     volumes:
@@ -32,7 +26,6 @@ services:
     volumes:
       - ./apis:/usr/src/app
       - /app/node_modules
-<<<<<<< HEAD
     env_file:
       - ./docker.env
     networks:
@@ -43,9 +36,6 @@ services:
   #frontend container
   frontend:
     container_name: frontend
-=======
-  frontend_new:
->>>>>>> f3d09d43a8bf83492b61d31605cd9782fe503f8c
     build: ./frontend
     ports:
       - "80:3000"
@@ -59,7 +49,6 @@ services:
     depends_on:
       - apis
     stdin_open: true
-<<<<<<< HEAD
 
   #database admin
   pgadmin:
@@ -76,15 +65,3 @@ services:
 # define network
 networks:
   app-network:
-=======
-  pgadmin:
-   image: dpage/pgadmin4
-   restart: always
-   environment:
-    - PGADMIN_DEFAULT_EMAIL=$PGADMIN_EMAIL
-    - PGADMIN_DEFAULT_PASSWORD=$PGADMIN_PASSWORD
-   ports:
-     - $PGADMIN_PORT:$PGADMIN_PORT
-   depends_on:
-    - db
->>>>>>> f3d09d43a8bf83492b61d31605cd9782fe503f8c
