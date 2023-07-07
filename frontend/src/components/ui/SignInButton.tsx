@@ -16,5 +16,3 @@ export default function SignInButton({ children, ...attributes }: Props) {
 	)
 
 }
-
-// export default SignInButton

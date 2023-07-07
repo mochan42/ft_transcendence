@@ -6,13 +6,13 @@ const PageNotFound = () => {
 	const navigate = useNavigate()
 	return (
 		<div className='h-screen bg-gray-200 w-full grid place-items-center'>
-			<SmallHeading className='font-weight:700 text-black' children='404 Page not found. Go back to ' />
-			<Link 
-				to={'/home'}
+			<SmallHeading className='font-bold text-xl' children='404 Page not found.' />
+			{/* <Link 
+				to={'/'}
 				className="underline underline-offset-2 text-left"
 			>
 				home.
-			</Link>
+			</Link> */}
 		</div>
 	)
 }
