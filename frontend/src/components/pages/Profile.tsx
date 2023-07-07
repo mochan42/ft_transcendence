@@ -1,13 +1,15 @@
 import Button from "../ui/Button"
+import SmallHeading from "../ui/SmallHeading"
 
 const Profile = () => {
+	var name = 'Bill'
 	return (
-		<div className='h-screen grid grid-cols-6 gap-5'>
-			<div className='col-span-2 bg-slate-200 flex flex-col items-center justify-evenly max-h-80 min-h-50'>
+		<div className='h-screen grid grid-cols-6 gap-5 shadow-xl backdrop-blur-sm bg-white/75 dark:bg-slate-700'>
+			<div className='col-span-2 grid items-center justify-evenly max-h-80 min-h-50 border-3'>
 				<div className='rounded-full overflow-hidden'>
 					<img src='https://fastly.picsum.photos/id/294/200/200.jpg?hmac=tSuqBbGGNYqgxQ-6KO7-wxq8B4m3GbZqQAbr7tNApz8' alt='User Picture' className='w-full h-full object-cover' />
 				</div>
-				<div className='place-items-center gap-2'>
+				<div className=''>
 					<Button>
 						Update
 					</Button>
@@ -16,13 +18,19 @@ const Profile = () => {
 					</Button>
 					
 				</div>
+				<div>
+					<SmallHeading
+						className='text-lg font-bold'
+						children={name}
+					/>
+				</div>
 			</div>
 			<div className='col-span-4'>
 				<Button className=''>
 					Stats/achievements
 				</Button>
 			</div>
-			<div className='col-span3'>
+			<div className='col-span-3'>
 				<Button className=''>
 					Info / name
 				</Button>
@@ -32,6 +40,8 @@ const Profile = () => {
 					Friends
 				</Button>
 			</div>
+			
+			
 		</div>
 	)
 }

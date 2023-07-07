@@ -11,9 +11,10 @@ import LandingPage from './components/pages/LandingPage';
 import About from './components/pages/About';
 import PageNotFound from './components/pages/PageNotFound';
 import Footer from './components/Footer';
+import Game from './components/pages/Game';
 
 const App: React.FC = () => {
-	const [isAuth, setIsAuth] = useState(true)
+	const [isAuth, setIsAuth] = useState(false)
 
 		return (
 			<div className='grid grid-rows-8 gap-2'>
@@ -26,7 +27,7 @@ const App: React.FC = () => {
 							<Routes>
 								<Route path='/' element={<ProtectedRoute isAuth={isAuth} path='/' element={<Home />} />} />
 								<Route path='/login' element={<Login setIsAuth={setIsAuth} />} />
-								{/* <Route path='game' element={<ProtectedRoute isAuth={isAuth} path='/game' element={<Game />} />} /> */}
+								<Route path='game' element={<ProtectedRoute isAuth={isAuth} path='/game' element={<Game />} />} />
 								<Route path='/profile' element={<ProtectedRoute isAuth={isAuth} path='/profile' element={<Profile />} />} />
 								<Route path='/landingpage' element={<ProtectedRoute isAuth={isAuth} path='/landingpage' element={<LandingPage />} />} />
 								<Route path='about' element={<About />} />
