@@ -15,7 +15,7 @@ import Game from './components/pages/Game';
 import Layout from './components/pages/Layout';
 
 const App: React.FC = () => {
-	const [isAuth, setIsAuth] = useState(false)
+	const [isAuth, setIsAuth] = useState(true)
 
 		return (
 			<div className='grid grid-rows-8 gap-2'>
