@@ -6,7 +6,7 @@ const Profile = () => {
 	var name = 'Bill';
 	// var userImage = sendRequestImage;
 	return (
-		<div className='h-screen grid grid-cols-6 gap-5 shadow-xl backdrop-blur-sm bg-white/75 dark:bg-slate-700'>
+		<div className='h-screen grid grid-cols-2 backdrop-blur-sm bg-white/75 dark:bg-slate-700'>
 			<div className='col-span-2 grid items-center justify-evenly max-h-80 min-h-50 border-3'>
 				<div className='rounded-full overflow-hidden'>
 					<img src='https://fastly.picsum.photos/id/294/200/200.jpg?hmac=tSuqBbGGNYqgxQ-6KO7-wxq8B4m3GbZqQAbr7tNApz8' alt='profile picture' className='w-full h-full object-cover' />
