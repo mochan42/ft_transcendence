@@ -1,5 +1,5 @@
 import { Navigate, useNavigate } from 'react-router-dom'
-import Button from './ui/Button'
+import { Button } from './ui/Button'
 import React, { Children } from 'react';
 
 interface Props {
