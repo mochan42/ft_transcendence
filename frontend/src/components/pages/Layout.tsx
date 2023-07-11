@@ -5,7 +5,6 @@ import { Fetcher } from "react-router-dom";
 const Layout = () => {
 	var name = 'Bill';
 	return (
-
 		<div className='bg-slate-400 h-screen flex flex-col flex-wrap justify-start'>
 			<div className='h-1/2 bg-red-300 flex flex-wrap justify-around items-center'>
 				<div className='bg-blue-500 flex flex-col flex-wrap items-center gap-6'>
@@ -61,19 +60,6 @@ const Layout = () => {
 				</div>
 			</div>
 		</div>
-		// <div className="bg-slate-100 h-screen flex flex-wrap flex-col gap-6">
-		// 	<div className="bg-green-500 flex-auto justify-around gap-6">
-		// 		{/* <div className="bg-blue-200 gap-6">
-		// 			Test 1
-		// 		</div>
-		// 		<div className="bg-blue-800">
-		// 			Test 1.1
-		// 		</div> */}
-		// 	</div>
-		// 	<div className="bg-red-500 flex-auto">
-		// 		Test 2
-		// 	</div>
-		// </div>
 		)
 	}
 	
