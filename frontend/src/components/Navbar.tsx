@@ -24,14 +24,14 @@ const Navbar: React.FC<Props> = ({ setIsAuth, isAuth}) => {
 	return(
 		<div className='w-full flex items-center justify-evenly'>
 			<Button
-					className='text-black bg-transparent dark:bg-transparent underline-offset-4 hover:underline dark:text-slate-100 hover:bg-transparent dark:hover:bg-transparent'
+					variant='link'
 					onClick={() => navigate('/about')}
 				>
 					Transcendence 42
 				</Button>
 				
 				<Button
-					className='text-black bg-transparent dark:bg-transparent underline-offset-4 hover:underline dark:text-slate-100 hover:bg-transparent dark:hover:bg-transparent'
+					variant='link'
 					type='submit'
 					onClick={() => navigate('/')}
 				>
@@ -39,7 +39,7 @@ const Navbar: React.FC<Props> = ({ setIsAuth, isAuth}) => {
 				</Button>
 
 				<Button
-					className='text-black bg-transparent dark:bg-transparent underline-offset-4 hover:underline dark:text-slate-100 hover:bg-transparent dark:hover:bg-transparent'
+					variant='link'
 					type='submit'
 					onClick={() => navigate('/profile')}
 				>
@@ -47,7 +47,7 @@ const Navbar: React.FC<Props> = ({ setIsAuth, isAuth}) => {
 				</Button>
 
 				<Button
-					className='text-black bg-transparent dark:bg-transparent underline-offset-4 hover:underline dark:text-slate-100 hover:bg-transparent dark:hover:bg-transparent'
+					variant='link'
 					type='submit'
 					onClick={() => navigate('/game')}
 				>
@@ -55,7 +55,7 @@ const Navbar: React.FC<Props> = ({ setIsAuth, isAuth}) => {
 				</Button>
 
 				<Button
-					className='text-black bg-transparent dark:bg-transparent underline-offset-4 hover:underline dark:text-slate-100 hover:bg-transparent dark:hover:bg-transparent'
+					variant='link'
 					type='submit'
 					onClick={() => navigate('/')}
 				>
@@ -63,8 +63,6 @@ const Navbar: React.FC<Props> = ({ setIsAuth, isAuth}) => {
 				</Button>
 				
 				<Button
-					className=' bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow'
-					type='submit'
 					onClick={() => handleLogout()}
 				>
 					{msg}
