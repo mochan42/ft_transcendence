@@ -18,12 +18,12 @@ const App: React.FC = () => {
 	const [isAuth, setIsAuth] = useState(true)
 
 		return (
-			<div className='grid grid-rows-8 gap-2'>
+			<div className='grid gap-2'>
 				<Router>
 					<div className='shadow-xl flex backdrop-blur-sm bg-white/75 dark:bg-slate-900 z-50 top-0 left-0 right-0 h-20 border-b border-slate-300 dark:border-slate-700 item-center justify-between'>
 						<Navbar setIsAuth={setIsAuth} isAuth={isAuth}/>
 					</div>
-					<div className='bg-green-500 rounded-lg shadow-xl min-h-[50px]'>
+					<div className='bg-green-500 rounded-lg shadow-xl h-screen min-h-[50px]'>
 						<div>
 							<Routes>
 								<Route path='/' element={<ProtectedRoute isAuth={isAuth} path='/' element={<Home />} />} />
