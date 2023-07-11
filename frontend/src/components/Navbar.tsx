@@ -27,7 +27,7 @@ const Navbar: React.FC<Props> = ({ setIsAuth, isAuth}) => {
 					className='text-black bg-transparent dark:bg-transparent underline-offset-4 hover:underline dark:text-slate-100 hover:bg-transparent dark:hover:bg-transparent'
 					onClick={() => navigate('/about')}
 				>
-					Transcendence Project 42
+					Transcendence 42
 				</Button>
 				
 				<Button

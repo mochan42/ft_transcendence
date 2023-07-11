@@ -12,17 +12,18 @@ import About from './components/pages/About';
 import PageNotFound from './components/pages/PageNotFound';
 import Footer from './components/Footer';
 import Game from './components/pages/Game';
+import Layout from './components/pages/Layout';
 
 const App: React.FC = () => {
-	const [isAuth, setIsAuth] = useState(false)
+	const [isAuth, setIsAuth] = useState(true)
 
 		return (
-			<div className='grid grid-rows-8 gap-2'>
+			<div className='grid gap-2'>
 				<Router>
 					<div className='shadow-xl flex backdrop-blur-sm bg-white/75 dark:bg-slate-900 z-50 top-0 left-0 right-0 h-20 border-b border-slate-300 dark:border-slate-700 item-center justify-between'>
 						<Navbar setIsAuth={setIsAuth} isAuth={isAuth}/>
 					</div>
-					<div className='bg-green-500 rounded-lg shadow-xl min-h-[50px]'>
+					<div className='bg-green-500 rounded-lg shadow-xl h-screen min-h-[50px]'>
 						<div>
 							<Routes>
 								<Route path='/' element={<ProtectedRoute isAuth={isAuth} path='/' element={<Home />} />} />
@@ -30,7 +31,8 @@ const App: React.FC = () => {
 								<Route path='game' element={<ProtectedRoute isAuth={isAuth} path='/game' element={<Game />} />} />
 								<Route path='/profile' element={<ProtectedRoute isAuth={isAuth} path='/profile' element={<Profile />} />} />
 								<Route path='/landingpage' element={<ProtectedRoute isAuth={isAuth} path='/landingpage' element={<LandingPage />} />} />
-								<Route path='about' element={<About />} />
+								<Route path='/about' element={<About />} />
+								<Route path='/layout' element={<Layout />} />
 								<Route path='/*' element={<PageNotFound />}/>
 							</Routes>
 						</div>
