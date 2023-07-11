@@ -1,4 +1,4 @@
-import Button from "../ui/Button"
+import { Button } from "../ui/Button"
 import SmallHeading from "../ui/SmallHeading"
 import { Fetcher } from "react-router-dom";
 
@@ -18,12 +18,12 @@ const Profile = () => {
 					{name}
 				</h1>
 				<div className='flex gap-4'>
-					<button className="px-4 py-2 bg-slate-900 text-white hover:bg-slate-800 dark:bg-slate-200 dark:text-slate-900 dark:hover:bg-slate-100 rounded">
+					<Button>
 						Update
-					</button>
-					<button className="px-4 py-2 bg-slate-900 text-white hover:bg-slate-800 dark:bg-slate-200 dark:text-slate-900 dark:hover:bg-slate-100 rounded">
+					</Button>
+					<Button>
 						Delete
-					</button>
+					</Button>
 				</div>
 			</div>
 			<div className='bg-yellow-500 flex flex-col justify-around gap-6'>
