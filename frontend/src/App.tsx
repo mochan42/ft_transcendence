@@ -25,12 +25,13 @@ const App: React.FC = () => {
 					<div className='bg-green-500 rounded-lg shadow-xl min-h-[50px]'>
 						<div>
 							<Routes>
-								<Route path='/' element={<ProtectedRoute isAuth={isAuth} path='/' element={<Home />} />} />
+								<Route path='/' element={<Home />}  />
 								<Route path='/login' element={<Login setIsAuth={setIsAuth} />} />
 								<Route path='game' element={<ProtectedRoute isAuth={isAuth} path='/game' element={<Game />} />} />
 								<Route path='/profile' element={<ProtectedRoute isAuth={isAuth} path='/profile' element={<Profile />} />} />
 								<Route path='/landingpage' element={<ProtectedRoute isAuth={isAuth} path='/landingpage' element={<LandingPage />} />} />
 								<Route path='about' element={<About />} />
+								<Route path='/code:pin' element={<About />} />
 								<Route path='/*' element={<PageNotFound />}/>
 							</Routes>
 						</div>
