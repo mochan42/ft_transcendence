@@ -1,10 +1,31 @@
 import { Button } from "../ui/Button"
 import SmallHeading from "../ui/SmallHeading"
 import { Fetcher } from "react-router-dom";
+import { useState, useEffect } from "react";
+import userEvent from "@testing-library/user-event";
+
+// This should usually include and ID or username in the URL like this:
+// localhost:5000/apis/user/1
+const URL = 'apis:5000/api/users'; 
 
 const Profile = () => {
-	var name = 'Bill';
-	// var userImage = sendRequestImage;
+
+	const [ user, setUser] = useState({id: '1', username: 'test', userNameLoc: 'loc'})
+	const useEffect = () => {
+		const fetchUser = async () => {
+			const result = await fetch(URL)
+			if (result.status == 200)
+				console.log('Fetch Success')
+			else
+				console.log('error on fetch')
+			const data = await result.json()
+			console.log(data)
+			setUser(data)
+		}
+		fetchUser();
+	};
+
+	// var name = {user.u;
 	return (
 		<div className='bg-slate-400 h-screen flex flex-col flex-wrap justify-start'>
 		<div className='h-1/2 bg-red-300 flex flex-wrap justify-around items-center'>
@@ -15,9 +36,12 @@ const Profile = () => {
 					alt="User Image"
 				/>
 				<h1 className="text-2xl text-white/75 font-extrabold dark:text-amber-300 drop-shadow-lg">
-					{name}
+					{user.username}
 				</h1>
 				<div className='flex gap-4'>
+					<button onClick={useEffect}>
+						Test
+					</button>
 					<Button>
 						Update
 					</Button>
@@ -28,6 +52,9 @@ const Profile = () => {
 			</div>
 			<div className='bg-yellow-500 flex flex-col justify-around gap-6'>
 				<h3>Personal Information</h3>
+				{/* <div>
+					
+				</div> */}
 				<div>
 					<span className="font-bold">Email: </span>
 					<span>john.doe@example.com</span>

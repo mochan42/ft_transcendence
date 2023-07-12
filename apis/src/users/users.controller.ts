@@ -22,7 +22,9 @@ export class UsersController {
 
   @Get()
   findAll() {
-    return this.usersService.findAll();
+	console.log('Test')
+	return 'Hello'
+    // return this.usersService.findAll();
   }
 
   @Get(':id')
