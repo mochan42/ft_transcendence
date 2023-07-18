@@ -9,7 +9,7 @@ interface Props {
 
 const Navbar: React.FC<Props> = ({ setIsAuth, isAuth}) => {
 	const navigate = useNavigate();
-	const [theme, setTheme] = useState('light');
+	const [theme, setTheme] = useState('dark');
 	const handleLogout = () => {
 		if (isAuth) {
 			setIsAuth(false)

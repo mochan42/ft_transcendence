@@ -18,9 +18,9 @@ const App: React.FC = () => {
 	const [isAuth, setIsAuth] = useState(true)
 
 	return (
-		<div className='grid gap-2 font-mono dark:bg-slate-50 bg-slate-900 bg-opacity-80'>
+		<div className='grid gap-2 font-mono dark:bg-white/75 bg-slate-900 bg-opacity-80'>
 			<Router>
-				<div className='shadow-xl flex backdrop-blur-sm bg-white/75 bg-slate-200 dark:bg-slate-900 z-50 top-0 left-0 right-0 h-20 border-b border-slate-300 dark:border-slate-700 item-center justify-between'>
+				<div className='shadow-xl flex backdrop-blur-sm bg-white/75 dark:bg-slate-900 z-50 top-0 left-0 right-0 h-20 border border-white/75 dark:border-slate-700 item-center justify-between'>
 					<Navbar setIsAuth={setIsAuth} isAuth={isAuth}/>
 				</div>
 				<div className='rounded-2xl shadow-xl h-screen min-h-[50px]'>
