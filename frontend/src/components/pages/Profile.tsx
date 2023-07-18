@@ -1,5 +1,5 @@
-import { Button } from "../ui/Button"
-import SmallHeading from "../ui/SmallHeading"
+import { Button } from '../ui/Button'
+import SmallHeading from '../ui/SmallHeading'
 
 const Profile = () => {
 	var name = 'Bill';
@@ -9,11 +9,11 @@ const Profile = () => {
 		<div className='h-1/2 flex flex-wrap justify-around items-center'>
 			<div className='flex flex-col flex-wrap items-center gap-6 border-4 dark:border-slate-900'>
 				<img
-					className="min-w-[250px] min-h-[250px] w-1/2 h-1/2 rounded-full mx-auto"
-					src="https://fastly.picsum.photos/id/294/200/200.jpg?hmac=tSuqBbGGNYqgxQ-6KO7-wxq8B4m3GbZqQAbr7tNApz8"
-					alt="User Image"
+					className='min-w-[250px] min-h-[250px] w-1/2 h-1/2 rounded-full mx-auto'
+					src='https://fastly.picsum.photos/id/294/200/200.jpg?hmac=tSuqBbGGNYqgxQ-6KO7-wxq8B4m3GbZqQAbr7tNApz8'
+					alt='Your Profile Picture'
 				/>
-				<h1 className="text-2xl text-slate-900 font-extrabold dark:text-amber-300 drop-shadow-lg">
+				<h1 className='text-2xl text-slate-900 font-extrabold dark:text-amber-300 drop-shadow-lg'>
 					{name}
 				</h1>
 				<div className='flex gap-4'>
@@ -28,31 +28,31 @@ const Profile = () => {
 			<div className=' flex flex-col justify-around gap-6'>
 				<h3>Personal Information</h3>
 				<div>
-					<span className="font-bold">Email: </span>
+					<span className='font-bold'>Email: </span>
 					<span>john.doe@example.com</span>
 				</div>
 				<div>
-					<span className="font-bold">Location: </span>
+					<span className='font-bold'>Location: </span>
 					<span>New York, USA</span>
 				</div>
 				<div>
-					<span className="font-bold">Occupation: </span>
+					<span className='font-bold'>Occupation: </span>
 					<span>Software Engineer</span>
 				</div>
 			</div>
 		</div>
 		<div className='h-1/2 flex flex-wrap justify-around items-center'>
 			<div className=''>
-				<h3 className="text-lg font-bold mb-4">Achievements</h3>
-				<ul className="space-y-2">
+				<h3 className='text-lg font-bold mb-4'>Achievements</h3>
+				<ul className='space-y-2'>
 					<li>Completed Project X</li>
 					<li>Received Award Y</li>
 					<li>Published Paper Z</li>
 				</ul> 
 			</div>
 			<div className=''>
-				<h3 className="text-lg font-bold mb-4">Friends</h3>
-				<ul className="space-y-2">
+				<h3 className='text-lg font-bold mb-4'>Friends</h3>
+				<ul className='space-y-2'>
 					<li>Friend 1</li>
 					<li>Friend 2</li>
 					<li>Friend 3</li>

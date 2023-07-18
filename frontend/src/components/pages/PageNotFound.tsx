@@ -12,7 +12,7 @@ const PageNotFound = () => {
 				</h1>
 			</div>
 			<div className='overflow-hidden mx-auto rounded-3xl object-scale-down'>
-				<img width={750} height={750} src='https://wallpaperaccess.com/full/2019411.jpg'></img>
+				<img width={750} height={750} src='https://wallpaperaccess.com/full/2019411.jpg' alt='A cartoon character is looking for something in the dark with a torch.'></img>
 			</div>
 			<div className='h-1/6 flex flex-wrap justify-around items-center'>
 				<SmallHeading className='dark:text-slate-200'>

@@ -10,13 +10,12 @@ const About = () => {
 					<h1 className='text-lg'>
 						Transcendence Project of the 42
 						<Button variant='link' size='sm' onClick={() => window.open('https://42wolfsburg.de/42-programming-curriculum/', '_blank')} className='text-lg dark:text-amber-400'>
-							Core Curriculum
+							Core Curriculum.
 						</Button>
-						.
 					</h1>
 				</div>
 				<div className='overflow-hidden mx-auto rounded-3xl object-scale-down w-2/3'>
-					<img src='https://42wolfsburg.de/wp-content/uploads/2021/08/1_CyuMA9NNfSsJ7yu7rGZL_A-e1629378913780-1024x546.jpeg'></img>
+					<img src='https://42wolfsburg.de/wp-content/uploads/2021/08/1_CyuMA9NNfSsJ7yu7rGZL_A-e1629378913780-1024x546.jpeg' alt='Whale and flower pot falling from sky. Reference to "The Hitchhikers Guide To The Galaxy"'></img>
 				</div>
 				<div className=''>
 					<p className=''>
