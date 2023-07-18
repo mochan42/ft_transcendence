@@ -7,10 +7,12 @@ const PageNotFound = () => {
 	return (
 		<div className='h-screen flex flex-col flex-wrap justify-start backdrop-blur-sm bg-slate-200 bg-white/75 dark:bg-slate-900 border-b border-slate-300 dark:border-slate-700'>
 			<div className='h-1/6 flex flex-wrap justify-around items-center'>
-				<h1 className='text-2xl text-slate-800 dark:text-amber-400'>404 Page was not found.</h1>
+				<h1 className='text-2xl text-slate-800 dark:text-amber-400'>
+					Error 404: Page was not found.
+				</h1>
 			</div>
-			<div className='h-2/3 overflow-hidden mx-auto rounded-3xl'>
-				<img width={750} height={750} src='https://wallpaperaccess.com/full/2019411.jpg'></img>
+			<div className='overflow-hidden mx-auto rounded-3xl object-scale-down'>
+				<img width={750} height={750} src='https://wallpaperaccess.com/full/2019411.jpg' alt='A cartoon character is looking for something in the dark with a torch.'></img>
 			</div>
 			<div className='h-1/6 flex flex-wrap justify-around items-center'>
 				<SmallHeading className='dark:text-slate-200'>
