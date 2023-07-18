@@ -6,6 +6,6 @@ interface Props extends React.HTMLAttributes<HTMLHeadingElement> {
 
 export default function SmallHeading({ className, children }: Props) {
   return (
-		<h5 className={className}>{children}</h5>
+		<p className={className} children={children}></p>
   )
 }
