@@ -1,20 +1,19 @@
 import { Button } from "../ui/Button"
 import SmallHeading from "../ui/SmallHeading"
-import { Fetcher } from "react-router-dom";
 
 const Profile = () => {
 	var name = 'Bill';
-	// var userImage = sendRequestImage;
+
 	return (
-	<div className='bg-slate-400 h-screen flex flex-col flex-wrap justify-start'>
-		<div className='h-1/2 bg-red-300 flex flex-wrap justify-around items-center'>
-			<div className='bg-blue-500 flex flex-col flex-wrap items-center gap-6'>
+	<div className='bg-slate-200 dark:bg-slate-900 h-screen  flex flex-col flex-wrap justify-start text-slate-900 dark:text-slate-200 border-8 dark:border-slate-900'>
+		<div className='h-1/2 flex flex-wrap justify-around items-center'>
+			<div className='flex flex-col flex-wrap items-center gap-6 border-4 dark:border-slate-900'>
 				<img
 					className="min-w-[250px] min-h-[250px] w-1/2 h-1/2 rounded-full mx-auto"
 					src="https://fastly.picsum.photos/id/294/200/200.jpg?hmac=tSuqBbGGNYqgxQ-6KO7-wxq8B4m3GbZqQAbr7tNApz8"
 					alt="User Image"
 				/>
-				<h1 className="text-2xl text-white/75 font-extrabold dark:text-amber-300 drop-shadow-lg">
+				<h1 className="text-2xl text-slate-900 font-extrabold dark:text-amber-300 drop-shadow-lg">
 					{name}
 				</h1>
 				<div className='flex gap-4'>
@@ -26,7 +25,7 @@ const Profile = () => {
 					</Button>
 				</div>
 			</div>
-			<div className='bg-yellow-500 flex flex-col justify-around gap-6'>
+			<div className=' flex flex-col justify-around gap-6'>
 				<h3>Personal Information</h3>
 				<div>
 					<span className="font-bold">Email: </span>
@@ -42,8 +41,8 @@ const Profile = () => {
 				</div>
 			</div>
 		</div>
-		<div className='h-1/2 bg-green-500 flex flex-wrap justify-around items-center'>
-			<div className='bg-pink-400'>
+		<div className='h-1/2 flex flex-wrap justify-around items-center'>
+			<div className=''>
 				<h3 className="text-lg font-bold mb-4">Achievements</h3>
 				<ul className="space-y-2">
 					<li>Completed Project X</li>
@@ -51,7 +50,7 @@ const Profile = () => {
 					<li>Published Paper Z</li>
 				</ul> 
 			</div>
-			<div className='bg-violet-400'>
+			<div className=''>
 				<h3 className="text-lg font-bold mb-4">Friends</h3>
 				<ul className="space-y-2">
 					<li>Friend 1</li>
