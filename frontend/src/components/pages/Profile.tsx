@@ -6,7 +6,7 @@ const Profile = () => {
 	var name = 'Bill';
 	// var userImage = sendRequestImage;
 	return (
-		<div className='bg-slate-400 h-screen flex flex-col flex-wrap justify-start'>
+	<div className='bg-slate-400 h-screen flex flex-col flex-wrap justify-start'>
 		<div className='h-1/2 bg-red-300 flex flex-wrap justify-around items-center'>
 			<div className='bg-blue-500 flex flex-col flex-wrap items-center gap-6'>
 				<img
