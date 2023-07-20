@@ -4,23 +4,20 @@ import Paddle from './Paddle'
 import { Button } from './ui/Button';
 
 
-const Pong: React.FC = () => {
+const Pong: React.FC = ( ) => {
 
-	const speedX = 1
-	const speedY = -1
+	const [speedX, setSpeedX] = useState(4);
+	const [speedY, setSpeedY] = useState(-4);
 	const [ballSpeedX, setBallSpeedX] = useState(speedX);
 	const [ballSpeedY, setBallSpeedY] = useState(speedY);
-	const [ballX, setBallX] = useState(1800);
+	const [ballX, setBallX] = useState(100);
 	const [ballY, setBallY] = useState(150);
 	const [paddleSpeed, setPaddleSpeed] = useState(6);
 	const [leftPaddleY, setLeftPaddleY] = useState(0);
 	const [rightPaddleY, setRightPaddleY] = useState(0);
-	const [leftScore, setLeftScore] = useState(0);
-	const [rightScore, setRightScore] = useState(0);
 	const PongRef = useRef<HTMLDivElement>(null);
 	const [difficultyLevel, setDifficultyLevel] = useState<number>(0)
 	const paddleLenghts = [180, 120, 80]
-	const [changeX, setChangeX] = useState(false)
 
 	useEffect(() => {
 		const gameLoop = setInterval(() => {
@@ -29,7 +26,7 @@ const Pong: React.FC = () => {
 		}, 1000 / 60);
 
 		return () => clearInterval(gameLoop);
-	}, [ballX, ballY, ballSpeedX, ballSpeedY]);
+	}, [ballX, ballY, ballSpeedX, ballSpeedY, speedX, speedY]);
 
 	const moveBall = () => {
 		setBallX((prevX) => prevX + ballSpeedX);
@@ -47,28 +44,47 @@ const Pong: React.FC = () => {
 		const leftPaddleTop = leftPaddleY;
 		const leftPaddleBottom = leftPaddleY + paddleLenghts[difficultyLevel];
 	  
+		// Container boundaries
+		const containerTop = 0;
+		var containerBottom = 800;
+
 		// Right Paddle boundaries
 		var rightPaddleLeft = 500;
 		if (PongRef.current) {
-			rightPaddleLeft = PongRef.current?.offsetWidth - 30;// Paddle width is 10 pixels
+			rightPaddleLeft = PongRef.current?.clientWidth - 30;// Paddle width is 10 pixels
+			containerBottom = PongRef.current?.clientHeight - 30;
 		}
 		const rightPaddleTop = rightPaddleY;
 		const rightPaddleBottom = rightPaddleY + paddleLenghts[difficultyLevel];
 
+
 		// Check collision with left paddle
-		if (
-			ballLeft == leftPaddleRight &&
+		if (ballLeft <= leftPaddleRight &&
+			speedX < 0 &&
 			ballCenter >= leftPaddleTop &&
 			ballCenter <= leftPaddleBottom
 			) {
 			setBallSpeedX(-speedX)
+			setSpeedX(ballSpeedX)
 		}
-		if (
-			ballRight == rightPaddleLeft
-			// ballCenter >= rightPaddleTop && 
-			// ballCenter <= rightPaddleBottom
+
+		if (ballRight >= rightPaddleLeft &&
+			speedX > 0 &&
+			ballCenter >= rightPaddleTop && 
+			ballCenter <= rightPaddleBottom
 		) {
 			setBallSpeedX(-speedX)
+			setSpeedX(ballSpeedX)
+		}
+		
+		if (ballY <= containerTop && speedY < 0){
+			setBallSpeedY(-speedY)
+			setSpeedY(ballSpeedY)
+		}
+
+		if (ballY >= containerBottom && speedY > 0) {
+			setBallSpeedY(-speedY)
+			setSpeedY(ballSpeedY)
 		}
 	};
 
