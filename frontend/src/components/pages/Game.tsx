@@ -60,7 +60,7 @@ const Game = () => {
 					</SmallHeading>
 				</div>
 			</div>
-			<div className='w-11/12 h-5/6 border-t-2 border-l-2 border-r-2 border-slate-500 black:border-slate-200 bg-slate-500 dark:text-slate-200 text-center'>
+			<div className='w-full h-5/6 border-t-2 border-l-2 border-r-2 border-slate-500 black:border-slate-200 bg-slate-500 dark:text-slate-200 text-center'>
 				<Pong />
 			</div>
 		</div>

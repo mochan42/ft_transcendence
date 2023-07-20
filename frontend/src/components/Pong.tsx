@@ -6,12 +6,12 @@ import { Button } from './ui/Button';
 
 const Pong: React.FC = () => {
 
-	const speedX = -1
+	const speedX = 1
 	const speedY = -1
 	const [ballSpeedX, setBallSpeedX] = useState(speedX);
 	const [ballSpeedY, setBallSpeedY] = useState(speedY);
-	const [ballX, setBallX] = useState(20);
-	const [ballY, setBallY] = useState(100);
+	const [ballX, setBallX] = useState(1800);
+	const [ballY, setBallY] = useState(150);
 	const [paddleSpeed, setPaddleSpeed] = useState(6);
 	const [leftPaddleY, setLeftPaddleY] = useState(0);
 	const [rightPaddleY, setRightPaddleY] = useState(0);
@@ -32,7 +32,6 @@ const Pong: React.FC = () => {
 	}, [ballX, ballY, ballSpeedX, ballSpeedY]);
 
 	const moveBall = () => {
-		// console.log('ballX here: ', ballX, 'ballSpeedX: ', ballSpeedX)
 		setBallX((prevX) => prevX + ballSpeedX);
 		setBallY((prevY) => prevY + ballSpeedY);
 	  };
@@ -41,23 +40,40 @@ const Pong: React.FC = () => {
 		// Ball boundaries
 		const ballLeft = ballX;
 		const ballRight = ballX + 8; // Ball width is 8 pixels
-		const ballTop = ballY;
-		const ballBottom = ballY + 8; // Ball height is 8 pixels
+		const ballCenter = ballY + 4; // half the diameter = radius
 	  
 		// Left Paddle boundaries
-		const leftPaddleLeft = 0;
 		const leftPaddleRight = 10; // Paddle width is 10 pixels
 		const leftPaddleTop = leftPaddleY;
 		const leftPaddleBottom = leftPaddleY + paddleLenghts[difficultyLevel];
 	  
+		// Right Paddle boundaries
+		var rightPaddleLeft = 500;
+		if (PongRef.current) {
+			rightPaddleLeft = PongRef.current?.offsetWidth - 30;// Paddle width is 10 pixels
+		}
+		const rightPaddleTop = rightPaddleY;
+		const rightPaddleBottom = rightPaddleY + paddleLenghts[difficultyLevel];
+
 		// Check collision with left paddle
-		if (ballLeft == leftPaddleRight) {
+		if (
+			ballLeft == leftPaddleRight &&
+			ballCenter >= leftPaddleTop &&
+			ballCenter <= leftPaddleBottom
+			) {
+			setBallSpeedX(-speedX)
+		}
+		if (
+			ballRight == rightPaddleLeft
+			// ballCenter >= rightPaddleTop && 
+			// ballCenter <= rightPaddleBottom
+		) {
 			setBallSpeedX(-speedX)
 		}
 	};
 
 	return (
-		<div className="relative w-full h-full">
+		<div className="relative w-full h-full" ref={PongRef}>
 			<Paddle yPosition={leftPaddleY} paddleHeight={paddleLenghts[difficultyLevel]} style={{ left: 0 }}/>
 			<Paddle yPosition={rightPaddleY} paddleHeight={paddleLenghts[difficultyLevel]} style={{ right: 0 }}/>
 			<div className="relative">
