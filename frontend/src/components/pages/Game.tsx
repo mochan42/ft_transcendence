@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Button } from '../ui/Button'
 import SmallHeading from '../ui/SmallHeading'
+import Pong from '../Pong'
 
 const Game = () => {
 
@@ -23,7 +24,7 @@ const Game = () => {
 
 	return (
 		<div className='h-screen w-full flex flex-col items-center justify-between bg-gray-200 dark:bg-slate-900 border-t-8 dark:border-slate-900'>
-			<div className='h-1/6 gap-6 items-center justify-between flex flex-wrap'>
+			<div className='h-1/6 gap-6 items-center justify-between flex'>
 				<div className='border-8 dark:border-slate-900 flex justify-evenly'>
 					<img className='min-w-[25px] min-h-[25px] w-1/12 h-1/12 rounded-full overflow-hidden' src='https://fastly.picsum.photos/id/294/200/200.jpg?hmac=tSuqBbGGNYqgxQ-6KO7-wxq8B4m3GbZqQAbr7tNApz8'></img>
 					<SmallHeading className='text-lg dark:text-amber-400'>
@@ -60,9 +61,7 @@ const Game = () => {
 				</div>
 			</div>
 			<div className='w-11/12 h-5/6 border-t-2 border-l-2 border-r-2 border-slate-500 black:border-slate-200 bg-slate-500 dark:text-slate-200 text-center'>
-				<div>
-					This is important
-				</div>
+				<Pong />
 			</div>
 		</div>
 	)
