@@ -27,48 +27,48 @@ const Navbar: React.FC<Props> = ({ setIsAuth, isAuth}) => {
 					className='text-black bg-transparent dark:bg-transparent underline-offset-4 hover:underline dark:text-slate-100 hover:bg-transparent dark:hover:bg-transparent'
 					onClick={() => navigate('/about')}
 				>
-					Transcendence Project 42
-				</Button>
-				
-				<Button
-					className='text-black bg-transparent dark:bg-transparent underline-offset-4 hover:underline dark:text-slate-100 hover:bg-transparent dark:hover:bg-transparent'
-					type='submit'
-					onClick={() => navigate('/')}
-				>
-					Home
-				</Button>
+				Transcendence Project 42
+			</Button>
+			
+			<Button
+				className='text-black bg-transparent dark:bg-transparent underline-offset-4 hover:underline dark:text-slate-100 hover:bg-transparent dark:hover:bg-transparent'
+				type='submit'
+				onClick={() => navigate('/')}
+			>
+				Home
+			</Button>
 
-				<Button
-					className='text-black bg-transparent dark:bg-transparent underline-offset-4 hover:underline dark:text-slate-100 hover:bg-transparent dark:hover:bg-transparent'
-					type='submit'
-					onClick={() => navigate('/profile')}
-				>
-					Profile
-				</Button>
+			<Button
+				className='text-black bg-transparent dark:bg-transparent underline-offset-4 hover:underline dark:text-slate-100 hover:bg-transparent dark:hover:bg-transparent'
+				type='submit'
+				onClick={() => navigate('/profile')}
+			>
+				Profile
+			</Button>
 
-				<Button
-					className='text-black bg-transparent dark:bg-transparent underline-offset-4 hover:underline dark:text-slate-100 hover:bg-transparent dark:hover:bg-transparent'
-					type='submit'
-					onClick={() => navigate('/game')}
-				>
-					Play Pong
-				</Button>
+			<Button
+				className='text-black bg-transparent dark:bg-transparent underline-offset-4 hover:underline dark:text-slate-100 hover:bg-transparent dark:hover:bg-transparent'
+				type='submit'
+				onClick={() => navigate('/game')}
+			>
+				Play Pong
+			</Button>
 
-				<Button
-					className='text-black bg-transparent dark:bg-transparent underline-offset-4 hover:underline dark:text-slate-100 hover:bg-transparent dark:hover:bg-transparent'
-					type='submit'
-					onClick={() => navigate('/')}
-				>
-					Chat
-				</Button>
-				
-				<Button
-					className=' bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow'
-					type='submit'
-					onClick={() => handleLogout()}
-				>
-					{msg}
-				</Button>
+			<Button
+				className='text-black bg-transparent dark:bg-transparent underline-offset-4 hover:underline dark:text-slate-100 hover:bg-transparent dark:hover:bg-transparent'
+				type='submit'
+				onClick={() => navigate('/')}
+			>
+				Chat
+			</Button>
+			
+			<Button
+				className=' bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow'
+				type='submit'
+				onClick={() => handleLogout()}
+			>
+				{msg}
+			</Button>
 		</div>
 	)
 }
