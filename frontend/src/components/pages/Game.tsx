@@ -8,6 +8,7 @@ const Game = () => {
 	const [playerScore, setPlayerScore] = useState(0)
 	const [botScore, setBotScore] = useState(0)
 	const [gameActive, setGameActive] = useState(false)
+	const [reset, setReset] = useState(false) // #STILL WORKING ON THIS PART!!!!
 
 	const playerPoint = () => {
 		setPlayerScore(playerScore + 1)
@@ -61,7 +62,7 @@ const Game = () => {
 				</div>
 			</div>
 			<div className='w-full h-5/6 border-t-2 border-l-2 border-r-2 border-slate-500 black:border-slate-200 bg-slate-500 dark:text-slate-200 text-center'>
-				<Pong />
+				<Pong difficulty={0} isGameActive={gameActive} />
 			</div>
 		</div>
 	)

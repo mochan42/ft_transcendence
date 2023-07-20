@@ -1,13 +1,20 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, Children } from 'react'
 import Ball from './Ball'
 import Paddle from './Paddle'
 import { Button } from './ui/Button';
 
+interface PongProps {
+	difficulty: number;
+	isGameActive: boolean;
+  }
 
-const Pong: React.FC = ( ) => {
+const Pong: React.FC<PongProps> = ({ difficulty, isGameActive }) => {
 
-	const [speedX, setSpeedX] = useState(4);
-	const [speedY, setSpeedY] = useState(-4);
+	const PongRef = useRef<HTMLDivElement>(null);
+	const [difficultyLevel, setDifficultyLevel] = useState<number>(difficulty)
+	const paddleLenghts = [180, 120, 80, 40, 20, 10]
+	const [speedX, setSpeedX] = useState((difficulty + 1) * 3);
+	const [speedY, setSpeedY] = useState((difficulty + 1) * 3);
 	const [ballSpeedX, setBallSpeedX] = useState(speedX);
 	const [ballSpeedY, setBallSpeedY] = useState(speedY);
 	const [ballX, setBallX] = useState(100);
@@ -15,18 +22,17 @@ const Pong: React.FC = ( ) => {
 	const [paddleSpeed, setPaddleSpeed] = useState(6);
 	const [leftPaddleY, setLeftPaddleY] = useState(0);
 	const [rightPaddleY, setRightPaddleY] = useState(0);
-	const PongRef = useRef<HTMLDivElement>(null);
-	const [difficultyLevel, setDifficultyLevel] = useState<number>(0)
-	const paddleLenghts = [180, 120, 80]
 
 	useEffect(() => {
 		const gameLoop = setInterval(() => {
-			moveBall();
-			checkCollision();
+			if (isGameActive) {
+				moveBall();
+				checkCollision();
+			}
 		}, 1000 / 60);
 
 		return () => clearInterval(gameLoop);
-	}, [ballX, ballY, ballSpeedX, ballSpeedY, speedX, speedY]);
+	}, [isGameActive, ballX, ballY, ballSpeedX, ballSpeedY, speedX, speedY]);
 
 	const moveBall = () => {
 		setBallX((prevX) => prevX + ballSpeedX);
@@ -63,7 +69,7 @@ const Pong: React.FC = ( ) => {
 			speedX < 0 &&
 			ballCenter >= leftPaddleTop &&
 			ballCenter <= leftPaddleBottom
-			) {
+		) {
 			setBallSpeedX(-speedX)
 			setSpeedX(ballSpeedX)
 		}
