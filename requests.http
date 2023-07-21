@@ -1,3 +1,6 @@
 ### get all users
+GET http://localhost:5000/pong/users/4
 
-GET http://localhost:5000/pong/apis
+### get all users option 2
+
+GET https://randomuser.me/api/
