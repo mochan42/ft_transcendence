@@ -6,10 +6,12 @@ import { Button } from './ui/Button';
 interface PongProps {
 	difficulty: number;
 	isGameActive: boolean;
+	isReset: boolean;
   }
 
-const Pong: React.FC<PongProps> = ({ difficulty, isGameActive }) => {
+const Pong: React.FC<PongProps> = ({ difficulty, isGameActive, isReset }) => {
 
+	
 	const PongRef = useRef<HTMLDivElement>(null);
 	const [difficultyLevel, setDifficultyLevel] = useState<number>(difficulty)
 	const paddleLenghts = [180, 120, 80, 40, 20, 10]
@@ -17,22 +19,32 @@ const Pong: React.FC<PongProps> = ({ difficulty, isGameActive }) => {
 	const [speedY, setSpeedY] = useState((difficulty + 1) * 3);
 	const [ballSpeedX, setBallSpeedX] = useState(speedX);
 	const [ballSpeedY, setBallSpeedY] = useState(speedY);
-	const [ballX, setBallX] = useState(100);
-	const [ballY, setBallY] = useState(150);
 	const [paddleSpeed, setPaddleSpeed] = useState(6);
 	const [leftPaddleY, setLeftPaddleY] = useState(0);
 	const [rightPaddleY, setRightPaddleY] = useState(0);
-
+	var startX = 0;
+	var startY = 0;
+	if (PongRef.current) {
+		startX = (PongRef.current?.clientWidth - 30) / 2
+		startY = (PongRef.current?.clientHeight - 30) / 2
+	}
+	const [ballX, setBallX] = useState(startX);
+	const [ballY, setBallY] = useState(startY);
+	
 	useEffect(() => {
 		const gameLoop = setInterval(() => {
 			if (isGameActive) {
 				moveBall();
 				checkCollision();
 			}
+			if (isReset) {
+				setBallX(startX);
+				setBallY(startY);
+			}
 		}, 1000 / 60);
 
 		return () => clearInterval(gameLoop);
-	}, [isGameActive, ballX, ballY, ballSpeedX, ballSpeedY, speedX, speedY]);
+	}, [isGameActive, isReset, ballX, ballY, ballSpeedX, ballSpeedY, speedX, speedY]);
 
 	const moveBall = () => {
 		setBallX((prevX) => prevX + ballSpeedX);
