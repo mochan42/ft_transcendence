@@ -1,15 +1,17 @@
-import React, { useState, useEffect, useRef, Children } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Ball from './Ball'
 import Paddle from './Paddle'
-import { Button } from './ui/Button';
 
 interface PongProps {
 	difficulty: number;
 	isGameActive: boolean;
 	isReset: boolean;
+	playerPoint: () => void;
+	botPoint: () => void;
+	setReset: (boolean: boolean) => void;
   }
 
-const Pong: React.FC<PongProps> = ({ difficulty, isGameActive, isReset }) => {
+const Pong: React.FC<PongProps> = ({ difficulty, isGameActive, isReset, playerPoint, botPoint, setReset }) => {
 
 	
 	const PongRef = useRef<HTMLDivElement>(null);
@@ -40,6 +42,7 @@ const Pong: React.FC<PongProps> = ({ difficulty, isGameActive, isReset }) => {
 			if (isReset) {
 				setBallX(startX);
 				setBallY(startY);
+				setReset(false);
 			}
 		}, 1000 / 60);
 
@@ -103,6 +106,22 @@ const Pong: React.FC<PongProps> = ({ difficulty, isGameActive, isReset }) => {
 		if (ballY >= containerBottom && speedY > 0) {
 			setBallSpeedY(-speedY)
 			setSpeedY(ballSpeedY)
+		}
+
+		// Check whether Bot made a point
+		if (ballLeft < (leftPaddleRight - 8) && ballLeft > (leftPaddleRight - 12)) {
+			botPoint();
+			setReset(true);
+			setBallSpeedX(-speedX)
+			setSpeedX(ballSpeedX)
+		}
+
+		// Check whether Player scored a point
+		if (ballRight > (rightPaddleLeft + 8) && ballRight < (rightPaddleLeft + 12)) {
+			playerPoint();
+			setReset(true);
+			setBallSpeedX(-speedX)
+			setSpeedX(ballSpeedX)
 		}
 	};
 
