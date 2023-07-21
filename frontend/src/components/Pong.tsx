@@ -15,11 +15,9 @@ const Pong: React.FC<PongProps> = ({ difficulty, isGameActive, isReset, playerPo
 
 	const itsdifficult = (difficulty + 2) * 2
 	const PongRef = useRef<HTMLDivElement>(null);
-	const paddleLenghts = [300, 250, 120, 110, 100, 90]
+	const paddleLenghts = [250, 200, 100, 80, 50]
 	const [speedX, setSpeedX] = useState(-itsdifficult);
 	const [speedY, setSpeedY] = useState(-itsdifficult);
-	// const [ballSpeedX, setBallSpeedX] = useState(speedX);
-	// const [ballSpeedY, setBallSpeedY] = useState(speedY);
 	const [playerPaddleDirection, setPlayerPaddleDirection] = useState<number>(0)
 	const [paddleSpeed, setPaddleSpeed] = useState(12 - (difficulty * 2));
 	const [leftPaddleY, setLeftPaddleY] = useState(0);
@@ -57,18 +55,30 @@ const Pong: React.FC<PongProps> = ({ difficulty, isGameActive, isReset, playerPo
 		const rightPaddleTop = rightPaddleY;
 		const rightPaddleBottom = rightPaddleY + paddleLenghts[difficulty];
 
+		// Calculate relative position of ball within the left paddle
+		const relativePosition = (ballCenter - leftPaddleTop) / (paddleLenghts[difficulty]);
+
+		// Map relative position to an angle between -45 and +45 degrees
+		const mappedAngle = (relativePosition * 45) / 2;
+	  
+		// Calculate the new Y-velocity component based on the mapped angle
+		const newSpeedY = speedX < 0 ? -itsdifficult * Math.sin((mappedAngle * Math.PI) / 180) : itsdifficult * Math.sin((mappedAngle * Math.PI) / 180);
+	
+		const randomnessFactor = (difficulty / 4); // You can adjust this value to control the amount of randomness
+    	const randomSpeedY = newSpeedY * (1 + Math.random() * randomnessFactor);
 
 		// Check collision with left paddle
 		// Check whether Bot made a point
 		// I'll include a margin of 5 pixels on the outer side of the paddle
-		if (ballLeft <= (leftPaddleRight + 5) &&
-			ballLeft >= (leftPaddleRight - 5) &&
+		if (ballLeft <= (leftPaddleRight + itsdifficult) &&
+			ballLeft >= (leftPaddleRight - itsdifficult) &&
 			speedX < 0 &&
 			ballCenter >= leftPaddleTop &&
 			ballCenter <= leftPaddleBottom
 		) {
 			console.log('Bounce condition met');
 			setSpeedX(-speedX)
+			setSpeedY(randomSpeedY);
 		} else if (ballRight < leftPaddleRight && !isReset) {
 			console.log('Point for bot');
 			botPoint();
@@ -78,14 +88,15 @@ const Pong: React.FC<PongProps> = ({ difficulty, isGameActive, isReset, playerPo
 
 		// Check collision with right paddle
 		// Check whether Player made a point
-		if (ballRight >= (rightPaddleLeft - 5) &&
-			ballRight <= (rightPaddleLeft + 5) &&
+		if (ballRight >= (rightPaddleLeft - itsdifficult) &&
+			ballRight <= (rightPaddleLeft + itsdifficult) &&
 			speedX > 0 &&
 			ballCenter >= rightPaddleTop && 
 			ballCenter <= rightPaddleBottom
 		) {
 			console.log('Bounce condition met');
 			setSpeedX(-speedX)
+			setSpeedY(newSpeedY);
 		} else if (ballLeft > (rightPaddleLeft) && !isReset) {
 			console.log('Point for Player');
 			playerPoint();
@@ -116,7 +127,7 @@ const Pong: React.FC<PongProps> = ({ difficulty, isGameActive, isReset, playerPo
 				setBallY(startY);
 				setReset(false);
 			}
-			console.log('ballLeft: ', ballX, 'ballRight: ', ballX + 8, 'SpeedX: ', speedX, 'SpeedY: ', speedY, 'isReset: ', isReset)
+			// console.log('ballLeft: ', ballX, 'ballRight: ', ballX + 8, 'SpeedX: ', speedX, 'SpeedY: ', speedY, 'isReset: ', isReset)
 		}, 1000 / 60);
 
 		return () => clearInterval(gameLoop);

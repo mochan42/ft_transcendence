@@ -43,7 +43,7 @@ const GameSelection = () => {
 	}
 	
 	const handleDifficulty = () => {
-		if (difficulty === 2) {
+		if (difficulty === 4) {
 			setDifficulty(0);
 		} else {
 			setDifficulty(difficulty + 1);
@@ -71,7 +71,9 @@ const GameSelection = () => {
 						<Button className={cn('h-auto w-auto', difficultyStyle)} variant={'ghost'} onClick={() => handleDifficulty()}>
 							{difficulty === 0 ? 'easy' : null}
 							{difficulty === 1 ? 'medium' : null}
-							{difficulty === 2 ? 'hard' : null} 
+							{difficulty === 2 ? 'hard' : null}
+							{difficulty === 3 ? 'very hard' : null}
+							{difficulty === 4 ? 'extreme' : null}
 						</Button>
 					</div>
 					<Button
