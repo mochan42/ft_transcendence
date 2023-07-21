@@ -19,7 +19,7 @@ const Pong: React.FC<PongProps> = ({ difficulty, isGameActive, isReset, playerPo
 	const [speedX, setSpeedX] = useState(-itsdifficult);
 	const [speedY, setSpeedY] = useState(-itsdifficult);
 	const [playerPaddleDirection, setPlayerPaddleDirection] = useState<number>(0)
-	const [paddleSpeed, setPaddleSpeed] = useState(12 - (difficulty * 2));
+	const [paddleSpeed, setPaddleSpeed] = useState(18 - (difficulty * 2));
 	const [leftPaddleY, setLeftPaddleY] = useState(0);
 	const [rightPaddleY, setRightPaddleY] = useState(0);
 	var startX = 50;
@@ -70,8 +70,8 @@ const Pong: React.FC<PongProps> = ({ difficulty, isGameActive, isReset, playerPo
 		// Check collision with left paddle
 		// Check whether Bot made a point
 		// I'll include a margin of 5 pixels on the outer side of the paddle
-		if (ballLeft <= (leftPaddleRight + itsdifficult) &&
-			ballLeft >= (leftPaddleRight - itsdifficult) &&
+		if (ballLeft <= (leftPaddleRight + itsdifficult + 4) &&
+			ballLeft >= (leftPaddleRight - (itsdifficult + 4)) &&
 			speedX < 0 &&
 			ballCenter >= leftPaddleTop &&
 			ballCenter <= leftPaddleBottom
@@ -88,8 +88,8 @@ const Pong: React.FC<PongProps> = ({ difficulty, isGameActive, isReset, playerPo
 
 		// Check collision with right paddle
 		// Check whether Player made a point
-		if (ballRight >= (rightPaddleLeft - itsdifficult) &&
-			ballRight <= (rightPaddleLeft + itsdifficult) &&
+		if (ballRight >= (rightPaddleLeft - (itsdifficult + 4)) &&
+			ballRight <= (rightPaddleLeft + itsdifficult + 4) &&
 			speedX > 0 &&
 			ballCenter >= rightPaddleTop && 
 			ballCenter <= rightPaddleBottom
