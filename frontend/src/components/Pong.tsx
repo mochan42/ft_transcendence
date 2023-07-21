@@ -1,27 +1,32 @@
 import React, { useState, useEffect, useRef } from 'react'
 import Ball from './Ball'
 import Paddle from './Paddle'
+import VictoryLoss from './VictoryLoss';
 
 interface PongProps {
 	difficulty: number;
 	isGameActive: boolean;
 	isReset: boolean;
+	playerScore: number;
+	botScore: number;
+	isGameOver: boolean;
+	setIsGameOver: (boolean: boolean) => void;
 	playerPoint: () => void;
 	botPoint: () => void;
 	setReset: (boolean: boolean) => void;
   }
 
-const Pong: React.FC<PongProps> = ({ difficulty, isGameActive, isReset, playerPoint, botPoint, setReset }) => {
+const Pong: React.FC<PongProps> = ({ difficulty, isGameActive, isGameOver, setIsGameOver, isReset, playerScore, botScore, playerPoint, botPoint, setReset }) => {
 
 	const itsdifficult = (difficulty + 2) * 2
 	const PongRef = useRef<HTMLDivElement>(null);
 	const paddleLengths = [200, 150, 100, 80, 50]
 	const botpaddleLengths = [50, 60, 70, 80, 90]
+	const [playerScore2, setPlayerScore2] = useState(0);
 	const [speedX, setSpeedX] = useState(-(itsdifficult));
 	const [speedY, setSpeedY] = useState(-(itsdifficult));
 	const [playerPaddleDirection, setPlayerPaddleDirection] = useState<number>(0);
 	const [playerPaddleSpeed, setPlayerPaddleSpeed] = useState(18 - (difficulty * 2));
-	const [botPaddleDirection, setBotPaddleDirection] = useState<number>(0);
 	const [botPaddleSpeed, setBotPaddleSpeed] = useState(0.5 + (difficulty));
 	const [leftPaddleY, setLeftPaddleY] = useState(0);
 	const [rightPaddleY, setRightPaddleY] = useState(0);
@@ -98,6 +103,7 @@ const Pong: React.FC<PongProps> = ({ difficulty, isGameActive, isReset, playerPo
 			setSpeedY(newSpeedY * 1.05);
 		} else if (ballLeft > (rightPaddleLeft) && !isReset) {
 			playerPoint();
+			setPlayerScore2(playerScore2 + 1);
 			setReset(true);
 			setSpeedX(-speedX)
 		}
@@ -115,13 +121,16 @@ const Pong: React.FC<PongProps> = ({ difficulty, isGameActive, isReset, playerPo
 
 	useEffect(() => {
 		const gameLoop = setInterval(() => {
-			if (isGameActive) {
+			if (isGameActive && !isGameOver) {
 				movePaddles();
 				moveBall();
 				checkCollision();
 				// moveComputerPaddle();
 			}
-			if (isReset) {
+			if (playerScore >= 5 || botScore >= 5) {
+				setIsGameOver(true);
+			}
+			if (isReset && !isGameOver) {
 				setBallX(startX);
 				setBallY(startY);
 				setSpeedX(-(itsdifficult));
@@ -132,7 +141,7 @@ const Pong: React.FC<PongProps> = ({ difficulty, isGameActive, isReset, playerPo
 		}, 1000 / 60);
 
 		return () => clearInterval(gameLoop);
-	}, [isGameActive, isReset, difficulty, ballX, ballY, speedX, speedY, leftPaddleY, rightPaddleY, checkCollision]);
+	}, [isGameActive, isGameOver, isReset, difficulty, playerScore2, ballX, ballY, speedX, speedY, leftPaddleY, rightPaddleY, checkCollision]);
 
 	// Track player key input
 	useEffect(() => {
@@ -215,6 +224,12 @@ const Pong: React.FC<PongProps> = ({ difficulty, isGameActive, isReset, playerPo
 			<div className="relative">
     			<Ball xPosition={ballX} yPosition={ballY} />
     		</div>
+			{isGameOver ? (
+					<div className="absolute inset-0 bg-black bg-opacity-80">
+						<VictoryLoss isVictory={playerScore === 5}/>
+					</div>
+				) : null
+			}
 		</div>
 	)
 }

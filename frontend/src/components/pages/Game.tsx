@@ -12,13 +12,20 @@ const Game:React.FC<GameProps> = ({ difficulty }) => {
 	const [botScore, setBotScore] = useState(0)
 	const [gameActive, setGameActive] = useState(false)
 	const [reset, setReset] = useState(false)
+	const [isGameOver, setIsGameOver] = useState(false)
 
 	const playerPoint = () => {
 		setPlayerScore(playerScore + 1);
+		if (playerScore === 5) {
+			setIsGameOver(true);
+		}
 	}
 
 	const botPoint = () => {
 		setBotScore(botScore + 1);
+		if (botScore === 5) {
+			setIsGameOver(true);
+		}
 	}
 
 	const handlePause = () => {
@@ -33,7 +40,6 @@ const Game:React.FC<GameProps> = ({ difficulty }) => {
 		setBotScore(0);
 		handlePause();
 		setReset(true)
-		console.log(reset);
 	}
 
 	return (
@@ -75,7 +81,7 @@ const Game:React.FC<GameProps> = ({ difficulty }) => {
 				</div>
 			</div>
 			<div className='w-full h-5/6 border-t-2 border-l-2 border-r-2 border-slate-500 black:border-slate-200 bg-slate-500 dark:text-slate-200 text-center'>
-				<Pong difficulty={difficulty} isGameActive={gameActive} isReset={reset} playerPoint={playerPoint} botPoint={botPoint} setReset={setReset}/>
+				<Pong difficulty={difficulty} isGameActive={gameActive} isReset={reset} isGameOver={isGameOver} setIsGameOver={setIsGameOver} playerScore={playerScore} botScore={botScore} playerPoint={playerPoint} botPoint={botPoint} setReset={setReset}/>
 			</div>
 		</div>
 	)
