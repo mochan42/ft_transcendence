@@ -39,6 +39,7 @@ const Game:React.FC<GameProps> = ({ difficulty }) => {
 		setPlayerScore(0);
 		setBotScore(0);
 		handlePause();
+		setIsGameOver(false);
 		setReset(true)
 	}
 
