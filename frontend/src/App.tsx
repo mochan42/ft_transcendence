@@ -13,6 +13,7 @@ import PageNotFound from './components/pages/PageNotFound';
 import Footer from './components/Footer';
 import Game from './components/pages/Game';
 import Layout from './components/pages/Layout';
+import GameSelection from './components/pages/GameSelection';
 
 const App: React.FC = () => {
 	const [isAuth, setIsAuth] = useState(true)
@@ -28,7 +29,7 @@ const App: React.FC = () => {
 						<Routes>
 							<Route path='/' element={<ProtectedRoute isAuth={isAuth} path='/' element={<Home />} />} />
 							<Route path='/login' element={<Login setIsAuth={setIsAuth} />} />
-							<Route path='game' element={<ProtectedRoute isAuth={isAuth} path='/game' element={<Game />} />} />
+							<Route path='game' element={<ProtectedRoute isAuth={isAuth} path='/game' element={<GameSelection />} />} />
 							<Route path='/profile' element={<ProtectedRoute isAuth={isAuth} path='/profile' element={<Profile />} />} />
 							<Route path='/landingpage' element={<ProtectedRoute isAuth={isAuth} path='/landingpage' element={<LandingPage />} />} />
 							<Route path='/about' element={<About />} />

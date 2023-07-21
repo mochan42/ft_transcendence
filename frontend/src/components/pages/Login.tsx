@@ -13,7 +13,7 @@ const Login: React.FC<Props> = ({ setIsAuth }) => {
 		navigate('/profile')
 	}
 	return (
-		<div className='h-screen bg-gray-200 w-full grid place-items-center'>
+		<div className='h-screen bg-gray-200 dark:bg-slate-900 w-full grid place-items-center'>
 			<Button type='submit' onClick={handleLogin} variant='ghost'>
 				Log in!
 			</Button>
