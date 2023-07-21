@@ -21,6 +21,7 @@ const Pong: React.FC<PongProps> = ({ difficulty, isGameActive, isReset, playerPo
 	const [speedY, setSpeedY] = useState((difficulty + 1) * 3);
 	const [ballSpeedX, setBallSpeedX] = useState(speedX);
 	const [ballSpeedY, setBallSpeedY] = useState(speedY);
+	const [playerPaddleDirection, setPlayerPaddleDirection] = useState<number>(0)
 	const [paddleSpeed, setPaddleSpeed] = useState(6);
 	const [leftPaddleY, setLeftPaddleY] = useState(0);
 	const [rightPaddleY, setRightPaddleY] = useState(0);
@@ -36,6 +37,7 @@ const Pong: React.FC<PongProps> = ({ difficulty, isGameActive, isReset, playerPo
 	useEffect(() => {
 		const gameLoop = setInterval(() => {
 			if (isGameActive) {
+				movePaddles();
 				moveBall();
 				checkCollision();
 			}
@@ -47,7 +49,48 @@ const Pong: React.FC<PongProps> = ({ difficulty, isGameActive, isReset, playerPo
 		}, 1000 / 60);
 
 		return () => clearInterval(gameLoop);
-	}, [isGameActive, isReset, ballX, ballY, ballSpeedX, ballSpeedY, speedX, speedY]);
+	}, [isGameActive, isReset, ballX, ballY, ballSpeedX, ballSpeedY, speedX, speedY, leftPaddleY]);
+
+	// Track player key input
+	useEffect(() => {
+		const handleKeyDown = (event: KeyboardEvent) => {
+		  if (event.key === 'w' || event.key === 'ArrowUp') {
+			setPlayerPaddleDirection(-1); // Move paddle up
+		  } else if (event.key === 's' || event.key === 'ArrowDown') {
+			setPlayerPaddleDirection(1); // Move paddle down
+		  }
+		};
+	  
+		const handleKeyUp = (event: KeyboardEvent) => {
+		  if (event.key === 'w' || event.key === 'ArrowUp' || event.key === 's' || event.key === 'ArrowDown') {
+			setPlayerPaddleDirection(0); // Stop paddle movement
+		  }
+		};
+	  
+		document.addEventListener('keydown', handleKeyDown);
+		document.addEventListener('keyup', handleKeyUp);
+	  
+		return () => {
+		  document.removeEventListener('keydown', handleKeyDown);
+		  document.removeEventListener('keyup', handleKeyUp);
+		};
+	  }, [isGameActive, isReset, ballX, ballY, ballSpeedX, ballSpeedY, speedX, speedY, leftPaddleY]);
+
+	const movePaddles = () => {
+		setLeftPaddleY((prevY) => {
+		  // Calculate the new paddle position
+		  let newY = prevY + playerPaddleDirection * paddleSpeed;
+	  
+		  // Ensure the paddle stays within the valid range
+		  if (newY < 0) {
+			newY = 0; // Minimum paddle height is 0
+		  } else if (newY > (startY * 2) + 30 - paddleLenghts[difficultyLevel]) {
+			newY = (startY * 2) + 30 - paddleLenghts[difficultyLevel]; // Maximum paddle height is div height - paddle length
+		  }
+	  
+		  return newY;
+		});
+	};
 
 	const moveBall = () => {
 		setBallX((prevX) => prevX + ballSpeedX);
@@ -80,20 +123,33 @@ const Pong: React.FC<PongProps> = ({ difficulty, isGameActive, isReset, playerPo
 
 
 		// Check collision with left paddle
-		if (ballLeft <= leftPaddleRight &&
+		// Check whether Bot made a point
+		if (ballLeft < leftPaddleRight &&
 			speedX < 0 &&
 			ballCenter >= leftPaddleTop &&
 			ballCenter <= leftPaddleBottom
-		) {
-			setBallSpeedX(-speedX)
-			setSpeedX(ballSpeedX)
+			) {
+				setBallSpeedX(-speedX)
+				setSpeedX(ballSpeedX)
+			} else if (ballLeft < (leftPaddleRight - 50)) {
+				botPoint();
+				setReset(true);
+				setBallSpeedX(-speedX)
+				setSpeedX(ballSpeedX)
 		}
 
-		if (ballRight >= rightPaddleLeft &&
+		// Check collision with right paddle
+		// Check whether Player made a point
+		if (ballRight > rightPaddleLeft &&
 			speedX > 0 &&
 			ballCenter >= rightPaddleTop && 
 			ballCenter <= rightPaddleBottom
 		) {
+			setBallSpeedX(-speedX)
+			setSpeedX(ballSpeedX)
+		} else if (ballRight > (rightPaddleLeft + 50)) {
+			playerPoint();
+			setReset(true);
 			setBallSpeedX(-speedX)
 			setSpeedX(ballSpeedX)
 		}
@@ -106,22 +162,6 @@ const Pong: React.FC<PongProps> = ({ difficulty, isGameActive, isReset, playerPo
 		if (ballY >= containerBottom && speedY > 0) {
 			setBallSpeedY(-speedY)
 			setSpeedY(ballSpeedY)
-		}
-
-		// Check whether Bot made a point
-		if (ballLeft < (leftPaddleRight - 8) && ballLeft > (leftPaddleRight - 12)) {
-			botPoint();
-			setReset(true);
-			setBallSpeedX(-speedX)
-			setSpeedX(ballSpeedX)
-		}
-
-		// Check whether Player scored a point
-		if (ballRight > (rightPaddleLeft + 8) && ballRight < (rightPaddleLeft + 12)) {
-			playerPoint();
-			setReset(true);
-			setBallSpeedX(-speedX)
-			setSpeedX(ballSpeedX)
 		}
 	};
 
