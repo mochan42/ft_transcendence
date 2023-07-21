@@ -133,8 +133,8 @@ const Pong: React.FC<PongProps> = ({ difficulty, isGameActive, isGameOver, setIs
 			if (isReset && !isGameOver) {
 				setBallX(startX);
 				setBallY(startY);
-				setSpeedX(-(itsdifficult));
-				setSpeedY(-(itsdifficult));
+				setSpeedX(Math.sign(speedX) * itsdifficult);
+				setSpeedY(Math.sign(speedY) * itsdifficult);
 				setReset(false);
 			}
 			// console.log('ballLeft: ', ballX, 'ballRight: ', ballX + 8, 'SpeedX: ', speedX, 'SpeedY: ', speedY, 'isReset: ', isReset)

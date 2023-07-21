@@ -53,7 +53,7 @@ const Game:React.FC<GameProps> = ({ difficulty }) => {
 					</SmallHeading>
 				</div>
 				<div className='border-8 dark:border-slate-900'>
-					<Button onClick={() => playerPoint()}>
+					<Button>
 						{playerScore}
 					</Button>
 				</div>
@@ -70,7 +70,7 @@ const Game:React.FC<GameProps> = ({ difficulty }) => {
 					</Button>
 				</div>
 				<div className='border-8 dark:border-slate-900'>
-					<Button onClick={() => botPoint()}>
+					<Button>
 						{botScore}
 					</Button>
 				</div>
