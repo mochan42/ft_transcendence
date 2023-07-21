@@ -1,8 +1,44 @@
+import { useEffect, useState } from 'react';
 import { Button } from '../ui/Button'
-import SmallHeading from '../ui/SmallHeading'
+//import SmallHeading from '../ui/SmallHeading'
+import axios from 'axios';
+
+type User = {
+	'id': number;
+	'userName': string;
+	'userNameLoc': string;
+	'firstName': string;
+	'lastName': string;
+	'is2Fa': boolean;
+	'authToken': string;
+	'email': string;
+	'secret2Fa'?: string;
+	'avatar'?: string;
+	'xp': number;
+	'isLogged': boolean;
+	'lastSeen'?: string;
+
+};
 
 const Profile = () => {
-	var name = 'Bill';
+	
+	const [userInfo, setUserInfo] = useState<User|null>(null);
+	useEffect(() => {
+		getUserInfo('4');
+	}, []);
+
+	const getUserInfo = async (id: string) => {
+		try {
+			const url = 'http://localhost:5000/pong/users/' + id;
+			const response = await axios.get<User>(url);
+			if (response.status === 200) {
+				setUserInfo(response.data);
+			}
+		}
+		catch (error) {
+			console.log('Error fetching user infos', error);
+		}
+	}
 
 	return (
 	<div className='bg-slate-200 dark:bg-slate-900 h-screen  flex flex-col flex-wrap justify-start text-slate-900 dark:text-slate-200 border-8 dark:border-slate-900'>
@@ -14,7 +50,7 @@ const Profile = () => {
 					alt='Your Profile Picture'
 				/>
 				<h1 className='text-2xl text-slate-900 font-extrabold dark:text-amber-300 drop-shadow-lg'>
-					{name}
+					{userInfo ? userInfo.userNameLoc : '' }
 				</h1>
 				<div className='flex gap-4'>
 					<Button>
@@ -28,8 +64,12 @@ const Profile = () => {
 			<div className=' flex flex-col justify-around gap-6'>
 				<h3>Personal Information</h3>
 				<div>
+					<span className='font-bold'>Full name: </span>
+						<span>{ userInfo ? userInfo.firstName + ' ' + userInfo.lastName : '' }</span>
+				</div>
+				<div>
 					<span className='font-bold'>Email: </span>
-					<span>john.doe@example.com</span>
+						<span>{ userInfo ? userInfo.email : '' }</span>
 				</div>
 				<div>
 					<span className='font-bold'>Location: </span>
