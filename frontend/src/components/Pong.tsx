@@ -131,10 +131,10 @@ const Pong: React.FC<PongProps> = ({ difficulty, isGameActive, isGameOver, setIs
 		}
 	};
 	const moveBall = () => {
-		const boostStartX = startX - 10; // Centered horizontally
-		const boostEndX = boostStartX + 20;
-		const boostStartY = startY - 10; // Centered vertically
-		const boostEndY = boostStartY + 20;
+		const boostStartX = startX - 40; // Centered horizontally
+		const boostEndX = boostStartX + 80;
+		const boostStartY = startY - 40; // Centered vertically
+		const boostEndY = boostStartY + 80;
 		const ballCenterX = ballX + 4;
 		const ballCenterY = ballY + 4;
 		
@@ -144,7 +144,7 @@ const Pong: React.FC<PongProps> = ({ difficulty, isGameActive, isGameOver, setIs
 		ballCenterY >= boostStartY &&
 		ballCenterY <= boostEndY;
 
-		setIsBoost(isInBoostRegion)
+		// setIsBoost(isInBoostRegion)
 		// Ball is inside the Boost region, increase speed by 50%
 		if (isInBoostRegion && !isBoost) {
 			setSpeedX(prevSpeedX => prevSpeedX * 2.5);
@@ -259,7 +259,7 @@ const Pong: React.FC<PongProps> = ({ difficulty, isGameActive, isGameOver, setIs
 			<div className="relative">
     			<Ball xPosition={ballX} yPosition={ballY} />
     		</div>
-			<div className=''>
+			<div>
 				<Boost />
 			</div>
 			{isGameOver ? (
