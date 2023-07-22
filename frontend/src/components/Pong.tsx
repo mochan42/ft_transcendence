@@ -256,7 +256,7 @@ const Pong: React.FC<PongProps> = ({ difficulty, isGameActive, isGameOver, setIs
 		<div className="relative w-full h-full" ref={PongRef}>
 			<Paddle yPosition={leftPaddleY} paddleHeight={paddleLengths[difficulty]} style={{ left: 0 }}/>
 			<Paddle yPosition={rightPaddleY} paddleHeight={botpaddleLengths[difficulty]} style={{ right: 0 }}/>
-			<div className="relative">
+			<div className="relative bg-slate-900">
     			<Ball xPosition={ballX} yPosition={ballY} />
     		</div>
 			<div>

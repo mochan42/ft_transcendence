@@ -81,7 +81,7 @@ const Game:React.FC<GameProps> = ({ difficulty }) => {
 					</SmallHeading>
 				</div>
 			</div>
-			<div className='w-full h-5/6 border-t-2 border-l-2 border-r-2 border-slate-500 black:border-slate-200 bg-slate-500 dark:text-slate-200 text-center'>
+			<div className='w-full h-5/6 border-t-2 border-l-2 border-r-2 border-slate-700 black:border-slate-200 bg-slate-300 dark:bg-slate-700 dark:text-slate-200 text-center'>
 				<Pong difficulty={difficulty} isGameActive={gameActive} isReset={reset} isGameOver={isGameOver} setIsGameOver={setIsGameOver} playerScore={playerScore} botScore={botScore} playerPoint={playerPoint} botPoint={botPoint} setReset={setReset}/>
 			</div>
 		</div>

@@ -10,7 +10,7 @@ const Paddle: React.FC<PaddleProps> = ({ yPosition, paddleHeight, style }) => {
 	
 	return (
 		<div
-			className="absolute bg-white"
+			className="absolute bg-slate-900 dark:bg-white"
 			style={{
 				height: `${paddleHeight}px`,
 				top: `${yPosition}px`,
