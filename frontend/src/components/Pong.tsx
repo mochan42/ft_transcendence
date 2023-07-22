@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from 'react'
 import Ball from './Ball'
 import Paddle from './Paddle'
 import VictoryLoss from './VictoryLoss';
-import Boost from './Boost';
 
 interface PongProps {
 	difficulty: number;
@@ -26,7 +25,6 @@ const Pong: React.FC<PongProps> = ({ difficulty, isGameActive, isGameOver, setIs
 	const [playerScore2, setPlayerScore2] = useState(0);
 	const [speedX, setSpeedX] = useState(-(itsdifficult));
 	const [speedY, setSpeedY] = useState(-(itsdifficult));
-	const [isBoost, setIsBoost] = useState(false);
 	const [playerPaddleDirection, setPlayerPaddleDirection] = useState<number>(0);
 	const [playerPaddleSpeed, setPlayerPaddleSpeed] = useState(18 - (difficulty * 2));
 	const [botPaddleSpeed, setBotPaddleSpeed] = useState(0.5 + (difficulty));
@@ -85,13 +83,8 @@ const Pong: React.FC<PongProps> = ({ difficulty, isGameActive, isGameOver, setIs
 			ballCenter >= leftPaddleTop - (itsdifficult) &&
 			ballCenter <= leftPaddleBottom + (itsdifficult)
 		) {
-			if (isBoost) {
-				setSpeedX(prevSpeedX => prevSpeedX * 0.66);
-				setIsBoost(false);
-				console.log('boost annihilated')
-			}
-			setSpeedX(-speedX * 1.2)
-			setSpeedY(randomSpeedY * 1.2);
+			setSpeedX(-speedX * 1.05)
+			setSpeedY(randomSpeedY * 1.05);
 		} else if (ballRight < leftPaddleRight && !isReset) {
 			botPoint();
 			setSpeedX(-speedX)
@@ -106,13 +99,8 @@ const Pong: React.FC<PongProps> = ({ difficulty, isGameActive, isGameOver, setIs
 			ballCenter >= rightPaddleTop - (itsdifficult) && 
 			ballCenter <= rightPaddleBottom + (itsdifficult)
 		) {
-			if (isBoost) {
-				setSpeedX(prevSpeedX => prevSpeedX * 0.66);
-				setIsBoost(false);
-				console.log('boost annihilated')
-			}
-			setSpeedX(-speedX * 0.8)
-			setSpeedY(newSpeedY * 0.8);
+			setSpeedX(-speedX * 1.05)
+			setSpeedY(newSpeedY * 1.05);
 		} else if (ballLeft > (rightPaddleLeft) && !isReset) {
 			playerPoint();
 			setPlayerScore2(playerScore2 + 1);
@@ -130,32 +118,55 @@ const Pong: React.FC<PongProps> = ({ difficulty, isGameActive, isGameOver, setIs
 			setSpeedY(-speedY)
 		}
 	};
-	const moveBall = () => {
-		const boostStartX = startX - 10; // Centered horizontally
-		const boostEndX = boostStartX + 20;
-		const boostStartY = startY - 10; // Centered vertically
-		const boostEndY = boostStartY + 20;
-		const ballCenterX = ballX + 4;
-		const ballCenterY = ballY + 4;
-		
-		const isInBoostRegion =
-		ballCenterX >= boostStartX &&
-		ballCenterX <= boostEndX &&
-		ballCenterY >= boostStartY &&
-		ballCenterY <= boostEndY;
 
-		setIsBoost(isInBoostRegion)
-		// Ball is inside the Boost region, increase speed by 50%
-		if (isInBoostRegion && !isBoost) {
-			setSpeedX(prevSpeedX => prevSpeedX * 2.5);
-			setSpeedY(prevSpeedY => prevSpeedY * 2.5);
-			setIsBoost(true);
-			console.log('Booooooost');
-		}
+	useEffect(() => {
+		const gameLoop = setInterval(() => {
+			if (isGameActive && !isGameOver) {
+				movePaddles();
+				moveBall();
+				checkCollision();
+				// moveComputerPaddle();
+			}
+			if (playerScore >= 5 || botScore >= 5) {
+				setIsGameOver(true);
+			}
+			if (isReset && !isGameOver) {
+				setBallX(startX);
+				setBallY(startY);
+				setSpeedX(Math.sign(speedX) * itsdifficult);
+				setSpeedY(Math.sign(speedY) * itsdifficult);
+				setReset(false);
+			}
+			// console.log('ballLeft: ', ballX, 'ballRight: ', ballX + 8, 'SpeedX: ', speedX, 'SpeedY: ', speedY, 'isReset: ', isReset)
+		}, 1000 / 60);
 
-		setBallX((prevX) => prevX + speedX);
-		setBallY((prevY) => prevY + speedY);
-	};
+		return () => clearInterval(gameLoop);
+	}, [isGameActive, isGameOver, isReset, difficulty, playerScore2, ballX, ballY, speedX, speedY, leftPaddleY, rightPaddleY, checkCollision]);
+
+	// Track player key input
+	useEffect(() => {
+		const handleKeyDown = (event: KeyboardEvent) => {
+			if (event.key === 'w' || event.key === 'ArrowUp') {
+				setPlayerPaddleDirection(-1); // Move paddle up
+			} else if (event.key === 's' || event.key === 'ArrowDown') {
+				setPlayerPaddleDirection(1); // Move paddle down
+			}
+		};
+	  
+		const handleKeyUp = (event: KeyboardEvent) => {
+			if (event.key === 'w' || event.key === 'ArrowUp' || event.key === 's' || event.key === 'ArrowDown') {
+				setPlayerPaddleDirection(0); // Stop paddle movement
+			}
+		};
+	  
+		document.addEventListener('keydown', handleKeyDown);
+		document.addEventListener('keyup', handleKeyUp);
+	  
+		return () => {
+			document.removeEventListener('keydown', handleKeyDown);
+			document.removeEventListener('keyup', handleKeyUp);
+		};
+	}, [isGameActive, isReset, ballX, ballY, speedX, speedY, leftPaddleY]);
 
 	const movePaddles = () => {
 		setLeftPaddleY((prevY) => {
@@ -199,56 +210,10 @@ const Pong: React.FC<PongProps> = ({ difficulty, isGameActive, isGameOver, setIs
 		})
 	}
 
-	useEffect(() => {
-		const gameLoop = setInterval(() => {
-			if (isGameActive && !isGameOver) {
-				movePaddles();
-				moveBall();
-				checkCollision();
-				// moveComputerPaddle();
-			}
-			if (playerScore >= 5 || botScore >= 5) {
-				setIsGameOver(true);
-			}
-			if (isReset && !isGameOver) {
-				setBallX(startX);
-				setBallY(startY);
-				setSpeedX(Math.sign(speedX) * itsdifficult);
-				setSpeedY(Math.sign(speedY) * itsdifficult);
-				setIsBoost(true);
-				setReset(false);
-			}
-			// console.log('ballLeft: ', ballX, 'ballRight: ', ballX + 8, 'SpeedX: ', speedX, 'SpeedY: ', speedY, 'isReset: ', isReset)
-		}, 1000 / 60);
-
-		return () => clearInterval(gameLoop);
-	}, [isGameActive, isGameOver, isReset, isBoost, difficulty, playerScore2, ballX, ballY, speedX, speedY, leftPaddleY, rightPaddleY, checkCollision, moveBall, movePaddles]);
-
-	// Track player key input
-	useEffect(() => {
-		const handleKeyDown = (event: KeyboardEvent) => {
-			if (event.key === 'w' || event.key === 'ArrowUp') {
-				setPlayerPaddleDirection(-1); // Move paddle up
-			} else if (event.key === 's' || event.key === 'ArrowDown') {
-				setPlayerPaddleDirection(1); // Move paddle down
-			}
-		};
-	  
-		const handleKeyUp = (event: KeyboardEvent) => {
-			if (event.key === 'w' || event.key === 'ArrowUp' || event.key === 's' || event.key === 'ArrowDown') {
-				setPlayerPaddleDirection(0); // Stop paddle movement
-			}
-		};
-	  
-		document.addEventListener('keydown', handleKeyDown);
-		document.addEventListener('keyup', handleKeyUp);
-	  
-		return () => {
-			document.removeEventListener('keydown', handleKeyDown);
-			document.removeEventListener('keyup', handleKeyUp);
-		};
-	}, [isGameActive, isReset, isBoost, ballX, ballY, speedX, speedY, leftPaddleY, movePaddles]);
-
+	const moveBall = () => {
+		setBallX((prevX) => prevX + speedX);
+		setBallY((prevY) => prevY + speedY);
+	};
 	
 	
 
@@ -259,9 +224,6 @@ const Pong: React.FC<PongProps> = ({ difficulty, isGameActive, isGameOver, setIs
 			<div className="relative">
     			<Ball xPosition={ballX} yPosition={ballY} />
     		</div>
-			<div className=''>
-				<Boost />
-			</div>
 			{isGameOver ? (
 					<div className="absolute inset-0 bg-black bg-opacity-80">
 						<VictoryLoss isVictory={playerScore === 5}/>
