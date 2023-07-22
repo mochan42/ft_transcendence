@@ -18,9 +18,9 @@ Content-Type: application/json
     "is2Fa": false,
     "authToken": "dddddd",
     "email": "philipp@gmail.com",
-    "secret2Fa" : "",
-    "avatar" : "avatar",
+    "secret2Fa" : "string",
+    "avatar" : "https://fastly.picsum.photos/id/294/200/200.jpg?hmac=tSuqBbGGNYqgxQ-6KO7-wxq8B4m3GbZqQAbr7tNApz8",
     "xp": 26,
     "isLogged": true,
-    "lastSeen": ""
+    "lastSeen": "never"
 }

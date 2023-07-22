@@ -1,18 +1,37 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Button } from '../ui/Button'
 import SmallHeading from '../ui/SmallHeading'
 import Pong from '../Pong'
+import axios from 'axios';
+
+type User = {
+	'id': number;
+	'userName': string;
+	'userNameLoc': string;
+	'firstName': string;
+	'lastName': string;
+	'is2Fa': boolean;
+	'authToken': string;
+	'email': string;
+	'secret2Fa'?: string;
+	'avatar'?: string;
+	'xp': number;
+	'isLogged': boolean;
+	'lastSeen'?: string;
+};
 
 interface GameProps {
 	difficulty: number;
+	userId: number;
 }
 
-const Game:React.FC<GameProps> = ({ difficulty }) => {
+const Game:React.FC<GameProps> = ({ difficulty, userId }) => {
 	const [playerScore, setPlayerScore] = useState(0)
 	const [botScore, setBotScore] = useState(0)
 	const [gameActive, setGameActive] = useState(false)
 	const [reset, setReset] = useState(false)
 	const [isGameOver, setIsGameOver] = useState(false)
+	const [userInfo, setUserInfo] = useState<User | null>(null);
 
 	const playerPoint = () => {
 		setPlayerScore(playerScore + 1);
@@ -43,13 +62,32 @@ const Game:React.FC<GameProps> = ({ difficulty }) => {
 		setReset(true)
 	}
 
+	useEffect(() => {
+		getUserInfo(userId.toString());
+	}, []);
+
+	const getUserInfo = async (id: string) => {
+		try {
+			const url = 'http://localhost:5000/pong/users/' + id;
+			const response = await axios.get<User>(url);
+			if (response.status === 200) {
+				setUserInfo(response.data);
+				console.log(userInfo?.avatar)
+			}
+		}
+		catch (error) {
+			console.log('Error fetching user infos', error);
+			alert('Error fetching user info')
+		}
+	}
+
 	return (
 		<div className='h-screen w-full flex flex-col items-center justify-between bg-gray-200 dark:bg-slate-900 border-t-8 dark:border-slate-900'>
 			<div className='h-1/6 gap-6 items-center justify-between flex'>
-				<div className='border-8 dark:border-slate-900 flex justify-evenly'>
-					<img className='min-w-[25px] min-h-[25px] w-1/12 h-1/12 rounded-full overflow-hidden' src='https://fastly.picsum.photos/id/294/200/200.jpg?hmac=tSuqBbGGNYqgxQ-6KO7-wxq8B4m3GbZqQAbr7tNApz8'></img>
+				<div className='border-8 dark:border-slate-900 flex justify-between gap-8 items-center'>
+					<img className='h-12 w-12 rounded-full overflow-hidden' src={(userInfo && userInfo.avatar) ? userInfo.avatar : 'https://fastly.picsum.photos/id/294/200/200.jpg?hmac=tSuqBbGGNYqgxQ-6KO7-wxq8B4m3GbZqQAbr7tNApz8'}></img>
 					<SmallHeading className='text-lg dark:text-amber-400'>
-						Bill
+						{userInfo ? userInfo.userNameLoc : 'Player' }
 					</SmallHeading>
 				</div>
 				<div className='border-8 dark:border-slate-900'>
@@ -74,14 +112,14 @@ const Game:React.FC<GameProps> = ({ difficulty }) => {
 						{botScore}
 					</Button>
 				</div>
-				<div className='border-8 dark:border-slate-900 flex justify-evenly'>
-					<img className='min-w-[25px] min-h-[25px] w-1/12 h-1/12 rounded-full overflow-hidden' src='https://fastly.picsum.photos/id/294/200/200.jpg?hmac=tSuqBbGGNYqgxQ-6KO7-wxq8B4m3GbZqQAbr7tNApz8'></img>
+				<div className='border-8 dark:border-slate-900 flex justify-between gap-8 items-center'>
+					<img className='w-12 h-12 rounded-full overflow-hidden' src='https://www.svgrepo.com/show/384679/account-avatar-profile-user-3.svg'></img>
 					<SmallHeading className='text-lg dark:text-amber-400'>
 						Bot
 					</SmallHeading>
 				</div>
 			</div>
-			<div className='w-full h-5/6 border-t-2 border-l-2 border-r-2 border-slate-500 black:border-slate-200 bg-slate-500 dark:text-slate-200 text-center'>
+			<div className='w-full h-5/6 border-t-2 border-l-2 border-r-2 border-slate-700 black:border-slate-200 bg-slate-300 dark:bg-slate-700 dark:text-slate-200 text-center'>
 				<Pong difficulty={difficulty} isGameActive={gameActive} isReset={reset} isGameOver={isGameOver} setIsGameOver={setIsGameOver} playerScore={playerScore} botScore={botScore} playerPoint={playerPoint} botPoint={botPoint} setReset={setReset}/>
 			</div>
 		</div>
