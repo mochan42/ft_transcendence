@@ -4,3 +4,23 @@ GET http://localhost:5000/pong/users/4
 ### get all users option 2
 
 GET https://randomuser.me/api/
+
+
+###
+POST http://localhost:5000/pong/users
+Content-Type: application/json
+
+{
+    "userName": "pmeising",
+    "userNameLoc": "pmeising",
+    "firstName": "Philipp",
+    "lastName": "Maxim",
+    "is2Fa": false,
+    "authToken": "dddddd",
+    "email": "philipp@gmail.com",
+    "secret2Fa" : "",
+    "avatar" : "avatar",
+    "xp": 26,
+    "isLogged": true,
+    "lastSeen": ""
+}
