@@ -88,7 +88,6 @@ const Pong: React.FC<PongProps> = ({ difficulty, isGameActive, isGameOver, setIs
 			if (isBoost) {
 				setSpeedX(prevSpeedX => prevSpeedX * 0.66);
 				setIsBoost(false);
-				console.log('boost annihilated')
 			}
 			setSpeedX(-speedX * 1.2)
 			setSpeedY(randomSpeedY * 1.2);
@@ -109,7 +108,6 @@ const Pong: React.FC<PongProps> = ({ difficulty, isGameActive, isGameOver, setIs
 			if (isBoost) {
 				setSpeedX(prevSpeedX => prevSpeedX * 0.66);
 				setIsBoost(false);
-				console.log('boost annihilated')
 			}
 			setSpeedX(-speedX * 0.8)
 			setSpeedY(newSpeedY * 0.8);
@@ -150,7 +148,6 @@ const Pong: React.FC<PongProps> = ({ difficulty, isGameActive, isGameOver, setIs
 			setSpeedX(prevSpeedX => prevSpeedX * 2.5);
 			setSpeedY(prevSpeedY => prevSpeedY * 2.5);
 			setIsBoost(true);
-			console.log('Booooooost');
 		}
 
 		setBallX((prevX) => prevX + speedX);
@@ -205,7 +202,6 @@ const Pong: React.FC<PongProps> = ({ difficulty, isGameActive, isGameOver, setIs
 				movePaddles();
 				moveBall();
 				checkCollision();
-				// moveComputerPaddle();
 			}
 			if (playerScore >= 5 || botScore >= 5) {
 				setIsGameOver(true);
@@ -218,7 +214,6 @@ const Pong: React.FC<PongProps> = ({ difficulty, isGameActive, isGameOver, setIs
 				setIsBoost(true);
 				setReset(false);
 			}
-			// console.log('ballLeft: ', ballX, 'ballRight: ', ballX + 8, 'SpeedX: ', speedX, 'SpeedY: ', speedY, 'isReset: ', isReset)
 		}, 1000 / 60);
 
 		return () => clearInterval(gameLoop);
