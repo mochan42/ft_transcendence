@@ -6,9 +6,10 @@ WORKDIR /usr/src/client
 # Install app dependencies
 COPY package*.json ./
 
-RUN npm cache clean --force
+RUN npm install -g npm@9.8.1
+RUN npm cache verify
 RUN rm  -rf node_modules
-RUN npm install --force
+RUN npm install
 
 # Bundle app source
 COPY . .

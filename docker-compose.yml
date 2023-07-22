@@ -50,18 +50,6 @@ services:
       - apis
     stdin_open: true
 
-  #database admin
-  pgadmin:
-    image: dpage/pgadmin4
-    restart: always
-    ports:
-      - 8000:80
-    depends_on:
-      - db
-    env_file:
-      - ./docker.env
-    networks:
-      - app-network
 # define network
 networks:
   app-network:
