@@ -24,7 +24,7 @@ const Profile = () => {
 	
 	const [userInfo, setUserInfo] = useState<User|null>(null);
 	useEffect(() => {
-		getUserInfo('4');
+		getUserInfo('1');
 	}, []);
 
 	const getUserInfo = async (id: string) => {
