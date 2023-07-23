@@ -18,6 +18,8 @@ import GameSelection from './components/pages/GameSelection';
 const App: React.FC = () => {
 	const [isAuth, setIsAuth] = useState(true)
 
+	const userId = 1;
+
 	return (
 		<div className='grid gap-2 font-mono dark:bg-white/75 bg-slate-900 bg-opacity-80'>
 			<Router>
@@ -29,8 +31,8 @@ const App: React.FC = () => {
 						<Routes>
 							<Route path='/' element={<ProtectedRoute isAuth={isAuth} path='/' element={<Home />} />} />
 							<Route path='/login' element={<Login setIsAuth={setIsAuth} />} />
-							<Route path='game' element={<ProtectedRoute isAuth={isAuth} path='/game' element={<GameSelection />} />} />
-							<Route path='/profile' element={<ProtectedRoute isAuth={isAuth} path='/profile' element={<Profile />} />} />
+							<Route path='game' element={<ProtectedRoute isAuth={isAuth} path='/game' element={<GameSelection userId={userId}/>} />} />
+							<Route path='/profile' element={<ProtectedRoute isAuth={isAuth} path='/profile' element={<Profile userId={userId}/>} />} />
 							<Route path='/landingpage' element={<ProtectedRoute isAuth={isAuth} path='/landingpage' element={<LandingPage />} />} />
 							<Route path='/about' element={<About />} />
 							<Route path='/layout' element={<Layout />} />
