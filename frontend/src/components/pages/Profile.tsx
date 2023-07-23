@@ -134,7 +134,7 @@ const Profile:React.FC<ProfileProps> =({ userId }) => {
 							</Button>
 						</div>
 					</div>
-					<div className='text-center w-1/4'>
+					<div className='w-1/4 text-center space-y-8'>
 						<h3 className='bg-slate-900 text-lg font-bold mb-4 border-slate-900 border-2 rounded-lg text-white dark:bg-slate-200 dark:text-slate-900'>
 							Friends of the World
 						</h3>

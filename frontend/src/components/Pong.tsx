@@ -238,14 +238,17 @@ const Pong: React.FC<PongProps> = ({ difficulty, isGameActive, isGameOver, setIs
 	useEffect(() => {
 		const handleKeyDown = (event: KeyboardEvent) => {
 			if (event.key === 'w' || event.key === 'ArrowUp') {
+				event.preventDefault();
 				setPlayerPaddleDirection(-1); // Move paddle up
 			} else if (event.key === 's' || event.key === 'ArrowDown') {
+				event.preventDefault();
 				setPlayerPaddleDirection(1); // Move paddle down
 			}
 		};
 	  
 		const handleKeyUp = (event: KeyboardEvent) => {
 			if (event.key === 'w' || event.key === 'ArrowUp' || event.key === 's' || event.key === 'ArrowDown') {
+				// event.preventDefault();
 				setPlayerPaddleDirection(0); // Stop paddle movement
 			}
 		};
