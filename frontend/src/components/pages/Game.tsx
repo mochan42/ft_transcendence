@@ -23,10 +23,11 @@ type User = {
 interface GameProps {
 	difficulty: number;
 	userId: number;
+	includeBoost: boolean;
 	setState: React.Dispatch<React.SetStateAction<'select' | 'bot' | 'player'>>;
 }
 
-const Game:React.FC<GameProps> = ({ difficulty, userId, setState }) => {
+const Game:React.FC<GameProps> = ({ difficulty, userId, includeBoost, setState }) => {
 	const [playerScore, setPlayerScore] = useState(0)
 	const [botScore, setBotScore] = useState(0)
 	const [gameActive, setGameActive] = useState(false)
@@ -85,7 +86,7 @@ const Game:React.FC<GameProps> = ({ difficulty, userId, setState }) => {
 			const response = await axios.get<User>(url);
 			if (response.status === 200) {
 				setUserInfo(response.data);
-				console.log(userInfo?.avatar)
+				// console.log(userInfo?.avatar)
 			}
 		}
 		catch (error) {
@@ -140,7 +141,7 @@ const Game:React.FC<GameProps> = ({ difficulty, userId, setState }) => {
 				</div>
 			</div>
 			<div className='w-full h-5/6 border-t-2 border-l-2 border-r-2 border-slate-700 black:border-slate-200 bg-slate-300 dark:bg-slate-700 dark:text-slate-200 text-center'>
-				<Pong difficulty={difficulty} isGameActive={gameActive} isReset={reset} isGameOver={isGameOver} setIsGameOver={setIsGameOver} playerScore={playerScore} botScore={botScore} playerPoint={playerPoint} botPoint={botPoint} setReset={setReset}/>
+				<Pong difficulty={difficulty} isGameActive={gameActive} isReset={reset} isGameOver={isGameOver} playerScore={playerScore} botScore={botScore} includeBoost={includeBoost} setIsGameOver={setIsGameOver} playerPoint={playerPoint} botPoint={botPoint} setReset={setReset}/>
 			</div>
 		</div>
 	)

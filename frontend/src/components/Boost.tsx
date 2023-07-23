@@ -1,7 +1,22 @@
-const Boost = () => {
+interface BoostProps {
+	x: number;
+	y: number;
+	width: number;
+	height: number;
+}
+
+const Boost: React.FC<BoostProps> = ({ x, y, width, height }) => {
 	return (
-		<div className="w-20 h-20 bg-slate-900 dark:bg-slate-200 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded overflow-hidden">
-			<img src="https://www.svgrepo.com/show/396641/high-voltage.svg"></img>
+		<div
+			className={`bg-slate-900 dark:bg-slate-200 absolute`}
+      		style={{ 
+				top: `${y + (width / 2)}px`,
+				left: `${x + (width / 2)}px`,
+				transform: 'translate(-50%, -50%)',
+				height: height,
+				width: width,
+			}}>
+				<img src="https://www.svgrepo.com/show/396641/high-voltage.svg"></img>
 		</div>
 	)
 }

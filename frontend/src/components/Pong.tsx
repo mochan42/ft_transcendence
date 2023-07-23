@@ -11,13 +11,14 @@ interface PongProps {
 	playerScore: number;
 	botScore: number;
 	isGameOver: boolean;
+	includeBoost: boolean;
 	setIsGameOver: (boolean: boolean) => void;
 	playerPoint: () => void;
 	botPoint: () => void;
 	setReset: (boolean: boolean) => void;
   }
 
-const Pong: React.FC<PongProps> = ({ difficulty, isGameActive, isGameOver, setIsGameOver, isReset, playerScore, botScore, playerPoint, botPoint, setReset }) => {
+const Pong: React.FC<PongProps> = ({ difficulty, isGameActive, isGameOver, isReset, playerScore, botScore, includeBoost, playerPoint, botPoint, setIsGameOver, setReset }) => {
 
 	const itsdifficult = (difficulty + 2) * 2
 	const PongRef = useRef<HTMLDivElement>(null);
@@ -27,6 +28,7 @@ const Pong: React.FC<PongProps> = ({ difficulty, isGameActive, isGameOver, setIs
 	const [speedX, setSpeedX] = useState(-(itsdifficult));
 	const [speedY, setSpeedY] = useState(-(itsdifficult));
 	const [isBoost, setIsBoost] = useState(false);
+	const [boostWidth, setBoostWidth] = useState(80);
 	const [playerPaddleDirection, setPlayerPaddleDirection] = useState<number>(0);
 	const [playerPaddleSpeed, setPlayerPaddleSpeed] = useState(18 - (difficulty * 2));
 	const [botPaddleSpeed, setBotPaddleSpeed] = useState(0.5 + (difficulty));
@@ -38,14 +40,17 @@ const Pong: React.FC<PongProps> = ({ difficulty, isGameActive, isGameOver, setIs
 		startX = (PongRef.current?.clientWidth - 30) / 2 // The 30 here is somewhat a random value, but seems to be neccessary to calculate the exact location the screen ends.
 		startY = (PongRef.current?.clientHeight - 30) / 2
 	}
+	const [boostStartX, setBoostStartX] = useState(200);
+	const [boostStartY, setBoostStartY] = useState(200);
 	const [ballX, setBallX] = useState(startX);
 	const [ballY, setBallY] = useState(startY);
+	const [lastBoost, setLastBoost] = useState<number>(Date.now);
 
 	const checkCollision = () => {
 
 		var margin = (itsdifficult * 3)
-		if (isBoost) {
-			margin = margin * 2
+		if (isBoost && includeBoost) {
+			margin = margin * 2.5
 		}
 		// Ball boundaries
 		const ballLeft = ballX;
@@ -94,7 +99,6 @@ const Pong: React.FC<PongProps> = ({ difficulty, isGameActive, isGameOver, setIs
 				setSpeedX(prevSpeedX => prevSpeedX * 0.66);
 				setIsBoost(false);
 			}
-			console.log('player: ', margin)
 			setSpeedX(-speedX * 1.2)
 			setSpeedY(randomSpeedY * 1.2);
 		} else if (ballRight < leftPaddleRight && !isReset) {
@@ -119,9 +123,8 @@ const Pong: React.FC<PongProps> = ({ difficulty, isGameActive, isGameOver, setIs
 				setSpeedX(prevSpeedX => prevSpeedX * 0.66);
 				setIsBoost(false);
 			}
-			console.log('bot: ', margin)
-			setSpeedX(-speedX * 0.8)
-			setSpeedY(newSpeedY * 0.8);
+			setSpeedX(-speedX * 0.82)
+			setSpeedY(newSpeedY * 0.82);
 		} else if (ballLeft > (rightPaddleLeft) && !isReset) {
 			playerPoint();
 			setPlayerScore2(playerScore2 + 1);
@@ -143,14 +146,20 @@ const Pong: React.FC<PongProps> = ({ difficulty, isGameActive, isGameOver, setIs
 			setSpeedY(-speedY)
 		}
 	};
+	
 	const moveBall = () => {
-		const boostStartX = startX - 40; // Centered horizontally
-		const boostEndX = boostStartX + 80;
-		const boostStartY = startY - 40; // Centered vertically
-		const boostEndY = boostStartY + 80;
+		
+		if (PongRef.current) {
+			startX = (PongRef.current?.clientWidth - 30) / 2
+			startY = (PongRef.current?.clientHeight - 30) / 2
+		}
+		
+		const boostEndX = boostStartX + boostWidth;
+		const boostEndY = boostStartY + boostWidth;
+		
 		const ballCenterX = ballX + 4;
 		const ballCenterY = ballY + 4;
-		
+
 		const isInBoostRegion =
 		ballCenterX >= boostStartX &&
 		ballCenterX <= boostEndX &&
@@ -159,7 +168,8 @@ const Pong: React.FC<PongProps> = ({ difficulty, isGameActive, isGameOver, setIs
 
 		// setIsBoost(isInBoostRegion)
 		// Ball is inside the Boost region, increase speed by 50%
-		if (isInBoostRegion && !isBoost) {
+		console.log(boostStartX, boostStartY, ballCenterX, ballCenterY);
+		if (isInBoostRegion && !isBoost && includeBoost) {
 			setSpeedX(prevSpeedX => prevSpeedX * 2.5);
 			setSpeedY(prevSpeedY => prevSpeedY * 2.5);
 			setIsBoost(true);
@@ -226,13 +236,26 @@ const Pong: React.FC<PongProps> = ({ difficulty, isGameActive, isGameOver, setIs
 				setBallY(startY);
 				setSpeedX(Math.sign(speedX) * itsdifficult);
 				setSpeedY(Math.sign(speedY) * itsdifficult);
-				setIsBoost(true);
 				setReset(false);
 			}
+			if (isBoost && includeBoost) {
+				const minX = startX / 2;
+				const maxX = startX + minX;
+				const minY = startY / 2;
+				const maxY = startY + minY;
+
+				// Calculate the random coordinates for the Boost region
+				const newBoostX = minX + Math.random() * (maxX - minX);
+				const newBoostY = minY + Math.random() * (maxY - minY);
+
+				setBoostStartX(newBoostX);
+				setBoostStartY(newBoostY);
+			}
+
 		}, 1000 / 60);
 
 		return () => clearInterval(gameLoop);
-	}, [isGameActive, isGameOver, isReset, isBoost, difficulty, playerScore2, ballX, ballY, speedX, speedY, leftPaddleY, rightPaddleY, checkCollision, moveBall, movePaddles]);
+	}, [isGameActive, isGameOver, isReset, includeBoost, startX, startY, isBoost, boostStartX, boostStartY, difficulty, playerScore2, ballX, ballY, speedX, speedY, leftPaddleY, rightPaddleY, checkCollision, moveBall, movePaddles]);
 
 	// Track player key input
 	useEffect(() => {
@@ -248,7 +271,6 @@ const Pong: React.FC<PongProps> = ({ difficulty, isGameActive, isGameOver, setIs
 	  
 		const handleKeyUp = (event: KeyboardEvent) => {
 			if (event.key === 'w' || event.key === 'ArrowUp' || event.key === 's' || event.key === 'ArrowDown') {
-				// event.preventDefault();
 				setPlayerPaddleDirection(0); // Stop paddle movement
 			}
 		};
@@ -262,9 +284,6 @@ const Pong: React.FC<PongProps> = ({ difficulty, isGameActive, isGameOver, setIs
 		};
 	}, [isGameActive, isReset, isBoost, ballX, ballY, speedX, speedY, leftPaddleY, movePaddles]);
 
-	
-	
-
 	return (
 		<div className="relative w-full h-full" ref={PongRef}>
 			<Paddle yPosition={leftPaddleY} paddleHeight={paddleLengths[difficulty]} style={{ left: 0 }}/>
@@ -272,9 +291,7 @@ const Pong: React.FC<PongProps> = ({ difficulty, isGameActive, isGameOver, setIs
 			<div className="relative bg-slate-900">
     			<Ball xPosition={ballX} yPosition={ballY} />
     		</div>
-			<div>
-				<Boost />
-			</div>
+			{includeBoost && !isBoost ? <Boost x={boostStartX} y={boostStartY} width={boostWidth} height={boostWidth} /> : null}
 			{isGameOver ? (
 					<div className="absolute inset-0 bg-black bg-opacity-80">
 						<VictoryLoss isVictory={playerScore === 5}/>
