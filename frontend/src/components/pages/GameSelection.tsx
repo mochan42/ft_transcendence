@@ -63,7 +63,7 @@ const GameSelection:React.FC<GameSelectionProps> =({ userId }) => {
 			{state == 'select' ?
 				<div className='h-full w-full relative border-4 border-slate-200 dark:border-slate-900'>
 					<Button
-						className={cn('border-4 border-slate-200 dark:border-slate-900 h-full w-1/2 text-slate-200 text-2xl font-extrabold z-0', 'bg-center bg-[url(https://wallpaperaccess.com/full/2019427.jpg)]')}
+						className={cn('border-4 border-slate-200 dark:border-slate-900 h-full w-1/2 text-2xl font-extrabold z-0', 'bg-center bg-[url(https://wallpaperaccess.com/full/2019427.jpg)]')}
 						variant={'link'}
 						onClick={() => setState('bot')}
 						onMouseEnter={() => handleMouseEnterBot()}
@@ -97,7 +97,7 @@ const GameSelection:React.FC<GameSelectionProps> =({ userId }) => {
 						</button>
 				</div>
 			: null }
-			{state == 'bot' ? <Game difficulty={difficulty} userId={userId}/> : null}
+			{state == 'bot' ? <Game difficulty={difficulty} userId={userId} setState={setState}/> : null}
 			{state == 'player' ? <PageNotFound /> : null}
 		</div>
 	)

@@ -47,18 +47,10 @@ const Profile:React.FC<ProfileProps> =({ userId }) => {
 		}
 	}
 
-	// const handleScreen = () => {
-	// 	setShowScreen(true);
-	// }
-
 	return (
-		<div className='bg-slate-200 dark:bg-slate-900 h-screen  flex flex-col flex-wrap justify-start text-slate-900 dark:text-slate-200 border-8 dark:border-slate-900'>
-			{showScreen === 'achievements' ? <Achievements/> : null}
-			{showScreen === 'friends' ? <Friends /> : null}
-			{showScreen === 'stats' ? <Stats /> : null}
-			{showScreen === 'default' ?
-			<>
-				<div className='h-1/2 flex justify-around items-center'>
+		<div className='absolute h-full w-full'>
+			<div className='bg-slate-200 dark:bg-slate-900 h-screen flex flex-col flex-wrap justify-start text-slate-900 dark:text-slate-200 border-8 dark:border-slate-900 z-0'>
+				<div className='h-1/2 flex justify-around items-center z-0'>
 					<div className='flex flex-col flex-wrap items-center gap-6 border-4 dark:border-slate-900'>
 						<img
 							className='min-w-[250px] min-h-[250px] w-1/2 h-1/2 rounded-full mx-auto'
@@ -97,9 +89,9 @@ const Profile:React.FC<ProfileProps> =({ userId }) => {
 						</div>
 					</div>
 				</div>
-				<div className='h-1/2 flex flex-wrap justify-around items-center'>
+				<div className='h-1/2 flex flex-wrap justify-around items-center z-0'>
 					<div className='w-auto text-center space-y-8'>
-						<h3 className='text-lg font-bold mb-4'>
+						<h3 className='bg-slate-900 text-lg font-bold mb-4 border-slate-900 border-2 rounded-lg text-white dark:bg-slate-200 dark:text-slate-900'>
 							Achievements
 						</h3>
 						<div className='flex flex-wrap items-center justify-around gap-8'>
@@ -142,8 +134,8 @@ const Profile:React.FC<ProfileProps> =({ userId }) => {
 							</Button>
 						</div>
 					</div>
-					<div className='text-center'>
-						<h3 className='text-lg font-bold mb-4'>
+					<div className='w-1/4 text-center space-y-8'>
+						<h3 className='bg-slate-900 text-lg font-bold mb-4 border-slate-900 border-2 rounded-lg text-white dark:bg-slate-200 dark:text-slate-900'>
 							Friends of the World
 						</h3>
 						<div className='space-y-2 flex flex-col justify-between gap-4'>
@@ -166,8 +158,13 @@ const Profile:React.FC<ProfileProps> =({ userId }) => {
 							</div>
 						</div> 
 					</div>
-				</div> 
-			</> : null}
+				</div>
+			</div>
+			{showScreen === 'achievements' ? 
+				<Achievements userId={userId} setShowScreen={setShowScreen} />
+			: null}
+			{showScreen === 'friends' ? <Friends userId={userId} setShowScreen={setShowScreen} /> : null}
+			{showScreen === 'stats' ? <Stats userId={userId} setShowScreen={setShowScreen} /> : null}
 		</div>
 	);
 }
