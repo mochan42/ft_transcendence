@@ -86,7 +86,7 @@ const Game:React.FC<GameProps> = ({ difficulty, userId, includeBoost, setState }
 			const response = await axios.get<User>(url);
 			if (response.status === 200) {
 				setUserInfo(response.data);
-				console.log(userInfo?.avatar)
+				// console.log(userInfo?.avatar)
 			}
 		}
 		catch (error) {
