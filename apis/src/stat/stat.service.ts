@@ -4,19 +4,26 @@ import { UpdateStatDto } from './dto/update-stat.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Stat } from './entities/stat.entity';
+import { UsersService } from '../users/users.service';
 
 @Injectable()
 export class StatService {
   constructor(
     @InjectRepository(Stat)
     private StatRepository: Repository<Stat>,
+    private usersService: UsersService,
   ) {}
-  async create(createStatDto: CreateStatDto) {
-    return await this.StatRepository.save(createStatDto);
-  }
-
-  async findAll(): Promise<Stat[]> {
-    return await this.StatRepository.find();
+  async create(userId: number, createStatDto: CreateStatDto) {
+    const user = await this.usersService.findOne(userId);
+    try {
+      const newStat = {
+        ...createStatDto,
+        userId: user.id,
+      };
+      return await this.StatRepository.save(newStat);
+    } catch (error) {
+      throw new Error('Error creating stat');
+    }
   }
 
   async findOne(id: number) {
@@ -24,12 +31,19 @@ export class StatService {
   }
 
   async update(id: number, updateStatDto: UpdateStatDto) {
-    const oldStat = this.StatRepository.findOne({ where: { userId: id } });
+    const oldStat = await this.StatRepository.findOne({
+      where: { userId: id },
+    });
     const UpdatedStat = Object.assign(oldStat, updateStatDto);
     return await this.StatRepository.save(UpdatedStat);
   }
 
   async remove(id: number) {
-    return await this.StatRepository.delete({ userId: id });
+    try {
+      await this.usersService.remove(id);
+      return await this.StatRepository.delete({ userId: id });
+    } catch (error) {
+      throw new Error('error deleting user stat');
+    }
   }
 }

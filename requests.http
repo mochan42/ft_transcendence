@@ -1,6 +1,88 @@
 ### get all users
-GET http://localhost:5000/pong/users/4
+GET http://localhost:5000/pong/users
 
-### get all users option 2
+#### add user
+POST http://localhost:5000/pong/users
+Content-Type: application/json
 
-GET https://randomuser.me/api/
+{
+	"userName": "Facinet",
+	"userNameLoc": "Facinet",
+	"firstName": "Philipp",
+	"lastName": "Maxim",
+	"is2Fa": false,
+	"authToken": "dddddd",
+	"email": "philiaapp@gmail.com",
+	"secret2Fa" : "",
+	"avatar" : "avatar",
+	"xp": 26,
+	"isLogged": true,
+	"lastSeen": ""
+}
+
+###  Edit user info
+PATCH  http://localhost:5000/pong/users/12
+Content-Type: application/json
+
+{
+	"userName": "Facinet",
+	"userNameLoc": "pmeising",
+	"firstName": "Philipp",
+	"lastName": "Maxim",
+	"is2Fa": false,
+	"authToken": "dddddd",
+	"email": "philipp@gmail.com",
+	"secret2Fa" : "",
+	"avatar" : "avatar",
+	"xp": 26,
+	"isLogged": true,
+	"lastSeen": ""
+}
+
+
+###  delete
+DELETE  http://localhost:5000/pong/users/12
+
+### get user stat
+GET http://localhost:5000/pong/users/17/stats
+
+### creat user stat
+POST http://localhost:5000/pong/users/17/stats
+Content-Type: application/json
+
+{
+  "userId": 0,
+  "wins": 0,
+  "losses": 0,
+  "draws": 0
+}
+
+### update user stat
+PATCH http://localhost:5000/pong/users/17/stats
+Content-Type: application/json
+
+{
+  "wins": 3,
+  "losses": 0,
+  "draws": 0
+}
+
+### delete user stat
+
+DELETE  http://localhost:5000/pong/users/18/stats
+
+
+### add user achievement
+
+GET http://localhost:5000/pong/users/17/achievements
+
+### add user achievement
+POST http://localhost:5000/pong/users/17/achievements
+Content-Type: application/json
+
+{
+	"label": "WELCOME GIFT",
+	"description": "This achievement is created for your first login",
+	"image": "tadan",
+	"createdAt": ""
+}

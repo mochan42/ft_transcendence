@@ -12,13 +12,20 @@ interface Props {
 const Navbar: React.FC<Props> = ({ setIsAuth, isAuth}) => {
 	const navigate = useNavigate();
 	const [theme, setTheme] = useState('dark');
+
+	const authenticate = () => {
+		const url42 = 'https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-9c04e10e264f25f8b3cb9bef48ae57df091de510f43e87c7647da4b885b6210b&redirect_uri=http%3A%2F%2Flocalhost%3A3000&response_type=code'; 
+		window.location.href = url42;
+		console.log(window.location.href);
+		setIsAuth(true);
+	}
 	const handleLogout = () => {
 		if (isAuth) {
 			setIsAuth(false)
 			navigate('/about')
 		}
 		else {
-			setIsAuth(true)
+			authenticate();
 			navigate('/')
 		}
 	}

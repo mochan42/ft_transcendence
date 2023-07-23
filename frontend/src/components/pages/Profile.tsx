@@ -24,7 +24,7 @@ const Profile = () => {
 	
 	const [userInfo, setUserInfo] = useState<User|null>(null);
 	useEffect(() => {
-		getUserInfo('4');
+		getUserInfo('12');
 	}, []);
 
 	const getUserInfo = async (id: string) => {
@@ -50,7 +50,7 @@ const Profile = () => {
 					alt='Your Profile Picture'
 				/>
 				<h1 className='text-2xl text-slate-900 font-extrabold dark:text-amber-300 drop-shadow-lg'>
-					{userInfo ? userInfo.userNameLoc : '' }
+					{userInfo ? userInfo.userName : '' }
 				</h1>
 				<div className='flex gap-4'>
 					<Button>

@@ -1,19 +1,22 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
-export class Stat {
+export class Achievement {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ unique: true })
+  @Column()
   userId: number;
 
   @Column()
-  wins?: number;
+  label: string;
 
   @Column()
-  losses?: number;
+  description?: string;
 
   @Column()
-  draws?: number;
+  image?: string;
+
+  @Column()
+  createAt?: string;
 }
