@@ -15,15 +15,17 @@ export class AchievementsService {
   ) {}
 
   async create(userId: number, createAchievementDto: CreateAchievementDto) {
-    const user = await this.userService.findOne(userId);
     try {
+      const user = await this.userService.findOne(userId);
       const achiev = {
         ...createAchievementDto,
-        userId: userId,
-        createdAt: 'ddhdjd',
+        userId: user.id,
+        createdAt: new Date().toUTCString(),
       };
+      console.log(achiev);
       return await this.AchievementRepository.save(achiev);
     } catch (error) {
+      console.log(error);
       throw new Error('Error creating achievement');
     }
   }

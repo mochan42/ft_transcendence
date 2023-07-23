@@ -18,5 +18,5 @@ export class Achievement {
   image?: string;
 
   @Column()
-  createAt?: string;
+  createdAt?: string;
 }

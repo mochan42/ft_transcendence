@@ -5,7 +5,8 @@ services:
     container_name: db
     environment:
       - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_PASSWORD=mysecretpassword
+      - POSTGRES_DB=pong
     image: postgres:13
     ports:
       - "5432:5432"

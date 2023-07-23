@@ -6,13 +6,13 @@ POST http://localhost:5000/pong/users
 Content-Type: application/json
 
 {
-	"userName": "Facinet",
-	"userNameLoc": "Facinet",
+	"userName": "alim",
+	"userNameLoc": "alim",
 	"firstName": "Philipp",
 	"lastName": "Maxim",
 	"is2Fa": false,
 	"authToken": "dddddd",
-	"email": "philiaapp@gmail.com",
+	"email": "philiaassspp@gmail.com",
 	"secret2Fa" : "",
 	"avatar" : "avatar",
 	"xp": 26,
@@ -25,13 +25,13 @@ PATCH  http://localhost:5000/pong/users/12
 Content-Type: application/json
 
 {
-	"userName": "Facinet",
-	"userNameLoc": "pmeising",
+	"userName": "Alim",
+	"userNameLoc": "alim",
 	"firstName": "Philipp",
 	"lastName": "Maxim",
 	"is2Fa": false,
 	"authToken": "dddddd",
-	"email": "philipp@gmail.com",
+	"email": "philissspp@gmail.com",
 	"secret2Fa" : "",
 	"avatar" : "avatar",
 	"xp": 26,
@@ -73,16 +73,16 @@ DELETE  http://localhost:5000/pong/users/18/stats
 
 
 ### add user achievement
-
-GET http://localhost:5000/pong/users/17/achievements
+GET http://localhost:5000/pong/users/3/achievements/20
 
 ### add user achievement
-POST http://localhost:5000/pong/users/17/achievements
+POST http://localhost:5000/pong/users/3/achievements
 Content-Type: application/json
 
 {
-	"label": "WELCOME GIFT",
+	"label": "GOLD",
 	"description": "This achievement is created for your first login",
 	"image": "tadan",
 	"createdAt": ""
 }
+

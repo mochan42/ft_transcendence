@@ -1,10 +1,10 @@
-import { IsString, isNumber } from "class-validator";
+import { IsString } from "class-validator";
 
 export class CreateAchievementDto {
   userId?: number;
 
   @IsString()
-  label?: string;
+  label: string;
 
   @IsString()
   description?: string;
