@@ -11,13 +11,14 @@ interface PongProps {
 	playerScore: number;
 	botScore: number;
 	isGameOver: boolean;
+	includeBoost: boolean;
 	setIsGameOver: (boolean: boolean) => void;
 	playerPoint: () => void;
 	botPoint: () => void;
 	setReset: (boolean: boolean) => void;
   }
 
-const Pong: React.FC<PongProps> = ({ difficulty, isGameActive, isGameOver, setIsGameOver, isReset, playerScore, botScore, playerPoint, botPoint, setReset }) => {
+const Pong: React.FC<PongProps> = ({ difficulty, isGameActive, isGameOver, isReset, playerScore, botScore, includeBoost, playerPoint, botPoint, setIsGameOver, setReset }) => {
 
 	const itsdifficult = (difficulty + 2) * 2
 	const PongRef = useRef<HTMLDivElement>(null);
@@ -44,8 +45,8 @@ const Pong: React.FC<PongProps> = ({ difficulty, isGameActive, isGameOver, setIs
 	const checkCollision = () => {
 
 		var margin = (itsdifficult * 3)
-		if (isBoost) {
-			margin = margin * 2
+		if (isBoost && includeBoost) {
+			margin = margin * 2.5
 		}
 		// Ball boundaries
 		const ballLeft = ballX;
@@ -120,8 +121,8 @@ const Pong: React.FC<PongProps> = ({ difficulty, isGameActive, isGameOver, setIs
 				setIsBoost(false);
 			}
 			console.log('bot: ', margin)
-			setSpeedX(-speedX * 0.8)
-			setSpeedY(newSpeedY * 0.8);
+			setSpeedX(-speedX * 0.82)
+			setSpeedY(newSpeedY * 0.82);
 		} else if (ballLeft > (rightPaddleLeft) && !isReset) {
 			playerPoint();
 			setPlayerScore2(playerScore2 + 1);
@@ -159,7 +160,7 @@ const Pong: React.FC<PongProps> = ({ difficulty, isGameActive, isGameOver, setIs
 
 		// setIsBoost(isInBoostRegion)
 		// Ball is inside the Boost region, increase speed by 50%
-		if (isInBoostRegion && !isBoost) {
+		if (isInBoostRegion && !isBoost && includeBoost) {
 			setSpeedX(prevSpeedX => prevSpeedX * 2.5);
 			setSpeedY(prevSpeedY => prevSpeedY * 2.5);
 			setIsBoost(true);
@@ -248,7 +249,6 @@ const Pong: React.FC<PongProps> = ({ difficulty, isGameActive, isGameOver, setIs
 	  
 		const handleKeyUp = (event: KeyboardEvent) => {
 			if (event.key === 'w' || event.key === 'ArrowUp' || event.key === 's' || event.key === 'ArrowDown') {
-				// event.preventDefault();
 				setPlayerPaddleDirection(0); // Stop paddle movement
 			}
 		};
@@ -272,9 +272,7 @@ const Pong: React.FC<PongProps> = ({ difficulty, isGameActive, isGameOver, setIs
 			<div className="relative bg-slate-900">
     			<Ball xPosition={ballX} yPosition={ballY} />
     		</div>
-			<div>
-				<Boost />
-			</div>
+			{includeBoost ? <Boost /> : null}
 			{isGameOver ? (
 					<div className="absolute inset-0 bg-black bg-opacity-80">
 						<VictoryLoss isVictory={playerScore === 5}/>
