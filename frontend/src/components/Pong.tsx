@@ -42,6 +42,11 @@ const Pong: React.FC<PongProps> = ({ difficulty, isGameActive, isGameOver, setIs
 	const [ballY, setBallY] = useState(startY);
 
 	const checkCollision = () => {
+
+		var margin = (itsdifficult * 3)
+		if (isBoost) {
+			margin = margin * 2
+		}
 		// Ball boundaries
 		const ballLeft = ballX;
 		const ballRight = ballX + 8; // Ball width is 8 pixels
@@ -79,8 +84,8 @@ const Pong: React.FC<PongProps> = ({ difficulty, isGameActive, isGameOver, setIs
 
 		// Check collision with left paddle
 		// Check whether Bot made a point
-		if (ballLeft <= (leftPaddleRight + itsdifficult * 3) &&
-			ballLeft >= (leftPaddleRight - (itsdifficult * 3)) &&
+		if (ballLeft <= (leftPaddleRight + margin) &&
+			ballLeft >= (leftPaddleRight - margin) &&
 			speedX < 0 &&
 			ballCenter >= leftPaddleTop - (itsdifficult) &&
 			ballCenter <= leftPaddleBottom + (itsdifficult)
@@ -89,18 +94,23 @@ const Pong: React.FC<PongProps> = ({ difficulty, isGameActive, isGameOver, setIs
 				setSpeedX(prevSpeedX => prevSpeedX * 0.66);
 				setIsBoost(false);
 			}
+			console.log('player: ', margin)
 			setSpeedX(-speedX * 1.2)
 			setSpeedY(randomSpeedY * 1.2);
 		} else if (ballRight < leftPaddleRight && !isReset) {
 			botPoint();
-			setSpeedX(-speedX)
 			setReset(true);
+			if (isBoost) {
+				setSpeedX(prevSpeedX => prevSpeedX * 0.66);
+				setIsBoost(false);
+			}
+			setSpeedX(-speedX)
 		}
 
 		// Check collision with right paddle
 		// Check whether Player made a point
-		if (ballRight >= (rightPaddleLeft - (itsdifficult * 3)) &&
-			ballRight <= (rightPaddleLeft + itsdifficult * 3) &&
+		if (ballRight >= (rightPaddleLeft - margin) &&
+			ballRight <= (rightPaddleLeft + margin) &&
 			speedX > 0 &&
 			ballCenter >= rightPaddleTop - (itsdifficult) && 
 			ballCenter <= rightPaddleBottom + (itsdifficult)
@@ -109,12 +119,17 @@ const Pong: React.FC<PongProps> = ({ difficulty, isGameActive, isGameOver, setIs
 				setSpeedX(prevSpeedX => prevSpeedX * 0.66);
 				setIsBoost(false);
 			}
+			console.log('bot: ', margin)
 			setSpeedX(-speedX * 0.8)
 			setSpeedY(newSpeedY * 0.8);
 		} else if (ballLeft > (rightPaddleLeft) && !isReset) {
 			playerPoint();
 			setPlayerScore2(playerScore2 + 1);
 			setReset(true);
+			if (isBoost) {
+				setSpeedX(prevSpeedX => prevSpeedX * 0.66);
+				setIsBoost(false);
+			}
 			setSpeedX(-speedX)
 		}
 		
