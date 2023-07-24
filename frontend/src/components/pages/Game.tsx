@@ -86,7 +86,6 @@ const Game:React.FC<GameProps> = ({ difficulty, userId, includeBoost, setState }
 			const response = await axios.get<User>(url);
 			if (response.status === 200) {
 				setUserInfo(response.data);
-				// console.log(userInfo?.avatar)
 			}
 		}
 		catch (error) {
@@ -141,7 +140,7 @@ const Game:React.FC<GameProps> = ({ difficulty, userId, includeBoost, setState }
 				</div>
 			</div>
 			<div className='w-full h-5/6 border-t-2 border-l-2 border-r-2 border-slate-700 black:border-slate-200 bg-slate-300 dark:bg-slate-700 dark:text-slate-200 text-center'>
-				<Pong difficulty={difficulty} isGameActive={gameActive} isReset={reset} isGameOver={isGameOver} playerScore={playerScore} botScore={botScore} includeBoost={includeBoost} setIsGameOver={setIsGameOver} playerPoint={playerPoint} botPoint={botPoint} setReset={setReset}/>
+				<Pong userId={userId} difficulty={difficulty} isGameActive={gameActive} isReset={reset} isGameOver={isGameOver} playerScore={playerScore} botScore={botScore} includeBoost={includeBoost} setIsGameOver={setIsGameOver} playerPoint={playerPoint} botPoint={botPoint} setReset={setReset}/>
 			</div>
 		</div>
 	)
