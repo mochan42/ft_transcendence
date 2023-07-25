@@ -1,6 +1,8 @@
-import { useNavigate } from 'react-router-dom'
+import { Navigate, useNavigate } from 'react-router-dom'
 import { Button } from './ui/Button'
-import React, { useEffect, useState } from 'react';
+import React, { Children } from 'react';
+import axios from 'axios'
+import { useEffect, useState } from 'react';
 
 // Icons from https://heroicons.com/
 
@@ -9,9 +11,12 @@ interface Props {
 	isAuth: boolean,
 }
 
+
 const Navbar: React.FC<Props> = ({ setIsAuth, isAuth}) => {
 	const navigate = useNavigate();
-	const [theme, setTheme] = useState('dark');
+    const [theme, setTheme] = useState('dark');
+    var [loginBtnTxt, setLoginBtnTxt] = useState<string>("Log in");
+ 
 
 	const authenticate = () => {
 		const url42 = 'https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-9c04e10e264f25f8b3cb9bef48ae57df091de510f43e87c7647da4b885b6210b&redirect_uri=http%3A%2F%2Flocalhost%3A3000&response_type=code'; 
@@ -19,16 +24,20 @@ const Navbar: React.FC<Props> = ({ setIsAuth, isAuth}) => {
 		console.log(window.location.href);
 		setIsAuth(true);
 	}
+
 	const handleLogout = () => {
+            // contact server to delete access token
 		if (isAuth) {
 			setIsAuth(false)
-			navigate('/about')
 		}
 		else {
 			authenticate();
 			navigate('/')
 		}
+		navigate('/login')
 	}
+
+
 	const handleThemeSwitch = () => {
 		setTheme(theme == 'dark' ? 'light' : 'dark');
 	};
@@ -81,7 +90,7 @@ const Navbar: React.FC<Props> = ({ setIsAuth, isAuth}) => {
 					Play Pong
 				</Button>
 				
-				<Button
+                <Button
 					variant='ghost'
 					onClick={handleThemeSwitch}
 				>
@@ -89,16 +98,14 @@ const Navbar: React.FC<Props> = ({ setIsAuth, isAuth}) => {
   						<path strokeLinecap="round" strokeLinejoin="round" d={path}/>
 					</svg>
 				</Button>
-
 				<Button
-					onClick={() => handleLogout()}
+					onClick={ handleLogout }
 				>
-					{msg}
 					<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
 						<path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
 					</svg>
-
-				</Button>
+					{ isAuth ? "Log Out" : "Log In" }
+                </Button>
 		</div>
 	)
 }

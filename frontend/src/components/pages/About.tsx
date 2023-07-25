@@ -1,7 +1,11 @@
 import { useNavigate } from 'react-router-dom'
 import { Button } from '../ui/Button'
 
-const About = () => {
+type AboutProps = 
+{
+    isAuth: boolean
+}
+const About = (props: AboutProps) => {
 	const navigate = useNavigate()
 	return (
 		<div className='bg-slate-200 dark:bg-slate-900 h-screen  flex flex-col flex-wrap justify-start text-slate-900 dark:text-slate-200 border-8 dark:border-slate-900'>
