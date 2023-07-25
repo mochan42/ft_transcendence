@@ -1,5 +1,5 @@
 import { Navigate, useNavigate } from 'react-router-dom'
-import Button from './ui/Button'
+import { Button } from './ui/Button'
 import React, { Children } from 'react';
 import axios from 'axios'
 import { useEffect, useState } from 'react';
@@ -14,6 +14,7 @@ interface Props {
 
 const Navbar: React.FC<Props> = ({ setIsAuth, isAuth}) => {
 	const navigate = useNavigate();
+    const [theme, setTheme] = useState('dark');
     var [loginBtnTxt, setLoginBtnTxt] = useState<string>("Log in");
  
 
@@ -94,6 +95,8 @@ const Navbar: React.FC<Props> = ({ setIsAuth, isAuth}) => {
 					onClick={ handleLogout }
 				>
 					{ isAuth ? "Log Out" : "Log In" }
+                </Button>
+                <Button
 					variant='ghost'
 					onClick={handleThemeSwitch}
 				>
@@ -101,7 +104,6 @@ const Navbar: React.FC<Props> = ({ setIsAuth, isAuth}) => {
   						<path strokeLinecap="round" strokeLinejoin="round" d={path}/>
 					</svg>
 				</Button>
-
 		</div>
 	)
 }

@@ -37,35 +37,26 @@ const App: React.FC = () => {
 				<div className='rounded-2xl shadow-xl h-screen min-h-[50px]'>
 					<div>
 						<Routes>
+							<Route path='about' element={<About isAuth = {isAuth}/>} />
+                            <Route path='/' element={ isAuth ? <Home userCode ={ {code:code, setCode:setCode} } loginState={ {isLogin:isAuth, setIsLogin:setIsAuth } }/> : <Navigate to="/about" replace />} />
+                            {/* 
 							<Route path='/' element={<ProtectedRoute isAuth={isAuth} path='/' element={<Home />} />} />
+                            */}
+                            <Route path='/login' element={<Login isAuth={isAuth} setIsAuth={setIsAuth} />} />
+                            {/* 
 							<Route path='/login' element={<Login setIsAuth={setIsAuth} />} />
+                            */}
 							<Route path='game' element={<ProtectedRoute isAuth={isAuth} path='/game' element={<GameSelection userId={userId}/>} />} />
 							<Route path='/profile' element={<ProtectedRoute isAuth={isAuth} path='/profile' element={<Profile userId={userId}/>} />} />
 							<Route path='/landingpage' element={<ProtectedRoute isAuth={isAuth} path='/landingpage' element={<LandingPage />} />} />
+                            {/* 
 							<Route path='/about' element={<About />} />
+                            */}
 							<Route path='/layout' element={<Layout />} />
 							<Route path='/*' element={<PageNotFound />}/>
 						</Routes>
 					</div>
-					<div className='bg-green-500 rounded-lg shadow-xl min-h-[50px]'>
-						<div>
-							<Routes>
-{/*
-                                <PrivateRoute path='/'/>
-*/}                        
-								<Route path='about' element={<About isAuth = {isAuth}/>} />
-                                <Route path='/' element={ isAuth ? <Home userCode ={ {code:code, setCode:setCode} } loginState={ {isLogin:isAuth, setIsLogin:setIsAuth } }/> : <Navigate to="/about" replace />} />
-{/*
-								<Route path='/' element={<Home userCode ={ {code:code, setCode:setCode} } loginState={ {isLogin:isAuth, setIsLogin:setIsAuth } }/>} />
-*/}                        
-								<Route path='/login' element={<Login isAuth={isAuth} setIsAuth={setIsAuth} />} />
-								<Route path='game' element={<ProtectedRoute isAuth={isAuth} path='/game' element={<Game />} />} />
-								<Route path='/profile' element={<ProtectedRoute isAuth={isAuth} path='/profile' element={<Profile />} />} />
-								<Route path='/landingpage' element={<ProtectedRoute isAuth={isAuth} path='/landingpage' element={<LandingPage />} />} />
-								<Route path='/*' element={<PageNotFound />}/>
-							</Routes>
-						</div>
-					</div>
+				</div>	
 					<div className=' shadow-xl flex backdrop-blur-sm bg-white/75 dark:bg-slate-900 z-50 top-0 left-0 right-0 h-20 border-b border-slate-300 dark:border-slate-700 items-center justify-evenly'>
 						<Footer/>
 					</div>

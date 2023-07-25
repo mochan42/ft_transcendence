@@ -1,4 +1,4 @@
-import Button from "../ui/Button"
+import { Button } from "../ui/Button"
 //import { useParams, useLocation } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -44,7 +44,7 @@ const Home = ({userCode, loginState}: TUserState) => {
     ,[ userCode.code, loginState.isLogin ])
     //if ((loginState.isLogin === false)) navigate('/about');
     
-import { Button } from "../ui/Button"
+//import { Button } from "../ui/Button"
 
 	return (
 		<div className='h-screen bg-gray-200 dark:bg-slate-900 w-full grid place-items-center'>
