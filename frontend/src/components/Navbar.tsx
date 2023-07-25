@@ -13,40 +13,17 @@ interface Props {
 const Navbar: React.FC<Props> = ({ setIsAuth, isAuth}) => {
 	const navigate = useNavigate();
     var [loginBtnTxt, setLoginBtnTxt] = useState<string>("Log in");
-    var [integer, setInteger ] = useState<number>(0);
-    var [redirectState, setRedirectState ] = useState<boolean>(false);
+ 
 
 	const handleLogout = () => {
 		if (isAuth) {
 			setIsAuth(false)
-			navigate('/about')
+            // contact server to delete access token
 		}
-		else {
-			setIsAuth(true)
-			navigate('/')
-		}
+		navigate('/login')
 	}
 
-    const HandlerLogin = () => 
-    {
-        var state = false;
-        const   client_id_42 = "u-s4t2ud-d47fc78f47a2cc31da6c325194c23e4780ec811e2f6ae9d2e992346ac0ef851c";
-        const   url_auth_42 = "https://api.intra.42.fr/oauth/authorize?client_id=" + client_id_42 + "&redirect_uri=http%3A%2F%2Flocalhost%3A3000&response_type=code";
 
-        setRedirectState(true);
-        window.location.href =  url_auth_42;
-        /*
-        axios.get(url_auth_42).then
-        ( ()=>
-            {
-                console.log('hello');
-                setLoginBtnTxt("Log Out");
-            }
-        )
-        */
-        state = true;
-        return (state);
-    }
 
 	return(
 		<div className='w-full flex items-center justify-evenly'>
@@ -92,23 +69,9 @@ const Navbar: React.FC<Props> = ({ setIsAuth, isAuth}) => {
 				<Button
 					className=' bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow'
 					type='submit'
-					onClick={ (e) => 
-                              { 
-                                //HandlerLogin();
-                                setIsAuth( HandlerLogin());
-                                console.log(integer);
-                                if (isAuth)
-                                {
-                                    setInteger(integer++);
-                                    setLoginBtnTxt("Log Out");
-                                    console.log(integer);
-                                    setTimeout(()=> { alert(loginBtnTxt)}, 1000);
-                                    navigate('/');
-                                }
-                              }
-                            }
+					onClick={ handleLogout }
 				>
-					{loginBtnTxt}
+					{ isAuth ? "Log Out" : "Log In" }
 				</Button>
 		</div>
 	)

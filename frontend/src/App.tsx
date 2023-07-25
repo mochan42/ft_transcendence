@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState } from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import './App.css';
 import Login from './components/pages/Login';
 import Navbar from './components/Navbar';
@@ -12,9 +12,19 @@ import About from './components/pages/About';
 import PageNotFound from './components/pages/PageNotFound';
 import Footer from './components/Footer';
 import Game from './components/pages/Game';
+//import PrivateRoute from './components/hooks/PrivateRoute';
 
 const App: React.FC = () => {
-	const [isAuth, setIsAuth] = useState(false)
+/*
+    type TUser = {
+        userName: string,
+        userCode: string,
+        logState: boolean,
+        loginHandler: () => void
+    }
+*/
+	const [isAuth, setIsAuth] = useState<boolean>(true)
+	const [code, setCode] = useState<string | null>(null)
 
 		return (
 			<div className='grid grid-rows-8 gap-2'>
@@ -25,13 +35,18 @@ const App: React.FC = () => {
 					<div className='bg-green-500 rounded-lg shadow-xl min-h-[50px]'>
 						<div>
 							<Routes>
-								<Route path='/' element={<Home />}  />
-								<Route path='/login' element={<Login setIsAuth={setIsAuth} />} />
+{/*
+                                <PrivateRoute path='/'/>
+*/}                        
+								<Route path='about' element={<About isAuth = {isAuth}/>} />
+                                <Route path='/' element={ isAuth ? <Home userCode ={ {code:code, setCode:setCode} } loginState={ {isLogin:isAuth, setIsLogin:setIsAuth } }/> : <Navigate to="/about" replace />} />
+{/*
+								<Route path='/' element={<Home userCode ={ {code:code, setCode:setCode} } loginState={ {isLogin:isAuth, setIsLogin:setIsAuth } }/>} />
+*/}                        
+								<Route path='/login' element={<Login isAuth={isAuth} setIsAuth={setIsAuth} />} />
 								<Route path='game' element={<ProtectedRoute isAuth={isAuth} path='/game' element={<Game />} />} />
 								<Route path='/profile' element={<ProtectedRoute isAuth={isAuth} path='/profile' element={<Profile />} />} />
 								<Route path='/landingpage' element={<ProtectedRoute isAuth={isAuth} path='/landingpage' element={<LandingPage />} />} />
-								<Route path='about' element={<About />} />
-								<Route path='/code:pin' element={<About />} />
 								<Route path='/*' element={<PageNotFound />}/>
 							</Routes>
 						</div>
