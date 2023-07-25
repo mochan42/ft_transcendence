@@ -1,4 +1,15 @@
+import { useEffect, useState } from "react";
 import { Button } from "./ui/Button"
+import axios, { AxiosResponse } from "axios";
+
+type UserAchievements = {
+	'id': number;
+	'userId': number;
+	'label': string;
+	'description': string;
+	'image': string;
+	'createdAt': string;
+}
 
 interface AchievementsProps {
 	userId: number;
@@ -6,6 +17,26 @@ interface AchievementsProps {
 }
 
 const Achievements:React.FC<AchievementsProps> =({ userId, setShowScreen }) => {
+	
+	const [UserAchievements, setUserAchievements] = useState< UserAchievements[] >();
+	const url_achievements = 'http://localhost:5000/pong/users/' + userId.toString() + '/achievements';
+
+	useEffect(() => {
+		getUserAchievements();
+	}, []);
+
+	const getUserAchievements = async () => {
+		try {
+			const response: AxiosResponse<UserAchievements[]> = await axios.get(url_achievements);
+			if (response.status === 200) {
+				setUserAchievements(response.data);
+				console.log('Received User Achievements: ', response.data);
+			}
+		} catch (error) {
+			console.log('Error fetching user achievements:', error);
+		}
+	};
+
 	return (
 		<div className='h-full w-full absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 bg-slate-900 bg-opacity-70'>
 			<div className='rounded h-1/2 w-1/2 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 bg-slate-900 dark:bg-slate-200'>
@@ -15,7 +46,30 @@ const Achievements:React.FC<AchievementsProps> =({ userId, setShowScreen }) => {
 							<path strokeLinecap="round" strokeLinejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" />
 						</svg>
 					</Button>
-					<div className='space-y-2 border-t-8 dark:border-slate-900 dark:bg-slate-900 bg-slate-200 text-slate-900 dark:text-amber-400 rounded-md flex-cols justify-evenly items-baseline'>
+					{UserAchievements?.map((achievement) => (
+					<div
+						key={achievement.id}
+						className='space-y-2 border-t-8 dark:border-slate-900 dark:bg-slate-900 bg-slate-200 text-slate-900 dark:text-amber-400 rounded-md flex-cols justify-evenly items-baseline'
+					>
+						<div className='flex items-center justify-around '>
+							<img className='h-16 w-16 bg-slate-200 dark:bg-slate-200 rounded-full' src={achievement.image} alt="Achievement icon" />
+							<p>
+								{achievement.label}
+							</p>
+						</div>
+							<p className='text-xs dark:text-slate-200 '>
+								{achievement.description}
+							</p>
+					</div>
+					))}
+				</div>
+			</div>
+		</div>
+	);
+};
+
+export default Achievements;
+					{/* <div className='space-y-2 border-t-8 dark:border-slate-900 dark:bg-slate-900 bg-slate-200 text-slate-900 dark:text-amber-400 rounded-md flex-cols justify-evenly items-baseline'>
 						<div className='flex items-center justify-around '>
 							<img className='h-16 w-16 bg-slate-200 dark:bg-slate-200 rounded-full' src='https://www.svgrepo.com/show/529148/question-circle.svg'>
 							</img>
@@ -69,4 +123,4 @@ const Achievements:React.FC<AchievementsProps> =({ userId, setShowScreen }) => {
 	)
 }
 
-export default Achievements
+export default Achievements */}

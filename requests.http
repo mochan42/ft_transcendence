@@ -1,20 +1,20 @@
 ### get all users
-GET http://localhost:5000/pong/users
+GET http://localhost:5000/pong/users/2
 
 #### add user
 POST http://localhost:5000/pong/users
 Content-Type: application/json
 
 {
-	"userName": "alim",
-	"userNameLoc": "alim",
-	"firstName": "Philipp",
-	"lastName": "Maxim",
+	"userName": "JohnDoe",
+	"userNameLoc": "johndoe",
+	"firstName": "John",
+	"lastName": "Doe",
 	"is2Fa": false,
 	"authToken": "dddddd",
-	"email": "philiaassspp@gmail.com",
+	"email": "johndoe@gmail.com",
 	"secret2Fa" : "",
-	"avatar" : "avatar",
+	"avatar" : "https://www.svgrepo.com/show/384669/account-avatar-profile-user-13.svg",
 	"xp": 26,
 	"isLogged": true,
 	"lastSeen": ""
@@ -40,14 +40,14 @@ Content-Type: application/json
 }
 
 
-###  delete
+###  delete user
 DELETE  http://localhost:5000/pong/users/12
 
 ### get user stat
-GET http://localhost:5000/pong/users/17/stats
+GET http://localhost:5000/pong/users/1/stats
 
 ### creat user stat
-POST http://localhost:5000/pong/users/17/stats
+POST http://localhost:5000/pong/users/1/stats
 Content-Type: application/json
 
 {
@@ -58,7 +58,7 @@ Content-Type: application/json
 }
 
 ### update user stat
-PATCH http://localhost:5000/pong/users/17/stats
+PATCH http://localhost:5000/pong/users/1/stats
 Content-Type: application/json
 
 {
@@ -69,20 +69,20 @@ Content-Type: application/json
 
 ### delete user stat
 
-DELETE  http://localhost:5000/pong/users/18/stats
+DELETE  http://localhost:5000/pong/users/1/stats
 
+
+### get user achievement
+GET http://localhost:5000/pong/users/1/achievements/
 
 ### add user achievement
-GET http://localhost:5000/pong/users/3/achievements/20
-
-### add user achievement
-POST http://localhost:5000/pong/users/3/achievements
+POST http://localhost:5000/pong/users/1/achievements/
 Content-Type: application/json
 
 {
-	"label": "GOLD",
+	"label": "Welcome!",
 	"description": "This achievement is created for your first login",
-	"image": "tadan",
-	"createdAt": ""
+	"image": "https://www.svgrepo.com/show/398519/trophy.svg",
+	"createdAt": "24-07-2023"
 }
 

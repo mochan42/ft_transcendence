@@ -5,6 +5,7 @@ import VictoryLoss from './VictoryLoss';
 import Boost from './Boost';
 
 interface PongProps {
+	userId: number;
 	difficulty: number;
 	isGameActive: boolean;
 	isReset: boolean;
@@ -18,7 +19,7 @@ interface PongProps {
 	setReset: (boolean: boolean) => void;
   }
 
-const Pong: React.FC<PongProps> = ({ difficulty, isGameActive, isGameOver, isReset, playerScore, botScore, includeBoost, playerPoint, botPoint, setIsGameOver, setReset }) => {
+const Pong: React.FC<PongProps> = ({ userId, difficulty, isGameActive, isGameOver, isReset, playerScore, botScore, includeBoost, playerPoint, botPoint, setIsGameOver, setReset }) => {
 
 	const itsdifficult = (difficulty + 2) * 2
 	const PongRef = useRef<HTMLDivElement>(null);
@@ -168,7 +169,6 @@ const Pong: React.FC<PongProps> = ({ difficulty, isGameActive, isGameOver, isRes
 
 		// setIsBoost(isInBoostRegion)
 		// Ball is inside the Boost region, increase speed by 50%
-		console.log(boostStartX, boostStartY, ballCenterX, ballCenterY);
 		if (isInBoostRegion && !isBoost && includeBoost) {
 			setSpeedX(prevSpeedX => prevSpeedX * 2.5);
 			setSpeedY(prevSpeedY => prevSpeedY * 2.5);
@@ -294,7 +294,7 @@ const Pong: React.FC<PongProps> = ({ difficulty, isGameActive, isGameOver, isRes
 			{includeBoost && !isBoost ? <Boost x={boostStartX} y={boostStartY} width={boostWidth} height={boostWidth} /> : null}
 			{isGameOver ? (
 					<div className="absolute inset-0 bg-black bg-opacity-80">
-						<VictoryLoss isVictory={playerScore === 5}/>
+						<VictoryLoss userId={userId} isVictory={playerScore === 5} difficulty={difficulty} />
 					</div>
 				) : null
 			}
