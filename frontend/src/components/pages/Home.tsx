@@ -51,8 +51,10 @@ const Home = ({userCode, loginState}: TUserState) => {
 			<Button>
 				Welcome Home!
 			</Button>
-            { loginState.isLogin && <h3>Received code : { userCode.code }</h3> }
-            <h3>Login state : { (loginState.isLogin && userCode.code) ? "Active" : "Inactive" }</h3>
+			<div className="dark:text-slate-200">
+           		{ loginState.isLogin && <h3>Received code : { userCode.code }</h3> }
+            	<h3>Login state : { (loginState.isLogin && userCode.code) ? "Active" : "Inactive" }</h3>
+			</div>
 		</div>
 	)
 }

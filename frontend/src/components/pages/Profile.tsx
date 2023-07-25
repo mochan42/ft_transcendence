@@ -38,12 +38,13 @@ const Profile:React.FC<ProfileProps> =({ userId }) => {
 	const [userInfo, setUserInfo] = useState< User | null >(null);
 	const [userStats, setUserStats] = useState< UserStats | null >(null);
 	const [showScreen, setShowScreen] = useState< 'default' | 'achievements' | 'friends' | 'stats' >('default');
+	const id = userId.toString();
 
 	useEffect(() => {
-		getUserInfo(userId.toString());
-		getUserStats(userId);
+		getUserInfo(id);
+		getUserStats(id);
 		// getUserAchievements();
-	}, []);
+	}, [id]);
 
 	const getUserInfo = async (id: string) => {
 		try {
@@ -59,9 +60,9 @@ const Profile:React.FC<ProfileProps> =({ userId }) => {
 		}
 	}
 
-	const getUserStats = async (userId: number) => {
+	const getUserStats = async (id: string) => {
 		try {
-			const url = 'http://localhost:5000/pong/users/' + userId.toString() + '/stats';
+			const url = 'http://localhost:5000/pong/users/' + id + '/stats';
 			const response = await axios.get<UserStats>(url);
 			if (response.status === 200) {
 				setUserStats(response.data);
@@ -102,15 +103,12 @@ const Profile:React.FC<ProfileProps> =({ userId }) => {
 							<div>
 								<div className='space-y-2 flex flex-col justify-between gap-4'>
 									<div className='flex flex-row justify-between'>
-										<img className='h-6 w-6' src="https://www.svgrepo.com/show/421893/achievement-challenge-medal.svg" alt="Achievement badge" />
 										Total Games Played: {(userStats?.wins ?? 0) + (userStats?.losses ?? 0)}
 									</div>
 									<div className='flex flex-row justify-between'>
-										<img className='h-6 w-6' src="https://www.svgrepo.com/show/421893/achievement-challenge-medal.svg" alt="Achievement badge" />
 										Total Victories: {(userStats?.wins) ?? 0}
 									</div>
 									<div className='flex flex-row justify-between'>
-										<img className='h-6 w-6' src="https://www.svgrepo.com/show/421893/achievement-challenge-medal.svg" alt="Achievement badge" />
 										Total Defeats: {(userStats?.losses) ?? 0}
 									</div>
 								</div>
@@ -118,22 +116,19 @@ const Profile:React.FC<ProfileProps> =({ userId }) => {
 							<div>
 								<div className='space-y-2 flex flex-col justify-between gap-4'>
 									<div className='flex flex-row justify-between'>
-										<img className='h-6 w-6' src="https://www.svgrepo.com/show/421893/achievement-challenge-medal.svg" alt="Achievement badge" />
 										The first achievement
 									</div>
 									<div className='flex flex-row justify-between'>
-										<img className='h-6 w-6' src="https://www.svgrepo.com/show/421893/achievement-challenge-medal.svg" alt="Achievement badge" />
 										The second achievement
 									</div>
 									<div className='flex flex-row justify-between'>
-										<img className='h-6 w-6' src="https://www.svgrepo.com/show/421893/achievement-challenge-medal.svg" alt="Achievement badge" />
 										The third achievement
 									</div>
 								</div>
 							</div>
 						</div>
 						<div>
-							<Button variant={'link'} onClick={() => setShowScreen('achievements')}>
+							<Button variant={'link'} onClick={() => setShowScreen('stats')}>
 								more
 							</Button>
 						</div>
