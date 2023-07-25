@@ -1,5 +1,5 @@
 ### get all users
-GET http://localhost:5000/pong/users
+GET http://localhost:5000/pong/users/2
 
 #### add user
 POST http://localhost:5000/pong/users
