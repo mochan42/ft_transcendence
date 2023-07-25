@@ -5,7 +5,7 @@ export class Stat {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ unique: true })
   userId: number;
 
   @Column()

@@ -11,34 +11,34 @@ import { StatService } from './stat.service';
 import { CreateStatDto } from './dto/create-stat.dto';
 import { UpdateStatDto } from './dto/update-stat.dto';
 
-@Controller('users')
+@Controller('pong/users')
 export class StatController {
   constructor(private readonly statService: StatService) {}
 
-  @Post('/stats')
-  create(@Body() createStatDto: CreateStatDto) {
-    return this.statService.create(createStatDto);
-  }
-
-  // !!! NOT SURE ABOUT THIS ENDPOINT NECESSITY
-  @Get()
-  findAll() {
-    return this.statService.findAll();
+  @Post(':userId/stats')
+  create(
+    @Param('userId') userId: string,
+    @Body() createStatDto: CreateStatDto,
+  ) {
+    return this.statService.create(parseInt(userId), createStatDto);
   }
 
   @Get(':userId/stats')
-  findOne(@Param('userId') id: string) {
-    return this.statService.findOne(+id);
+  findOne(@Param('userId') userId: string) {
+    return this.statService.findOne(+userId);
   }
 
   @Patch(':userId/stats')
-  update(@Param('userId') id: string, @Body() updateStatDto: UpdateStatDto) {
-    return this.statService.update(+id, updateStatDto);
+  update(
+    @Param('userId') userId: string,
+    @Body() updateStatDto: UpdateStatDto,
+  ) {
+    return this.statService.update(+userId, updateStatDto);
   }
 
   // !!! NOT SURE ABOUT THIS ENDPOINT NECESSITY.
   @Delete(':userId/stats')
-  remove(@Param('userId') id: string) {
-    return this.statService.remove(+id);
+  remove(@Param('userId') userId: string) {
+    return this.statService.remove(+userId);
   }
 }

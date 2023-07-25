@@ -1,14 +1,14 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, Unique } from 'typeorm';
 
 @Entity()
 export class User {
   @PrimaryGeneratedColumn()
   id: number;
-  
-  @Column()
+
+  @Column({ unique: true })
   userName: string;
 
-  @Column()
+  @Column({ unique: true })
   userNameLoc: string;
 
   @Column()
@@ -23,7 +23,7 @@ export class User {
   @Column()
   authToken: string;
 
-  @Column()
+  @Column({ unique: true })
   email: string;
 
   @Column()

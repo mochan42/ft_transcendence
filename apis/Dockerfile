@@ -1,14 +1,15 @@
-FROM node:18.3.0
+FROM node:18
 
 # Create app directory
-
 WORKDIR /usr/src/app
 
 # Install app dependencies
 COPY package*.json ./
 
-RUN npm install -g @nestjs/cli
-
+#RUN npm install location=global @nestjs/cli
+RUN npm install -g npm@9.8.1
+RUN npm cache verify
+RUN rm  -rf node_modules
 RUN npm install
 
 # Bundle app source

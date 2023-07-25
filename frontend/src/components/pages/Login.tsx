@@ -1,5 +1,5 @@
 import React from 'react'
-import Button from '../ui/Button'
+import { Button } from '../ui/Button'
 import { useNavigate } from 'react-router-dom'
 import icon_42 from '../../img/icon_42.png'
 import icon_gmail from '../../img/icon_gmail.png'

@@ -12,10 +12,9 @@ export class UsersService {
     private UserRepository: Repository<User>,
   ) {}
   async create(createUserDto: CreateUserDto) {
-    //createUserDto.lastSeen = 'COOL';
     const newUser = {
       ...createUserDto,
-      lastSeen: 'COOOL',
+      lastSeen: new Date().toUTCString(),
     };
     return await this.UserRepository.save(newUser);
   }
@@ -34,7 +33,7 @@ export class UsersService {
     return await this.UserRepository.save(updated);
   }
 
-  async remove(id: number) {
-    return await this.UserRepository.delete(id);
+  async remove(userId: number) {
+    return await this.UserRepository.delete(+userId);
   }
 }

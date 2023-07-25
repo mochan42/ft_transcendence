@@ -1,11 +1,13 @@
-import Button from "./ui/Button"
+import { Button } from "./ui/Button"
 
 const Footer = () => {
 	return (
-		<div>
-			<Button className='bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow'>
-				Footer
-			</Button>
+		<div className="text-slate-900 dark:text-slate-200">
+			Made with ❤️ by &nbsp;
+			<a className={'underline-offset-4 hover:underline'} href="https://profile.intra.42.fr/users/pmeising" title="Philipp Maximilian Meisinger">pmeising</a>&nbsp;
+			<a className={'underline-offset-4 hover:underline'} href="https://profile.intra.42.fr/users/cudoh" title="Chiemezie Udoh">cudoh</a>&nbsp;
+			<a className={'underline-offset-4 hover:underline'} href="https://profile.intra.42.fr/users/mochan" title="Monine Chan">mochan</a>&nbsp;
+			<a className={'underline-offset-4 hover:underline'} href="https://profile.intra.42.fr/users/fakouyat" title="Facinet Kouyate">fakouyat</a>
 		</div>
 	)
 }

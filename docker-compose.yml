@@ -6,6 +6,7 @@ services:
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=mysecretpassword
+      - POSTGRES_DB=pong
     image: postgres:13
     ports:
       - "5432:5432"
@@ -38,7 +39,7 @@ services:
     container_name: frontend
     build: ./frontend
     ports:
-      - "80:3000"
+      - "3000:3000"
     volumes:
       - ./frontend:/usr/src/client
       - /client/node_modules
@@ -50,18 +51,6 @@ services:
       - apis
     stdin_open: true
 
-  #database admin
-  pgadmin:
-    image: dpage/pgadmin4
-    restart: always
-    ports:
-      - 8000:80
-    depends_on:
-      - db
-    env_file:
-      - ./docker.env
-    networks:
-      - app-network
 # define network
 networks:
   app-network:
