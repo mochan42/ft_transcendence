@@ -1,5 +1,5 @@
 ### get all users
-GET http://localhost:5000/pong/users/2
+GET http://localhost:5000/pong/users
 
 #### add user
 POST http://localhost:5000/pong/users
@@ -68,21 +68,46 @@ Content-Type: application/json
 }
 
 ### delete user stat
-
 DELETE  http://localhost:5000/pong/users/1/stats
-
 
 ### get user achievement
 GET http://localhost:5000/pong/users/1/achievements/
 
 ### add user achievement
-POST http://localhost:5000/pong/users/1/achievements/
+POST http://localhost:5000/pong/users/2/achievements/
 Content-Type: application/json
 
 {
-	"label": "Welcome!",
-	"description": "This achievement is created for your first login",
-	"image": "https://www.svgrepo.com/show/398519/trophy.svg",
+	"goalId": 1,
 	"createdAt": "24-07-2023"
 }
+
+### delete achievement
+DELETE http://localhost:5000/pong/users/1/achievements/
+
+### Get all goals 
+GET  http://localhost:5000/pong/goals/
+
+### add a new goal
+POST  http://localhost:5000/pong/goals/
+Content-Type: application/json
+
+{
+	"label": "WELCOME PONG",
+	"image": "welcome.jpg",
+	"description": "You're here"
+}
+
+### add a new goal
+PATCH  http://localhost:5000/pong/goals/1
+Content-Type: application/json
+
+{
+	"label": "WELCOME",
+	"image": "welcome.jpg",
+	"description": "You're here"
+}
+
+### add a new goal
+DELETE http://localhost:5000/pong/goals/1
 

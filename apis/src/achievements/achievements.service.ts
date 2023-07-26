@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { CreateAchievementDto } from './dto/create-achievement.dto';
-import { UpdateAchievementDto } from './dto/update-achievement.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Achievement } from './entities/achievement.entity';
@@ -31,20 +30,18 @@ export class AchievementsService {
   }
 
   // find all user's achievement
-  findAll(userId: number) {
-    return this.AchievementRepository.find({ where: { userId } });
+  async findAll(userId: number) {
+    return await this.AchievementRepository.find({ where: { userId } });
   }
 
   // a specific achievement
-  findOne(userId: number, id: number) {
-    return this.AchievementRepository.findOne({ where: { userId, id } });
+  async findOne(userId: number, goalId: number): Promise<Achievement> {
+    return await this.AchievementRepository.findOne({
+      where: { userId, goalId },
+    });
   }
 
-  update(id: number, updateAchievementDto: UpdateAchievementDto) {
-    return `This action updates a #${id} achievement`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} achievement`;
+  async remove(id: number) {
+    return await this.AchievementRepository.delete(id);
   }
 }

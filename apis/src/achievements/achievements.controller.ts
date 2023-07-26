@@ -9,7 +9,6 @@ import {
 } from '@nestjs/common';
 import { AchievementsService } from './achievements.service';
 import { CreateAchievementDto } from './dto/create-achievement.dto';
-import { UpdateAchievementDto } from './dto/update-achievement.dto';
 
 @Controller('pong/users')
 export class AchievementsController {
@@ -31,14 +30,6 @@ export class AchievementsController {
   @Get(':userId/achievements/:id')
   findOne(@Param('userId') userId: string, @Param('id') id: string) {
     return this.achievementsService.findOne(+userId, +id);
-  }
-
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateAchievementDto: UpdateAchievementDto,
-  ) {
-    return this.achievementsService.update(+id, updateAchievementDto);
   }
 
   @Delete(':id')

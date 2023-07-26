@@ -7,6 +7,7 @@ import { ConfigModule } from '@nestjs/config';
 import { DatabaseModule } from './database/database.module';
 import { GamesModule } from './games/games.module';
 import { AchievementsModule } from './achievements/achievements.module';
+import { GoalsModule } from './goals/goals.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { AchievementsModule } from './achievements/achievements.module';
     DatabaseModule,
     GamesModule,
     AchievementsModule,
+    GoalsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

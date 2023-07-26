@@ -1,16 +1,16 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
-export class Achievement {
+export class Goal {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
-  userId: number;
+  label?: string;
 
   @Column()
-  goalId: number;
+  image?: string;
 
   @Column()
-  createdAt?: string;
+  description?: string;
 }
