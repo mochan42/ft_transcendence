@@ -228,7 +228,7 @@ const Pong: React.FC<PongProps> = ({ userId, difficulty, isGameActive, isGameOve
 				moveBall();
 				checkCollision();
 			}
-			if (playerScore >= 5 || botScore >= 5) {
+			if (playerScore >= 1 || botScore >= 1) {
 				setIsGameOver(true);
 			}
 			if (isReset && !isGameOver) {
@@ -294,7 +294,7 @@ const Pong: React.FC<PongProps> = ({ userId, difficulty, isGameActive, isGameOve
 			{includeBoost && !isBoost ? <Boost x={boostStartX} y={boostStartY} width={boostWidth} height={boostWidth} /> : null}
 			{isGameOver ? (
 					<div className="absolute inset-0 bg-black bg-opacity-80">
-						<VictoryLoss userId={userId} isVictory={playerScore === 5} difficulty={difficulty} />
+						<VictoryLoss userId={userId} isVictory={playerScore === 1} difficulty={difficulty} />
 					</div>
 				) : null
 			}
