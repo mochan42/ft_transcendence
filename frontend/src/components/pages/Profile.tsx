@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Button } from '../ui/Button'
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import Achievements from '../Achievements';
 import Friends from '../Friends';
 import Stats from '../Stats';
@@ -29,6 +29,15 @@ type UserStats = {
 	'draws': number,
 };
 
+type UserAchievements = {
+	'id': number;
+	'userId': number;
+	'label': string;
+	'description': string;
+	'image': string;
+	'createdAt': string;
+}
+
 interface ProfileProps {
 	userId: number;
 }
@@ -38,13 +47,26 @@ const Profile:React.FC<ProfileProps> =({ userId }) => {
 	const [userInfo, setUserInfo] = useState< User | null >(null);
 	const [userStats, setUserStats] = useState< UserStats | null >(null);
 	const [showScreen, setShowScreen] = useState< 'default' | 'achievements' | 'friends' | 'stats' >('default');
+	const [UserAchievements, setUserAchievements] = useState< UserAchievements[] >();
+	const url_achievements = 'http://localhost:5000/pong/users/' + userId.toString() + '/achievements';
 	const id = userId.toString();
+	
 
 	useEffect(() => {
-		getUserInfo(id);
-		getUserStats(id);
-		// getUserAchievements();
-	}, [id]);
+		getUserAchievements();
+	}, []);
+
+	const getUserAchievements = async () => {
+		try {
+			const response: AxiosResponse<UserAchievements[]> = await axios.get(url_achievements);
+			if (response.status === 200) {
+				setUserAchievements(response.data);
+				console.log('Received User Achievements: ', response.data);
+			}
+		} catch (error) {
+			console.log('Error fetching user achievements:', error);
+		}
+	};
 
 	const getUserInfo = async (id: string) => {
 		try {
@@ -52,7 +74,7 @@ const Profile:React.FC<ProfileProps> =({ userId }) => {
 			const response = await axios.get<User>(url);
 			if (response.status === 200) {
 				setUserInfo(response.data);
-				console.log(response.data)
+				console.log('Received User Info: ', response.data)
 			}
 		}
 		catch (error) {
@@ -72,6 +94,19 @@ const Profile:React.FC<ProfileProps> =({ userId }) => {
 			console.log('Error fetching user stats:', error);
 		}
 	};
+
+	
+	useEffect(() => {
+		if (userInfo === null) {
+			getUserInfo(id);
+		}
+		if (userStats === null) {
+			getUserStats(id);
+		}
+		if (UserAchievements === null) {
+			getUserAchievements();
+		}
+	}, [id]);
 
 	return (
 		<div className='absolute h-full w-full'>
@@ -113,19 +148,6 @@ const Profile:React.FC<ProfileProps> =({ userId }) => {
 									</div>
 								</div>
 							</div>
-							<div>
-								<div className='space-y-2 flex flex-col justify-between gap-4'>
-									<div className='flex flex-row justify-between'>
-										The first achievement
-									</div>
-									<div className='flex flex-row justify-between'>
-										The second achievement
-									</div>
-									<div className='flex flex-row justify-between'>
-										The third achievement
-									</div>
-								</div>
-							</div>
 						</div>
 						<div>
 							<Button variant={'link'} onClick={() => setShowScreen('stats')}>
@@ -139,40 +161,74 @@ const Profile:React.FC<ProfileProps> =({ userId }) => {
 						<h3 className='bg-slate-900 text-lg font-bold mb-4 border-slate-900 border-2 rounded-lg text-white dark:bg-slate-200 dark:text-slate-900'>
 							Achievements
 						</h3>
-						<div className='flex flex-wrap items-center justify-around gap-8'>
-							<div>
-								<div className='space-y-2 flex flex-col justify-between gap-4'>
-									<div className='flex flex-row justify-between'>
-										<img className='h-6 w-6' src="https://www.svgrepo.com/show/421893/achievement-challenge-medal.svg" alt="Achievement badge" />
-										The first achievement
-									</div>
-									<div className='flex flex-row justify-between'>
-										<img className='h-6 w-6' src="https://www.svgrepo.com/show/421893/achievement-challenge-medal.svg" alt="Achievement badge" />
-										The second achievement
-									</div>
-									<div className='flex flex-row justify-between'>
-										<img className='h-6 w-6' src="https://www.svgrepo.com/show/421893/achievement-challenge-medal.svg" alt="Achievement badge" />
-										The third achievement
+						<div className="grid grid-cols-2 gap-8">
+						{UserAchievements?.slice(0, 6).map((achievement, index) => (
+							<div key={index}>
+								<div className="space-y-2 flex flex-col justify-between gap-4">
+									<div className="flex flex-row justify-between">
+										<img
+										className="h-6 w-6"
+										src={achievement.image}
+										alt="Achievement badge"
+										/>
+										{achievement.label}
 									</div>
 								</div>
 							</div>
-							<div>
-								<div className='space-y-2 flex flex-col justify-between gap-4'>
-									<div className='flex flex-row justify-between'>
-										<img className='h-6 w-6' src="https://www.svgrepo.com/show/421893/achievement-challenge-medal.svg" alt="Achievement badge" />
-										The first achievement
-									</div>
-									<div className='flex flex-row justify-between'>
-										<img className='h-6 w-6' src="https://www.svgrepo.com/show/421893/achievement-challenge-medal.svg" alt="Achievement badge" />
-										The second achievement
-									</div>
-									<div className='flex flex-row justify-between'>
-										<img className='h-6 w-6' src="https://www.svgrepo.com/show/421893/achievement-challenge-medal.svg" alt="Achievement badge" />
-										The third achievement
-									</div>
-								</div>
-							</div>
+						))}
 						</div>
+						{/* <div className='flex flex-wrap items-center justify-around gap-8'>
+							<div className="flex flex-wrap items-center justify-around gap-8">
+								{UserAchievements?.slice(0, 6).map((achievement, index) => (
+									<div key={index}>
+										<div className="space-y-2 flex flex-col justify-between gap-4">
+											<div className="flex flex-row justify-between">
+											<img
+												className="h-6 w-6"
+												src={achievement.image}
+												alt="Achievement badge"
+											/>
+											{achievement.label}
+											</div>
+										</div>
+									</div>
+								))}
+								</div>
+							</div> */}
+						{/* <div className='flex flex-wrap items-center justify-around gap-8'>
+							<div>
+								<div className='space-y-2 flex flex-col justify-between gap-4'>
+									<div className='flex flex-row justify-between'>
+										<img className='h-6 w-6' src="https://www.svgrepo.com/show/421893/achievement-challenge-medal.svg" alt="Achievement badge" />
+										The first achievement
+									</div>
+									<div className='flex flex-row justify-between'>
+										<img className='h-6 w-6' src="https://www.svgrepo.com/show/421893/achievement-challenge-medal.svg" alt="Achievement badge" />
+										The second achievement
+									</div>
+									<div className='flex flex-row justify-between'>
+										<img className='h-6 w-6' src="https://www.svgrepo.com/show/421893/achievement-challenge-medal.svg" alt="Achievement badge" />
+										The third achievement
+									</div>
+								</div>
+							</div>
+							<div>
+								<div className='space-y-2 flex flex-col justify-between gap-4'>
+									<div className='flex flex-row justify-between'>
+										<img className='h-6 w-6' src="https://www.svgrepo.com/show/421893/achievement-challenge-medal.svg" alt="Achievement badge" />
+										The first achievement
+									</div>
+									<div className='flex flex-row justify-between'>
+										<img className='h-6 w-6' src="https://www.svgrepo.com/show/421893/achievement-challenge-medal.svg" alt="Achievement badge" />
+										The second achievement
+									</div>
+									<div className='flex flex-row justify-between'>
+										<img className='h-6 w-6' src="https://www.svgrepo.com/show/421893/achievement-challenge-medal.svg" alt="Achievement badge" />
+										The third achievement
+									</div>
+								</div>
+							</div>
+						</div> */}
 						<div>
 							<Button variant={'link'} onClick={() => setShowScreen('achievements')}>
 								more
