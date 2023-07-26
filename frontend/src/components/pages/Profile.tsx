@@ -4,63 +4,33 @@ import axios, { AxiosResponse } from 'axios';
 import Achievements from '../Achievements';
 import Friends from '../Friends';
 import Stats from '../Stats';
-
-type User = {
-	'id': number;
-	'userName': string;
-	'userNameLoc': string;
-	'firstName': string;
-	'lastName': string;
-	'is2Fa': boolean;
-	'authToken': string;
-	'email': string;
-	'secret2Fa'?: string;
-	'avatar'?: string;
-	'xp': number;
-	'isLogged': boolean;
-	'lastSeen'?: string;
-};
-
-type UserStats = {
-	'id': number;
-	'userId': number;
-	'wins': number,
-	'losses': number,
-	'draws': number,
-};
-
-type UserAchievements = {
-	'id': number;
-	'userId': number;
-	'label': string;
-	'description': string;
-	'image': string;
-	'createdAt': string;
-}
-
-interface ProfileProps {
-	userId: number;
-}
+import { User, ProfileProps, UserStats, UserAchievements, Goal } from '../../types';
 
 const Profile:React.FC<ProfileProps> =({ userId }) => {
 	
 	const [userInfo, setUserInfo] = useState< User | null >(null);
 	const [userStats, setUserStats] = useState< UserStats | null >(null);
 	const [showScreen, setShowScreen] = useState< 'default' | 'achievements' | 'friends' | 'stats' >('default');
-	const [UserAchievements, setUserAchievements] = useState< UserAchievements[] >();
-	const url_achievements = 'http://localhost:5000/pong/users/' + userId.toString() + '/achievements';
+	//const [UserAchievements, setUserAchievements] = useState< UserAchievements[] >();
+	const [allGoals, setAllGoals] = useState< Goal[] | null >(null);
+	//const url_achievements = 'http://localhost:5000/pong/users/' + userId.toString() + '/achievements';
+	const url_goals = 'http://localhost:5000/pong/goals';
 	const id = userId.toString();
 	
 
 	useEffect(() => {
-		getUserAchievements();
+		//getUserAchievements();
+		getAllGoals();
 	}, []);
 
-	const getUserAchievements = async () => {
+	//const getUserAchievements = async () => {
+	const getAllGoals = async () => {
 		try {
-			const response: AxiosResponse<UserAchievements[]> = await axios.get(url_achievements);
+			//const response: AxiosResponse<UserAchievements[]> = await axios.get(url_achievements);
+			const response: AxiosResponse<Goal[] | null> = await axios.get(url_goals);
 			if (response.status === 200) {
-				setUserAchievements(response.data);
+				//setUserAchievements(response.data);
+				setAllGoals(response.data);
 				console.log('Received User Achievements: ', response.data);
 			}
 		} catch (error) {
@@ -103,8 +73,11 @@ const Profile:React.FC<ProfileProps> =({ userId }) => {
 		if (userStats === null) {
 			getUserStats(id);
 		}
-		if (UserAchievements === null) {
-			getUserAchievements();
+		// if (UserAchievements === null) {
+		// 	getUserAchievements();
+		// }
+		if (allGoals === null) {
+			getAllGoals();
 		}
 	}, [id]);
 
@@ -162,16 +135,17 @@ const Profile:React.FC<ProfileProps> =({ userId }) => {
 							Achievements
 						</h3>
 						<div className="grid grid-cols-2 gap-8">
-						{UserAchievements?.slice(0, 6).map((achievement, index) => (
+						{/* {UserAchievements?.slice(0, 6).map((achievement, index) => ( */}
+						{allGoals?.map((goal, index) => (
 							<div key={index}>
 								<div className="space-y-2 flex flex-col justify-between gap-4">
 									<div className="flex flex-row justify-between">
 										<img
 										className="h-6 w-6"
-										src={achievement.image}
+										src={goal.image}
 										alt="Achievement badge"
 										/>
-										{achievement.label}
+										{goal.label}
 									</div>
 								</div>
 							</div>
