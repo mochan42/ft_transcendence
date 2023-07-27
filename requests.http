@@ -142,7 +142,7 @@ POST  http://localhost:5000/pong/goals/
 Content-Type: application/json
 
 {
-	"label": "Heisted the Heistotron",
+	"label": "Heisted Heistotron",
 	"image": "https://www.svgrepo.com/show/145418/robot.svg",
 	"description": "Won against the Bot on extreme"
 }
@@ -154,14 +154,14 @@ Content-Type: application/json
 # const description = ['Won against the Bot on easy', 'Won against the Bot on medium', 'Won against the Bot on hard', 'Won against the Bot on very hard', 'Won against the Bot on extreme'];
 # const image = ['https://www.svgrepo.com/show/470680/robot-face.svg', 'https://www.svgrepo.com/show/235195/robot-ai.svg', 'https://www.svgrepo.com/show/134/robot.svg', 'https://www.svgrepo.com/show/402624/robot-face.svg', 'https://www.svgrepo.com/show/145418/robot.svg'];
 
-### add a new goal
-PATCH  http://localhost:5000/pong/goals/1
+### patch a goal
+PATCH  http://localhost:5000/pong/goals/6
 Content-Type: application/json
 
 {
-	"label": "WELCOME",
-	"image": "https://www.svgrepo.com/show/398519/trophy.svg",
-	"description": "You're here"
+	"label": "Heisted Heistotron",
+	"image": "https://www.svgrepo.com/show/145418/robot.svg",
+	"description": "Won against the Bot on extreme"
 }
 
 

@@ -11,18 +11,15 @@ const Profile:React.FC<ProfileProps> =({ userId }) => {
 	const [userInfo, setUserInfo] = useState< User | null >(null);
 	const [userStats, setUserStats] = useState< UserStats | null >(null);
 	const [showScreen, setShowScreen] = useState< 'default' | 'achievements' | 'friends' | 'stats' >('default');
-	const [userAchievements, setUserAchievements] = useState< UserAchievements[] >();
+	const [userAchievements, setUserAchievements] = useState< UserAchievements[] | null >(null);
 	const [allGoals, setAllGoals] = useState< Goal[] | null >(null);
+	const url_info = 'http://localhost:5000/pong/users/' + userId.toString();
+	const url_stats = 'http://localhost:5000/pong/users/' + userId.toString() + '/stats'
 	const url_achievements = 'http://localhost:5000/pong/users/' + userId.toString() + '/achievements';
 	const url_goals = 'http://localhost:5000/pong/goals';
 	const id = userId.toString();
 	const [achievedGoals, setAchievedGoals] = useState<Goal[]>();
-	allGoals?.filter((goal) => {
-		return userAchievements?.some((achievement) => achievement.goalId === goal.id);
-	});
-	const notAchievedGoals = allGoals?.filter((goal) => {
-		return userAchievements?.some((achievement) => achievement.goalId != goal.id);
-	})
+	const [notAchievedGoals, setNotAchievedGoals] = useState<Goal[]>();
 
 	const getUserAchievements = async () => {
 		try {
@@ -48,10 +45,9 @@ const Profile:React.FC<ProfileProps> =({ userId }) => {
 		}
 	};
 
-	const getUserInfo = async (id: string) => {
+	const getUserInfo = async () => {
 		try {
-			const url = 'http://localhost:5000/pong/users/' + id;
-			const response = await axios.get<User>(url);
+			const response = await axios.get<User>(url_info);
 			if (response.status === 200) {
 				setUserInfo(response.data);
 				console.log('Received User Info: ', response.data)
@@ -62,10 +58,9 @@ const Profile:React.FC<ProfileProps> =({ userId }) => {
 		}
 	}
 
-	const getUserStats = async (id: string) => {
+	const getUserStats = async () => {
 		try {
-			const url = 'http://localhost:5000/pong/users/' + id + '/stats';
-			const response = await axios.get<UserStats>(url);
+			const response = await axios.get<UserStats>(url_stats);
 			if (response.status === 200) {
 				setUserStats(response.data);
 				console.log('Received User Stats: ', response.data);
@@ -76,21 +71,24 @@ const Profile:React.FC<ProfileProps> =({ userId }) => {
 	};
 
 	useEffect(() => {
-		// Calculate the achieved goals and update the state
-		const achievedGoals = allGoals?.filter((goal) => {
-		  return userAchievements?.some((achievement) => achievement.goalId === goal.id);
-		});
-		setAchievedGoals(achievedGoals);
+		if (allGoals != null && userAchievements != null) {
+			const achievedGoals = allGoals?.filter((goal) => {
+			  return userAchievements?.some((achievement) => achievement.goalId === goal.id);
+			});
+			const notAchievedGoals = allGoals?.filter((goal) => {
+				return userAchievements?.some((achievement) => achievement.goalId != goal.id);
+			})
+			setAchievedGoals(achievedGoals);
+			setNotAchievedGoals(notAchievedGoals);
+		}
 	  }, [userAchievements, allGoals]);
 	
 	useEffect(() => {
 		if (userInfo === null) {
-			getUserInfo(id);
-		} else {
+			getUserInfo();
 		}
-
 		if (userStats === null) {
-			getUserStats(id);
+			getUserStats();
 		}
 		if (userAchievements === null) {
 			getUserAchievements();
@@ -98,7 +96,7 @@ const Profile:React.FC<ProfileProps> =({ userId }) => {
 		if (allGoals === null) {
 			getAllGoals();
 		}
-	}, [id]);
+	}, []);
 
 	return (
 		<div className='absolute h-full w-full'>
@@ -150,11 +148,11 @@ const Profile:React.FC<ProfileProps> =({ userId }) => {
 				</div>
 				<div className='h-1/2 flex flex-wrap justify-around items-center z-0'>
 					<div className='w-auto text-center space-y-8'>
-						<h3 className='w-[300px] bg-slate-900 text-lg font-bold mb-4 border-slate-900 border-2 rounded-lg text-white dark:bg-slate-200 dark:text-slate-900'>
+						<h3 className='w-min-[300px] bg-slate-900 text-lg font-bold mb-4 border-slate-900 border-2 rounded-lg text-white dark:bg-slate-200 dark:text-slate-900'>
 							Achievements
 						</h3>
 						<div className="grid grid-cols-2 gap-8">
-							{notAchievedGoals?.map((goal, index) => (
+							{achievedGoals?.map((goal, index) => (
 								<div key={index}>
 									<div className="space-y-2 flex flex-col justify-between gap-4">
 										<div className="flex flex-row justify-between">
@@ -171,9 +169,9 @@ const Profile:React.FC<ProfileProps> =({ userId }) => {
 							{notAchievedGoals?.map((goal, index) => (
 								<div key={index}>
 									<div className="space-y-2 flex flex-col justify-between gap-4">
-										<div className="flex flex-row justify-between">
+										<div className="flex flex-row justify-between min-w-[220px]">
 											<img
-											className="h-6 w-6"
+											className="h-6 w-6 dark:bg-slate-200 rounded-full"
 											src='https://www.svgrepo.com/show/529148/question-circle.svg'
 											alt="Achievement badge"
 											/>
