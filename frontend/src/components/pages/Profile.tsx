@@ -11,37 +11,43 @@ const Profile:React.FC<ProfileProps> =({ userId }) => {
 	const [userInfo, setUserInfo] = useState< User | null >(null);
 	const [userStats, setUserStats] = useState< UserStats | null >(null);
 	const [showScreen, setShowScreen] = useState< 'default' | 'achievements' | 'friends' | 'stats' >('default');
-	//const [UserAchievements, setUserAchievements] = useState< UserAchievements[] >();
+	const [userAchievements, setUserAchievements] = useState< UserAchievements[] | null >(null);
 	const [allGoals, setAllGoals] = useState< Goal[] | null >(null);
-	//const url_achievements = 'http://localhost:5000/pong/users/' + userId.toString() + '/achievements';
+	const url_info = 'http://localhost:5000/pong/users/' + userId.toString();
+	const url_stats = 'http://localhost:5000/pong/users/' + userId.toString() + '/stats'
+	const url_achievements = 'http://localhost:5000/pong/users/' + userId.toString() + '/achievements';
 	const url_goals = 'http://localhost:5000/pong/goals';
 	const id = userId.toString();
-	
+	const [achievedGoals, setAchievedGoals] = useState<Goal[]>();
+	const [notAchievedGoals, setNotAchievedGoals] = useState<Goal[]>();
 
-	useEffect(() => {
-		//getUserAchievements();
-		getAllGoals();
-	}, []);
-
-	//const getUserAchievements = async () => {
-	const getAllGoals = async () => {
+	const getUserAchievements = async () => {
 		try {
-			//const response: AxiosResponse<UserAchievements[]> = await axios.get(url_achievements);
-			const response: AxiosResponse<Goal[] | null> = await axios.get(url_goals);
+			const response: AxiosResponse<UserAchievements[]> = await axios.get(url_achievements);
 			if (response.status === 200) {
-				//setUserAchievements(response.data);
-				setAllGoals(response.data);
+				setUserAchievements(response.data);
 				console.log('Received User Achievements: ', response.data);
 			}
 		} catch (error) {
 			console.log('Error fetching user achievements:', error);
 		}
 	};
-
-	const getUserInfo = async (id: string) => {
+	
+	const getAllGoals = async () => {
 		try {
-			const url = 'http://localhost:5000/pong/users/' + id;
-			const response = await axios.get<User>(url);
+			const response: AxiosResponse<Goal[] | null> = await axios.get(url_goals);
+			if (response.status === 200) {
+				setAllGoals(response.data);
+				console.log('Received Goals: ', response.data);
+			}
+		} catch (error) {
+			console.log('Error fetching Goals:', error);
+		}
+	};
+
+	const getUserInfo = async () => {
+		try {
+			const response = await axios.get<User>(url_info);
 			if (response.status === 200) {
 				setUserInfo(response.data);
 				console.log('Received User Info: ', response.data)
@@ -52,10 +58,9 @@ const Profile:React.FC<ProfileProps> =({ userId }) => {
 		}
 	}
 
-	const getUserStats = async (id: string) => {
+	const getUserStats = async () => {
 		try {
-			const url = 'http://localhost:5000/pong/users/' + id + '/stats';
-			const response = await axios.get<UserStats>(url);
+			const response = await axios.get<UserStats>(url_stats);
 			if (response.status === 200) {
 				setUserStats(response.data);
 				console.log('Received User Stats: ', response.data);
@@ -65,21 +70,35 @@ const Profile:React.FC<ProfileProps> =({ userId }) => {
 		}
 	};
 
+	useEffect(() => {
+		if (allGoals != null && userAchievements != null) {
+			const achievedGoals = allGoals?.filter((goal) => {
+			  return userAchievements?.some((achievement) => achievement.goalId === goal.id);
+			});
+			const notAchievedGoals = allGoals?.filter((goal) => {
+				return !userAchievements?.some((achievement) => achievement.goalId === goal.id);
+			})
+			console.log('achieved goals: ', achievedGoals)
+			console.log('not achieved goals: ', notAchievedGoals)
+			setAchievedGoals(achievedGoals);
+			setNotAchievedGoals(notAchievedGoals);
+		}
+	  }, [userAchievements, allGoals]);
 	
 	useEffect(() => {
 		if (userInfo === null) {
-			getUserInfo(id);
+			getUserInfo();
 		}
 		if (userStats === null) {
-			getUserStats(id);
+			getUserStats();
 		}
-		// if (UserAchievements === null) {
-		// 	getUserAchievements();
-		// }
+		if (userAchievements === null) {
+			getUserAchievements();
+		}
 		if (allGoals === null) {
 			getAllGoals();
 		}
-	}, [id]);
+	}, []);
 
 	return (
 		<div className='absolute h-full w-full'>
@@ -104,7 +123,7 @@ const Profile:React.FC<ProfileProps> =({ userId }) => {
 						</div>
 					</div>
 					<div className='w-auto text-center space-y-8'>
-						<h3 className='bg-slate-900 text-lg font-bold mb-4 border-slate-900 border-2 rounded-lg text-white dark:bg-slate-200 dark:text-slate-900'>
+						<h3 className='w-[300px] bg-slate-900 text-lg font-bold mb-4 border-slate-900 border-2 rounded-lg text-white dark:bg-slate-200 dark:text-slate-900'>
 							Stats and numbers
 						</h3>
 						<div className='flex flex-wrap items-center justify-around gap-8'>
@@ -131,78 +150,39 @@ const Profile:React.FC<ProfileProps> =({ userId }) => {
 				</div>
 				<div className='h-1/2 flex flex-wrap justify-around items-center z-0'>
 					<div className='w-auto text-center space-y-8'>
-						<h3 className='bg-slate-900 text-lg font-bold mb-4 border-slate-900 border-2 rounded-lg text-white dark:bg-slate-200 dark:text-slate-900'>
+						<h3 className='w-min-[300px] bg-slate-900 text-lg font-bold mb-4 border-slate-900 border-2 rounded-lg text-white dark:bg-slate-200 dark:text-slate-900'>
 							Achievements
 						</h3>
 						<div className="grid grid-cols-2 gap-8">
-						{/* {UserAchievements?.slice(0, 6).map((achievement, index) => ( */}
-						{allGoals?.map((goal, index) => (
-							<div key={index}>
-								<div className="space-y-2 flex flex-col justify-between gap-4">
-									<div className="flex flex-row justify-between">
-										<img
-										className="h-6 w-6"
-										src={goal.image}
-										alt="Achievement badge"
-										/>
-										{goal.label}
-									</div>
-								</div>
-							</div>
-						))}
-						</div>
-						{/* <div className='flex flex-wrap items-center justify-around gap-8'>
-							<div className="flex flex-wrap items-center justify-around gap-8">
-								{UserAchievements?.slice(0, 6).map((achievement, index) => (
-									<div key={index}>
-										<div className="space-y-2 flex flex-col justify-between gap-4">
-											<div className="flex flex-row justify-between">
+							{achievedGoals?.map((goal, index) => (
+								<div key={index}>
+									<div className="space-y-2 flex flex-col justify-between gap-4">
+										<div className="flex flex-row justify-between">
 											<img
-												className="h-6 w-6"
-												src={achievement.image}
-												alt="Achievement badge"
+											className="h-6 w-6"
+											src={goal.image}
+											alt="Achievement badge"
 											/>
-											{achievement.label}
-											</div>
+											{goal.label}
 										</div>
 									</div>
-								))}
 								</div>
-							</div> */}
-						{/* <div className='flex flex-wrap items-center justify-around gap-8'>
-							<div>
-								<div className='space-y-2 flex flex-col justify-between gap-4'>
-									<div className='flex flex-row justify-between'>
-										<img className='h-6 w-6' src="https://www.svgrepo.com/show/421893/achievement-challenge-medal.svg" alt="Achievement badge" />
-										The first achievement
-									</div>
-									<div className='flex flex-row justify-between'>
-										<img className='h-6 w-6' src="https://www.svgrepo.com/show/421893/achievement-challenge-medal.svg" alt="Achievement badge" />
-										The second achievement
-									</div>
-									<div className='flex flex-row justify-between'>
-										<img className='h-6 w-6' src="https://www.svgrepo.com/show/421893/achievement-challenge-medal.svg" alt="Achievement badge" />
-										The third achievement
+							))}
+							{notAchievedGoals?.map((goal, index) => (
+								<div key={index}>
+									<div className="space-y-2 flex flex-col justify-between gap-4">
+										<div className="flex flex-row justify-between min-w-[220px]">
+											<img
+											className="h-6 w-6 dark:bg-slate-200 rounded-full"
+											src='https://www.svgrepo.com/show/529148/question-circle.svg'
+											alt="Achievement badge"
+											/>
+											{goal.label}
+										</div>
 									</div>
 								</div>
-							</div>
-							<div>
-								<div className='space-y-2 flex flex-col justify-between gap-4'>
-									<div className='flex flex-row justify-between'>
-										<img className='h-6 w-6' src="https://www.svgrepo.com/show/421893/achievement-challenge-medal.svg" alt="Achievement badge" />
-										The first achievement
-									</div>
-									<div className='flex flex-row justify-between'>
-										<img className='h-6 w-6' src="https://www.svgrepo.com/show/421893/achievement-challenge-medal.svg" alt="Achievement badge" />
-										The second achievement
-									</div>
-									<div className='flex flex-row justify-between'>
-										<img className='h-6 w-6' src="https://www.svgrepo.com/show/421893/achievement-challenge-medal.svg" alt="Achievement badge" />
-										The third achievement
-									</div>
-								</div>
-							</div>
-						</div> */}
+							))}
+						</div>
 						<div>
 							<Button variant={'link'} onClick={() => setShowScreen('achievements')}>
 								more
@@ -210,7 +190,7 @@ const Profile:React.FC<ProfileProps> =({ userId }) => {
 						</div>
 					</div>
 					<div className='w-1/4 text-center space-y-8'>
-						<h3 className='bg-slate-900 text-lg font-bold mb-4 border-slate-900 border-2 rounded-lg text-white dark:bg-slate-200 dark:text-slate-900'>
+						<h3 className='w-[300px] bg-slate-900 text-lg font-bold mb-4 border-slate-900 border-2 rounded-lg text-white dark:bg-slate-200 dark:text-slate-900'>
 							Friends of the World
 						</h3>
 						<div className='space-y-2 flex flex-col justify-between gap-4'>

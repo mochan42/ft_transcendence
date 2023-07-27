@@ -25,7 +25,7 @@ const App: React.FC = () => {
 */
 	const [isAuth, setIsAuth] = useState<boolean>(true)
 	const [code, setCode] = useState<string | null>(null)
-	const userId = 7;
+	const userId = 2;
 
 	return (
 		<div className='grid gap-2 font-mono dark:bg-white/75 bg-slate-900 bg-opacity-80'>

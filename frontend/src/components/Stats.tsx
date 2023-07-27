@@ -93,28 +93,26 @@ const Stats:React.FC<StatsProps> =({ userId, setShowScreen }) => {
 							<path strokeLinecap="round" strokeLinejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" />
 						</svg>
 					</Button>
-					<div className="overflow-y-auto">
-						<div className="bg-slate-200 shadow-md p-4 rounded-md">
-							<div className="flex justify-between mb-4">
-								<span>Victories:</span>
-								<span>{userStats?.wins}</span>
-							</div>
-							<div className="flex justify-between mb-4">
-								<span>Defeats:</span>
-								<span>{userStats?.losses}</span>
-							</div>
-							<div className="flex justify-between mb-4">
-								<span>Win Ratio:</span>
-								<span>{winRatio.toFixed(2)}%</span>
-							</div>
-							<div className="flex justify-between mb-4">
-								<span>Defeat Ratio:</span>
-								<span>{(100 - (winRatio ?? 0)).toFixed(2)}%</span>
-							</div>
-							<div className="flex justify-between mb-4">
-								<span>Total Achievements unlocked:</span>
-								<span>{userAchievements?.length} / 42</span>
-							</div>
+					<div className="overflow-y-auto bg-slate-200 dark:bg-slate-900 dark:text-slate-200 shadow-md p-4 rounded-md">
+						<div className="flex justify-between mb-4">
+							<span>Victories:</span>
+							<span>{userStats?.wins}</span>
+						</div>
+						<div className="flex justify-between mb-4">
+							<span>Defeats:</span>
+							<span>{userStats?.losses}</span>
+						</div>
+						<div className="flex justify-between mb-4">
+							<span>Win Ratio:</span>
+							<span>{winRatio.toFixed(2)}%</span>
+						</div>
+						<div className="flex justify-between mb-4">
+							<span>Defeat Ratio:</span>
+							<span>{(100 - (winRatio ?? 0)).toFixed(2)}%</span>
+						</div>
+						<div className="flex justify-between mb-4">
+							<span>Total Achievements unlocked:</span>
+							<span>{userAchievements?.length} / 42</span>
 						</div>
 					</div>
 				</div>
