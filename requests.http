@@ -195,3 +195,4 @@ Content-Type: application/json
 
 ### delete frienship
 DELETE http://localhost:5000/pong/friends/3
+d
