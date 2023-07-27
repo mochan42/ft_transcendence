@@ -45,15 +45,17 @@ const Achievements:React.FC<AchievementsProps> =({ userId, setShowScreen }) => {
 	useEffect(() => {
 		if (allGoals != null && userAchievements != null) {
 			const achievedGoals = allGoals?.filter((goal) => {
-				return userAchievements?.some((achievement) => achievement.goalId === goal.id);
+			  return userAchievements?.some((achievement) => achievement.goalId === goal.id);
 			});
 			const notAchievedGoals = allGoals?.filter((goal) => {
-				return userAchievements?.some((achievement) => achievement.goalId != goal.id);
+				return !userAchievements?.some((achievement) => achievement.goalId === goal.id);
 			})
+			console.log('achieved goals: ', achievedGoals)
+			console.log('not achieved goals: ', notAchievedGoals)
 			setAchievedGoals(achievedGoals);
 			setNotAchievedGoals(notAchievedGoals);
 		}
-	}, [userAchievements, allGoals]);
+	  }, [userAchievements, allGoals]);
 
 	useEffect(() => {
 		if (userAchievements === null) {
@@ -98,7 +100,7 @@ const Achievements:React.FC<AchievementsProps> =({ userId, setShowScreen }) => {
 							<div className='flex items-center justify-around '>
 								<img className='h-16 w-16 bg-slate-200 dark:bg-slate-200 rounded-full' src='https://www.svgrepo.com/show/529148/question-circle.svg' alt="Achievement icon" />
 								<p className='w-3/5'>
-									{goal.label}
+									...
 								</p>
 							</div>
 								<p className='text-xs dark:text-slate-200 '>

@@ -103,7 +103,7 @@ Content-Type: application/json
 
 {
 	"label": "Beat that Bot",
-	"image": "https://www.svgrepo.com/show/470680/robot-face.svg",
+	"image": "https://www.svgrepo.com/show/131148/robot.svg",
 	"description": "Won against the Bot on easy"
 }
 
@@ -155,13 +155,13 @@ Content-Type: application/json
 # const image = ['https://www.svgrepo.com/show/470680/robot-face.svg', 'https://www.svgrepo.com/show/235195/robot-ai.svg', 'https://www.svgrepo.com/show/134/robot.svg', 'https://www.svgrepo.com/show/402624/robot-face.svg', 'https://www.svgrepo.com/show/145418/robot.svg'];
 
 ### patch a goal
-PATCH  http://localhost:5000/pong/goals/6
+PATCH  http://localhost:5000/pong/goals/2
 Content-Type: application/json
 
 {
-	"label": "Heisted Heistotron",
-	"image": "https://www.svgrepo.com/show/145418/robot.svg",
-	"description": "Won against the Bot on extreme"
+	"label": "Beat that Bot",
+	"image": "https://www.svgrepo.com/show/131148/robot.svg",
+	"description": "Won against the Bot on easy"
 }
 
 

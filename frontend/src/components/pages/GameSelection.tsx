@@ -12,7 +12,7 @@ const GameSelection:React.FC<GameSelectionProps> =({ userId }) => {
 
 	const [state, setState] = useState<'select' | 'bot' | 'player'>('select');
 	const [difficulty, setDifficulty] = useState(0);
-	const [difficultyStyle, setDifficultyStyle] = useState<'bg-green-400' | 'bg-yellow-400' | 'bg-red-400' | 'bg-violet-400' | 'bg-amber-900' | 'bg-white'>('bg-white')
+	const [difficultyStyle, setDifficultyStyle] = useState<'bg-green-400' | 'bg-yellow-400' | 'bg-red-400' | 'bg-violet-400' | 'bg-amber-500' | 'bg-white'>('bg-white')
 	const [isHoveredBot, setIsHoveredBot] = useState(false);
 	const [isHoveredPlayer, setIsHoveredPlayer] = useState(false);
 	const [includeBoost, setIncludeBoost] = useState(true);
@@ -47,7 +47,7 @@ const GameSelection:React.FC<GameSelectionProps> =({ userId }) => {
 		} else if (difficulty === 3) {
 			setDifficultyStyle('bg-violet-400')
 		} else if (difficulty === 4) {
-			setDifficultyStyle('bg-amber-900')
+			setDifficultyStyle('bg-amber-500')
 		}
 	}
 	
@@ -96,7 +96,7 @@ const GameSelection:React.FC<GameSelectionProps> =({ userId }) => {
 							{difficulty === 3 ? 'very hard' : null}
 							{difficulty === 4 ? 'extreme' : null}
 						</button>
-						<button className='hover:underline w-full h-1/2 bg-opacity-90 rounded-bl-full rounded-br-full border-4 border-slate-200 dark:border-slate-900 bg-slate-500 saturate-50'
+						<button className='hover:underline w-full h-1/2 rounded-bl-full rounded-br-full border-4 border-slate-200 dark:border-slate-900 bg-slate-500 saturate-50'
 							onClick={() => setIncludeBoost((prev) => !prev)}>
 							{includeBoost ? "Upgrade enabled" : "Upgrade disabled"}
 						</button>

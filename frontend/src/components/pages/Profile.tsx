@@ -76,8 +76,10 @@ const Profile:React.FC<ProfileProps> =({ userId }) => {
 			  return userAchievements?.some((achievement) => achievement.goalId === goal.id);
 			});
 			const notAchievedGoals = allGoals?.filter((goal) => {
-				return userAchievements?.some((achievement) => achievement.goalId != goal.id);
+				return !userAchievements?.some((achievement) => achievement.goalId === goal.id);
 			})
+			console.log('achieved goals: ', achievedGoals)
+			console.log('not achieved goals: ', notAchievedGoals)
 			setAchievedGoals(achievedGoals);
 			setNotAchievedGoals(notAchievedGoals);
 		}
@@ -158,7 +160,7 @@ const Profile:React.FC<ProfileProps> =({ userId }) => {
 										<div className="flex flex-row justify-between">
 											<img
 											className="h-6 w-6"
-											src={goal.image} // : 'https://www.svgrepo.com/show/529148/question-circle.svg'}
+											src={goal.image}
 											alt="Achievement badge"
 											/>
 											{goal.label}
