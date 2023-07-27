@@ -8,6 +8,7 @@ import { DatabaseModule } from './database/database.module';
 import { GamesModule } from './games/games.module';
 import { AchievementsModule } from './achievements/achievements.module';
 import { GoalsModule } from './goals/goals.module';
+import { FriendsModule } from './friends/friends.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { GoalsModule } from './goals/goals.module';
     GamesModule,
     AchievementsModule,
     GoalsModule,
+    FriendsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

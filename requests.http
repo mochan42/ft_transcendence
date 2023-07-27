@@ -6,13 +6,13 @@ POST http://localhost:5000/pong/users
 Content-Type: application/json
 
 {
-	"userName": "Billy",
-	"userNameLoc": "bill",
+	"userName": "Billyddd",
+	"userNameLoc": "billddd",
 	"firstName": "Billdom",
 	"lastName": "Billington",
 	"is2Fa": false,
-	"authToken": "dddddd",
-	"email": "billbillington@rich.com",
+	"authToken": "ddddddss",
+	"email": "billbillisssngton@rich.com",
 	"secret2Fa" : "",
 	"avatar" : "https://www.svgrepo.com/show/384669/account-avatar-profile-user-13.svg",
 	"xp": 26,
@@ -111,3 +111,30 @@ Content-Type: application/json
 ### add a new goal
 DELETE http://localhost:5000/pong/goals/3
 
+### display all user's friends
+GET http://localhost:5000/pong/users/3/friends
+
+### add a friend to a user
+POST  http://localhost:5000/pong/friends
+Content-Type: application/json
+
+{
+	"receiver": 2,
+	"sender": 2,
+	"relation": "pending",
+	"createdAt": "27/07/2023"
+}
+
+### update friend relation
+PATCH   http://localhost:5000/pong/friends/2
+Content-Type: application/json
+
+{
+	"receiver": 2,
+	"sender": 1,
+	"relation": "accepted",
+	"createdAt": "27/07/2023"
+}
+
+### delete frienship
+DELETE http://localhost:5000/pong/friends/3
