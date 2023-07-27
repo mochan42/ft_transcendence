@@ -26,9 +26,7 @@ type UserStats = {
 type UserAchievements = {
 	'id': number;
 	'userId': number;
-	'label': string;
-	'description': string;
-	'image': string;
+	'goalId': number;
 	'createdAt': string;
 };
 

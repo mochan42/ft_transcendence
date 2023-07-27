@@ -1,15 +1,7 @@
 import { useEffect, useState } from "react";
 import { Button } from "./ui/Button"
 import axios, { AxiosResponse } from "axios";
-
-type UserAchievements = {
-	'id': number;
-	'userId': number;
-	'label': string;
-	'description': string;
-	'image': string;
-	'createdAt': string;
-}
+import {Goal, UserAchievements} from '../types';
 
 interface AchievementsProps {
 	userId: number;
@@ -18,12 +10,13 @@ interface AchievementsProps {
 
 const Achievements:React.FC<AchievementsProps> =({ userId, setShowScreen }) => {
 	
-	const [UserAchievements, setUserAchievements] = useState< UserAchievements[] >();
+	const [userAchievements, setUserAchievements] = useState< UserAchievements[] | null >(null);
+	const [allGoals, setAllGoals] = useState< Goal[] | null >(null);
 	const url_achievements = 'http://localhost:5000/pong/users/' + userId.toString() + '/achievements';
-
-	useEffect(() => {
-		getUserAchievements();
-	}, []);
+	const url_goals = 'http://localhost:5000/pong/goals';
+	const id = userId.toString();
+	const [achievedGoals, setAchievedGoals] = useState<Goal[]>();
+	const [notAchievedGoals, setNotAchievedGoals] = useState<Goal[]>();
 
 	const getUserAchievements = async () => {
 		try {
@@ -37,9 +30,45 @@ const Achievements:React.FC<AchievementsProps> =({ userId, setShowScreen }) => {
 		}
 	};
 
+	const getAllGoals = async () => {
+		try {
+			const response: AxiosResponse<Goal[] | null> = await axios.get(url_goals);
+			if (response.status === 200) {
+				setAllGoals(response.data);
+				console.log('Received Goals: ', response.data);
+			}
+		} catch (error) {
+			console.log('Error fetching Goals:', error);
+		}
+	};
+
+	useEffect(() => {
+		if (allGoals != null && userAchievements != null) {
+			const achievedGoals = allGoals?.filter((goal) => {
+			  return userAchievements?.some((achievement) => achievement.goalId === goal.id);
+			});
+			const notAchievedGoals = allGoals?.filter((goal) => {
+				return !userAchievements?.some((achievement) => achievement.goalId === goal.id);
+			})
+			console.log('achieved goals: ', achievedGoals)
+			console.log('not achieved goals: ', notAchievedGoals)
+			setAchievedGoals(achievedGoals);
+			setNotAchievedGoals(notAchievedGoals);
+		}
+	  }, [userAchievements, allGoals]);
+
+	useEffect(() => {
+		if (userAchievements === null) {
+			getUserAchievements();
+		}
+		if (allGoals === null) {
+			getAllGoals();
+		}
+	}, []);
+
 	return (
 		<div className='h-full w-full absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 bg-slate-900 bg-opacity-70'>
-			<div className='rounded h-1/2 w-1/2 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 bg-slate-900 dark:bg-slate-200'>
+			<div className='rounded min-w-[350px] h-1/2 w-1/2 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 bg-slate-900 dark:bg-slate-200'>
 				<div className="h-full p-4 flex-cols text-center justify-between space-y-4">
 					<Button variant={'link'} onClick={() => setShowScreen('default')}>
 						<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8 text-slate-200 dark:text-slate-900">
@@ -47,19 +76,35 @@ const Achievements:React.FC<AchievementsProps> =({ userId, setShowScreen }) => {
 						</svg>
 					</Button>
 					<div className="h-4/5 overflow-y-auto p-4 flex-cols text-center justify-between space-y-4">
-						{UserAchievements?.map((achievement) => (
+						{achievedGoals?.map((goal) => (
 							<div
-							key={achievement.id}
+							key={goal.id}
 							className='space-y-2 border-t-8 dark:border-slate-900 dark:bg-slate-900 bg-slate-200 text-slate-900 dark:text-amber-400 rounded-md flex-cols justify-evenly items-baseline'
 						>
 							<div className='flex items-center justify-around '>
-								<img className='h-16 w-16 bg-slate-200 dark:bg-slate-200 rounded-full' src={achievement.image} alt="Achievement icon" />
-								<p>
-									{achievement.label}
+								<img className='h-16 w-16 bg-slate-200 dark:bg-slate-200 rounded-full' src={goal.image} alt="Achievement icon" />
+								<p  className='w-3/5'>
+									{goal.label}
+								</p>
+							</div>
+								<p className='text-xs dark:text-slate-200'>
+									{goal.description}
+								</p>
+						</div>
+						))}
+						{notAchievedGoals?.map((goal) => (
+							<div
+							key={goal.id}
+							className='space-y-2 border-t-8 dark:border-slate-900 dark:bg-slate-900 bg-slate-200 text-slate-900 dark:text-amber-400 rounded-md flex-cols justify-evenly items-baseline'
+						>
+							<div className='flex items-center justify-around '>
+								<img className='h-16 w-16 bg-slate-200 dark:bg-slate-200 rounded-full' src='https://www.svgrepo.com/show/529148/question-circle.svg' alt="Achievement icon" />
+								<p className='w-3/5'>
+									...
 								</p>
 							</div>
 								<p className='text-xs dark:text-slate-200 '>
-									{achievement.description}
+									{goal.description}
 								</p>
 						</div>
 						))}
@@ -71,58 +116,34 @@ const Achievements:React.FC<AchievementsProps> =({ userId, setShowScreen }) => {
 };
 
 export default Achievements;
-					{/* <div className='space-y-2 border-t-8 dark:border-slate-900 dark:bg-slate-900 bg-slate-200 text-slate-900 dark:text-amber-400 rounded-md flex-cols justify-evenly items-baseline'>
-						<div className='flex items-center justify-around '>
-							<img className='h-16 w-16 bg-slate-200 dark:bg-slate-200 rounded-full' src='https://www.svgrepo.com/show/529148/question-circle.svg'>
-							</img>
-							<p>
-								Achievement
-							</p>
-						</div>
-						<p className='text-xs dark:text-slate-200 '>
-							"Won 5 battles against the Bot on easy"
-						</p>
-					</div>
-					<div className='space-y-2 border-t-8 dark:border-slate-900 dark:bg-slate-900 bg-slate-200 text-slate-900 dark:text-amber-400 rounded-md flex-cols justify-evenly items-baseline'>
-						<div className='flex items-center justify-around '>
-							<img className='h-16 w-16 bg-slate-200 dark:bg-slate-200 rounded-full' src='https://www.svgrepo.com/show/529148/question-circle.svg'>
-							</img>
-							<p>
-								Achievement
-							</p>
-						</div>
-						<p className='text-xs dark:text-slate-200 '>
-							"Won 5 battles against the Bot on easy"
-						</p>
-					</div>
-					<div className='space-y-2 border-t-8 dark:border-slate-900 dark:bg-slate-900 bg-slate-200 text-slate-900 dark:text-amber-400 rounded-md flex-cols justify-evenly items-baseline'>
-						<div className='flex items-center justify-around '>
-							<img className='h-16 w-16 bg-slate-200 dark:bg-slate-200 rounded-full' src='https://www.svgrepo.com/show/529148/question-circle.svg'>
-							</img>
-							<p>
-								Achievement
-							</p>
-						</div>
-						<p className='text-xs dark:text-slate-200 '>
-							"Won 5 battles against the Bot on easy"
-						</p>
-					</div>
-					<div className='space-y-2 border-t-8 dark:border-slate-900 dark:bg-slate-900 bg-slate-200 text-slate-900 dark:text-amber-400 rounded-md flex-cols justify-evenly items-baseline'>
-						<div className='flex items-center justify-around '>
-							<img className='h-16 w-16 bg-slate-200 dark:bg-slate-200 rounded-full' src='https://www.svgrepo.com/show/529148/question-circle.svg'>
-							</img>
-							<p>
-								Achievement
-							</p>
-						</div>
-						<p className='text-xs dark:text-slate-200 '>
-							"Won 5 battles against the Bot on easy"
-						</p>
-					</div>
-				</div>
-			</div>
-		</div>
-	)
-}
 
-export default Achievements */}
+// <div className="grid grid-cols-2 gap-8">
+// 							{achievedGoals?.map((goal, index) => (
+// 								<div key={index}>
+// 									<div className="space-y-2 flex flex-col justify-between gap-4">
+// 										<div className="flex flex-row justify-between">
+// 											<img
+// 											className="h-6 w-6"
+// 											src={goal.image} // : 'https://www.svgrepo.com/show/529148/question-circle.svg'}
+// 											alt="Achievement badge"
+// 											/>
+// 											{goal.label}
+// 										</div>
+// 									</div>
+// 								</div>
+// 							))}
+// 							{notAchievedGoals?.map((goal, index) => (
+// 								<div key={index}>
+// 									<div className="space-y-2 flex flex-col justify-between gap-4">
+// 										<div className="flex flex-row justify-between">
+// 											<img
+// 											className="h-6 w-6"
+// 											src='https://www.svgrepo.com/show/529148/question-circle.svg'
+// 											alt="Achievement badge"
+// 											/>
+// 											{goal.label}
+// 										</div>
+// 									</div>
+// 								</div>
+// 							))}
+// 						</div>

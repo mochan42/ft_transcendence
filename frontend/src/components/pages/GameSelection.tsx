@@ -12,7 +12,7 @@ const GameSelection:React.FC<GameSelectionProps> =({ userId }) => {
 
 	const [state, setState] = useState<'select' | 'bot' | 'player'>('select');
 	const [difficulty, setDifficulty] = useState(0);
-	const [difficultyStyle, setDifficultyStyle] = useState<'bg-green-400' | 'bg-yellow-400' | 'bg-red-400' | 'bg-violet-400' | 'bg-amber-900' | 'bg-white'>('bg-white')
+	const [difficultyStyle, setDifficultyStyle] = useState<'bg-green-400' | 'bg-yellow-400' | 'bg-red-400' | 'bg-violet-400' | 'bg-amber-500' | 'bg-white'>('bg-white')
 	const [isHoveredBot, setIsHoveredBot] = useState(false);
 	const [isHoveredPlayer, setIsHoveredPlayer] = useState(false);
 	const [includeBoost, setIncludeBoost] = useState(true);
@@ -47,7 +47,7 @@ const GameSelection:React.FC<GameSelectionProps> =({ userId }) => {
 		} else if (difficulty === 3) {
 			setDifficultyStyle('bg-violet-400')
 		} else if (difficulty === 4) {
-			setDifficultyStyle('bg-amber-900')
+			setDifficultyStyle('bg-amber-500')
 		}
 	}
 	
@@ -87,8 +87,8 @@ const GameSelection:React.FC<GameSelectionProps> =({ userId }) => {
 					>
 						Play live
 					</Button>
-					<div className={cn('border-4 border-slate-200 dark:border-slate-900 rounded-full h-64 w-64 text-white text-xl font-extrabold flex-cols justify-around text-center absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 bg-slate-900 flex flex-col items-center', difficultyStyle)}>
-						<button className='hover:underline'
+					<div className={'border-4 border-slate-200 dark:border-slate-900 rounded-full h-64 w-64 text-white text-xl font-extrabold flex-cols justify-around text-center absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 flex flex-col items-center'}>
+						<button className={cn(difficultyStyle, 'hover:underline w-full h-1/2 rounded-tl-full rounded-tr-full border-4 border-slate-200 dark:border-slate-900 saturate-50')}
 							onClick={() => handleDifficulty()}>
 							{difficulty === 0 ? 'easy' : null}
 							{difficulty === 1 ? 'medium' : null}
@@ -96,7 +96,8 @@ const GameSelection:React.FC<GameSelectionProps> =({ userId }) => {
 							{difficulty === 3 ? 'very hard' : null}
 							{difficulty === 4 ? 'extreme' : null}
 						</button>
-						<button className='hover:underline' onClick={() => setIncludeBoost((prev) => !prev)}>
+						<button className='hover:underline w-full h-1/2 rounded-bl-full rounded-br-full border-4 border-slate-200 dark:border-slate-900 bg-slate-500 saturate-50'
+							onClick={() => setIncludeBoost((prev) => !prev)}>
 							{includeBoost ? "Upgrade enabled" : "Upgrade disabled"}
 						</button>
 					</div>

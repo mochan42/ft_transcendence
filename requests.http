@@ -44,10 +44,10 @@ Content-Type: application/json
 DELETE  http://localhost:5000/pong/users/8
 
 ### get user stat
-GET http://localhost:5000/pong/users/7/stats
+GET http://localhost:5000/pong/users/2/stats
 
 ### creat user stat
-POST http://localhost:5000/pong/users/7/stats
+POST http://localhost:5000/pong/users/1/stats
 Content-Type: application/json
 
 {
@@ -62,7 +62,7 @@ PATCH http://localhost:5000/pong/users/2/stats
 Content-Type: application/json
 
 {
-  "wins": 3,
+  "wins": 0,
   "losses": 0,
   "draws": 0
 }
@@ -71,7 +71,7 @@ Content-Type: application/json
 DELETE  http://localhost:5000/pong/users/1/stats
 
 ### get user achievement
-GET http://localhost:5000/pong/users/7/achievements/
+GET http://localhost:5000/pong/users/2/achievements/
 
 ### add user achievement
 POST http://localhost:5000/pong/users/2/achievements/
@@ -88,27 +88,84 @@ DELETE http://localhost:5000/pong/users/1/achievements/
 ### Get all goals 
 GET  http://localhost:5000/pong/goals/
 
+### add the first goal
+POST  http://localhost:5000/pong/goals/1
+Content-Type: application/json
+
+{
+	"label": "WELCOME",
+	"image": "https://www.svgrepo.com/show/398519/trophy.svg",
+	"description": "Welcome on board!"
+}
 ### add a new goal
 POST  http://localhost:5000/pong/goals/
 Content-Type: application/json
 
 {
-	"label": "WELCOME PONG",
-	"image": "welcome.jpg",
-	"description": "this is new member gift"
+	"label": "Beat that Bot",
+	"image": "https://www.svgrepo.com/show/131148/robot.svg",
+	"description": "Won against the Bot on easy"
 }
 
-### add a new goal
-PATCH  http://localhost:5000/pong/goals/1
+### 2nd. goal
+POST  http://localhost:5000/pong/goals/
 Content-Type: application/json
 
 {
-	"label": "WELCOME",
-	"image": "welcome.jpg",
-	"description": "You're here"
+	"label": "Artificial what now?",
+	"image": "https://www.svgrepo.com/show/235195/robot-ai.svg",
+	"description": "Won against the Bot on medium"
 }
 
-### add a new goal
+### 3rd goal
+POST  http://localhost:5000/pong/goals/
+Content-Type: application/json
+
+{
+	"label": "iRobot who?",
+	"image": "https://www.svgrepo.com/show/134/robot.svg",
+	"description": "Won against the Bot on hard"
+}
+
+### 4th. goal
+POST  http://localhost:5000/pong/goals/
+Content-Type: application/json
+
+{
+	"label": "Terminator termniated",
+	"image": "https://www.svgrepo.com/show/402624/robot-face.svg",
+	"description": "Won against the Bot on very hard"
+}
+
+### 5th. goal
+POST  http://localhost:5000/pong/goals/
+Content-Type: application/json
+
+{
+	"label": "Heisted Heistotron",
+	"image": "https://www.svgrepo.com/show/145418/robot.svg",
+	"description": "Won against the Bot on extreme"
+}
+
+#	"label": "WELCOME PONG",
+#	"image": "https://www.svgrepo.com/show/398519/trophy.svg",
+#	"description": "this is the new member gift"
+# const label = ['Beat that Bot', 'Artificial what now?', 'iRobot who?', 'Terminator termniated', 'Heisted the Heistotron'];
+# const description = ['Won against the Bot on easy', 'Won against the Bot on medium', 'Won against the Bot on hard', 'Won against the Bot on very hard', 'Won against the Bot on extreme'];
+# const image = ['https://www.svgrepo.com/show/470680/robot-face.svg', 'https://www.svgrepo.com/show/235195/robot-ai.svg', 'https://www.svgrepo.com/show/134/robot.svg', 'https://www.svgrepo.com/show/402624/robot-face.svg', 'https://www.svgrepo.com/show/145418/robot.svg'];
+
+### patch a goal
+PATCH  http://localhost:5000/pong/goals/2
+Content-Type: application/json
+
+{
+	"label": "Beat that Bot",
+	"image": "https://www.svgrepo.com/show/131148/robot.svg",
+	"description": "Won against the Bot on easy"
+}
+
+
+### Delete a goal
 DELETE http://localhost:5000/pong/goals/3
 
 ### display all user's friends
