@@ -21,7 +21,7 @@ Content-Type: application/json
 }
 
 ###  Edit user info
-PATCH  http://localhost:5000/pong/users/12
+PATCH  http://localhost:5000/pong/users/3
 Content-Type: application/json
 
 {
@@ -33,8 +33,8 @@ Content-Type: application/json
 	"authToken": "dddddd",
 	"email": "philissspp@gmail.com",
 	"secret2Fa" : "",
-	"avatar" : "avatar",
-	"xp": 26,
+	"avatar" : "",
+	"xp": 268,
 	"isLogged": true,
 	"lastSeen": ""
 }

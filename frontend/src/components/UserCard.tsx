@@ -35,7 +35,7 @@ const UserCard: React.FC<UserCardProps> = ({ userId }) => {
 			<div className="flex flex-col items-center justify-between flex-grow">
 				<img
 					className="h-48 w-48 rounded-full object-cover"
-					src={userInfo?.avatar ? userInfo.avatar : 'https://www.svgrepo.com/show/384669/account-avatar-profile-user-13.svg'}
+					src={userInfo?.avatar ? userInfo.avatar : 'https://www.svgrepo.com/show/170615/robot.svg'}
 					alt="User Avatar"
 				/>
 				<h2 className="text-2xl text-amber-400 font-semibold">{userInfo?.userNameLoc}</h2>
