@@ -84,7 +84,7 @@ const Game:React.FC<GameProps> = ({ difficulty, userId, includeBoost, opponent, 
 	return (
 		<div className='h-screen w-full flex flex-col items-center justify-between bg-gray-200 dark:bg-slate-900 border-t-8 dark:border-slate-900'>
 			<div className='h-1/6 gap-6 items-center justify-between flex'>
-				<div className='absolute left-10'>
+				<div className='left-10'>
 					<Button variant={'link'} onClick={() => setState('select')}>
 						<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
 							<path strokeLinecap="round" strokeLinejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" />
@@ -92,7 +92,7 @@ const Game:React.FC<GameProps> = ({ difficulty, userId, includeBoost, opponent, 
 					</Button>
 				</div>
 				<div className='border-8 dark:border-slate-900 flex justify-between gap-8 items-center'>
-					<img className='h-12 w-12 rounded-full overflow-hidden' src={(userInfo && userInfo.avatar) ? userInfo.avatar : 'https://fastly.picsum.photos/id/294/200/200.jpg?hmac=tSuqBbGGNYqgxQ-6KO7-wxq8B4m3GbZqQAbr7tNApz8'}></img>
+					<img className='min-w-[24px] h-12 w-12 rounded-full overflow-hidden' src={(userInfo && userInfo.avatar) ? userInfo.avatar : 'https://fastly.picsum.photos/id/294/200/200.jpg?hmac=tSuqBbGGNYqgxQ-6KO7-wxq8B4m3GbZqQAbr7tNApz8'}></img>
 					<SmallHeading className='text-lg dark:text-amber-400'>
 						{userInfo ? userInfo.userNameLoc : 'Player' }
 					</SmallHeading>
@@ -120,7 +120,7 @@ const Game:React.FC<GameProps> = ({ difficulty, userId, includeBoost, opponent, 
 					</Button>
 				</div>
 				<div className='border-8 dark:border-slate-900 flex justify-between gap-8 items-center'>
-					<img className='w-12 h-12 rounded-full overflow-hidden' src='https://www.svgrepo.com/show/384679/account-avatar-profile-user-3.svg'></img>
+					<img className='min-w-[24px] w-12 h-12 rounded-full overflow-hidden' src='https://www.svgrepo.com/show/384679/account-avatar-profile-user-3.svg'></img>
 					<SmallHeading className='text-lg dark:text-amber-400'>
 						{(opponent === 'bot') ? 'Bot' : null}
 						{(opponent === 'player') ? 'player' : null}
