@@ -13,7 +13,11 @@ export class FriendsService {
   ) {}
 
   async create(createFriendDto: CreateFriendDto): Promise<Friend> {
-    return await this.FriendRepo.save(createFriendDto);
+    const friend = {
+      ...createFriendDto,
+      createdAt: new Date().toUTCString(),
+    };
+    return await this.FriendRepo.save(friend);
   }
 
   async find(userId: number) {
@@ -23,7 +27,7 @@ export class FriendsService {
   }
 
   async update(id: number, updateFriendDto: UpdateFriendDto) {
-    const matchedFriend = await this.FriendRepo.findOne(id);
+    const matchedFriend = await this.FriendRepo.findOne({ where: { id } });
     const updatedFriend = Object.assign(matchedFriend, updateFriendDto);
     console.log(updatedFriend);
     return await this.FriendRepo.save(updatedFriend);

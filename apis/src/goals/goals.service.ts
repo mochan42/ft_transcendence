@@ -20,14 +20,14 @@ export class GoalsService {
   }
 
   findOne(id: number) {
-    return this.GoalRepository.findOne(id);
+    return this.GoalRepository.findOne({ where: { id } });
   }
 
   async update(
     id: number,
     updateGoalDto: UpdateGoalDto,
   ): Promise<UpdateGoalDto> {
-    const matchedGoal = await this.GoalRepository.findOne(id);
+    const matchedGoal = await this.GoalRepository.findOne({ where: { id } });
     const updatedGoal = Object.assign(matchedGoal, updateGoalDto);
     return await this.GoalRepository.save(updatedGoal);
   }

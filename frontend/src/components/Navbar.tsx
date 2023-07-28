@@ -14,24 +14,13 @@ interface Props {
 
 const Navbar: React.FC<Props> = ({ setIsAuth, isAuth}) => {
 	const navigate = useNavigate();
-    const [theme, setTheme] = useState('dark');
-    var [loginBtnTxt, setLoginBtnTxt] = useState<string>("Log in");
- 
-
-	const authenticate = () => {
-		const url42 = 'https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-9c04e10e264f25f8b3cb9bef48ae57df091de510f43e87c7647da4b885b6210b&redirect_uri=http%3A%2F%2Flocalhost%3A3000&response_type=code'; 
-		window.location.href = url42;
-		console.log(window.location.href);
-		setIsAuth(true);
-	}
-
+  const [theme, setTheme] = useState('dark'); 
 	const handleLogout = () => {
             // contact server to delete access token
 		if (isAuth) {
 			setIsAuth(false)
 		}
 		else {
-			authenticate();
 			navigate('/')
 		}
 		navigate('/login')
@@ -105,7 +94,7 @@ const Navbar: React.FC<Props> = ({ setIsAuth, isAuth}) => {
 						<path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
 					</svg>
 					{ isAuth ? "Log Out" : "Log In" }
-                </Button>
+        </Button>
 		</div>
 	)
 }
