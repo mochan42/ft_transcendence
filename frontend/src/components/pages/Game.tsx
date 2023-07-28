@@ -4,6 +4,7 @@ import SmallHeading from '../ui/SmallHeading'
 import Pong from '../Pong'
 import axios from 'axios';
 import { User } from '../../types';
+import PvP from '../PvP';
 
 
 interface GameProps {
@@ -21,7 +22,7 @@ const Game:React.FC<GameProps> = ({ difficulty, userId, includeBoost, opponent, 
 	const [reset, setReset] = useState(false)
 	const [isGameOver, setIsGameOver] = useState(false)
 	const [userInfo, setUserInfo] = useState<User | null>(null);
-	const [matchFound, setMatchFound] = useState(false);
+	const [opponentInfo, setOpponentInfo] = useState< User | null >(null);
 
 	const playerPoint = () => {
 		setPlayerScore(playerScore + 1);
@@ -127,8 +128,9 @@ const Game:React.FC<GameProps> = ({ difficulty, userId, includeBoost, opponent, 
 					</SmallHeading>
 				</div>
 			</div>
-			<div className='w-full h-5/6 border-t-2 border-l-2 border-r-2 border-slate-700 black:border-slate-200 bg-slate-300 dark:bg-slate-700 dark:text-slate-200 text-center'>
-				<Pong userId={userId} difficulty={difficulty} isGameActive={gameActive} isReset={reset} isGameOver={isGameOver} playerScore={playerScore} opponentScore={opponentScore} includeBoost={includeBoost} setIsGameOver={setIsGameOver} playerPoint={playerPoint} opponentPoint={opponentPoint} setReset={setReset}/>
+			<div className='w-full h-5/6 border-t-2 border-l-2 border-r-2 border-slate-700 black:border-slate-200 bg-slate-400 dark:text-slate-200 text-center'>
+				{opponent === 'bot' ? <Pong userId={userId} difficulty={difficulty} isGameActive={gameActive} isReset={reset} isGameOver={isGameOver} playerScore={playerScore} opponentScore={opponentScore} includeBoost={includeBoost} setIsGameOver={setIsGameOver} playerPoint={playerPoint} opponentPoint={opponentPoint} setReset={setReset}/> : null }
+				{(opponent === 'player') ? <PvP setOpponentInfo={setOpponentInfo} userId={userId} difficulty={difficulty} isGameActive={gameActive} isReset={reset} isGameOver={isGameOver} playerScore={playerScore} opponentScore={opponentScore} includeBoost={includeBoost} setIsGameOver={setIsGameOver} playerPoint={playerPoint} opponentPoint={opponentPoint} setReset={setReset} setState={setState} /> : null}
 			</div>
 		</div>
 	)

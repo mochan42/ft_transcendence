@@ -285,19 +285,21 @@ const Pong: React.FC<PongProps> = ({ userId, difficulty, isGameActive, isGameOve
 	}, [isGameActive, isReset, isBoost, ballX, ballY, speedX, speedY, leftPaddleY, movePaddles]);
 
 	return (
-		<div className="relative w-full h-full" ref={PongRef}>
-			<Paddle yPosition={leftPaddleY} paddleHeight={paddleLengths[difficulty]} style={{ left: 0 }}/>
-			<Paddle yPosition={rightPaddleY} paddleHeight={botpaddleLengths[difficulty]} style={{ right: 0 }}/>
-			<div className="relative bg-slate-900">
-    			<Ball xPosition={ballX} yPosition={ballY} />
-    		</div>
-			{includeBoost && !isBoost ? <Boost x={boostStartX} y={boostStartY} width={boostWidth} height={boostWidth} /> : null}
-			{isGameOver ? (
-					<div className="absolute inset-0 bg-black bg-opacity-80">
-						<VictoryLoss userId={userId} isVictory={playerScore === 1} difficulty={difficulty} />
-					</div>
-				) : null
-			}
+		<div className='w-full h-full border-t-2 border-l-2 border-r-2 border-slate-700 black:border-slate-200 dark:text-slate-200 text-center'>
+			<div className="relative w-full h-full" ref={PongRef}>
+				<Paddle yPosition={leftPaddleY} paddleHeight={paddleLengths[difficulty]} style={{ left: 0 }}/>
+				<Paddle yPosition={rightPaddleY} paddleHeight={botpaddleLengths[difficulty]} style={{ right: 0 }}/>
+				<div className="relative bg-slate-900">
+					<Ball xPosition={ballX} yPosition={ballY} />
+				</div>
+				{includeBoost && !isBoost ? <Boost x={boostStartX} y={boostStartY} width={boostWidth} height={boostWidth} /> : null}
+				{isGameOver ? (
+						<div className="absolute inset-0 bg-black bg-opacity-80">
+							<VictoryLoss userId={userId} isVictory={playerScore === 1} difficulty={difficulty} />
+						</div>
+					) : null
+				}
+			</div>
 		</div>
 	)
 }
