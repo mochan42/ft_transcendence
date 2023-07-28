@@ -102,9 +102,7 @@ const GameSelection:React.FC<GameSelectionProps> =({ userId }) => {
 						</button>
 					</div>
 				</div>
-			: null }
-			{state == 'bot' ? <Game difficulty={difficulty} userId={userId} setState={setState} includeBoost={includeBoost}/> : null}
-			{state == 'player' ? <PageNotFound /> : null}
+			: <Game difficulty={difficulty} userId={userId} opponent={state} setState={setState} includeBoost={includeBoost} /> }
 		</div>
 	)
 }

@@ -10,16 +10,16 @@ interface PongProps {
 	isGameActive: boolean;
 	isReset: boolean;
 	playerScore: number;
-	botScore: number;
+	opponentScore: number;
 	isGameOver: boolean;
 	includeBoost: boolean;
 	setIsGameOver: (boolean: boolean) => void;
 	playerPoint: () => void;
-	botPoint: () => void;
+	opponentPoint: () => void;
 	setReset: (boolean: boolean) => void;
   }
 
-const Pong: React.FC<PongProps> = ({ userId, difficulty, isGameActive, isGameOver, isReset, playerScore, botScore, includeBoost, playerPoint, botPoint, setIsGameOver, setReset }) => {
+const Pong: React.FC<PongProps> = ({ userId, difficulty, isGameActive, isGameOver, isReset, playerScore, opponentScore, includeBoost, playerPoint, opponentPoint, setIsGameOver, setReset }) => {
 
 	const itsdifficult = (difficulty + 2) * 2
 	const PongRef = useRef<HTMLDivElement>(null);
@@ -103,7 +103,7 @@ const Pong: React.FC<PongProps> = ({ userId, difficulty, isGameActive, isGameOve
 			setSpeedX(-speedX * 1.2)
 			setSpeedY(randomSpeedY * 1.2);
 		} else if (ballRight < leftPaddleRight && !isReset) {
-			botPoint();
+			opponentPoint();
 			setReset(true);
 			if (isBoost) {
 				setSpeedX(prevSpeedX => prevSpeedX * 0.66);
@@ -228,7 +228,7 @@ const Pong: React.FC<PongProps> = ({ userId, difficulty, isGameActive, isGameOve
 				moveBall();
 				checkCollision();
 			}
-			if (playerScore >= 1 || botScore >= 1) {
+			if (playerScore >= 1 || opponentScore >= 1) {
 				setIsGameOver(true);
 			}
 			if (isReset && !isGameOver) {

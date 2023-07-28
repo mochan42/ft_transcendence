@@ -3,37 +3,25 @@ import { Button } from '../ui/Button'
 import SmallHeading from '../ui/SmallHeading'
 import Pong from '../Pong'
 import axios from 'axios';
+import { User } from '../../types';
 
-type User = {
-	'id': number;
-	'userName': string;
-	'userNameLoc': string;
-	'firstName': string;
-	'lastName': string;
-	'is2Fa': boolean;
-	'authToken': string;
-	'email': string;
-	'secret2Fa'?: string;
-	'avatar'?: string;
-	'xp': number;
-	'isLogged': boolean;
-	'lastSeen'?: string;
-};
 
 interface GameProps {
 	difficulty: number;
 	userId: number;
 	includeBoost: boolean;
+	opponent: string;
 	setState: React.Dispatch<React.SetStateAction<'select' | 'bot' | 'player'>>;
 }
 
-const Game:React.FC<GameProps> = ({ difficulty, userId, includeBoost, setState }) => {
+const Game:React.FC<GameProps> = ({ difficulty, userId, includeBoost, opponent, setState }) => {
 	const [playerScore, setPlayerScore] = useState(0)
-	const [botScore, setBotScore] = useState(0)
+	const [opponentScore, setOpponentScore] = useState(0)
 	const [gameActive, setGameActive] = useState(false)
 	const [reset, setReset] = useState(false)
 	const [isGameOver, setIsGameOver] = useState(false)
 	const [userInfo, setUserInfo] = useState<User | null>(null);
+	const [matchFound, setMatchFound] = useState(false);
 
 	const playerPoint = () => {
 		setPlayerScore(playerScore + 1);
@@ -42,9 +30,9 @@ const Game:React.FC<GameProps> = ({ difficulty, userId, includeBoost, setState }
 		}
 	}
 
-	const botPoint = () => {
-		setBotScore(botScore + 1);
-		if (botScore === 5) {
+	const opponentPoint = () => {
+		setOpponentScore(opponentScore + 1);
+		if (opponentScore === 5) {
 			setIsGameOver(true);
 		}
 	}
@@ -58,7 +46,7 @@ const Game:React.FC<GameProps> = ({ difficulty, userId, includeBoost, setState }
 
 	const handleReset = () => {
 		setPlayerScore(0);
-		setBotScore(0);
+		setOpponentScore(0);
 		handlePause();
 		setIsGameOver(false);
 		setReset(true)
@@ -90,7 +78,6 @@ const Game:React.FC<GameProps> = ({ difficulty, userId, includeBoost, setState }
 		}
 		catch (error) {
 			console.log('Error fetching user infos', error);
-			alert('Error fetching user info')
 		}
 	}
 
@@ -129,18 +116,19 @@ const Game:React.FC<GameProps> = ({ difficulty, userId, includeBoost, setState }
 				</div>
 				<div className='border-8 dark:border-slate-900'>
 					<Button>
-						{botScore}
+						{opponentScore}
 					</Button>
 				</div>
 				<div className='border-8 dark:border-slate-900 flex justify-between gap-8 items-center'>
 					<img className='w-12 h-12 rounded-full overflow-hidden' src='https://www.svgrepo.com/show/384679/account-avatar-profile-user-3.svg'></img>
 					<SmallHeading className='text-lg dark:text-amber-400'>
-						Bot
+						{(opponent === 'bot') ? 'Bot' : null}
+						{(opponent === 'player') ? 'player' : null}
 					</SmallHeading>
 				</div>
 			</div>
 			<div className='w-full h-5/6 border-t-2 border-l-2 border-r-2 border-slate-700 black:border-slate-200 bg-slate-300 dark:bg-slate-700 dark:text-slate-200 text-center'>
-				<Pong userId={userId} difficulty={difficulty} isGameActive={gameActive} isReset={reset} isGameOver={isGameOver} playerScore={playerScore} botScore={botScore} includeBoost={includeBoost} setIsGameOver={setIsGameOver} playerPoint={playerPoint} botPoint={botPoint} setReset={setReset}/>
+				<Pong userId={userId} difficulty={difficulty} isGameActive={gameActive} isReset={reset} isGameOver={isGameOver} playerScore={playerScore} opponentScore={opponentScore} includeBoost={includeBoost} setIsGameOver={setIsGameOver} playerPoint={playerPoint} opponentPoint={opponentPoint} setReset={setReset}/>
 			</div>
 		</div>
 	)
