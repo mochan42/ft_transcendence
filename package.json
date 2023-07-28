@@ -1,6 +1,0 @@
-{
-  "dependencies": {
-    "boostrap": "^2.0.0",
-    "query-string": "^8.1.0"
-  }
-}

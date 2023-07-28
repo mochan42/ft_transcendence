@@ -5,32 +5,32 @@ export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ unique: true })
+  @Column({ unique: false })
   userName: string;
 
-  @Column({ unique: true })
+  @Column({ unique: false })
   userNameLoc: string;
 
   @Column()
-  firstName: string;
+  firstName?: string;
 
   @Column()
-  lastName: string;
+  lastName?: string;
 
   @Column()
   is2Fa: boolean;
 
   @Column()
-  authToken: string;
+  authToken?: string;
 
-  @Column({ unique: true })
+  @Column({ unique: false })
   email: string;
 
   @Column()
-  secret2Fa: string;
+  secret2Fa?: string;
 
   @Column()
-  avatar: string;
+  avatar?: string;
 
   @Column()
   xp: number;

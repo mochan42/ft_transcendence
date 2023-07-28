@@ -8,8 +8,8 @@ import {
   Delete,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { AuthUserDto } from './dto/auth-user.dto';
 
 @Controller('pong/users')
 export class UsersController {
@@ -20,9 +20,9 @@ export class UsersController {
     return this.usersService.findAll();
   }
 
-  @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
+  @Post('auth')
+  authenticate(@Body() authUserDto: AuthUserDto) {
+    return this.usersService.authenticate(authUserDto);
   }
 
   @Get(':id')

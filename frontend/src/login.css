@@ -29,20 +29,22 @@
     border-color : black;
     border-width : 1px;
     padding: 3px 3px 3px 3px;
-    background-color: lightgrey;
+    border-radius: 5px;
     cursor: pointer
 }
 
 .login__form_btn img {
-    margin-right: 10px; /* Adjust the spacing between the image and text as needed */
-    min-width: 75px;
-    min-height: 50px;
-    border-right-color : grey;
-    border-right-width : 5px;
-    padding-right : 3px
+    height: 38px;
+    width: 50px;
+    border: none;
+    margin: auto;
   }
 
 
 .login__form_btn:hover {
     background-color: darkgrey;
+}
+
+.btn-42 {
+    background-color: #292d39;
 }

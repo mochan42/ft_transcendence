@@ -25,8 +25,13 @@ const App: React.FC = () => {
 */
 	const [isAuth, setIsAuth] = useState<boolean>(true)
 	const [code, setCode] = useState<string | null>(null)
-	const userId = 2;
-
+	const getUserId = (): number => {
+		const id = sessionStorage.getItem('userId');
+		if (id?.length) {
+			return +id;
+		}
+		return 0;
+	}
 	return (
 		<div className='grid gap-2 font-mono dark:bg-white/75 bg-slate-900 bg-opacity-80'>
 			<Router>
@@ -45,8 +50,8 @@ const App: React.FC = () => {
                             {/* 
 							<Route path='/login' element={<Login setIsAuth={setIsAuth} />} />
                             */}
-							<Route path='/game' element={<ProtectedRoute isAuth={isAuth} path='/game' element={<GameSelection userId={userId}/>} />} />
-							<Route path='/profile' element={<ProtectedRoute isAuth={isAuth} path='/profile' element={<Profile userId={userId}/>} />} />
+							<Route path='/game' element={<ProtectedRoute isAuth={isAuth} path='/game' element={<GameSelection userId={getUserId()}/>} />} />
+							<Route path='/profile' element={<ProtectedRoute isAuth={isAuth} path='/profile' element={<Profile userId={getUserId()}/>} />} />
 							<Route path='/landingpage' element={<ProtectedRoute isAuth={isAuth} path='/landingpage' element={<LandingPage />} />} />
                             {/* 
 							<Route path='/about' element={<About />} />
