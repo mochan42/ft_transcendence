@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import { useState } from 'react';
 import './App.css';
@@ -23,8 +23,9 @@ const App: React.FC = () => {
         loginHandler: () => void
     }
 */
-	const [isAuth, setIsAuth] = useState<boolean>(true)
+	const [isAuth, setIsAuth] = useState<boolean>(false)
 	const [code, setCode] = useState<string | null>(null)
+
 	const getUserId = (): number => {
 		const id = sessionStorage.getItem('userId');
 		if (id?.length) {
@@ -32,6 +33,7 @@ const App: React.FC = () => {
 		}
 		return 0;
 	}
+
 	return (
 		<div className='grid gap-2 font-mono dark:bg-white/75 bg-slate-900 bg-opacity-80'>
 			<Router>

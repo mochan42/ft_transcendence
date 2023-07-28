@@ -64,7 +64,7 @@ const GameSelection:React.FC<GameSelectionProps> =({ userId }) => {
 			{state == 'select' ?
 				<div className='h-full w-full relative border-4 border-slate-200 dark:border-slate-900'>
 					<Button
-						className={cn('border-4 border-slate-200 dark:border-slate-900 h-full w-1/2 text-slate-200 text-2xl font-extrabold z-0', 'bg-center bg-[url(https://wallpaperaccess.com/full/2019427.jpg)]')}
+						className={'border-4 border-slate-200 dark:border-slate-900 h-full w-1/2 text-slate-200 text-2xl font-extrabold z-0 bg-center bg-[url(https://wallpaperaccess.com/full/2019427.jpg)]'}
 						variant={'link'}
 						onClick={() => setState('bot')}
 						onMouseEnter={() => handleMouseEnterBot()}
@@ -76,7 +76,7 @@ const GameSelection:React.FC<GameSelectionProps> =({ userId }) => {
 						Play Bot
 					</Button>
 					<Button
-						className={cn('border-4 border-slate-200 dark:border-slate-900 h-full w-1/2 text-slate-200 text-2xl font-extrabold z-0', ' bg-cover bg-right bg-[url(https://wallpaperaccess.com/full/2019544.jpg)]')}
+						className={'border-4 border-slate-200 dark:border-slate-900 h-full w-1/2 text-slate-200 text-2xl font-extrabold z-0 bg-cover bg-right bg-[url(https://wallpaperaccess.com/full/2019544.jpg)]'}
 						onClick={() => setState('player')}
 						variant={'link'}
 						onMouseEnter={() => handleMouseEnterPlayer()}
@@ -102,9 +102,7 @@ const GameSelection:React.FC<GameSelectionProps> =({ userId }) => {
 						</button>
 					</div>
 				</div>
-			: null }
-			{state == 'bot' ? <Game difficulty={difficulty} userId={userId} setState={setState} includeBoost={includeBoost}/> : null}
-			{state == 'player' ? <PageNotFound /> : null}
+			: <Game difficulty={difficulty} userId={userId} opponent={state} setState={setState} includeBoost={includeBoost} /> }
 		</div>
 	)
 }
