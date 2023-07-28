@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import { useState } from 'react';
 import './App.css';
@@ -23,9 +23,13 @@ const App: React.FC = () => {
         loginHandler: () => void
     }
 */
-	const [isAuth, setIsAuth] = useState<boolean>(true)
+	const [isAuth, setIsAuth] = useState<boolean>(false)
 	const [code, setCode] = useState<string | null>(null)
 	const userId = 2;
+
+	useEffect(() => {
+		console.log('isAuth: ', isAuth)
+	}, [isAuth])
 
 	return (
 		<div className='grid gap-2 font-mono dark:bg-white/75 bg-slate-900 bg-opacity-80'>
