@@ -9,21 +9,25 @@ import { useEffect, useState } from 'react';
 interface Props {
 	setIsAuth: React.Dispatch<React.SetStateAction<boolean>>,
 	isAuth: boolean,
+	setCode: React.Dispatch<React.SetStateAction<string | null>>,
+    
 }
 
 
-const Navbar: React.FC<Props> = ({ setIsAuth, isAuth}) => {
+const Navbar: React.FC<Props> = ({ setIsAuth, isAuth, setCode}) => {
 	const navigate = useNavigate();
-  const [theme, setTheme] = useState('dark'); 
+    const [theme, setTheme] = useState('dark'); 
+
 	const handleLogout = () => {
             // contact server to delete access token
 		if (isAuth) {
 			setIsAuth(false)
+            setCode(null);
+			navigate('/about')
 		}
 		else {
-			navigate('/')
+			navigate('/login')
 		}
-		navigate('/login')
 	}
 
 

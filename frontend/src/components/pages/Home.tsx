@@ -19,41 +19,28 @@ type TUserState = {
 const Home = ({ userCode, loginState }: TUserState) => {
 
     const navigate = useNavigate();
-        const authenticateToAPI = async (token: string) => {
-        const resp = await axios.post('http://localhost:5000/pong/users/auth', { token });
-        if (resp.status === 200) {
-            alert(resp.data);
+
+    const authenticateToAPI = async (token: string) => {
+    const resp = await axios.post('http://localhost:5000/pong/users/auth', { token });
+    if (resp.status === 200) {
+            setTimeout(()=> alert(resp.data), 1000);
             sessionStorage.setItem('userId', resp.data);
         }
     }
-    useEffect(
-        () => {
 
-            const urlBrowser = window.location.href;
-            // parse the url and retrieve the query parameters
-            const urlSearchParams = new URLSearchParams(urlBrowser.split('?')[1]);
-            console.log(urlSearchParams);
-            Array.from((urlSearchParams.entries())).map(([key, value]) => {
-                if (key === "code") {
-                    userCode.setCode(value);
-                    loginState.setIsLogin(true);
-                    // send received code to the backend for further verification
-                    window.history.pushState({}, '', "http://localhost:3000/profile");
-                }
-                else { navigate('/about') }
-            })
-        }
-        , [userCode.code, loginState.isLogin]);
-    
-    if (userCode.code) {
+    useEffect( () => {
+        if (userCode.code === null || loginState.isLogin === false){ navigate('/about') }
+
+    },
+    [])
+
+    if (userCode.code != null)
+    {
+        //console.log(userCode.code);
         authenticateToAPI(userCode.code);
     }
             
             
-    //if ((loginState.isLogin === false)) navigate('/about');
-    
-//import { Button } from "../ui/Button"
-
 	return (
 		<div className='h-screen bg-gray-200 dark:bg-slate-900 w-full grid place-items-center'>
             <Button>
