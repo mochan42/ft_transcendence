@@ -14,7 +14,7 @@ interface Props {
 
 const Navbar: React.FC<Props> = ({ setIsAuth, isAuth}) => {
 	const navigate = useNavigate();
-  const [theme, setTheme] = useState('dark'); 
+	const [theme, setTheme] = useState('dark');
 	const handleLogout = () => {
             // contact server to delete access token
 		if (isAuth) {

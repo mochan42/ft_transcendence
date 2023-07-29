@@ -23,7 +23,7 @@ const App: React.FC = () => {
         loginHandler: () => void
     }
 */
-	const [isAuth, setIsAuth] = useState<boolean>(false)
+	const [isAuth, setIsAuth] = useState<boolean>(true)
 	const [code, setCode] = useState<string | null>(null)
 
 	const getUserId = (): number => {
@@ -31,7 +31,7 @@ const App: React.FC = () => {
 		if (id?.length) {
 			return +id;
 		}
-		return 0;
+		return 2;
 	}
 
 	return (
@@ -44,7 +44,7 @@ const App: React.FC = () => {
 					<div>
 						<Routes>
 							<Route path='about' element={<About isAuth = {isAuth}/>} />
-                            <Route path='/' element={ isAuth ? <Home userCode ={ {code:code, setCode:setCode} } loginState={ {isLogin:isAuth, setIsLogin:setIsAuth } }/> : <Navigate to="/about" replace />} />
+                            <Route path='/' element={ isAuth ? <Home userCode ={ {code:code, setCode:setCode} } loginState={ {isLogin:isAuth, setIsLogin:setIsAuth } } userId={ getUserId() }/> : <Navigate to="/about" replace />} />
                             {/* 
 							<Route path='/' element={<ProtectedRoute isAuth={isAuth} path='/' element={<Home />} />} />
                             */}
