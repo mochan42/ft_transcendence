@@ -59,12 +59,12 @@ const Home = ({ userCode, loginState, userId }: TUserState) => {
 				</div>
 				<div className="w-2/3 bg-slate-200 p-4">
 					<div className='bg-slate-900 rounded-lg h-full w-full'>
-						<Leaderboard />
+						<Leaderboard userId={userId} />
 					</div>
 				</div>
 				<div className="w-1/3 bg-slate-200 p-4 h-1/2">
 					<div className="h-full overflow-y-auto flex-cols text-center justify-between space-y-4">
-						<div className='space-y-2 border-t-8 border-slate-900 bg-slate-900 text-amber-400 rounded-lg flex-cols justify-evenly items-baseline'>
+						<div className='space-y-2 border-t-8 border-b-8 border-slate-900 bg-slate-900 text-amber-400 rounded-lg flex-cols justify-evenly items-baseline'>
 							<div className='flex items-center justify-around '>
 								<img className='h-16 w-16 bg-slate-200 dark:bg-slate-200 rounded-full' src='https://www.svgrepo.com/show/529148/question-circle.svg'/>
 								<p>

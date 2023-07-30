@@ -41,4 +41,11 @@ type Goal = {
 	'description'?: string;
 };
 
-export  { User, UserStats, UserAchievements, ProfileProps, Goal };
+type Friend = {
+	'receiver': number;
+	'sender': number;
+	'relation': string;
+	'createdAt': string;
+}
+
+export  { User, UserStats, UserAchievements, ProfileProps, Goal, Friend};
