@@ -5,6 +5,7 @@ import axios from 'axios';
 import UserCard from "../UserCard";
 import Friends from "../Friends";
 import Leaderboard from "../LeaderBoard";
+import { Friend, User } from "../../types";
 
 type TUserState = {
     userCode : {
@@ -19,6 +20,11 @@ type TUserState = {
 }
 
 const Home = ({ userCode, loginState, userId }: TUserState) => {
+	const [usersInfo, setUsersInfo] = useState< User[] | null >(null);
+	const id = userId.toString();
+	const urlFriends = 'http://localhost:5000/pong/users/' + id + '/friends';
+	const [userFriends, setUserFriends] = useState<User [] | null >(null);
+	const [friends, setFriends] = useState< Friend [] | null>(null);
 
     const navigate = useNavigate();
         const authenticateToAPI = async (token: string) => {
@@ -28,9 +34,8 @@ const Home = ({ userCode, loginState, userId }: TUserState) => {
             sessionStorage.setItem('userId', resp.data);
         }
     }
-    useEffect(
-        () => {
 
+    useEffect(() => {
             const urlBrowser = window.location.href;
             // parse the url and retrieve the query parameters
             const urlSearchParams = new URLSearchParams(urlBrowser.split('?')[1]);
@@ -51,6 +56,47 @@ const Home = ({ userCode, loginState, userId }: TUserState) => {
         authenticateToAPI(userCode.code);
     }
 
+	const getUsersInfo = async () => {
+		try {
+			const response = await axios.get< User[] >('http://localhost:5000/pong/users/');
+			if (response.status === 200) {
+				setUsersInfo(response.data);
+				console.log('Received Users Info: ', response.data)
+			}
+		}
+		catch (error) {
+			console.log('Error fetching users infos', error);
+		}
+	}
+
+	const getFriends = async () => {
+		try {
+			const response = await axios.get< Friend [] >(urlFriends);
+			if (response.status === 200) {
+				setFriends(response.data);
+				console.log('Received Friends data', response.data);
+			}
+		}
+		catch (error) {
+			console.log('Error receiving Friends information: ', error);
+		}
+	}
+
+	useEffect(() => {
+		if (friends === null) {
+			getFriends()
+		}
+		if (usersInfo === null) {
+			getUsersInfo()
+		}
+		if (userFriends === null && usersInfo) {
+			const usersFriends = usersInfo?.filter((user) =>
+				friends?.some((friend) => friend.sender === user.id || friend.receiver === user.id && user.id != userId)
+			);
+			setUserFriends(usersFriends);
+		}
+	}, []);
+
 	return (
 		<>
             <div className="flex flex-wrap h-screen">
@@ -64,12 +110,18 @@ const Home = ({ userCode, loginState, userId }: TUserState) => {
 				</div>
 				<div className="w-1/3 bg-slate-200 p-4 h-1/2">
 					<div className="h-full overflow-y-auto flex-cols text-center justify-between space-y-4">
-						<div className='space-y-2 border-t-8 border-b-8 border-slate-900 bg-slate-900 text-amber-400 rounded-lg flex-cols justify-evenly items-baseline'>
-							<div className='flex items-center justify-around '>
-								<img className='h-16 w-16 bg-slate-200 dark:bg-slate-200 rounded-full' src='https://www.svgrepo.com/show/529148/question-circle.svg'/>
-								<p>
-									Friend
-								</p>
+						<div className="space-y-2 flex flex-col justify-between gap-4">
+							<div className="flex flex-row justify-between min-w-[220px]">
+								{userFriends?.map((user, index) => (
+									<div key={index}>
+										<img
+										className="h-6 w-6 dark:bg-slate-200 rounded-full"
+										src={user.avatar}
+										alt="Achievement badge"
+										/>
+											{user.userNameLoc}
+									</div>
+								))}
 							</div>
 						</div>
 					</div>
