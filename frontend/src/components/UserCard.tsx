@@ -3,13 +3,13 @@ import { User } from '../types';
 import axios from 'axios';
 
 interface UserCardProps {
-  userId: number;
+  userId: string | null;
 }
 
 const UserCard: React.FC<UserCardProps> = ({ userId }) => {
 	
 	const [userInfo, setUserInfo] = useState< User | null >(null);
-	const url_info = 'http://localhost:5000/pong/users/' + userId.toString();
+	const url_info = 'http://localhost:5000/pong/users/' + userId;
 
 	const getUserInfo = async () => {
 		try {

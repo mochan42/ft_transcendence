@@ -6,7 +6,7 @@ export class Stat {
   id: number;
 
   @Column({ unique: true })
-  userId: number;
+  userId: string | null;
 
   @Column()
   wins?: number;

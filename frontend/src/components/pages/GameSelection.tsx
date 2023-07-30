@@ -5,7 +5,7 @@ import PageNotFound from "./PageNotFound";
 import { cn } from "../../lib/utils";
 
 interface GameSelectionProps {
-	userId: number;
+	userId: string | null;
 }
 
 const GameSelection:React.FC<GameSelectionProps> =({ userId }) => {

@@ -18,15 +18,13 @@ import { utils__isAPICodeAvailable } from './utils/utils__isAPICodeAvailable'
 const App: React.FC = () => {
 
 	const [isAuth, setIsAuth] = useState<boolean>(false)
-	const [code, setCode] = useState<string | null>( null )
+	const [code, setCode] = useState<string | null>(null)
+	const [userId, setUserId] = useState<string | null>(null);
 
-	const getUserId = (): number => {
-		const id = sessionStorage.getItem('userId');
-		if (id?.length) {
-			return +id;
-		}
-		return 0;
-	}
+	// const getUserId = (): number => {
+	// 	const id = sessionStorage.getItem('userId');
+	// 	return (id?.length) ? +id : -1; 
+	// }
 
     // check if code available for backend to exchange for token
     utils__isAPICodeAvailable({setIsAuth, isAuth, setCode, code });
@@ -41,10 +39,10 @@ const App: React.FC = () => {
 					<div>
 						<Routes>
 							<Route path='about' element={<About isAuth = {isAuth}/>} />
-                            <Route path='/' element={ <Home userCode ={ {code:code, setCode:setCode} } loginState={ {isLogin:isAuth, setIsLogin:setIsAuth } }/> } /> 
+							<Route path='/' element={<Home userCode={{ code: code, setCode: setCode }} loginState={{ isLogin: isAuth, setIsLogin: setIsAuth }} setUserId={ setUserId } /> } /> 
                             <Route path='/login' element={<Login isAuth={isAuth} setIsAuth={setIsAuth} />} />
-							<Route path='/game' element={<ProtectedRoute isAuth={isAuth} path='/game' element={<GameSelection userId={getUserId()}/>} />} />
-							<Route path='/profile' element={<ProtectedRoute isAuth={isAuth} path='/profile' element={<Profile userId={getUserId()}/>} />} />
+							<Route path='/game' element={<ProtectedRoute isAuth={isAuth} path='/game' element={<GameSelection userId={userId}/>} />} />
+							<Route path='/profile' element={<ProtectedRoute isAuth={isAuth} path='/profile' element={<Profile userId={userId}/>} />} />
 							<Route path='/landingpage' element={<ProtectedRoute isAuth={isAuth} path='/landingpage' element={<LandingPage />} />} />
 							<Route path='/layout' element={<Layout />} />
 							<Route path='/*' element={<PageNotFound />}/>

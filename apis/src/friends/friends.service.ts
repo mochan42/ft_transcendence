@@ -20,7 +20,7 @@ export class FriendsService {
     return await this.FriendRepo.save(friend);
   }
 
-  async find(userId: number) {
+  async find(userId: string | null) {
     return await this.FriendRepo.find({
       where: [{ sender: userId }, { receiver: userId }],
     });

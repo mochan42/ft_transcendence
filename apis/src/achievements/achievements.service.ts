@@ -13,7 +13,10 @@ export class AchievementsService {
     private readonly userService: UsersService,
   ) {}
 
-  async create(userId: number, createAchievementDto: CreateAchievementDto) {
+  async create(
+    userId: string | null,
+    createAchievementDto: CreateAchievementDto,
+  ) {
     try {
       const user = await this.userService.findOne(userId);
       const achiev = {
@@ -30,12 +33,12 @@ export class AchievementsService {
   }
 
   // find all user's achievement
-  async findAll(userId: number) {
+  async findAll(userId: string | null) {
     return await this.AchievementRepository.find({ where: { userId } });
   }
 
   // a specific achievement
-  async findOne(userId: number, goalId: number): Promise<Achievement> {
+  async findOne(userId: string | null, goalId: number): Promise<Achievement> {
     return await this.AchievementRepository.findOne({
       where: { userId, goalId },
     });

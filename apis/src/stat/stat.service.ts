@@ -13,7 +13,7 @@ export class StatService {
     private StatRepository: Repository<Stat>,
     private usersService: UsersService,
   ) {}
-  async create(userId: number, createStatDto: CreateStatDto) {
+  async create(userId: string | null, createStatDto: CreateStatDto) {
     const user = await this.usersService.findOne(userId);
     try {
       const newStat = {

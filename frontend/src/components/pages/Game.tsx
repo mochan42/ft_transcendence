@@ -9,7 +9,7 @@ import PvP from '../PvP';
 
 interface GameProps {
 	difficulty: number;
-	userId: number;
+	userId: string | null;
 	includeBoost: boolean;
 	opponent: string;
 	setState: React.Dispatch<React.SetStateAction<'select' | 'bot' | 'player'>>;
@@ -61,7 +61,7 @@ const Game:React.FC<GameProps> = ({ difficulty, userId, includeBoost, opponent, 
 	};
 
 	useEffect(() => {
-		getUserInfo(userId.toString());
+		userId && getUserInfo(userId);
 		window.addEventListener('keypress', handleKeyPress);
 		return () => {
 			// Clean up the event listener when the component is unmounted

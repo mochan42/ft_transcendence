@@ -6,7 +6,7 @@ export class Achievement {
   id: number;
 
   @Column()
-  userId: number;
+  userId: string | null;
 
   @Column()
   goalId: number;

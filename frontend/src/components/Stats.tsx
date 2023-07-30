@@ -4,7 +4,7 @@ import { Pie } from "react-chartjs-2";
 import axios, { AxiosResponse } from "axios";
 
 interface StatsProps {
-	userId: number;
+	userId: string | null;
 	setShowScreen: React.Dispatch<React.SetStateAction< 'default' | 'achievements' | 'friends' | 'stats' >>;
 }
 
@@ -27,11 +27,11 @@ type UserAchievements = {
 
 const Stats:React.FC<StatsProps> =({ userId, setShowScreen }) => {
 
-	const url_stats = 'http://localhost:5000/pong/users/' + userId.toString() + '/stats';
+	const url_stats = 'http://localhost:5000/pong/users/' + userId + '/stats';
 	const [userStats, setUserStats] = useState< UserStats | null >(null);
 	const [winRatio, setWinRatio] = useState<number>(0);
 	const [userAchievements, setUserAchievements] = useState< UserAchievements[] | null >(null);
-	const url_achievements = 'http://localhost:5000/pong/users/' + userId.toString() + '/achievements';
+	const url_achievements = 'http://localhost:5000/pong/users/' + userId + '/achievements';
 
 	// useEffect(() => {
 	// 	if (userAchievements === null) {

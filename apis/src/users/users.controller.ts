@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  HttpCode,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -27,6 +28,7 @@ export class UsersController {
   }
 
   @Post('auth')
+  @HttpCode(200)
   authenticate(@Body() authUserDto: AuthUserDto) {
     return this.usersService.authenticate(authUserDto);
   }

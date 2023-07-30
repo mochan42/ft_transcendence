@@ -1,7 +1,7 @@
 import { Button } from "./ui/Button"
 
 interface FriendsProps {
-	userId: number;
+	userId: string | null;
 	setShowScreen: React.Dispatch<React.SetStateAction< 'default' | 'achievements' | 'friends' | 'stats' >>;
 }
 

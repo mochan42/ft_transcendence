@@ -4,7 +4,7 @@ import axios, { AxiosResponse } from "axios";
 import {Goal, UserAchievements} from '../types';
 
 interface AchievementsProps {
-	userId: number;
+	userId: string | null;
 	setShowScreen: React.Dispatch<React.SetStateAction< 'default' | 'achievements' | 'friends' | 'stats' >>;
 }
 
@@ -12,9 +12,9 @@ const Achievements:React.FC<AchievementsProps> =({ userId, setShowScreen }) => {
 	
 	const [userAchievements, setUserAchievements] = useState< UserAchievements[] | null >(null);
 	const [allGoals, setAllGoals] = useState< Goal[] | null >(null);
-	const url_achievements = 'http://localhost:5000/pong/users/' + userId.toString() + '/achievements';
+	const url_achievements = 'http://localhost:5000/pong/users/' + userId + '/achievements';
 	const url_goals = 'http://localhost:5000/pong/goals';
-	const id = userId.toString();
+	const id = userId;
 	const [achievedGoals, setAchievedGoals] = useState<Goal[]>();
 	const [notAchievedGoals, setNotAchievedGoals] = useState<Goal[]>();
 

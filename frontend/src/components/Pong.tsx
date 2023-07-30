@@ -5,7 +5,7 @@ import VictoryLoss from './VictoryLoss';
 import Boost from './Boost';
 
 interface PongProps {
-	userId: number;
+	userId: string | null;
 	difficulty: number;
 	isGameActive: boolean;
 	isReset: boolean;

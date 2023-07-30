@@ -8,7 +8,7 @@ import MatchMaking from './MatchMaking';
 
 
 interface PvPProps {
-	userId: number;
+	userId: string | null;
 	difficulty: number;
 	isGameActive: boolean;
 	isReset: boolean;

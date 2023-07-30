@@ -4,7 +4,7 @@ import { UserAchievements, UserStats } from "../types";
 
 interface VictoryLossProps {
 	isVictory: boolean;
-	userId: number;
+	userId: string | null;
 	difficulty: number;
 }
 
@@ -14,8 +14,8 @@ const VictoryLoss: React.FC<VictoryLossProps> = ({ isVictory, userId, difficulty
 	const [UserAchievements, setUserAchievements] = useState< UserAchievements[] | null >(null);
 	const [updatedStats, setUpdatedStats] = useState(false);
 	const [updatedAchievements, setUpdatedAchievements] = useState(false);
-	const url_stats = 'http://localhost:5000/pong/users/' + userId.toString() + '/stats';
-	const url_achievements = 'http://localhost:5000/pong/users/' + userId.toString() + '/achievements';
+	const url_stats = 'http://localhost:5000/pong/users/' + userId + '/stats';
+	const url_achievements = 'http://localhost:5000/pong/users/' + userId + '/achievements';
 	
 	const getUserStats = async () => {
 		try {

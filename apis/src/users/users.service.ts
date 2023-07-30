@@ -61,7 +61,7 @@ export class UsersService {
     // }
     //console.log(resp.data);
     //console.log(resp.status);
-    return 23;
+    return '23';
   }
 
   async findAll(): Promise<User[]> {
@@ -78,7 +78,7 @@ export class UsersService {
     return await this.UserRepository.save(updated);
   }
 
-  async remove(userId: number) {
+  async remove(userId: string | null) {
     return await this.UserRepository.delete(+userId);
   }
 

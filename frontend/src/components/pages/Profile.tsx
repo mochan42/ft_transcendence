@@ -6,18 +6,17 @@ import Friends from '../Friends';
 import Stats from '../Stats';
 import { User, ProfileProps, UserStats, UserAchievements, Goal } from '../../types';
 
-const Profile:React.FC<ProfileProps> =({ userId }) => {
-	
+	const Profile: React.FC<ProfileProps> = ({ userId }) => {
 	const [userInfo, setUserInfo] = useState< User | null >(null);
 	const [userStats, setUserStats] = useState< UserStats | null >(null);
 	const [showScreen, setShowScreen] = useState< 'default' | 'achievements' | 'friends' | 'stats' >('default');
 	const [userAchievements, setUserAchievements] = useState< UserAchievements[] | null >(null);
 	const [allGoals, setAllGoals] = useState< Goal[] | null >(null);
-	const url_info = 'http://localhost:5000/pong/users/' + userId.toString();
-	const url_stats = 'http://localhost:5000/pong/users/' + userId.toString() + '/stats'
-	const url_achievements = 'http://localhost:5000/pong/users/' + userId.toString() + '/achievements';
+	const url_info = 'http://localhost:5000/pong/users/' + userId?.toString();
+	const url_stats = 'http://localhost:5000/pong/users/' + userId?.toString() + '/stats'
+	const url_achievements = 'http://localhost:5000/pong/users/' + userId?.toString() + '/achievements';
 	const url_goals = 'http://localhost:5000/pong/goals';
-	const id = userId.toString();
+	const id = userId;
 	const [achievedGoals, setAchievedGoals] = useState<Goal[]>();
 	const [notAchievedGoals, setNotAchievedGoals] = useState<Goal[]>();
 

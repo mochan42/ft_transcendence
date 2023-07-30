@@ -4,7 +4,7 @@ import { Button } from './ui/Button';
 import UserCard from './UserCard';
 
 interface MatchMakingProps {
-	userId: number;
+	userId: string | null;
 	setOpponentInfo: (User: User) => void;
 	setMatchFound: (boolean: boolean) => void;
 	setState: React.Dispatch<React.SetStateAction<'select' | 'bot' | 'player'>>;
@@ -28,7 +28,7 @@ const MatchMaking:React.FC<MatchMakingProps> =({ setMatchFound, setOpponentInfo,
 				</div>
 				<div className={'border-l-4 border-amber-400 h-full w-1/2 z-0'}>
 					<div className={'h-4/5'} >
-						<UserCard userId={3} />
+						<UserCard userId={'3'} />
 					</div>
 				</div>
 				<button 
