@@ -3,6 +3,7 @@ import { Button } from "../ui/Button"
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import Profile from "./Profile";
 //import queryString from "query-string"
 
 type TUserState = {
@@ -35,23 +36,25 @@ const Home = ({ userCode, loginState, setUserId }: TUserState) => {
     },
     [])
 
-    if (userCode.code != null)
-    {
-        //console.log(userCode.code);
+    if (userCode.code != null) {
         authenticateToAPI(userCode.code);
+        navigate('/profile');
     }
             
             
-	return (
-		<div className='h-screen bg-gray-200 dark:bg-slate-900 w-full grid place-items-center'>
-            <Button>
-				Welcome Home!
-			</Button>
-			<div className="dark:text-slate-200">
-           		{ loginState.isLogin && <h3>Received code : { userCode.code }</h3> }
-            	<h3>Login state : { (loginState.isLogin && userCode.code) ? "Active" : "Inactive" }</h3>
-			</div>
-		</div>
+    return (
+        <></>
+        // I Wanted us to redirect the user directly to his profile
+
+		// <div className='h-screen bg-gray-200 dark:bg-slate-900 w-full grid place-items-center'>
+        //     <Button>
+		// 		Welcome Home!
+		// 	</Button>
+		// 	<div className="dark:text-slate-200">
+        //    		{ loginState.isLogin && <h3>Received code : { userCode.code }</h3> }
+        //     	<h3>Login state : { (loginState.isLogin && userCode.code) ? "Active" : "Inactive" }</h3>
+		// 	</div>
+		// </div>
 	)
 }
 

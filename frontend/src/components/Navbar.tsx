@@ -10,11 +10,11 @@ interface Props {
 	setIsAuth: React.Dispatch<React.SetStateAction<boolean>>,
 	isAuth: boolean,
 	setCode: React.Dispatch<React.SetStateAction<string | null>>,
-    
+    setUserId: React.Dispatch<React.SetStateAction<string | null>>
 }
 
 
-const Navbar: React.FC<Props> = ({ setIsAuth, isAuth, setCode}) => {
+const Navbar: React.FC<Props> = ({ setIsAuth, isAuth, setCode, setUserId }) => {
 	const navigate = useNavigate();
     const [theme, setTheme] = useState('dark'); 
 
@@ -23,7 +23,7 @@ const Navbar: React.FC<Props> = ({ setIsAuth, isAuth, setCode}) => {
 		if (isAuth) {
 			setIsAuth(false)
 			setCode(null);
-			sessionStorage.removeItem('userId');
+			setUserId(null);
 			navigate('/about')
 		}
 		else {
