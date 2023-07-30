@@ -22,7 +22,8 @@ const Navbar: React.FC<Props> = ({ setIsAuth, isAuth, setCode}) => {
             // contact server to delete access token
 		if (isAuth) {
 			setIsAuth(false)
-            setCode(null);
+			setCode(null);
+			sessionStorage.removeItem('userId');
 			navigate('/about')
 		}
 		else {

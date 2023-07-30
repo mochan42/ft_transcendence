@@ -22,7 +22,7 @@ const Home = ({ userCode, loginState }: TUserState) => {
 
     const authenticateToAPI = async (token: string) => {
     const resp = await axios.post('http://localhost:5000/pong/users/auth', { token });
-    if (resp.status === 200) {
+        if (resp.status === 200) {
             setTimeout(()=> alert(resp.data), 1000);
             sessionStorage.setItem('userId', resp.data);
         }
