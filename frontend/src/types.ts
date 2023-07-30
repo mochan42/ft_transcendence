@@ -41,4 +41,11 @@ type Goal = {
 	'description'?: string;
 };
 
-export  { User, UserStats, UserAchievements, ProfileProps, Goal };
+type TUserAuth= {
+    setIsAuth: React.Dispatch<React.SetStateAction<boolean>>,
+    isAuth: boolean,
+    setCode: React.Dispatch<React.SetStateAction<string | null>>,
+    code: (string | null)
+}
+
+export  { User, UserStats, UserAchievements, ProfileProps, Goal, TUserAuth };
