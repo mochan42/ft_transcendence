@@ -4,22 +4,26 @@ import axios, { AxiosResponse } from 'axios';
 import Achievements from '../Achievements';
 import Friends from '../Friends';
 import Stats from '../Stats';
-import { User, ProfileProps, UserStats, UserAchievements, Goal } from '../../types';
+import { User, ProfileProps, UserStats, UserAchievements, Goal, Friend } from '../../types';
 
 const Profile:React.FC<ProfileProps> =({ userId }) => {
 	
 	const [userInfo, setUserInfo] = useState< User | null >(null);
+	const [usersInfo, setUsersInfo] = useState< User[] | null >(null);
 	const [userStats, setUserStats] = useState< UserStats | null >(null);
 	const [showScreen, setShowScreen] = useState< 'default' | 'achievements' | 'friends' | 'stats' >('default');
 	const [userAchievements, setUserAchievements] = useState< UserAchievements[] | null >(null);
 	const [allGoals, setAllGoals] = useState< Goal[] | null >(null);
-	const url_info = 'http://localhost:5000/pong/users/' + userId.toString();
-	const url_stats = 'http://localhost:5000/pong/users/' + userId.toString() + '/stats'
-	const url_achievements = 'http://localhost:5000/pong/users/' + userId.toString() + '/achievements';
-	const url_goals = 'http://localhost:5000/pong/goals';
+	const [friends, setFriends] = useState< Friend [] | null>(null)
 	const id = userId.toString();
+	const urlFriends = 'http://localhost:5000/pong/users/' + id + '/friends';
+	const url_info = 'http://localhost:5000/pong/users/' + id;
+	const url_stats = 'http://localhost:5000/pong/users/' + id + '/stats'
+	const url_achievements = 'http://localhost:5000/pong/users/' + id + '/achievements';
+	const url_goals = 'http://localhost:5000/pong/goals';
 	const [achievedGoals, setAchievedGoals] = useState<Goal[]>();
 	const [notAchievedGoals, setNotAchievedGoals] = useState<Goal[]>();
+	const [userFriends, setUserFriends] = useState<User [] | null >(null)
 
 	const getUserAchievements = async () => {
 		try {
@@ -58,6 +62,19 @@ const Profile:React.FC<ProfileProps> =({ userId }) => {
 		}
 	}
 
+	const getUsersInfo = async () => {
+		try {
+			const response = await axios.get< User[] >('http://localhost:5000/pong/users/');
+			if (response.status === 200) {
+				setUsersInfo(response.data);
+				console.log('Received Users Info: ', response.data)
+			}
+		}
+		catch (error) {
+			console.log('Error fetching users infos', error);
+		}
+	}
+
 	const getUserStats = async () => {
 		try {
 			const response = await axios.get<UserStats>(url_stats);
@@ -69,6 +86,19 @@ const Profile:React.FC<ProfileProps> =({ userId }) => {
 			console.log('Error fetching user stats:', error);
 		}
 	};
+
+	const getFriends = async () => {
+		try {
+			const response = await axios.get< Friend [] >(urlFriends);
+			if (response.status === 200) {
+				setFriends(response.data);
+				console.log('Received Friends data', response.data);
+			}
+		}
+		catch (error) {
+			console.log('Error receiving Friends information: ', error);
+		}
+	}
 
 	useEffect(() => {
 		if (allGoals != null && userAchievements != null) {
@@ -97,6 +127,18 @@ const Profile:React.FC<ProfileProps> =({ userId }) => {
 		}
 		if (allGoals === null) {
 			getAllGoals();
+		}
+		if (friends === null) {
+			getFriends()
+		}
+		if (usersInfo === null) {
+			getUsersInfo()
+		}
+		if (userFriends === null && usersInfo) {
+			const usersFriends = usersInfo?.filter((user) =>
+				friends?.some((friend) => friend.sender === user.id || friend.receiver === user.id && user.id != userId)
+			);
+			setUserFriends(usersFriends);
 		}
 	}, []);
 
@@ -194,23 +236,23 @@ const Profile:React.FC<ProfileProps> =({ userId }) => {
 							Friends of the World
 						</h3>
 						<div className='space-y-2 flex flex-col justify-between gap-4'>
-							<div className='flex flex-row justify-around'>
-								<img className='h-6 w-6' src="https://www.svgrepo.com/show/384673/account-avatar-profile-user-5.svg" alt="Friend Icon" />
-								Friend 1
-							</div>
-							<div className='flex flex-row justify-around'>
-								<img className='h-6 w-6' src="https://www.svgrepo.com/show/384673/account-avatar-profile-user-5.svg" alt="Friend Icon" />
-								Friend 2
-							</div>
-							<div className='flex flex-row justify-around'>
-								<img className='h-6 w-6' src="https://www.svgrepo.com/show/384673/account-avatar-profile-user-5.svg" alt="Friend Icon" />
-								Friend 3
-							</div>
-							<div>
-								<Button variant={'link'} onClick={() => setShowScreen('friends')}>
-									more
-								</Button>
-							</div>
+							{userFriends?.map((user, index) => (
+								<div key={index}>
+									<div className="space-y-2 flex flex-col justify-between gap-4">
+										<div className="flex flex-row justify-between min-w-[220px]">
+											<img
+											className="h-6 w-6 dark:bg-slate-200 rounded-full"
+											src={user.avatar}
+											alt="Achievement badge"
+											/>
+												{user.userNameLoc}
+										</div>
+									</div>
+								</div>
+							))}
+							<Button variant={'link'} onClick={() => setShowScreen('friends')}>
+								more
+							</Button>
 						</div> 
 					</div>
 				</div>
@@ -218,7 +260,7 @@ const Profile:React.FC<ProfileProps> =({ userId }) => {
 			{showScreen === 'achievements' ? 
 				<Achievements userId={userId} setShowScreen={setShowScreen} />
 			: null}
-			{showScreen === 'friends' ? <Friends userId={userId} setShowScreen={setShowScreen} /> : null}
+			{showScreen === 'friends' ? <Friends userId={userId} setShowScreen={setShowScreen} friends={userFriends} /> : null}
 			{showScreen === 'stats' ? <Stats userId={userId} setShowScreen={setShowScreen} /> : null}
 		</div>
 	);
