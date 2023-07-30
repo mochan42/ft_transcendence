@@ -65,7 +65,7 @@ const Leaderboard:React.FC<LeaderboardProps> =({ userId }) => {
 	})
 
 	useEffect(() => {
-		const intervalId = setInterval(getUsersInfo, 2000);
+		const intervalId = setInterval(getUsersInfo, 500);
 		return () => clearInterval(intervalId);
 	}, [getUsersInfo])
 
@@ -75,7 +75,6 @@ const Leaderboard:React.FC<LeaderboardProps> =({ userId }) => {
 			setTopUsers(top5Users);
 	}, [usersInfo])
 
-// user.id 'https://www.svgrepo.com/show/416162/add-friend-basic-outline.svg'} />
 	return (
 		<div className="h-full w-full bg-slate-900 p-4 text-center rounded-lg">
 			<h2 className="text-2xl text-amber-400 font-semibold mb-4">Leaderboard</h2>
