@@ -25,7 +25,7 @@ const App: React.FC = () => {
 		if (id?.length) {
 			return +id;
 		}
-		return 0;
+		return 2;
 	}
 
     // check if code available for backend to exchange for token
@@ -41,10 +41,10 @@ const App: React.FC = () => {
 					<div>
 						<Routes>
 							<Route path='about' element={<About isAuth = {isAuth}/>} />
-                            <Route path='/' element={ <Home userCode ={ {code:code, setCode:setCode} } loginState={ {isLogin:isAuth, setIsLogin:setIsAuth } }/> } /> 
-                            <Route path='/login' element={<Login isAuth={isAuth} setIsAuth={setIsAuth} />} />
+              <Route path='/' element={ <Home userCode ={ {code:code, setCode:setCode} } loginState={ {isLogin:isAuth, setIsLogin:setIsAuth } } userId={ getUserId() /> } /> 
+              <Route path='/login' element={<Login isAuth={isAuth} setIsAuth={setIsAuth} />} />
 							<Route path='/game' element={<ProtectedRoute isAuth={isAuth} path='/game' element={<GameSelection userId={getUserId()}/>} />} />
-							<Route path='/profile' element={<ProtectedRoute isAuth={isAuth} path='/profile' element={<Profile userId={getUserId()}/>} />} />
+							<Route path='/profile' element={<ProtectedRoute isAuth={isAuth} path='/profile/' element={<Profile userId={getUserId()}/>} />} />
 							<Route path='/landingpage' element={<ProtectedRoute isAuth={isAuth} path='/landingpage' element={<LandingPage />} />} />
 							<Route path='/layout' element={<Layout />} />
 							<Route path='/*' element={<PageNotFound />}/>

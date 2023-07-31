@@ -41,6 +41,13 @@ type Goal = {
 	'description'?: string;
 };
 
+type Friend = {
+	'receiver': number;
+	'sender': number;
+	'relation': string;
+	'createdAt': string;
+}
+
 type TUserAuth= {
     setIsAuth: React.Dispatch<React.SetStateAction<boolean>>,
     isAuth: boolean,
@@ -48,4 +55,4 @@ type TUserAuth= {
     code: (string | null)
 }
 
-export  { User, UserStats, UserAchievements, ProfileProps, Goal, TUserAuth };
+export  { User, UserStats, UserAchievements, ProfileProps, Goal, TUserAuth, Friend};
