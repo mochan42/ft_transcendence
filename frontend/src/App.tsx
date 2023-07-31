@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { useState } from 'react';
 import './App.css';
 import Login from './components/pages/Login';
@@ -13,18 +13,12 @@ import PageNotFound from './components/pages/PageNotFound';
 import Footer from './components/Footer';
 import Layout from './components/pages/Layout';
 import GameSelection from './components/pages/GameSelection';
+import { utils__isAPICodeAvailable } from './utils/utils__isAPICodeAvailable'
 
 const App: React.FC = () => {
-/*
-    type TUser = {
-        userName: string,
-        userCode: string,
-        logState: boolean,
-        loginHandler: () => void
-    }
-*/
-	const [isAuth, setIsAuth] = useState<boolean>(true)
-	const [code, setCode] = useState<string | null>(null)
+
+	const [isAuth, setIsAuth] = useState<boolean>(false)
+	const [code, setCode] = useState<string | null>( null )
 
 	const getUserId = (): number => {
 		const id = sessionStorage.getItem('userId');
@@ -34,30 +28,24 @@ const App: React.FC = () => {
 		return 2;
 	}
 
+    // check if code available for backend to exchange for token
+    utils__isAPICodeAvailable({setIsAuth, isAuth, setCode, code });
+
 	return (
 		<div className='grid gap-2 font-mono dark:bg-white/75 bg-slate-900 bg-opacity-80'>
 			<Router>
 				<div className='shadow-xl flex backdrop-blur-sm bg-white/75 dark:bg-slate-900 z-50 top-0 left-0 right-0 h-20 border border-white/75 dark:border-slate-700 item-center justify-between'>
-					<Navbar setIsAuth={setIsAuth} isAuth={isAuth}/>
+					<Navbar setIsAuth={setIsAuth} isAuth={isAuth} setCode={setCode}/>
 				</div>
 				<div className='rounded-2xl shadow-xl h-screen min-h-[50px]'>
 					<div>
 						<Routes>
 							<Route path='about' element={<About isAuth = {isAuth}/>} />
-                            <Route path='/' element={ isAuth ? <Home userCode ={ {code:code, setCode:setCode} } loginState={ {isLogin:isAuth, setIsLogin:setIsAuth } } userId={ getUserId() }/> : <Navigate to="/about" replace />} />
-                            {/* 
-							<Route path='/' element={<ProtectedRoute isAuth={isAuth} path='/' element={<Home />} />} />
-                            */}
-                            <Route path='/login' element={<Login isAuth={isAuth} setIsAuth={setIsAuth} />} />
-                            {/* 
-							<Route path='/login' element={<Login setIsAuth={setIsAuth} />} />
-                            */}
+              <Route path='/' element={ <Home userCode ={ {code:code, setCode:setCode} } loginState={ {isLogin:isAuth, setIsLogin:setIsAuth } } userId={ getUserId() /> } /> 
+              <Route path='/login' element={<Login isAuth={isAuth} setIsAuth={setIsAuth} />} />
 							<Route path='/game' element={<ProtectedRoute isAuth={isAuth} path='/game' element={<GameSelection userId={getUserId()}/>} />} />
 							<Route path='/profile' element={<ProtectedRoute isAuth={isAuth} path='/profile/' element={<Profile userId={getUserId()}/>} />} />
 							<Route path='/landingpage' element={<ProtectedRoute isAuth={isAuth} path='/landingpage' element={<LandingPage />} />} />
-                            {/* 
-							<Route path='/about' element={<About />} />
-                            */}
 							<Route path='/layout' element={<Layout />} />
 							<Route path='/*' element={<PageNotFound />}/>
 						</Routes>

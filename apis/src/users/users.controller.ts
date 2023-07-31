@@ -10,6 +10,7 @@ import {
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { AuthUserDto } from './dto/auth-user.dto';
+import { CreateUserDto } from './dto/create-user.dto';
 
 @Controller('pong/users')
 export class UsersController {
@@ -18,6 +19,11 @@ export class UsersController {
   @Get()
   findAll() {
     return this.usersService.findAll();
+  }
+
+  @Post()
+  create(@Body() createUserDto: CreateUserDto) {
+    return this.usersService.create(createUserDto);
   }
 
   @Post('auth')

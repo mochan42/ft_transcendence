@@ -12,12 +12,12 @@ Content-Type: application/json
 	"lastName": "Parker",
 	"is2Fa": false,
 	"authToken": "ddddddss",
-	"email": "billbillisssngton@rich.com",
+	"email": "billbillisssnghhhhhton@rich.com",
 	"secret2Fa" : "",
 	"avatar" : "https://www.svgrepo.com/show/303599/spider-man-4-logo.svg",
 	"xp": 123456,
 	"isLogged": true,
-	"lastSeen": ""
+	"lastSeen": "Hello"
 }
 
 ###  Edit user info
@@ -25,7 +25,7 @@ PATCH  http://localhost:5000/pong/users/3
 Content-Type: application/json
 
 {
-	"userName": "Alim",
+	"userName": "AlimKKK",
 	"userNameLoc": "alim",
 	"firstName": "Philipp",
 	"lastName": "Maxim",
@@ -176,19 +176,19 @@ POST  http://localhost:5000/pong/friends
 Content-Type: application/json
 
 {
-	"receiver": 2,
-	"sender": 3,
+	"receiver": 3,
+	"sender": 4,
 	"relation": "pending",
 	"createdAt": "27/07/2023"
 }
 
 ### update friend relation
-PATCH   http://localhost:5000/pong/friends/2
+PATCH   http://localhost:5000/pong/friends/5
 Content-Type: application/json
 
 {
-	"receiver": 2,
-	"sender": 3,
+	"receiver": 3,
+	"sender": 4,
 	"relation": "accepted",
 	"createdAt": "27/07/2023"
 }

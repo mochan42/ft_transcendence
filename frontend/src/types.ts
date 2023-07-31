@@ -48,4 +48,11 @@ type Friend = {
 	'createdAt': string;
 }
 
-export  { User, UserStats, UserAchievements, ProfileProps, Goal, Friend};
+type TUserAuth= {
+    setIsAuth: React.Dispatch<React.SetStateAction<boolean>>,
+    isAuth: boolean,
+    setCode: React.Dispatch<React.SetStateAction<string | null>>,
+    code: (string | null)
+}
+
+export  { User, UserStats, UserAchievements, ProfileProps, Goal, TUserAuth, Friend};

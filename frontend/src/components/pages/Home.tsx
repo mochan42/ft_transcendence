@@ -27,15 +27,16 @@ const Home = ({ userCode, loginState, userId }: TUserState) => {
 	const [friends, setFriends] = useState< Friend [] | null>(null);
 
     const navigate = useNavigate();
-        const authenticateToAPI = async (token: string) => {
-        const resp = await axios.post('http://localhost:5000/pong/users/auth', { token });
+
+    const authenticateToAPI = async (token: string) => {
+    const resp = await axios.post('http://localhost:5000/pong/users/auth', { token });
         if (resp.status === 200) {
-            alert(resp.data);
+            setTimeout(()=> alert(resp.data), 1000);
             sessionStorage.setItem('userId', resp.data);
         }
     }
 
-    useEffect(() => {
+<!--     useEffect(() => {
             const urlBrowser = window.location.href;
             // parse the url and retrieve the query parameters
             const urlSearchParams = new URLSearchParams(urlBrowser.split('?')[1]);
@@ -54,7 +55,7 @@ const Home = ({ userCode, loginState, userId }: TUserState) => {
     
     if (userCode.code) {
         authenticateToAPI(userCode.code);
-    }
+    } -->
 
 	const getUsersInfo = async () => {
 		try {
@@ -99,6 +100,18 @@ const Home = ({ userCode, loginState, userId }: TUserState) => {
 		}
 	}, []);
 
+    useEffect( () => {
+        if (userCode.code === null || loginState.isLogin === false){ navigate('/about') }
+
+    },
+    [])
+
+    if (userCode.code != null)
+    {
+        //console.log(userCode.code);
+        authenticateToAPI(userCode.code);
+    }
+            
 	return (
 		<>
             <div className="flex flex-wrap h-screen">
