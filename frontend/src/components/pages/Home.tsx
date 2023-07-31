@@ -93,7 +93,9 @@ const Home = ({ userCode, loginState, userId }: TUserState) => {
 			const usersFriends = usersInfo?.filter((user) =>
 				friends?.some((friend) => friend.sender === user.id || friend.receiver === user.id && user.id != userId)
 			);
-			setUserFriends(usersFriends);
+			if (userFriends != null) {
+				setUserFriends(usersFriends);
+			}
 		}
 	}, []);
 
@@ -109,10 +111,10 @@ const Home = ({ userCode, loginState, userId }: TUserState) => {
 					</div>
 				</div>
 				<div className="w-1/3 bg-slate-200 p-4 h-1/2">
-					<div className="h-full overflow-y-auto flex-cols text-center justify-between space-y-4">
-						<div className="space-y-2 flex flex-col justify-between gap-4">
-							<div className="flex flex-row justify-between min-w-[220px]">
-								{userFriends?.map((user, index) => (
+					<div className="h-full overflow-y-auto flex-cols text-center space-y-4 rounded-lg flex items-center justify-center">
+						<div className="space-y-2 flex flex-col justify-between gap-4 rounded-lg">
+							<div className="flex flex-row justify-between items-center min-w-[220px] bg-slate-900 text-center rounded-lg">
+								{userFriends != null ? userFriends.map((user, index) => (
 									<div key={index}>
 										<img
 										className="h-6 w-6 dark:bg-slate-200 rounded-full"
@@ -121,7 +123,7 @@ const Home = ({ userCode, loginState, userId }: TUserState) => {
 										/>
 											{user.userNameLoc}
 									</div>
-								))}
+								)) : <img className='h-96 w-96 rounded-lg' src='https://media0.giphy.com/media/KG4ST0tXOrt1yQRsv0/200.webp?cid=ecf05e4732is65t7ah6nvhvwst9hkjqv0c52bhfnilk0b9g0&ep=v1_stickers_search&rid=200.webp&ct=s'/>}
 							</div>
 						</div>
 					</div>

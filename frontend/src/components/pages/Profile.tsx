@@ -235,8 +235,8 @@ const Profile:React.FC<ProfileProps> =({ userId }) => {
 						<h3 className='w-[300px] bg-slate-900 text-lg font-bold mb-4 border-slate-900 border-2 rounded-lg text-white dark:bg-slate-200 dark:text-slate-900'>
 							Friends of the World
 						</h3>
-						<div className='space-y-2 flex flex-col justify-between gap-4'>
-							{userFriends?.map((user, index) => (
+						<div className='space-y-2 flex flex-col justify-between items-center gap-4'>
+							{userFriends != null ? userFriends?.map((user, index) => (
 								<div key={index}>
 									<div className="space-y-2 flex flex-col justify-between gap-4">
 										<div className="flex flex-row justify-between min-w-[220px]">
@@ -249,7 +249,7 @@ const Profile:React.FC<ProfileProps> =({ userId }) => {
 										</div>
 									</div>
 								</div>
-							))}
+							)) : <img className='h-40 w-40 rounded-lg' src='https://media0.giphy.com/media/KG4ST0tXOrt1yQRsv0/200.webp?cid=ecf05e4732is65t7ah6nvhvwst9hkjqv0c52bhfnilk0b9g0&ep=v1_stickers_search&rid=200.webp&ct=s'/>}
 							<Button variant={'link'} onClick={() => setShowScreen('friends')}>
 								more
 							</Button>
