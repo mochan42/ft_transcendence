@@ -1,9 +1,7 @@
-import { Button } from "../ui/Button"
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import UserCard from "../UserCard";
-import Friends from "../Friends";
 import Leaderboard from "../LeaderBoard";
 import { Friend, User } from "../../types";
 
