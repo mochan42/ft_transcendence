@@ -23,7 +23,7 @@ export class FriendsController {
 
   @Get('users/:userId/friends')
   findOne(@Param('userId') userId: string) {
-    return this.friendsService.find(+userId);
+    return this.friendsService.find(userId);
   }
 
   @Patch('friends/:id')

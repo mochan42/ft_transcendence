@@ -20,7 +20,7 @@ export class StatController {
     @Param('userId') userId: string,
     @Body() createStatDto: CreateStatDto,
   ) {
-    return this.statService.create(parseInt(userId), createStatDto);
+    return this.statService.create(userId, createStatDto);
   }
 
   @Get(':userId/stats')
@@ -33,12 +33,12 @@ export class StatController {
     @Param('userId') userId: string,
     @Body() updateStatDto: UpdateStatDto,
   ) {
-    return this.statService.update(+userId, updateStatDto);
+    return this.statService.update(userId, updateStatDto);
   }
 
   // !!! NOT SURE ABOUT THIS ENDPOINT NECESSITY.
   @Delete(':userId/stats')
   remove(@Param('userId') userId: string) {
-    return this.statService.remove(+userId);
+    return this.statService.remove(userId);
   }
 }

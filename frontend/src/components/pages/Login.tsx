@@ -15,7 +15,7 @@ interface Props {
 const Login: React.FC<Props> = ({setIsAuth, isAuth}) => {
 	const handleLogin = () => 
     {
-      const generatedState = "helllllllllllllllllllllllllllllll";
+      const generatedState = 'this must be very secure but lazy dev put just a string';
       const client_id_42 = "u-s4t2ud-9c04e10e264f25f8b3cb9bef48ae57df091de510f43e87c7647da4b885b6210b";
       const url_auth_42 = `https://api.intra.42.fr/oauth/authorize?client_id=${client_id_42}&redirect_uri=http%3A%2F%2Flocalhost%3A3000&response_type=code&state=${generatedState}`;
       window.location.href = url_auth_42;

@@ -18,13 +18,12 @@ export class AchievementsService {
     createAchievementDto: CreateAchievementDto,
   ) {
     try {
-      const user = await this.userService.findOne(userId);
+      const user = await this.userService.findOne(+userId);
       const achiev = {
         ...createAchievementDto,
-        userId: user.id,
+        userId: user.id.toString(),
         createdAt: new Date().toUTCString(),
       };
-      console.log(achiev);
       return await this.AchievementRepository.save(achiev);
     } catch (error) {
       console.log(error);

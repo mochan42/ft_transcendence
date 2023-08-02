@@ -19,17 +19,17 @@ export class AchievementsController {
     @Param('userId') userId: string,
     @Body() createAchievementDto: CreateAchievementDto,
   ) {
-    return this.achievementsService.create(+userId, createAchievementDto);
+    return this.achievementsService.create(userId, createAchievementDto);
   }
 
   @Get(':userId/achievements')
   findAll(@Param('userId') userId: string) {
-    return this.achievementsService.findAll(+userId);
+    return this.achievementsService.findAll(userId);
   }
 
   @Get(':userId/achievements/:id')
   findOne(@Param('userId') userId: string, @Param('id') id: string) {
-    return this.achievementsService.findOne(+userId, +id);
+    return this.achievementsService.findOne(userId, +id);
   }
 
   @Delete(':id')

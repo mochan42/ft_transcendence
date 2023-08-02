@@ -6,6 +6,7 @@ import { User } from './entities/user.entity';
 import { AuthUserDto } from './dto/auth-user.dto';
 import axios from 'axios';
 import { CreateUserDto } from './dto/create-user.dto';
+import { access } from 'fs';
 
 @Injectable()
 export class UsersService {
@@ -13,7 +14,8 @@ export class UsersService {
     @InjectRepository(User)
     private UserRepository: Repository<User>,
   ) {}
-  async authenticate(authUserDto: AuthUserDto) {
+
+  private async getFortyTwoAccessToken(authUserDto: AuthUserDto) {
     const urlAuth42 = 'https://api.intra.42.fr/oauth/token';
     const params42 = {
       grant_type: 'authorization_code',
@@ -23,45 +25,51 @@ export class UsersService {
         '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',
       code: authUserDto.token,
       redirect_uri: 'http://localhost:3000',
-      state: 'helllllllllllllllllllllllllllllll',
+      state: 'this must be very secure but lazy dev put just a string',
     };
-    //const accessToken = await axios.post(urlAuth42, params42);
-    console.log('************************FIRST CALL API**************\n');
-    // console.log(accessToken.status);
-    // console.log(accessToken.data);
-    console.log('************************FIRST CALL API**************\n');
-    // const params = {
-    //   headers: {
-    //     Authorization: 'Bearer ' + accessToken.data.access_token,
-    //     'Content-Type': 'application/json',
-    //   },
-    // };
-    //const resp = await axios.get('https://api.intra.42.fr/v2/me', params);
-    //const user42 = resp.data;
-    // const [first, last] = user42.displayname.split(' ');
-    // const userPong = {
-    //   userName: user42.login,
-    //   userNameLoc: user42.login,
-    //   firstName: first,
-    //   lastName: last,
-    //   is2Fa: false,
-    //   authToken: '',
-    //   email: user42.email,
-    //   secret2Fa: '',
-    //   avatar: user42.image.link,
-    //   xp: 0,
-    //   isLogged: true,
-    //   lastSeen: new Date().toISOString(),
-    // };
-    // try {
-    //   const newUser = await this.UserRepository.save(userPong);
-    //   return newUser.id;
-    // } catch (error) {
-    //   console.log(error);
-    // }
-    //console.log(resp.data);
-    //console.log(resp.status);
-    return '23';
+    const resp = await axios.post(urlAuth42, params42);
+    return resp.data;
+  }
+
+  private async getFortyTwoUserInfo(token: string) {
+    const params = {
+      headers: {
+        Authorization: 'Bearer ' + token,
+        'Content-Type': 'application/json',
+      },
+    };
+    const resp = await axios.get('https://api.intra.42.fr/v2/me', params);
+    return resp.data;
+  }
+
+  private createPongUser(user42: any) {
+    const [first, last] = user42.displayname.split(' ');
+    const pongUser = {
+      userName: user42.login,
+      userNameLoc: user42.login,
+      firstName: first,
+      lastName: last,
+      is2Fa: false,
+      authToken: '',
+      email: user42.email,
+      secret2Fa: '',
+      avatar: user42.image.link,
+      xp: 0,
+      isLogged: true,
+      lastSeen: new Date().toISOString(),
+    };
+    return pongUser;
+  }
+  async authenticate(authUserDto: AuthUserDto) {
+    const accessToken = await this.getFortyTwoAccessToken(authUserDto);
+    const user42 = await this.getFortyTwoUserInfo(accessToken.access_token);
+    const pongUser = this.createPongUser(user42);
+    const matchedUser = await this.findByUserName(pongUser.userName);
+    if (matchedUser) {
+      return matchedUser.id.toString();
+    }
+    const newUser = await this.UserRepository.save(pongUser);
+    return newUser.id.toString();
   }
 
   async findAll(): Promise<User[]> {
@@ -69,7 +77,11 @@ export class UsersService {
   }
 
   async findOne(id: number) {
-    return this.UserRepository.findOne({ where: { id } });
+    return await this.UserRepository.findOne({ where: { id } });
+  }
+
+  private async findByUserName(userName: string) {
+    return await this.UserRepository.findOne({ where: { userName } });
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {

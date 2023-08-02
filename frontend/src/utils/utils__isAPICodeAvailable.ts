@@ -21,7 +21,6 @@ export const utils__isAPICodeAvailable = ( userAuth : TUserAuth ): boolean =>
         console.log(urlSearchParams);
         Array.from((urlSearchParams.entries())).map(([key, value]) => {
             if (key === "code") {
-                console.log(value);
                 userAuth.setCode(value);
                 userAuth.setIsAuth(true);
                 result = true;

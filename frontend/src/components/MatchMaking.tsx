@@ -12,13 +12,14 @@ interface MatchMakingProps {
 
 const MatchMaking:React.FC<MatchMakingProps> =({ setMatchFound, setOpponentInfo, userId, setState}) => {
 	const [foundMatch, setFoundMatch] = useState< boolean | undefined >(undefined);
+	const MatchMaking = 'MatchMaking';
 
 	return (
 		<div className='h-full w-full absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 bg-slate-400 bg-opacity-70'>
 			<div className='flex rounded min-w-[350px] h-4/5 w-3/5 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 bg-slate-900 text-slate-200'>
 				<div className='h-full w-1/2 border-r-4 border-amber-400 z-0'>
 					<div className={'h-4/5'} >
-						<UserCard userId={userId} />
+						<UserCard userId={userId} setState={setState} foundMatch={foundMatch} info={MatchMaking}/>
 					</div>
 					<div className='h-1/5'> // For testing purposes
 						<Button onClick={() => setFoundMatch(true)}>
@@ -28,7 +29,7 @@ const MatchMaking:React.FC<MatchMakingProps> =({ setMatchFound, setOpponentInfo,
 				</div>
 				<div className={'border-l-4 border-amber-400 h-full w-1/2 z-0'}>
 					<div className={'h-4/5'} >
-						<UserCard userId={'3'} />
+						<UserCard userId={'3'} setState={setState} foundMatch={foundMatch} info={MatchMaking} />
 					</div>
 				</div>
 				<button 

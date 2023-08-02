@@ -20,9 +20,13 @@ export class FriendsService {
     return await this.FriendRepo.save(friend);
   }
 
-  async find(userId: string | null) {
+  async find(userId: string) {
+    const id = parseInt(userId);
+    if (isNaN(id)) {
+      return [];
+    }
     return await this.FriendRepo.find({
-      where: [{ sender: userId }, { receiver: userId }],
+      where: [{ sender: id }, { receiver: id }],
     });
   }
 

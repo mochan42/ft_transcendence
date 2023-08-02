@@ -30,19 +30,22 @@ const VictoryLoss: React.FC<VictoryLossProps> = ({ isVictory, userId, difficulty
 	};
 
 	const updateUserStats = async ( isVictory: boolean ) => {
-		try {
-			const updatedStats = {
-				wins: isVictory ? (userStats?.wins ?? 0) + 1 : (userStats?.wins ?? 0),
-				losses: isVictory ? (userStats?.losses ?? 0) : (userStats?.losses ?? 0) + 1,
-			};
-			const response = await axios.patch(url_stats, updatedStats);
-			if (response.status === 200) {
-				console.log('UserStats updated:', response.data);
-				setUpdatedStats(true);
-			}
+		if (userStats) {
+			try {
+				console.log('In try block')
+				const updatedStats = {
+					wins: isVictory ? userStats.wins + 1 : userStats.wins,
+					losses: isVictory ? userStats.losses : userStats.losses + 1,
+				}
+				const response = await axios.patch(url_stats, updatedStats);
+				if (response.status === 200) {
+					console.log('UserStats updated:', response.data);
+					setUpdatedStats(true);
+				}
 
-		} catch (error) {
-			console.log('Error updating userStats:', error);
+			} catch (error) {
+				console.log('Error updating userStats:', error);
+			}
 		}
 	};
 
@@ -60,7 +63,7 @@ const VictoryLoss: React.FC<VictoryLossProps> = ({ isVictory, userId, difficulty
 
 	const checkUserAchievements = async () => {
 		if (isVictory && UserAchievements) {
-			const achievementExists = UserAchievements.some((achievement) => achievement.goalId === (difficulty + 2));
+			const achievementExists = UserAchievements.some((achievement) => achievement.goalId === (difficulty + 2).toString());
 			console.log("Achievement exists: ", achievementExists);
 			if (!achievementExists) {
 				try {
@@ -79,22 +82,6 @@ const VictoryLoss: React.FC<VictoryLossProps> = ({ isVictory, userId, difficulty
 				}
 			}
 		}
-		// const label = ['Beat that Bot', 'Artificial what now?', 'iRobot who?', 'Terminator termniated', 'Heisted the Heistotron'];
-		// const description = ['Won against the Bot on easy', 'Won against the Bot on medium', 'Won against the Bot on hard', 'Won against the Bot on very hard', 'Won against the Bot on extreme'];
-		// const image = ['https://www.svgrepo.com/show/470680/robot-face.svg', 'https://www.svgrepo.com/show/235195/robot-ai.svg', 'https://www.svgrepo.com/show/134/robot.svg', 'https://www.svgrepo.com/show/402624/robot-face.svg', 'https://www.svgrepo.com/show/145418/robot.svg'];
-		// const Achievement = {
-		// 	label: label[difficulty],
-		// 	description: description[difficulty],
-		// 	image: image[difficulty],
-		// 	createdAt: 'Mon, 24 Jul 2023',
-		// }
-		// const containsLabel = UserAchievements?.some((Achievement) => Achievement.label === label[difficulty]);
-		// console.log('contains label: ', containsLabel)
-		// if (containsLabel === true) {
-		// 	console.log('Achievement exists already.');
-		// } else if (containsLabel == false || containsLabel == undefined && isVictory) {
-		// 	try {
-		// }
 	}
 
 	useEffect(() => {
@@ -107,17 +94,18 @@ const VictoryLoss: React.FC<VictoryLossProps> = ({ isVictory, userId, difficulty
 	})
 
 	useEffect(() => {
-		if (updatedStats === false) {
+		if (updatedStats === false && userStats) {
+			console.log("trying to update Wins/losses")
 			updateUserStats(isVictory);
 		} else if (updatedAchievements === false) {
 			checkUserAchievements();
 		}
-	}, [updatedStats, updatedAchievements]);
+	}, [updatedStats, updatedAchievements, userStats]);
 
 	return (
 		<div className='flex items-center justify-center h-full'>
 			<div className='text-4xl font-bold'>
-			{isVictory ? 'Congratulations! You won!' : 'Oops! You lost!'}
+				{isVictory ? 'Congratulations! You won!' : 'Oops! You lost!'}
 			</div>
 		</div>
 	);

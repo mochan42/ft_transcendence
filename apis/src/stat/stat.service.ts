@@ -14,11 +14,11 @@ export class StatService {
     private usersService: UsersService,
   ) {}
   async create(userId: string | null, createStatDto: CreateStatDto) {
-    const user = await this.usersService.findOne(userId);
+    const user = await this.usersService.findOne(+userId);
     try {
       const newStat = {
         ...createStatDto,
-        userId: user.id,
+        userId: user.id.toString(),
       };
       return await this.StatRepository.save(newStat);
     } catch (error) {
@@ -27,10 +27,12 @@ export class StatService {
   }
 
   async findOne(id: number) {
-    return await this.StatRepository.findOne({ where: { userId: id } });
+    return await this.StatRepository.findOne({
+      where: { userId: id.toString() },
+    });
   }
 
-  async update(id: number, updateStatDto: UpdateStatDto) {
+  async update(id: string, updateStatDto: UpdateStatDto) {
     const oldStat = await this.StatRepository.findOne({
       where: { userId: id },
     });
@@ -38,9 +40,9 @@ export class StatService {
     return await this.StatRepository.save(UpdatedStat);
   }
 
-  async remove(id: number) {
+  async remove(id: string) {
     try {
-      await this.usersService.remove(id);
+      await this.usersService.remove(id.toString());
       return await this.StatRepository.delete({ userId: id });
     } catch (error) {
       throw new Error('error deleting user stat');

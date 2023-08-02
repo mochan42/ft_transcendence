@@ -1,5 +1,5 @@
 type User = {
-  id: number;
+  id: string;
   userName: string;
   userNameLoc: string;
   firstName: string;
@@ -15,7 +15,7 @@ type User = {
 };
 
 type UserStats = {
-  id: number;
+  id: string | null;
   userId: string | null;
   wins: number;
   losses: number;
@@ -23,9 +23,9 @@ type UserStats = {
 };
 
 type UserAchievements = {
-  id: number;
+  id: string | null;
   userId: string | null;
-  goalId: number;
+  goalId: string | null;
   createdAt: string;
 };
 
@@ -34,17 +34,32 @@ interface ProfileProps {
 }
 
 type Goal = {
-  id: number;
+  id: string;
   label?: string;
   image?: string;
   description?: string;
 };
 
-type TUserAuth = {
-  setIsAuth: React.Dispatch<React.SetStateAction<boolean>>;
-  isAuth: boolean;
-  setCode: React.Dispatch<React.SetStateAction<string | null>>;
-  code: string | null;
-};
+// type TUserAuth = {
+//   setIsAuth: React.Dispatch<React.SetStateAction<boolean>>;
+//   isAuth: boolean;
+//   setCode: React.Dispatch<React.SetStateAction<string | null>>;
+//   code: string | null;
+// };
 
-export { User, UserStats, UserAchievements, ProfileProps, Goal, TUserAuth };
+//export { User, UserStats, UserAchievements, ProfileProps, Goal, TUserAuth };
+type Friend = {
+	'receiver': string | null;
+	'sender': string | null;
+	'relation': string;
+	'createdAt': string;
+}
+
+type TUserAuth= {
+    setIsAuth: React.Dispatch<React.SetStateAction<boolean>>,
+    isAuth: boolean,
+    setCode: React.Dispatch<React.SetStateAction<string | null>>,
+    code: (string | null)
+}
+
+export  { User, UserStats, UserAchievements, ProfileProps, Goal, TUserAuth, Friend};
