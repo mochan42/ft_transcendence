@@ -8,7 +8,7 @@ export class User {
   @Column({ unique: false })
   userName: string;
 
-  @Column({ unique: false })
+  @Column({ unique: true })
   userNameLoc: string;
 
   @Column()
@@ -23,7 +23,7 @@ export class User {
   @Column()
   authToken?: string;
 
-  @Column({ unique: false })
+  @Column({ unique: true })
   email: string;
 
   @Column()
