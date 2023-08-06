@@ -21,12 +21,9 @@ services:
   #backend container
   apis:
     container_name: apis
-    build: ./apis
+    image: pmeising/docker_hub_repo:backend_v1.0
     ports:
       - "5000:5000"
-    volumes:
-      - ./apis:/usr/src/app
-      - /app/node_modules
     env_file:
       - ./docker.env
     networks:
@@ -37,12 +34,9 @@ services:
   #frontend container
   frontend:
     container_name: frontend
-    build: ./frontend
+    image: pmeising/docker_hub_repo:frontend_v1.0
     ports:
       - "3000:3000"
-    volumes:
-      - ./frontend:/usr/src/client
-      - /client/node_modules
     env_file:
       - ./docker.env
     networks:

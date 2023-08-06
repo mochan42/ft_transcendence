@@ -8,8 +8,7 @@ COPY package*.json ./
 
 RUN npm install -g npm@9.8.1
 RUN npm cache verify
-RUN rm  -rf node_modules
-RUN npm install
+RUN npm ci
 
 # Bundle app source
 COPY . .
