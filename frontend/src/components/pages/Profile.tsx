@@ -5,6 +5,7 @@ import Achievements from '../Achievements';
 import Friends from '../Friends';
 import Stats from '../Stats';
 import { User, ProfileProps, UserStats, UserAchievements, Goal, Friend } from '../../types';
+import Modal from '../ui/Modal';
 
 	const Profile: React.FC<ProfileProps> = ({ userId }) => {
 	const [userInfo, setUserInfo] = useState< User | null >(null);
@@ -147,7 +148,7 @@ import { User, ProfileProps, UserStats, UserAchievements, Goal, Friend } from '.
 				<div className='h-1/2 flex justify-around items-center z-0'>
 					<div className='flex flex-col flex-wrap items-center gap-6 border-4 dark:border-slate-900'>
 						<img
-							className='h-[200px] w-[200px] rounded-full mx-auto'
+							className="h-48 w-48 rounded-full object-cover"
 							src={(userInfo?.avatar) ?? 'https://www.svgrepo.com/show/170615/robot.svg'}
 							alt='Your Profile Picture'
 							/>
@@ -155,7 +156,7 @@ import { User, ProfileProps, UserStats, UserAchievements, Goal, Friend } from '.
 							{userInfo?.userNameLoc ?? 'unknown'}
 						</h1>
 						<div className='flex gap-4'>
-							<Button>
+							<Button onClick={() => <Modal/>}>
 								Update
 							</Button>
 							<Button>
