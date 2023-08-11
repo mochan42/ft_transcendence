@@ -26,7 +26,7 @@ const App: React.FC = () => {
 	const [isAuth, setIsAuth] = useState<boolean>(false)
 	const [userId, setUserId] = useState<string | null>(null);
 	const [code, setCode] = useState<string | null>( null )
-	const [is2faEnabled, setIs2faEnable] = useState<boolean>(false);
+	const [is2faEnabled, setIs2faEnable] = useState<boolean>(true);
 
 
 	// const getUserId = (): number => {
