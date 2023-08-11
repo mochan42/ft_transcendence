@@ -4,9 +4,11 @@ import axios, { AxiosResponse } from 'axios';
 import Achievements from '../Achievements';
 import Friends from '../Friends';
 import Stats from '../Stats';
+import '../../css/profile.css'
+
 import { User, ProfileProps, UserStats, UserAchievements, Goal } from '../../types';
 
-const Profile:React.FC<ProfileProps> =({ userId }) => {
+const Profile:React.FC<ProfileProps> =({ userId, is2faEnable }) => {
 	
 	const [userInfo, setUserInfo] = useState< User | null >(null);
 	const [userStats, setUserStats] = useState< UserStats | null >(null);
@@ -20,6 +22,9 @@ const Profile:React.FC<ProfileProps> =({ userId }) => {
 	const id = userId.toString();
 	const [achievedGoals, setAchievedGoals] = useState<Goal[]>();
 	const [notAchievedGoals, setNotAchievedGoals] = useState<Goal[]>();
+    const [state2fa, setState2fa] = useState<boolean>(false);
+    const [btnTxt2fa, setBtnTxt2fa] = useState<string>("2FA: disabled");
+    const [btnStyle, setBtnStyle] = useState<string>('default');
 
 	const getUserAchievements = async () => {
 		try {
@@ -70,6 +75,37 @@ const Profile:React.FC<ProfileProps> =({ userId }) => {
 		}
 	};
 
+    const ConfigureBtn2fa = () => {
+        if (state2fa)
+        {
+            setBtnTxt2fa(" 2FA: disabled ");
+            //setBtnStyle('profile_btn disabled');
+        }
+        else
+        {
+            setBtnTxt2fa(" 2FA: active ");
+            //setBtnStyle('profile_btn active');
+        }
+
+    }
+
+    const Handle2faBtnClick = () => {
+        if (state2fa)
+        {
+            setState2fa(false) 
+        }
+        else
+        {
+            setState2fa(true);
+        }
+        ConfigureBtn2fa();
+        console.log(state2fa);
+        // make a post request to backend to update latest 2fa settings 
+        // This should not affect the current session.
+        
+        
+    }
+
 	useEffect(() => {
 		if (allGoals != null && userAchievements != null) {
 			const achievedGoals = allGoals?.filter((goal) => {
@@ -98,7 +134,10 @@ const Profile:React.FC<ProfileProps> =({ userId }) => {
 		if (allGoals === null) {
 			getAllGoals();
 		}
+        setState2fa(is2faEnable); // should be substituted with getuserinfo for latest 2fa status
+        ConfigureBtn2fa();
 	}, []);
+
 
 	return (
 		<div className='absolute h-full w-full'>
@@ -106,7 +145,7 @@ const Profile:React.FC<ProfileProps> =({ userId }) => {
 				<div className='h-1/2 flex justify-around items-center z-0'>
 					<div className='flex flex-col flex-wrap items-center gap-6 border-4 dark:border-slate-900'>
 						<img
-							className='h-[200px] w-[200px] rounded-full mx-auto'
+							className='h-Achievements[200px] w-[200px] rounded-full mx-auto'
 							src={(userInfo?.avatar) ?? 'https://www.svgrepo.com/show/170615/robot.svg'}
 							alt='Your Profile Picture'
 							/>
@@ -121,6 +160,11 @@ const Profile:React.FC<ProfileProps> =({ userId }) => {
 								Delete
 							</Button>
 						</div>
+                        <div>
+							<Button onClick={ Handle2faBtnClick } variant={ state2fa ? "default" : "subtle"} >
+								{ btnTxt2fa }
+							</Button>
+                        </div>
 					</div>
 					<div className='w-auto text-center space-y-8'>
 						<h3 className='w-[300px] bg-slate-900 text-lg font-bold mb-4 border-slate-900 border-2 rounded-lg text-white dark:bg-slate-200 dark:text-slate-900'>

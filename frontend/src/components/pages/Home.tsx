@@ -3,7 +3,7 @@ import { Button } from "../ui/Button"
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-//import queryString from "query-string"
+
 
 type TUserState = {
     userCode : {
@@ -13,12 +13,14 @@ type TUserState = {
     loginState : {
         isLogin: boolean
         setIsLogin: React.Dispatch<React.SetStateAction<boolean>>
-    }
+    },
+    is2faEnabled : boolean
 }
 
-const Home = ({ userCode, loginState }: TUserState) => {
+const Home = ({ userCode, loginState, is2faEnabled }: TUserState) => {
 
     const navigate = useNavigate();
+    
 
     const authenticateToAPI = async (token: string) => {
     const resp = await axios.post('http://localhost:5000/pong/users/auth', { token });
@@ -28,9 +30,23 @@ const Home = ({ userCode, loginState }: TUserState) => {
         }
     }
 
+ 
     useEffect( () => {
-        if (userCode.code === null || loginState.isLogin === false){ navigate('/about') }
-
+        if (userCode.code === null)
+        { 
+            navigate('/about')
+        }
+        else
+        {
+            if (is2faEnabled && loginState.isLogin === false && userCode.code != null)
+            { navigate('/login2fa') }
+            else
+            {
+                // do nothing
+                // condition ok to grant access to home page
+                //loginState.setIsLogin(true);
+            }
+        }
     },
     [])
 
@@ -47,6 +63,7 @@ const Home = ({ userCode, loginState }: TUserState) => {
 				Welcome Home!
 			</Button>
 			<div className="dark:text-slate-200">
+
            		{ loginState.isLogin && <h3>Received code : { userCode.code }</h3> }
             	<h3>Login state : { (loginState.isLogin && userCode.code) ? "Active" : "Inactive" }</h3>
 			</div>

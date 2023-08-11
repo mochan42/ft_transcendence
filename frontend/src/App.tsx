@@ -1,8 +1,12 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { useState } from 'react';
+//import { History } from 'react-router-dom';
+//import Speakeasy from 'speakeasy';
+//import QRCode from 'qrcode.react';
 import './App.css';
 import Login from './components/pages/Login';
+import Login2fa from './components/pages/Login2fa';
 import Navbar from './components/Navbar';
 import ProtectedRoute from './components/ProtectedRoute';
 import Home from './components/pages/Home';
@@ -13,12 +17,17 @@ import PageNotFound from './components/pages/PageNotFound';
 import Footer from './components/Footer';
 import Layout from './components/pages/Layout';
 import GameSelection from './components/pages/GameSelection';
-import { utils__isAPICodeAvailable } from './utils/utils__isAPICodeAvailable'
+import { Utils__isAPICodeAvailable } from './utils/utils__isAPICodeAvailable';
+
+
 
 const App: React.FC = () => {
 
 	const [isAuth, setIsAuth] = useState<boolean>(false)
 	const [code, setCode] = useState<string | null>( null )
+	const [is2faEnabled, setIs2faEnable] = useState<boolean>(false);
+    //const navigate = useNavigate();
+
 
 	const getUserId = (): number => {
 		const id = sessionStorage.getItem('userId');
@@ -29,8 +38,8 @@ const App: React.FC = () => {
 	}
 
     // check if code available for backend to exchange for token
-    utils__isAPICodeAvailable({setIsAuth, isAuth, setCode, code });
-
+    Utils__isAPICodeAvailable({setIsAuth, isAuth, setCode, code, is2faEnabled })
+    
 	return (
 		<div className='grid gap-2 font-mono dark:bg-white/75 bg-slate-900 bg-opacity-80'>
 			<Router>
@@ -41,10 +50,11 @@ const App: React.FC = () => {
 					<div>
 						<Routes>
 							<Route path='about' element={<About isAuth = {isAuth}/>} />
-                            <Route path='/' element={ <Home userCode ={ {code:code, setCode:setCode} } loginState={ {isLogin:isAuth, setIsLogin:setIsAuth } }/> } /> 
+                            <Route path='/' element={ <Home userCode ={ {code:code, setCode:setCode} } loginState={ {isLogin:isAuth, setIsLogin:setIsAuth }} is2faEnabled={is2faEnabled}/> } /> 
                             <Route path='/login' element={<Login isAuth={isAuth} setIsAuth={setIsAuth} />} />
+                            <Route path='/login2fa' element={<Login2fa isAuth={isAuth} setIsAuth={setIsAuth} is2faEnabled={is2faEnabled} setCode={setCode}/>} />
 							<Route path='/game' element={<ProtectedRoute isAuth={isAuth} path='/game' element={<GameSelection userId={getUserId()}/>} />} />
-							<Route path='/profile' element={<ProtectedRoute isAuth={isAuth} path='/profile' element={<Profile userId={getUserId()}/>} />} />
+							<Route path='/profile' element={<ProtectedRoute isAuth={isAuth} path='/profile' element={<Profile userId={getUserId()} is2faEnable={is2faEnabled} />} />} />
 							<Route path='/landingpage' element={<ProtectedRoute isAuth={isAuth} path='/landingpage' element={<LandingPage />} />} />
 							<Route path='/layout' element={<Layout />} />
 							<Route path='/*' element={<PageNotFound />}/>

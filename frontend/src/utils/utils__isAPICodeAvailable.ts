@@ -8,7 +8,7 @@ import { TUserAuth } from "../types";
  * @returns true if code string is available
  *          false if not available
  */
-export const utils__isAPICodeAvailable = ( userAuth : TUserAuth ): boolean =>
+export const Utils__isAPICodeAvailable = ( userAuth : TUserAuth ): boolean =>
 {
     var result = false;
     const urlBrowser = window.location.href;
@@ -23,7 +23,7 @@ export const utils__isAPICodeAvailable = ( userAuth : TUserAuth ): boolean =>
             if (key === "code") {
                 console.log(value);
                 userAuth.setCode(value);
-                userAuth.setIsAuth(true);
+                if ( !(userAuth.is2faEnabled) ) userAuth.setIsAuth(true);
                 result = true;
             }
         });
@@ -32,4 +32,4 @@ export const utils__isAPICodeAvailable = ( userAuth : TUserAuth ): boolean =>
     return (result);
 }
 
-export default utils__isAPICodeAvailable
+export default Utils__isAPICodeAvailable

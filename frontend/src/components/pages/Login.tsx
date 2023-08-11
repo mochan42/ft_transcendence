@@ -3,7 +3,7 @@ import { Button } from '../ui/Button'
 import { useNavigate } from 'react-router-dom'
 import icon_42 from '../../img/icon_42-blank.png'
 import icon_gmail from '../../img/google-icon-blank.png'
-import '../../login.css'
+import '../../css/login.css'
 
 interface Props {
     isAuth: boolean
@@ -33,14 +33,17 @@ const Login: React.FC<Props> = ({setIsAuth, isAuth}) => {
         			    <img src={icon_42}/>
         			</button>
         		</div>
-        		<div className="">
+                {/* login with google account is not required. clean up this section later */}
+        		{/*<div className="">*/}
         			{ /*<Button type='submit' onClick={handleLogin} className='text-black bg-transparent
                      hover:bg-slate-100 dark:hover:bg-slate-800 dark:text-slate-400 data-[state=open]:bg-transparent
                       dark:data-[state=open]:bg-transparent'> */ }
+                {/*
         			<button type='submit' onClick={handleLogin} className="login__form_btn">
         			    <img src={icon_gmail}/>
         			</button>
         		</div>
+                */}
             </div>
         </div>
 	)
