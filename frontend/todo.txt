@@ -1,0 +1,9 @@
+
+--- AUTHENTICATION ---
+01. backend interface : fetch 2fa active state on profile
+02. backend interface : post 2fa state on button click
+03. backend interface : generate the qr code
+04. backend interface : validate code received.
+
+--- CHAT ROOM  ---
+01. watch video how to create chat on react.

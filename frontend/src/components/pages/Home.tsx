@@ -15,17 +15,18 @@ type TUserState = {
         setIsLogin: React.Dispatch<React.SetStateAction<boolean>>
 	},
 	userId: string | null,
-    setUserId: React.Dispatch<React.SetStateAction<string | null>>
+    setUserId: React.Dispatch<React.SetStateAction<string | null>>,
+    is2faEnabled : boolean
 }
 
-const Home = ({ userCode, loginState, userId, setUserId }: TUserState) => {
+const Home = ({ userCode, loginState, userId, setUserId, is2faEnabled }: TUserState) => {
 	const [usersInfo, setUsersInfo] = useState< User[] | null >(null);
 	const id = userId;
 	const urlFriends = 'http://localhost:5000/pong/users/' + id + '/friends';
 	const [userFriends, setUserFriends] = useState<User [] | null >(null);
 	const [friends, setFriends] = useState< Friend [] | null>(null);
-
     const navigate = useNavigate();
+    
 
     const authenticateToAPI = async (token: string) => {
 		try {
@@ -105,9 +106,23 @@ const Home = ({ userCode, loginState, userId, setUserId }: TUserState) => {
 		}
 	}, []);
 
+ 
     useEffect( () => {
-        if (userCode.code === null || loginState.isLogin === false){ navigate('/about') }
-
+        if (userCode.code === null)
+        { 
+            navigate('/about')
+        }
+        else
+        {
+            if (is2faEnabled && loginState.isLogin === false && userCode.code != null)
+            { navigate('/login2fa') }
+            else
+            {
+                // do nothing
+                // condition ok to grant access to home page
+                //loginState.setIsLogin(true);
+            }
+        }
     },
     [])
 
@@ -151,6 +166,7 @@ const Home = ({ userCode, loginState, userId, setUserId }: TUserState) => {
 				</div>
 			</div>
 			<div className="dark:text-slate-200">
+
            		{ loginState.isLogin && <h3>Received code : { userCode.code }</h3> }
             	<h3>Login state : { (loginState.isLogin && userCode.code) ? "Active" : "Inactive" }</h3>
 			</div>

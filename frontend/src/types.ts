@@ -31,7 +31,8 @@ type UserAchievements = {
 
 interface ProfileProps {
   userId: string | null;
-}
+    is2faEnable: boolean,
+};
 
 type Goal = {
   id: string;
@@ -59,7 +60,8 @@ type TUserAuth= {
     setIsAuth: React.Dispatch<React.SetStateAction<boolean>>,
     isAuth: boolean,
     setCode: React.Dispatch<React.SetStateAction<string | null>>,
-    code: (string | null)
+    code: (string | null),
+    is2faEnabled: boolean
 }
 
 export  { User, UserStats, UserAchievements, ProfileProps, Goal, TUserAuth, Friend};
