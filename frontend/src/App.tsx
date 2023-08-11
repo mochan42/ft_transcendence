@@ -51,7 +51,7 @@ const App: React.FC = () => {
                             <Route path='/login' element={<Login isAuth={isAuth} setIsAuth={setIsAuth} />} />
                             <Route path='/login2fa' element={<Login2fa isAuth={isAuth} setIsAuth={setIsAuth} is2faEnabled={is2faEnabled} setCode={setCode}/>} />
 							<Route path='/game' element={<ProtectedRoute isAuth={isAuth} path='/game' element={<GameSelection userId={userId}/>} />} />
-							<Route path='/profile' element={<ProtectedRoute isAuth={isAuth} path='/profile' element={<Profile userId={userId}/>} />} />
+							<Route path='/profile' element={<ProtectedRoute isAuth={isAuth} path='/profile' element={<Profile userId={userId} is2faEnable={is2faEnabled}/>} />} />
 							<Route path='/landingpage' element={<ProtectedRoute isAuth={isAuth} path='/landingpage' element={<LandingPage />} />} />
 							<Route path='/layout' element={<Layout />} />
 							<Route path='/*' element={<PageNotFound />}/>
