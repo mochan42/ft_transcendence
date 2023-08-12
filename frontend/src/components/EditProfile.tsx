@@ -11,8 +11,8 @@ interface EditProfileProps {
 interface FormData {
     name: string;
     image: string;
-    password: string;
-  }
+    nameloc: string;
+}
 
 const EditProfile:React.FC<EditProfileProps> = ({ setShowScreen, userId }) => {
 
@@ -22,7 +22,7 @@ const EditProfile:React.FC<EditProfileProps> = ({ setShowScreen, userId }) => {
     const [formData, setFormData] = useState<FormData>({
         name: '',
         image: '',
-        password: '',
+        nameloc: '',
     });
       
     
@@ -41,29 +41,35 @@ const EditProfile:React.FC<EditProfileProps> = ({ setShowScreen, userId }) => {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        // Validate form data
         const validationErrors: Partial<FormData> = {};
-    
-        if (!formData.name) {
-            validationErrors.name = 'Name is required';
-        }
-    
-        if (!formData.image) {
-            validationErrors.image = 'Image link is required';
-        }
-    
-        if (!formData.password) {
-            validationErrors.password = 'Password is required';
-        }
-    
+
         if (Object.keys(validationErrors).length > 0) {
             setErrors(validationErrors);
             return;
         }
     
-        // Submit the form data
-        // ...
+        if (userInfo) {
+            userInfo.avatar = formData.image;
+            userInfo.userName = formData.name;
+        }
     };
+
+    const updateUser = async ( ) => {
+		if (userInfo) {
+			try {
+				console.log('In try block')
+				
+				const response = await axios.patch(url_info, userInfo);
+				if (response.status === 200) {
+                    console.log("Updated user information");
+				}
+
+			} catch (error) {
+				console.log('Error updating userInfo:', error);
+			}
+		}
+        setShowScreen('default');
+	};
 
     useEffect(() => {
 		if (userInfo === null) {
@@ -114,6 +120,7 @@ const EditProfile:React.FC<EditProfileProps> = ({ setShowScreen, userId }) => {
                                     <button
                                         type="submit"
                                         className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
+                                        onClick={() => updateUser()}
                                     >
                                         Update
                                     </button>
