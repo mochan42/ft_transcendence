@@ -21,7 +21,7 @@ Content-Type: application/json
 }
 
 ###  Edit user info
-PATCH  http://localhost:5000/pong/users/3
+PATCH  http://localhost:5000/pong/users/1
 Content-Type: application/json
 
 {

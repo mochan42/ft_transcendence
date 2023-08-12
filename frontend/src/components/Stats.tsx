@@ -5,7 +5,7 @@ import axios, { AxiosResponse } from "axios";
 
 interface StatsProps {
 	userId: string | null;
-	setShowScreen: React.Dispatch<React.SetStateAction< 'default' | 'achievements' | 'friends' | 'stats' >>;
+	setShowScreen: React.Dispatch<React.SetStateAction< 'default' | 'achievements' | 'friends' | 'stats' | 'userProfile' >>;
 }
 
 type UserStats = {

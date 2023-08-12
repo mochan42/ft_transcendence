@@ -5,12 +5,14 @@ import Achievements from '../Achievements';
 import Friends from '../Friends';
 import Stats from '../Stats';
 import { User, ProfileProps, UserStats, UserAchievements, Goal, Friend } from '../../types';
+import EditProfile from '../EditProfile';
 
-	const Profile: React.FC<ProfileProps> = ({ userId }) => {
+const Profile: React.FC<ProfileProps> = ({ userId }) => {
+
 	const [userInfo, setUserInfo] = useState< User | null >(null);
 	const [usersInfo, setUsersInfo] = useState< User[] | null >(null);
 	const [userStats, setUserStats] = useState< UserStats | null >(null);
-	const [showScreen, setShowScreen] = useState< 'default' | 'achievements' | 'friends' | 'stats' >('default');
+	const [showScreen, setShowScreen] = useState< 'default' | 'achievements' | 'friends' | 'stats' | 'userProfile' >('default');
 	const [userAchievements, setUserAchievements] = useState< UserAchievements[] | null >(null);
 	const [allGoals, setAllGoals] = useState< Goal[] | null >(null);
 	const [friends, setFriends] = useState< Friend [] | null>(null)
@@ -147,7 +149,7 @@ import { User, ProfileProps, UserStats, UserAchievements, Goal, Friend } from '.
 				<div className='h-1/2 flex justify-around items-center z-0'>
 					<div className='flex flex-col flex-wrap items-center gap-6 border-4 dark:border-slate-900'>
 						<img
-							className='h-[200px] w-[200px] rounded-full mx-auto'
+							className="h-48 w-48 rounded-full object-cover"
 							src={(userInfo?.avatar) ?? 'https://www.svgrepo.com/show/170615/robot.svg'}
 							alt='Your Profile Picture'
 							/>
@@ -155,11 +157,11 @@ import { User, ProfileProps, UserStats, UserAchievements, Goal, Friend } from '.
 							{userInfo?.userNameLoc ?? 'unknown'}
 						</h1>
 						<div className='flex gap-4'>
-							<Button>
-								Update
+							<Button onClick={() => setShowScreen('userProfile')}>
+								Info
 							</Button>
 							<Button>
-								Delete
+								2FA
 							</Button>
 						</div>
 					</div>
@@ -261,6 +263,7 @@ import { User, ProfileProps, UserStats, UserAchievements, Goal, Friend } from '.
 			: null}
 			{showScreen === 'friends' ? <Friends setShowScreen={setShowScreen} friends={userFriends} /> : null}
 			{showScreen === 'stats' ? <Stats userId={userId} setShowScreen={setShowScreen} /> : null}
+			{showScreen === 'userProfile' ? <EditProfile setShowScreen={setShowScreen} userId={userId}/> : null}
 		</div>
 	);
 }

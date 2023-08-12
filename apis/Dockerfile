@@ -7,6 +7,7 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 
 #RUN npm install location=global @nestjs/cli
+RUN npm install -g @nestjs/cli
 RUN npm install -g npm@9.8.1
 RUN npm cache verify
 RUN rm  -rf node_modules

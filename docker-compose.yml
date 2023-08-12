@@ -21,6 +21,7 @@ services:
   #backend container
   apis:
     container_name: apis
+    # image: pmeising/docker_hub_repo:backend_v1.0
     build: ./apis
     ports:
       - "5000:5000"
@@ -37,6 +38,7 @@ services:
   #frontend container
   frontend:
     container_name: frontend
+    # image: pmeising/docker_hub_repo:frontend_v1.0
     build: ./frontend
     ports:
       - "3000:3000"
