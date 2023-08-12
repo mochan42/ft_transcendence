@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { User } from "../types";
 import axios from "axios";
 import { Button } from "./ui/Button";
-import Modal from "./ui/Modal";
 
 interface UpdateUserInfoProps {
     userId: number;
@@ -35,7 +34,6 @@ const UpdateUserInfo: React.FC<UpdateUserInfoProps> = ({ userId }) => {
     return (
         <>
 			<div>
-				<Modal/>
 			</div>
         </>
     )

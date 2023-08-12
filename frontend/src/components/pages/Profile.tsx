@@ -9,7 +9,6 @@ import EditProfile from '../EditProfile';
 
 const Profile: React.FC<ProfileProps> = ({ userId }) => {
 
-	const [showModal, setShowModal] = useState<boolean> (false);
 	const [userInfo, setUserInfo] = useState< User | null >(null);
 	const [usersInfo, setUsersInfo] = useState< User[] | null >(null);
 	const [userStats, setUserStats] = useState< UserStats | null >(null);
@@ -264,7 +263,7 @@ const Profile: React.FC<ProfileProps> = ({ userId }) => {
 			: null}
 			{showScreen === 'friends' ? <Friends setShowScreen={setShowScreen} friends={userFriends} /> : null}
 			{showScreen === 'stats' ? <Stats userId={userId} setShowScreen={setShowScreen} /> : null}
-			{showScreen === 'userProfile' ? <EditProfile setShowScreen={setShowScreen}/> : null}
+			{showScreen === 'userProfile' ? <EditProfile setShowScreen={setShowScreen} userId={userId}/> : null}
 		</div>
 	);
 }

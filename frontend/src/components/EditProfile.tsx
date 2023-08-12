@@ -1,8 +1,11 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from './ui/Button'
+import { User } from '../types';
+import axios from 'axios';
 
 interface EditProfileProps {
     setShowScreen: React.Dispatch<React.SetStateAction< 'default' | 'achievements' | 'friends' | 'stats' | 'userProfile' >>;
+    userId: string | null;
 }
 
 interface FormData {
@@ -11,16 +14,31 @@ interface FormData {
     password: string;
   }
 
-const EditProfile:React.FC<EditProfileProps> = ({ setShowScreen }) => {
+const EditProfile:React.FC<EditProfileProps> = ({ setShowScreen, userId }) => {
 
-        const [formData, setFormData] = useState<FormData>({
-          name: 'test',
-          image: '',
-          password: '',
-        });
-      
+    const [userInfo, setUserInfo] = useState< User | null >(null);
     const [errors, setErrors] = useState<Partial<FormData>>({});
+    const url_info = 'http://localhost:5000/pong/users/' + userId;
+    const [formData, setFormData] = useState<FormData>({
+        name: '',
+        image: '',
+        password: '',
+    });
+      
     
+    const getUserInfo = async () => {
+        try {
+            const response = await axios.get<User>(url_info);
+            if (response.status === 200) {
+                setUserInfo(response.data);
+                console.log('Received User Info: ', response.data)
+            }
+        }
+        catch (error) {
+            console.log('Error fetching user infos', error);
+        }
+    }
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         // Validate form data
@@ -47,6 +65,12 @@ const EditProfile:React.FC<EditProfileProps> = ({ setShowScreen }) => {
         // ...
     };
 
+    useEffect(() => {
+		if (userInfo === null) {
+			getUserInfo();
+		}
+    })
+    
     return (
         <div className='h-full w-full absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 bg-slate-900 bg-opacity-70'>
 			<div className='rounded h-2/3 w-1/2 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 bg-slate-900 dark:bg-slate-200'>
@@ -58,19 +82,19 @@ const EditProfile:React.FC<EditProfileProps> = ({ setShowScreen }) => {
 					</Button>
 					<div className="h-4/5 overflow-y-auto p-4 flex-cols text-center justify-between space-y-4">
                         <div className="container mx-auto p-4">
-                            <form onSubmit={handleSubmit} className="space-y-4">
+                            <form onSubmit={handleSubmit} className="space-y-8 w-full">
                                 <div className='text-slate-200 dark:text-black'>
                                     Name
                                 </div>
                                 <div className='text-slate-400'>
-                                   Philipp Maximilian Meisinger
+                                   {userInfo?.firstName}
                                 </div>
                                 <div>
                                     <label className="block text-slate-200 dark:text-black">Username</label>
                                     <input
                                         type="text"
-                                        className="form-input mt-1 block w-full"
-                                        value={formData.name}
+                                        className="form-input mt-1 text-center"
+                                        defaultValue={userInfo?.userName}
                                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                                     />
                                     {errors.name && <p className="text-red-500">{errors.name}</p>}
@@ -80,7 +104,7 @@ const EditProfile:React.FC<EditProfileProps> = ({ setShowScreen }) => {
                                     <label className="block text-slate-200 dark:text-black">Profile picture</label>
                                     <input
                                         type="file"
-                                        className="form-input mt-1 block w-full text-slate-200 dark:text-black"
+                                        className="form-input mt-1 w-1/2 text-slate-200 dark:text-black text-center"
                                         value={formData.image}
                                         onChange={(e) => setFormData({ ...formData, image: e.target.value })}
                                     />
@@ -93,16 +117,13 @@ const EditProfile:React.FC<EditProfileProps> = ({ setShowScreen }) => {
                                     >
                                         Update
                                     </button>
-                                    <input
-                                        type='reset'>
-                                    </input>
-                                    {/* <button
+                                    <button
                                         type="submit"
                                         onClick={() => setShowScreen('default')}
                                         className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded"
                                     >
                                         Cancel
-                                    </button> */}
+                                    </button>
                                 </div>
                             </form>
                         </div>
