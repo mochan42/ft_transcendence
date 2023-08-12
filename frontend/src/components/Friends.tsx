@@ -3,7 +3,7 @@ import { Button } from "./ui/Button"
 
 interface FriendsProps {
 	friends: User[] | null;
-	setShowScreen: React.Dispatch<React.SetStateAction< 'default' | 'achievements' | 'friends' | 'stats' >>;
+	setShowScreen: React.Dispatch<React.SetStateAction< 'default' | 'achievements' | 'friends' | 'stats' | 'userProfile' >>;
 }
 
 const Friends:React.FC<FriendsProps> =({ setShowScreen, friends}) => {

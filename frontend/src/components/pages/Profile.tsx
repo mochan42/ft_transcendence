@@ -5,13 +5,15 @@ import Achievements from '../Achievements';
 import Friends from '../Friends';
 import Stats from '../Stats';
 import { User, ProfileProps, UserStats, UserAchievements, Goal, Friend } from '../../types';
-import Modal from '../ui/Modal';
+import EditProfile from '../EditProfile';
 
-	const Profile: React.FC<ProfileProps> = ({ userId }) => {
+const Profile: React.FC<ProfileProps> = ({ userId }) => {
+
+	const [showModal, setShowModal] = useState<boolean> (false);
 	const [userInfo, setUserInfo] = useState< User | null >(null);
 	const [usersInfo, setUsersInfo] = useState< User[] | null >(null);
 	const [userStats, setUserStats] = useState< UserStats | null >(null);
-	const [showScreen, setShowScreen] = useState< 'default' | 'achievements' | 'friends' | 'stats' >('default');
+	const [showScreen, setShowScreen] = useState< 'default' | 'achievements' | 'friends' | 'stats' | 'userProfile' >('default');
 	const [userAchievements, setUserAchievements] = useState< UserAchievements[] | null >(null);
 	const [allGoals, setAllGoals] = useState< Goal[] | null >(null);
 	const [friends, setFriends] = useState< Friend [] | null>(null)
@@ -156,11 +158,11 @@ import Modal from '../ui/Modal';
 							{userInfo?.userNameLoc ?? 'unknown'}
 						</h1>
 						<div className='flex gap-4'>
-							<Button onClick={() => <Modal/>}>
-								Update
+							<Button onClick={() => setShowScreen('userProfile')}>
+								Info
 							</Button>
 							<Button>
-								Delete
+								2FA
 							</Button>
 						</div>
 					</div>
@@ -262,6 +264,7 @@ import Modal from '../ui/Modal';
 			: null}
 			{showScreen === 'friends' ? <Friends setShowScreen={setShowScreen} friends={userFriends} /> : null}
 			{showScreen === 'stats' ? <Stats userId={userId} setShowScreen={setShowScreen} /> : null}
+			{showScreen === 'userProfile' ? <EditProfile setShowScreen={setShowScreen}/> : null}
 		</div>
 	);
 }
