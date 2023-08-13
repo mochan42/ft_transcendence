@@ -33,6 +33,24 @@
     cursor: pointer
 }
 
+.login__form_item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-color: black;
+    margin-bottom: 30px;
+    padding: 2px;
+    margin: 50px;
+    margin-left:auto;
+    margin-right:auto;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+login__form_item input {
+    width: 100%;
+}
+
 .login__form_btn img {
     height: 38px;
     width: 50px;

@@ -7,8 +7,10 @@ import Stats from '../Stats';
 import { User, ProfileProps, UserStats, UserAchievements, Goal, Friend } from '../../types';
 import EditProfile from '../EditProfile';
 
-const Profile: React.FC<ProfileProps> = ({ userId }) => {
+import '../../css/profile.css';
 
+    const Profile:React.FC<ProfileProps> =({ userId, is2faEnable }) => {
+	
 	const [userInfo, setUserInfo] = useState< User | null >(null);
 	const [usersInfo, setUsersInfo] = useState< User[] | null >(null);
 	const [userStats, setUserStats] = useState< UserStats | null >(null);
@@ -25,6 +27,9 @@ const Profile: React.FC<ProfileProps> = ({ userId }) => {
 	const [achievedGoals, setAchievedGoals] = useState<Goal[]>();
 	const [notAchievedGoals, setNotAchievedGoals] = useState<Goal[]>();
 	const [userFriends, setUserFriends] = useState<User [] | null >(null)
+    const [state2fa, setState2fa] = useState<boolean>(false);
+    const [btnTxt2fa, setBtnTxt2fa] = useState<string>("2FA: disabled");
+    const [btnStyle, setBtnStyle] = useState<string>('default');
 
 	const getUserAchievements = async () => {
 		try {
@@ -100,6 +105,36 @@ const Profile: React.FC<ProfileProps> = ({ userId }) => {
 			console.log('Error receiving Friends information: ', error);
 		}
 	}
+    const ConfigureBtn2fa = () => {
+        if (state2fa)
+        {
+            setBtnTxt2fa(" 2FA: disabled ");
+            //setBtnStyle('profile_btn disabled');
+        }
+        else
+        {
+            setBtnTxt2fa(" 2FA: active ");
+            //setBtnStyle('profile_btn active');
+        }
+
+    }
+
+    const Handle2faBtnClick = () => {
+        if (state2fa)
+        {
+            setState2fa(false) 
+        }
+        else
+        {
+            setState2fa(true);
+        }
+        ConfigureBtn2fa();
+        console.log(state2fa);
+        // make a post request to backend to update latest 2fa settings 
+        // This should not affect the current session.
+        
+        
+    }
 
 	useEffect(() => {
 		if (allGoals != null && userAchievements != null) {
@@ -141,7 +176,10 @@ const Profile: React.FC<ProfileProps> = ({ userId }) => {
 			);
 			setUserFriends(usersFriends);
 		}
+        setState2fa(is2faEnable); // should be substituted with getuserinfo for latest 2fa status
+        ConfigureBtn2fa();
 	}, []);
+
 
 	return (
 		<div className='absolute h-full w-full'>
@@ -164,6 +202,11 @@ const Profile: React.FC<ProfileProps> = ({ userId }) => {
 								2FA
 							</Button>
 						</div>
+                        <div>
+							<Button onClick={ Handle2faBtnClick } variant={ state2fa ? "default" : "subtle"} >
+								{ btnTxt2fa }
+							</Button>
+                        </div>
 					</div>
 					<div className='w-auto text-center space-y-8'>
 						<h3 className='w-[300px] bg-slate-900 text-lg font-bold mb-4 border-slate-900 border-2 rounded-lg text-white dark:bg-slate-200 dark:text-slate-900'>
