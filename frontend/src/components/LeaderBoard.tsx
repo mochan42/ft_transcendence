@@ -109,7 +109,7 @@ const Leaderboard:React.FC<LeaderboardProps> =({ userId }) => {
 								}
 							/>
 						</Button>
-						<img className='h-6 w-6' src={user.avatar != "" ? user.avatar : 'https://www.svgrepo.com/show/170615/robot.svg'}/>
+						<img className='h-6 w-6 rounded-full' src={user.avatar != "" ? user.avatar : 'https://www.svgrepo.com/show/170615/robot.svg'}/>
 						<button className="text-lg mr-2 hover:underline">{user.userNameLoc}</button>
 					</div>
 					<span className="text-slate-300">{user.xp} points</span>

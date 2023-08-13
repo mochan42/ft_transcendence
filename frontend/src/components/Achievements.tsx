@@ -5,7 +5,7 @@ import {Goal, UserAchievements} from '../types';
 
 interface AchievementsProps {
 	userId: string | null;
-	setShowScreen: React.Dispatch<React.SetStateAction< 'default' | 'achievements' | 'friends' | 'stats' >>;
+	setShowScreen: React.Dispatch<React.SetStateAction< 'default' | 'achievements' | 'friends' | 'stats' | 'userProfile' >>;
 }
 
 const Achievements:React.FC<AchievementsProps> =({ userId, setShowScreen }) => {
