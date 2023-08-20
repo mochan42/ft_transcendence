@@ -6,7 +6,6 @@ import { User } from './entities/user.entity';
 import { AuthUserDto } from './dto/auth-user.dto';
 import axios from 'axios';
 import { CreateUserDto } from './dto/create-user.dto';
-import { access } from 'fs';
 
 @Injectable()
 export class UsersService {

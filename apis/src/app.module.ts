@@ -9,6 +9,7 @@ import { GamesModule } from './games/games.module';
 import { AchievementsModule } from './achievements/achievements.module';
 import { GoalsModule } from './goals/goals.module';
 import { FriendsModule } from './friends/friends.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { FriendsModule } from './friends/friends.module';
     AchievementsModule,
     GoalsModule,
     FriendsModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

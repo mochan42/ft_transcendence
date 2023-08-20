@@ -15,8 +15,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 
 @Controller('pong/users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
-
+  constructor(private readonly usersService: UsersService) { }
   @Get()
   findAll() {
     return this.usersService.findAll();
