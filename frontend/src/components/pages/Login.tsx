@@ -1,24 +1,25 @@
-import React from 'react'
-import { Button } from '../ui/Button'
-import { useNavigate } from 'react-router-dom'
-import icon_42 from '../../img/icon_42-blank.png'
-import icon_gmail from '../../img/google-icon-blank.png'
-import '../../css/login.css'
+import React from 'react';
+import { Button } from '../ui/Button';
+import { useNavigate } from 'react-router-dom';
+import icon_42 from '../../img/icon_42-blank.png';
+import icon_gmail from '../../img/google-icon-blank.png';
+import '../../css/login.css';
 
 interface Props {
     isAuth: boolean
-	setIsAuth: React.Dispatch<React.SetStateAction<boolean>>
+    setIsAuth: React.Dispatch<React.SetStateAction<boolean>>
+    state: string
 }
 //    const   client_id_google = "770314806688-o3cr2rn0mcnh6hvb7p0dtlabpg0p0f8n.apps.googleusercontent.com"
     
 
-const Login: React.FC<Props> = ({setIsAuth, isAuth}) => {
+const Login: React.FC<Props> = ({setIsAuth, isAuth, state}) => {
 	const handleLogin = () => 
     {
-      const generatedState = 'this must be very secure but lazy dev put just a string';
-      const client_id_42 = "u-s4t2ud-9c04e10e264f25f8b3cb9bef48ae57df091de510f43e87c7647da4b885b6210b";
-      const url_auth_42 = `https://api.intra.42.fr/oauth/authorize?client_id=${client_id_42}&redirect_uri=http%3A%2F%2Flocalhost%3A3000&response_type=code&state=${generatedState}`;
-      window.location.href = url_auth_42;
+        const generatedState = state;
+        const client_id_42 = process.env.REACT_APP_UID;
+        const url_auth_42 = `https://api.intra.42.fr/oauth/authorize?client_id=${client_id_42}&redirect_uri=http%3A%2F%2Flocalhost%3A3000&response_type=code&state=${generatedState}`;
+        window.location.href = url_auth_42;
     }
   
 	return (

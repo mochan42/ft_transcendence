@@ -55,17 +55,17 @@ import '../../css/profile.css';
 		}
 	};
 
-	const getUserInfo = async () => {
-		try {
-			const response = await axios.get<User>(url_info);
-			if (response.status === 200) {
-				setUserInfo(response.data);
-				console.log('Received User Info: ', response.data)
+		const getUserInfo = async () => {
+			try {
+				const response = await axios.get<User>(url_info);
+				if (response.status === 200) {
+					setUserInfo(response.data);
+					console.log('Received User Info: ', response.data)
+				}
 			}
-		}
-		catch (error) {
-			console.log('Error fetching user infos', error);
-		}
+			catch (error) {
+				console.log('Error fetching user infos', error);
+			}
 	}
 
 	const getUsersInfo = async () => {

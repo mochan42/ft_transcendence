@@ -16,10 +16,11 @@ type TUserState = {
 	},
 	userId: string | null,
     setUserId: React.Dispatch<React.SetStateAction<string | null>>,
-    is2faEnabled : boolean
+	is2faEnabled: boolean,
+	state: string
 }
 
-const Home = ({ userCode, loginState, userId, setUserId, is2faEnabled }: TUserState) => {
+const Home = ({ userCode, loginState, userId, setUserId, is2faEnabled, state }: TUserState) => {
 	const [usersInfo, setUsersInfo] = useState< User[] | null >(null);
 	const id = userId;
 	const urlFriends = 'http://localhost:5000/pong/users/' + id + '/friends';
@@ -28,9 +29,9 @@ const Home = ({ userCode, loginState, userId, setUserId, is2faEnabled }: TUserSt
     const navigate = useNavigate();
     
 
-    const authenticateToAPI = async (token: string) => {
+	const authenticateToAPI = async (token: string, state: string) => {
 		try {
-			const resp = await axios.post('http://localhost:5000/pong/users/auth', { token });
+			const resp = await axios.post('http://localhost:5000/pong/users/auth', { token, state});
 			if (resp.status === 200) {
 				setUserId(resp.data);
 			}
@@ -39,28 +40,6 @@ const Home = ({ userCode, loginState, userId, setUserId, is2faEnabled }: TUserSt
 			console.log("Error user authentication", error);
 		}
     }
-
-    //  useEffect(() => {
-    //         const urlBrowser = window.location.href;
-    //         // parse the url and retrieve the query parameters
-    //         const urlSearchParams = new URLSearchParams(urlBrowser.split('?')[1]);
-    //         console.log(urlSearchParams);
-    //         Array.from((urlSearchParams.entries())).map(([key, value]) => {
-    //             if (key === "code") {
-    //                 userCode.setCode(value);
-    //                 loginState.setIsLogin(true);
-    //                 // send received code to the backend for further verification
-    //                 window.history.pushState({}, '', "http://localhost:3000/profile");
-    //             }
-    //             else { navigate('/about') }
-    //         })
-    //     }
-    //     , [userCode.code, loginState.isLogin]);
-    
-    // if (userCode.code) {
-    //     authenticateToAPI(userCode.code);
-    // }
-
 	const getUsersInfo = async () => {
 		try {
 			const response = await axios.get< User[] >('http://localhost:5000/pong/users/');
@@ -127,7 +106,7 @@ const Home = ({ userCode, loginState, userId, setUserId, is2faEnabled }: TUserSt
     [])
 
     if (userCode.code != null) {
-        authenticateToAPI(userCode.code);
+        authenticateToAPI(userCode.code, state);
         //navigate('/profile');
     }
 	return (

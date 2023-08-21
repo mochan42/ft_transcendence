@@ -18,13 +18,11 @@ export class UsersService {
     const urlAuth42 = 'https://api.intra.42.fr/oauth/token';
     const params42 = {
       grant_type: 'authorization_code',
-      client_id:
-        'u-s4t2ud-9c04e10e264f25f8b3cb9bef48ae57df091de510f43e87c7647da4b885b6210b',
-      client_secret:
-        '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',
+      client_id: process.env.UID,
+      client_secret: process.env.SECRET,
       code: authUserDto.token,
       redirect_uri: 'http://localhost:3000',
-      state: 'this must be very secure but lazy dev put just a string',
+      state: authUserDto.state,
     };
     const resp = await axios.post(urlAuth42, params42);
     return resp.data;
@@ -94,7 +92,6 @@ export class UsersService {
   }
 
   async create(createUserDto: CreateUserDto) {
-    console.log(createUserDto);
     return await this.UserRepository.save(createUserDto);
   }
 }

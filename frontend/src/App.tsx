@@ -25,8 +25,9 @@ const App: React.FC = () => {
 
 	const [isAuth, setIsAuth] = useState<boolean>(false)
 	const [userId, setUserId] = useState<string | null>(null);
-	const [code, setCode] = useState<string | null>( null )
-	const [is2faEnabled, setIs2faEnable] = useState<boolean>(true);
+	const [code, setCode] = useState<string | null>(null);
+	const state = 'this must be very secure but lazy dev put just a string';
+	const [is2faEnabled, setIs2faEnable] = useState<boolean>(false);
 
 
 	// const getUserId = (): number => {
@@ -35,7 +36,7 @@ const App: React.FC = () => {
 	// }
 
     // check if code available for backend to exchange for token
-    Utils__isAPICodeAvailable({setIsAuth, isAuth, setCode, code, is2faEnabled })
+    Utils__isAPICodeAvailable({setIsAuth, isAuth, setCode, code, is2faEnabled}, state)
     
 	return (
 		<div className='grid gap-2 font-mono dark:bg-white/75 bg-slate-900 bg-opacity-80'>
@@ -47,8 +48,8 @@ const App: React.FC = () => {
 					<div>
 						<Routes>
 							<Route path='about' element={<About isAuth = {isAuth}/>} />
-							<Route path='/' element={<Home userCode={{ code: code, setCode: setCode }} loginState={{ isLogin: isAuth, setIsLogin: setIsAuth }} setUserId={setUserId} userId={ userId } is2faEnabled={is2faEnabled}/> } /> 
-                            <Route path='/login' element={<Login isAuth={isAuth} setIsAuth={setIsAuth} />} />
+							<Route path='/' element={<Home userCode={{ code: code, setCode: setCode }} loginState={{ isLogin: isAuth, setIsLogin: setIsAuth }} setUserId={setUserId} userId={userId} is2faEnabled={is2faEnabled} state={state} /> } /> 
+                            <Route path='/login' element={<Login isAuth={isAuth} setIsAuth={setIsAuth} state={state} />} />
                             <Route path='/login2fa' element={<Login2fa isAuth={isAuth} setIsAuth={setIsAuth} is2faEnabled={is2faEnabled} setCode={setCode}/>} />
 							<Route path='/game' element={<ProtectedRoute isAuth={isAuth} path='/game' element={<GameSelection userId={userId}/>} />} />
 							<Route path='/profile' element={<ProtectedRoute isAuth={isAuth} path='/profile' element={<Profile userId={userId} is2faEnable={is2faEnabled}/>} />} />

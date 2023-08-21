@@ -8,11 +8,11 @@ import { TUserAuth } from "../types";
  * @returns true if code string is available
  *          false if not available
  */
-export const Utils__isAPICodeAvailable = ( userAuth : TUserAuth ): boolean =>
+export const Utils__isAPICodeAvailable = ( userAuth : TUserAuth, state: string): boolean =>
 {
     var result = false;
     const urlBrowser = window.location.href;
-    console.log("HOME_APP entry: call to app " +  urlBrowser);
+    console.log("HOME_APP entry: call to app " + urlBrowser);
     
     if (userAuth.code === null && userAuth.isAuth === false)
     {

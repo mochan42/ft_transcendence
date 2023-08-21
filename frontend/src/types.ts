@@ -30,7 +30,7 @@ type UserAchievements = {
 };
 
 interface ProfileProps {
-  userId: string | null;
+    userId: string | null;
     is2faEnable: boolean,
 };
 
