@@ -55,4 +55,67 @@ const ChatUserList = [
         online: false
     },
 ];
-export  { ChatUserList };
+
+const Chat_History = [
+    {
+        user: "",
+        id: 0,
+        type:"msg",
+        subtype:"",
+        message: "Hi, How are you?",
+        img:"",
+        incoming: true,
+        outgoing: false,
+    },
+    {
+        user: "",
+        id: 0,
+        type:"msg",
+        subtype:"",
+        message: "Hello, I am doing great. and u?",
+        img:"",
+        incoming: false,
+        outgoing: true,
+    },
+    {
+        user: "",
+        id: 0,
+        type:"msg",
+        subtype:"img",
+        message: "here you go",
+        img: "image",
+        incoming: true,
+        outgoing: false,
+    },
+    {
+        user: "",
+        id: 0,
+        type:"msg",
+        subtype:"doc",
+        message: "there is a party tomorrow",
+        img: "image",
+        incoming: true,
+        outgoing: false,
+    },
+    {
+        user: "",
+        id: 0,
+        type:"msg",
+        subtype:"link",
+        message: "see you tomorrow",
+        img: "image",
+        incoming: true,
+        outgoing: false,
+    },
+    {
+        user: "",
+        id: 0,
+        type:"msg",
+        subtype:"reply",
+        message: "i can do that",
+        img: "image",
+        incoming: true,
+        outgoing: false,
+    },
+]
+export  { ChatUserList, Chat_History};

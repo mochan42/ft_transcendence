@@ -1,9 +1,6 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { useState } from 'react';
-//import { History } from 'react-router-dom';
-//import Speakeasy from 'speakeasy';
-//import QRCode from 'qrcode.react';
 import './App.css';
 import Login from './components/pages/Login';
 import Login2fa from './components/pages/Login2fa';
@@ -18,7 +15,6 @@ import Footer from './components/Footer';
 import Layout from './components/pages/Layout';
 import GameSelection from './components/pages/GameSelection';
 import { Utils__isAPICodeAvailable } from './utils/utils__isAPICodeAvailable';
-
 
 
 const App: React.FC = () => {

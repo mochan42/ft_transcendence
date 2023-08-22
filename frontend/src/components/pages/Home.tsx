@@ -178,7 +178,7 @@ const Home = ({ userCode, loginState, userId, setUserId, is2faEnabled }: TUserSt
                         >
                             <ChatBoard/>
                             <ChatPageUsers/>
-                            <ChatConversation/>
+                            <ChatConversation userId={userId}/>
                         </Stack>
 					</div>
 				</div>
