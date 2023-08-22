@@ -64,4 +64,14 @@ type TUserAuth= {
     is2faEnabled: boolean
 }
 
-export  { User, UserStats, UserAchievements, ProfileProps, Goal, TUserAuth, Friend};
+type TChatUserData = {
+   id: number,
+   img: string,
+   name: string,
+   msg:  string,
+   time: string,
+   unread: number,
+   online: boolean
+}
+
+export  { User, UserStats, UserAchievements, ProfileProps, Goal, TUserAuth, Friend, TChatUserData};
