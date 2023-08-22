@@ -41,14 +41,6 @@ type Goal = {
   description?: string;
 };
 
-// type TUserAuth = {
-//   setIsAuth: React.Dispatch<React.SetStateAction<boolean>>;
-//   isAuth: boolean;
-//   setCode: React.Dispatch<React.SetStateAction<string | null>>;
-//   code: string | null;
-// };
-
-//export { User, UserStats, UserAchievements, ProfileProps, Goal, TUserAuth };
 type Friend = {
 	'receiver': string | null;
 	'sender': string | null;
