@@ -1,8 +1,9 @@
 import React from 'react';
-import { Stack, Typography } from "@mui/material";
+import { Stack, Box, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
+import { Message } from './types';
 
-const ChatTextMsg = (el) => {
+const ChatTextMsg = (el: Message) => {
 
     const theme = useTheme();
     return (
@@ -18,7 +19,7 @@ const ChatTextMsg = (el) => {
             >
                 <Typography 
                     variant="body2"
-                    color={ el.incoming ? theme.palette.text : "#fff" }
+                    //color={ el.incoming ? theme.palette.text : "#fff" }
                 >
                      { el.message } 
                 </Typography>

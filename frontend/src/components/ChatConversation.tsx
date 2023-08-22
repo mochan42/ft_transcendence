@@ -2,21 +2,12 @@ import { Box, Stack, IconButton, Typography, Divider, Avatar, Badge } from "@mui
 import { CaretDown } from "phosphor-react";
 import { useEffect, useRef, useState } from "react";
 import { io, Socket } from "socket.io-client";
-import { User } from "../types";
+import { Message, User } from "../types";
+import ChatMessage from "./ChatMessage";
+import { Chat_History } from "../data/ChatData";
 
 interface ChatProps {
     userId: string | null;
-}
-
-type Message = {
-    user: string;
-    id: number;
-    type: string,
-    subtype: string,
-    message: string,
-    img: string,
-    incoming: boolean,
-    outgoing: boolean,
 }
 
 const ChatConversation: React.FC<ChatProps> = ({ userId }) => {
@@ -31,6 +22,7 @@ const ChatConversation: React.FC<ChatProps> = ({ userId }) => {
 
 	var id = 0;
 
+    setMessages(Chat_History);
     const url_info = 'http://localhost:5000/pong/users/' + userId;
 
 	useEffect(() => {
@@ -78,7 +70,7 @@ const ChatConversation: React.FC<ChatProps> = ({ userId }) => {
                 message: userMessage,
                 img: "",
                 incoming: false,
-
+				outgoing: true,
 
             };
     
@@ -119,7 +111,7 @@ const ChatConversation: React.FC<ChatProps> = ({ userId }) => {
                             </Badge>
                         </Box>
                         <Stack spacing={0.2}>
-                            <Typography variant="subtitle1">Pmeising</Typography>
+                            <Typography variant="subtitle1">pmeising</Typography>
                             <Typography variant="caption">Online</Typography>
                         </Stack>
                     </Stack>
@@ -136,8 +128,8 @@ const ChatConversation: React.FC<ChatProps> = ({ userId }) => {
 
             {/* Chat message */}
             <Box p={1} sx={{ height: "100%", width: "100%", backgroundColor: "#eee", overflowY:"scroll"}} >
-                <ChatMessage/>
-				<div className='w-4/5 p-4' ref={messageContainerRef}>
+                {/*<ChatMessage/>*/}
+				{/* <div className='w-4/5 p-4' ref={messageContainerRef}>
                     <div className='flex-1'>
                         {messages.map((message) => (
                             <div key={message.id} className='mb-2'>
@@ -145,7 +137,7 @@ const ChatConversation: React.FC<ChatProps> = ({ userId }) => {
                             </div>
                         ))}
                     </div>
-                </div>
+                </div> */}
             </Box>
 
 
@@ -153,7 +145,6 @@ const ChatConversation: React.FC<ChatProps> = ({ userId }) => {
             <Box p={1} sx={{ width: "100%", backgroundColor: "white", 
                 boxShadow: "0px 0px 2px rgba(0, 0, 0, 0.25)"}} 
             >
-                {/* <Typography>footer</Typography> */}
                 <Stack direction={"row"} sx={{ width:"100%"}} p={0}>
                     
                 <input 

@@ -66,4 +66,14 @@ type TChatUserData = {
    online: boolean
 }
 
-export  { User, UserStats, UserAchievements, ProfileProps, Goal, TUserAuth, Friend, TChatUserData};
+type Message = {
+  user: string;
+  id: number;
+  type: string,
+  subtype: string,
+  message: string,
+  img: string,
+  incoming: boolean,
+  outgoing: boolean,
+}
+export  { User, UserStats, UserAchievements, ProfileProps, Goal, TUserAuth, Friend, TChatUserData, Message};
