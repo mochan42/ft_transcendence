@@ -22,9 +22,7 @@ const ChatConversation: React.FC<ChatProps> = ({ userId }) => {
 
 	var id = 0;
 
-    setMessages(Chat_History);
     const url_info = 'http://localhost:5000/pong/users/' + userId;
-
 	useEffect(() => {
         const socket: Socket = io('ws://localhost:8080');
         setSocket(socket);
@@ -128,8 +126,8 @@ const ChatConversation: React.FC<ChatProps> = ({ userId }) => {
 
             {/* Chat message */}
             <Box p={1} sx={{ height: "100%", width: "100%", backgroundColor: "#eee", overflowY:"scroll"}} >
-                {/*<ChatMessage/>*/}
-				{/* <div className='w-4/5 p-4' ref={messageContainerRef}>
+                <ChatMessage/>
+				<div className='w-4/5 p-4' ref={messageContainerRef}>
                     <div className='flex-1'>
                         {messages.map((message) => (
                             <div key={message.id} className='mb-2'>
@@ -137,7 +135,7 @@ const ChatConversation: React.FC<ChatProps> = ({ userId }) => {
                             </div>
                         ))}
                     </div>
-                </div> */}
+                </div>
             </Box>
 
 
@@ -152,10 +150,10 @@ const ChatConversation: React.FC<ChatProps> = ({ userId }) => {
                     className='flex-1 px-3 py-2 text-slate-800 rounded border border-slate-300 focus:outline-none focus:border-amber-400'
                     value={userMessage}
                     onChange={(e) => setUserMessage(e.target.value)}
-                    onKeyDown={handleKeyDown}
+                    //{/*onKeyDown={handleKeyDown}*/}
                 />
                 <button
-                    onClick={onMessageSubmit}
+                    //{/*onClick={onMessageSubmit}*/}
                     className='bg-amber-400 text-white px-4 py-2 rounded hover:bg-amber-500'
                 >
                     Send
