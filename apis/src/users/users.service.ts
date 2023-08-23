@@ -63,7 +63,7 @@ export class UsersService {
     const pongUser = this.createPongUser(user42);
     const matchedUser = await this.findByUserName(pongUser.userName);
     if (matchedUser) {
-      return matchedUser.id.toString();
+      return String(matchedUser.id);
     }
     const newUser = await this.UserRepository.save(pongUser);
     return newUser.id.toString();

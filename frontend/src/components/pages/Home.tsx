@@ -4,6 +4,8 @@ import axios from 'axios';
 import UserCard from "../UserCard";
 import Leaderboard from "../LeaderBoard";
 import { Friend, User } from "../../types";
+import About from './About';
+
 
 type TUserState = {
     userCode : {
@@ -31,7 +33,7 @@ const Home = ({ userCode, loginState, userId, setUserId, is2faEnabled, state }: 
 
 	const authenticateToAPI = async (token: string, state: string) => {
 		try {
-			const resp = await axios.post('http://localhost:5000/pong/users/auth', { token, state});
+			const resp = await axios.post('http://localhost:5000/pong/users/auth', { token, state });
 			if (resp.status === 200) {
 				setUserId(resp.data);
 			}
@@ -69,18 +71,23 @@ const Home = ({ userCode, loginState, userId, setUserId, is2faEnabled, state }: 
 	}
 
 	useEffect(() => {
-		if (friends === null) {
-			getFriends()
+		if (userCode.code === null) { 
+			return navigate('/about');
 		}
-		if (usersInfo === null) {
-			getUsersInfo()
-		}
-		if (userFriends === null && usersInfo) {
-			const usersFriends = usersInfo?.filter((user) =>
-				friends?.some((friend) => friend.sender === user.id || friend.receiver === user.id && user.id != userId)
-			);
-			if (userFriends != null) {
-				setUserFriends(usersFriends);
+		if (id != null) {
+			if (friends === null) {
+				getFriends()
+			}
+			if (usersInfo === null) {
+				getUsersInfo()
+			}
+			if (userFriends === null && usersInfo) {
+				const usersFriends = usersInfo?.filter((user) =>
+					friends?.some((friend) => friend.sender === user.id || friend.receiver === user.id && user.id != userId)
+				);
+				if (userFriends != null) {
+					setUserFriends(usersFriends);
+				}
 			}
 		}
 	}, []);
@@ -89,7 +96,7 @@ const Home = ({ userCode, loginState, userId, setUserId, is2faEnabled, state }: 
     useEffect( () => {
         if (userCode.code === null)
         { 
-            navigate('/about')
+            return navigate('/about')
         }
         else
         {
@@ -105,10 +112,12 @@ const Home = ({ userCode, loginState, userId, setUserId, is2faEnabled, state }: 
     },
     [])
 
-    if (userCode.code != null) {
-        authenticateToAPI(userCode.code, state);
-        //navigate('/profile');
-    }
+	if (userCode.code != null) {
+		authenticateToAPI(userCode.code, state);
+		//navigate('/profile');
+	}
+	else
+		return <About isAuth = {loginState.isLogin}/>
 	return (
 		<>
             <div className="flex flex-wrap h-screen">

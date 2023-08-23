@@ -151,33 +151,33 @@ import '../../css/profile.css';
 		}
 	  }, [userAchievements, allGoals]);
 	
-	useEffect(() => {
-		if (userInfo === null) {
-			getUserInfo();
-		}
-		if (userStats === null) {
-			getUserStats();
-		}
-		if (userAchievements === null) {
-			getUserAchievements();
-		}
-		if (allGoals === null) {
-			getAllGoals();
-		}
-		if (friends === null) {
-			getFriends()
-		}
-		if (usersInfo === null) {
-			getUsersInfo()
-		}
-		if (userFriends === null && usersInfo) {
-			const usersFriends = usersInfo?.filter((user) =>
-				friends?.some((friend) => friend.sender === user.id || friend.receiver === user.id && user.id != userId)
-			);
-			setUserFriends(usersFriends);
-		}
-        setState2fa(is2faEnable); // should be substituted with getuserinfo for latest 2fa status
-        ConfigureBtn2fa();
+		useEffect(() => {
+			if (userInfo === null) {
+				getUserInfo();
+			}
+			if (userStats === null) {
+				getUserStats();
+			}
+			if (userAchievements === null) {
+				getUserAchievements();
+			}
+			if (allGoals === null) {
+				getAllGoals();
+			}
+			if (friends === null) {
+				getFriends()
+			}
+			if (usersInfo === null) {
+				getUsersInfo()
+			}
+			if (userFriends === null && usersInfo) {
+				const usersFriends = usersInfo?.filter((user) =>
+					friends?.some((friend) => friend.sender === user.id || friend.receiver === user.id && user.id != userId)
+				);
+				setUserFriends(usersFriends);
+			}
+			setState2fa(is2faEnable); // should be substituted with getuserinfo for latest 2fa status
+			ConfigureBtn2fa();
 	}, []);
 
 
