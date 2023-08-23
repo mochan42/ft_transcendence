@@ -27,7 +27,7 @@ const App: React.FC = () => {
 	const [userId, setUserId] = useState<string | null>(null);
 	const [code, setCode] = useState<string | null>(null);
 	const state = 'this must be very secure but lazy dev put just a string';
-	const [is2faEnabled, setIs2faEnable] = useState<boolean>(false);
+	const [is2faEnabled, setIs2faEnable] = useState<boolean>(true);
 
 
 	// const getUserId = (): number => {
@@ -50,7 +50,7 @@ const App: React.FC = () => {
 							<Route path='about' element={<About isAuth = {isAuth}/>} />
 							<Route path='/' element={<Home userCode={{ code: code, setCode: setCode }} loginState={{ isLogin: isAuth, setIsLogin: setIsAuth }} setUserId={setUserId} userId={userId} is2faEnabled={is2faEnabled} state={state} /> } /> 
                             <Route path='/login' element={<Login isAuth={isAuth} setIsAuth={setIsAuth} state={state} />} />
-                            <Route path='/login2fa' element={<Login2fa isAuth={isAuth} setIsAuth={setIsAuth} is2faEnabled={is2faEnabled} setCode={setCode}/>} />
+							<Route path='/login2fa' element={<Login2fa isAuth={isAuth} setIsAuth={setIsAuth} is2faEnabled={is2faEnabled} setCode={setCode} userId={userId} />} />
 							<Route path='/game' element={<ProtectedRoute isAuth={isAuth} path='/game' element={<GameSelection userId={userId}/>} />} />
 							<Route path='/profile' element={<ProtectedRoute isAuth={isAuth} path='/profile' element={<Profile userId={userId} is2faEnable={is2faEnabled}/>} />} />
 							<Route path='/landingpage' element={<ProtectedRoute isAuth={isAuth} path='/landingpage' element={<LandingPage />} />} />

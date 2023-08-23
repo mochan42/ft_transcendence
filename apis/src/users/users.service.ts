@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -6,6 +6,9 @@ import { User } from './entities/user.entity';
 import { AuthUserDto } from './dto/auth-user.dto';
 import axios from 'axios';
 import { CreateUserDto } from './dto/create-user.dto';
+import { Secret2faDTO } from './dto/secret-2fa.dto';
+import { totp, authenticator } from 'otplib';
+import { isError } from 'util';
 
 @Injectable()
 export class UsersService {
@@ -93,5 +96,37 @@ export class UsersService {
 
   async create(createUserDto: CreateUserDto) {
     return await this.UserRepository.save(createUserDto);
+  }
+
+  async generateSecret(id: string) {
+    const secret = authenticator.generateSecret();
+    const secret2fa: string = totp.generate(secret);
+    try {
+      const user = await this.findOne(+id);
+      const updatedUser = { ...user, secret2Fa: secret };
+      const updated = await this.UserRepository.save(updatedUser);
+      if (updated) {
+        console.log('SECRET FIRST: ', updated.secret2Fa);
+        return secret2fa;
+      }
+    } catch (error) {
+      console.log('user not found', error);
+    }
+  }
+  async verify(secret: Secret2faDTO) {
+    try {
+      const user = await this.findOne(+secret.userId);
+      const isValid = authenticator.check(secret.token, user.secret2Fa);
+      if (isValid) {
+        return 'OK';
+      } else {
+        console.log('QUOI ?');
+        console.log('USER TOKEN', secret.token);
+        console.log('DB TOKEN', user.secret2Fa);
+        throw new HttpException('token not valid', HttpStatus.UNAUTHORIZED);
+      }
+    } catch (error) {
+      throw new HttpException('user not found', HttpStatus.NOT_FOUND);
+    }
   }
 }

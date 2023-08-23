@@ -36,11 +36,14 @@ const Home = ({ userCode, loginState, userId, setUserId, is2faEnabled, state }: 
 			const resp = await axios.post('http://localhost:5000/pong/users/auth', { token, state });
 			if (resp.status === 200) {
 				setUserId(resp.data);
+				return;
 			}
 		}
 		catch (error) {
-			console.log("Error user authentication", error);
+			loginState.setIsLogin(false);
+			userCode.setCode(null);
 		}
+		
     }
 	const getUsersInfo = async () => {
 		try {
@@ -71,9 +74,10 @@ const Home = ({ userCode, loginState, userId, setUserId, is2faEnabled, state }: 
 	}
 
 	useEffect(() => {
-		if (userCode.code === null) { 
-			return navigate('/about');
-		}
+		if (userCode.code === null)
+        { 
+            return navigate('/about')
+        }
 		if (id != null) {
 			if (friends === null) {
 				getFriends()
@@ -92,29 +96,13 @@ const Home = ({ userCode, loginState, userId, setUserId, is2faEnabled, state }: 
 		}
 	}, []);
 
- 
     useEffect( () => {
-        if (userCode.code === null)
-        { 
-            return navigate('/about')
-        }
-        else
-        {
-            if (is2faEnabled && loginState.isLogin === false && userCode.code != null)
+       if (is2faEnabled && loginState.isLogin === false && userCode.code != null)
             { navigate('/login2fa') }
-            else
-            {
-                // do nothing
-                // condition ok to grant access to home page
-                //loginState.setIsLogin(true);
-            }
-        }
     },
     [])
-
-	if (userCode.code != null) {
+	if (userCode.code !== null) {
 		authenticateToAPI(userCode.code, state);
-		//navigate('/profile');
 	}
 	else
 		return <About isAuth = {loginState.isLogin}/>
