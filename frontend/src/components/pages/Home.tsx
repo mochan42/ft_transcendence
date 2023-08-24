@@ -39,13 +39,19 @@ const Home = ({ userCode, loginState, userId, setUserId, state }: TUserState) =>
 				const resp = await axios.post('http://localhost:5000/pong/users/auth', { token, state });
 				if (resp.status === 200) {
 					const user = resp.data;
-					setUserId(user.id.toString());
-					Cookies.set('userId', user.id, { expires: 7 });
-					Cookies.set('isAuth', 'true', { expires: 7 });
-					if (user.is2Fa)
+					if (user.is2Fa) {
+						setUserId(user.id.toString());
+						loginState.setIsLogin(false);
+						Cookies.remove('userId');
+						Cookies.remove('isAuth');
 						navigate('/login2fa');
-					else
+					}
+					else {
+						setUserId(user.id.toString());
+						Cookies.set('userId', user.id, { expires: 7 });
+						Cookies.set('isAuth', 'true', { expires: 7 });
 						navigate('/');
+					}
 				}
 			}
 			catch (error) {
@@ -109,7 +115,7 @@ const Home = ({ userCode, loginState, userId, setUserId, state }: TUserState) =>
 			}
 		})();
 	}, [userId, loginState]);
-	if (!id)
+	if (!id && !loginState.isLogin)
 		return <><About isAuth={loginState.isLogin}></About></>
 	return (
 		<>

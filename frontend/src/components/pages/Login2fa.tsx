@@ -7,6 +7,7 @@ import QRCode from 'qrcode.react';
 import OTPInput from 'react-otp-input';
 import base32 from 'base32-encode';
 import axios from 'axios';
+import Cookies from 'js-cookie';
 
 //import speakeasy from 'speakeasy';
 //import notp from 'notp';
@@ -15,8 +16,8 @@ import '../../css/login.css'
 
 interface Props {
     isAuth: boolean
-	setIsAuth: React.Dispatch<React.SetStateAction<boolean>>
-	setCode: React.Dispatch<React.SetStateAction<string | null>>
+    setIsAuth: React.Dispatch<React.SetStateAction<boolean>>
+    setCode: React.Dispatch<React.SetStateAction<string | null>>
     userId: string | null
 }
 
@@ -27,12 +28,14 @@ const Login2fa: React.FC<Props> = ({ setIsAuth, isAuth, setCode, userId }) => {
 
     const [otp, setOTP] = useState<string>('');
     const [secret2FA, setSecret2FA] = useState<string>('');
+    const [btnValidate, setBtnValidate] = useState<number>(0);
     const navigate = useNavigate();
 
-    const generateSecret = async () =>
-    {
+    const generateSecret = async () => {
+        console.log('USER ID : ', userId);
+        console.log('USER ID : ', Cookies.get('userId'));
         try {
-            const url2Fa = 'http://localhost:5000/pong/users/auth/2fa/30';
+            const url2Fa = 'http://localhost:5000/pong/users/auth/2fa/' + userId;
             const secret = await axios.get<string>(url2Fa);
             if (secret.status === 200) {
                 return secret.data;
@@ -40,65 +43,74 @@ const Login2fa: React.FC<Props> = ({ setIsAuth, isAuth, setCode, userId }) => {
         } catch (error) {
             console.log(error);
         }
-        return String(process.env.REACT_APP_DEFAULT_2FA);
+        //return String(process.env.REACT_APP_DEFAULT_2FA);
     }
 
-    const utils_2faSetup = async (secret2FA: string) => {
+    const utils_2faSetup = async (secret2FA: string | undefined) => {
         const generatedSecret = await generateSecret();
         secret2FA = generatedSecret;
         if (secret2FA)
-            setSecret2FA(String(secret2FA));
+            setSecret2FA(String(generatedSecret));
     }
     useEffect(() => {
         (async () => {
             await utils_2faSetup(secret2FA);
         })();
-    }, []);
+    }, [btnValidate]);
 
-	const handle2fa = async () => 
-    {
+    const handle2fa = async () => {
         // send code to backend for verification
         try {
-            const validate = await axios.post('http://localhost:5000/pong/users/auth/2fa', {token: otp, userId});
+            console.log(secret2FA);
+            console.log(otp);
+            console.log(userId);
+            const validate = await axios.post('http://localhost:5000/pong/users/auth/2fa', { token: otp, userId: userId + '' });
             if (validate.status === 200) {
-                navigate('/');
+                if (validate.data == 'OK') {
+                    Cookies.set('userId', userId + '', { expires: 7 });
+                    Cookies.set('isAuth', 'true', { expires: 7 });
+                    navigate('/');
+                }
+                else
+                    console.log('NOOOOO');
             }
         }
         catch (error) {
             console.log('Error : ', error);
         }
+        setBtnValidate(btnValidate + 1);
     }
-	return (
+    return (
         <div className='h-screen bg-gray-200 dark:bg-slate-900 w-full grid place-items-center'>
-            <div > 
+            <div >
                 <div className='login__form_item'>
                     <Button>
-				        Scan QRCode
-			        </Button>
+                        Scan QRCode
+                    </Button>
                 </div>
-        		<div className='login__form_item'>
+                <div className='login__form_item'>
                     <QRCode value={secret2FA} />
                 </div>
 
-        		<div className='login__form_item input'>
+                <div className='login__form_item input'>
                     <input
                         type="text"
                         value={otp}
                         onChange={(e) => setOTP(e.target.value)}
                         width={50}
                     />
-        		</div>
+                </div>
                 <div className='login__form_item'>
                     <Button
-					    type='submit'
-					    onClick={handle2fa}
-				    >
-					    validate
-				    </Button>
+                        type='submit'
+                        onClick={handle2fa}
+                    >
+                        validate
+                    </Button>
                 </div>
             </div>
         </div>
-	)
+    )
 }
 
 export default Login2fa
