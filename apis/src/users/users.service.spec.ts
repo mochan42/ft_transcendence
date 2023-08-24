@@ -1,18 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UsersService } from './users.service';
+import { authenticator, totp } from 'otplib';
 
-describe('UsersService', () => {
-  let service: UsersService;
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [UsersService],
-    }).compile();
 
-    service = module.get<UsersService>(UsersService);
-  });
+it('shouldBeOKWhenUserInputMatchedToken', () => {
+  const secret = authenticator.generateSecret();
+  const token = totp.generate(secret);
 
-  it('should be defined', () => {
-    expect(service).toBeDefined();
-  });
+  const userInput = token;
+  const valid = totp.check(userInput, secret);
+
+  expect(valid).toBe(true);
 });

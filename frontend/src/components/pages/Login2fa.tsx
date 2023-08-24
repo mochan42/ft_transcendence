@@ -14,7 +14,6 @@ import axios from 'axios';
 import '../../css/login.css'
 
 interface Props {
-    is2faEnabled: boolean
     isAuth: boolean
 	setIsAuth: React.Dispatch<React.SetStateAction<boolean>>
 	setCode: React.Dispatch<React.SetStateAction<string | null>>
@@ -24,14 +23,12 @@ interface Props {
 
 
 
-const Login2fa: React.FC<Props> = ({ setIsAuth, isAuth, is2faEnabled, setCode, userId }) => {
+const Login2fa: React.FC<Props> = ({ setIsAuth, isAuth, setCode, userId }) => {
 
     const [otp, setOTP] = useState<string>('');
     const [secret2FA, setSecret2FA] = useState<string>('');
     const navigate = useNavigate();
 
-
-    // Generate new key for user
     const generateSecret = async () =>
     {
         try {
@@ -42,17 +39,21 @@ const Login2fa: React.FC<Props> = ({ setIsAuth, isAuth, is2faEnabled, setCode, u
             }
         } catch (error) {
             console.log(error);
-            //return String(process.env.REACT_APP_DEFAULT_2FA);
         }
+        return String(process.env.REACT_APP_DEFAULT_2FA);
+    }
+
+    const utils_2faSetup = async (secret2FA: string) => {
+        const generatedSecret = await generateSecret();
+        secret2FA = generatedSecret;
+        if (secret2FA)
+            setSecret2FA(String(secret2FA));
     }
     useEffect(() => {
-        const Utils_2faSetup = async () => {
-            const generatedSecret = await generateSecret();
-            if (generatedSecret)
-               setSecret2FA(String(generatedSecret));
-        }
-        Utils_2faSetup();
-    }, [])
+        (async () => {
+            await utils_2faSetup(secret2FA);
+        })();
+    }, []);
 
 	const handle2fa = async () => 
     {
@@ -60,7 +61,6 @@ const Login2fa: React.FC<Props> = ({ setIsAuth, isAuth, is2faEnabled, setCode, u
         try {
             const validate = await axios.post('http://localhost:5000/pong/users/auth/2fa', {token: otp, userId});
             if (validate.status === 200) {
-                setIsAuth(true);
                 navigate('/');
             }
         }
@@ -68,7 +68,6 @@ const Login2fa: React.FC<Props> = ({ setIsAuth, isAuth, is2faEnabled, setCode, u
             console.log('Error : ', error);
         }
     }
-
 	return (
         <div className='h-screen bg-gray-200 dark:bg-slate-900 w-full grid place-items-center'>
             <div > 

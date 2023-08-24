@@ -8,7 +8,6 @@ import axios from 'axios';
 import { CreateUserDto } from './dto/create-user.dto';
 import { Secret2faDTO } from './dto/secret-2fa.dto';
 import { totp, authenticator } from 'otplib';
-import { isError } from 'util';
 
 @Injectable()
 export class UsersService {
@@ -66,10 +65,10 @@ export class UsersService {
     const pongUser = this.createPongUser(user42);
     const matchedUser = await this.findByUserName(pongUser.userName);
     if (matchedUser) {
-      return String(matchedUser.id);
+      return matchedUser;
     }
     const newUser = await this.UserRepository.save(pongUser);
-    return newUser.id.toString();
+    return newUser;
   }
 
   async findAll(): Promise<User[]> {
@@ -105,24 +104,22 @@ export class UsersService {
       const user = await this.findOne(+id);
       const updatedUser = { ...user, secret2Fa: secret };
       const updated = await this.UserRepository.save(updatedUser);
-      if (updated) {
-        console.log('SECRET FIRST: ', updated.secret2Fa);
+      if (user && updated) {
         return secret2fa;
       }
     } catch (error) {
       console.log('user not found', error);
     }
+    throw new HttpException('Gerating secret failled', HttpStatus.FAILED_DEPENDENCY);
   }
   async verify(secret: Secret2faDTO) {
     try {
       const user = await this.findOne(+secret.userId);
-      const isValid = authenticator.check(secret.token, user.secret2Fa);
+      const isValid = totp.check(secret.token, user.secret2Fa);
       if (isValid) {
+        this.generateSecret(user.id.toString());
         return 'OK';
       } else {
-        console.log('QUOI ?');
-        console.log('USER TOKEN', secret.token);
-        console.log('DB TOKEN', user.secret2Fa);
         throw new HttpException('token not valid', HttpStatus.UNAUTHORIZED);
       }
     } catch (error) {

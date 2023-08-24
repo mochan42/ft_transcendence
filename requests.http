@@ -198,8 +198,20 @@ DELETE http://localhost:5000/pong/friends/3
 
 ### aut
 POST http://localhost:5000/pong/users/auth
-Content-Length: application/json
+Content-Type: application/json
 
 {
 	"token": "ddskdsdddsds"
+}
+
+### Generate secrete for 2FA
+GET http://localhost:5000/pong/users/auth/2fa/21
+
+### Validate the secrete
+POST http://localhost:5000/pong/users/auth/2fa
+Content-Type: application/json
+
+{
+	"token": "570425",
+	"userId": "30"
 }

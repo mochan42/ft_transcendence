@@ -9,7 +9,7 @@ import EditProfile from '../EditProfile';
 
 import '../../css/profile.css';
 
-    const Profile:React.FC<ProfileProps> =({ userId, is2faEnable }) => {
+  const Profile:React.FC<ProfileProps> =({ userId, isAuth }) => {
 	
 	const [userInfo, setUserInfo] = useState< User | null >(null);
 	const [usersInfo, setUsersInfo] = useState< User[] | null >(null);
@@ -27,9 +27,9 @@ import '../../css/profile.css';
 	const [achievedGoals, setAchievedGoals] = useState<Goal[]>();
 	const [notAchievedGoals, setNotAchievedGoals] = useState<Goal[]>();
 	const [userFriends, setUserFriends] = useState<User [] | null >(null)
-    const [state2fa, setState2fa] = useState<boolean>(false);
-    const [btnTxt2fa, setBtnTxt2fa] = useState<string>("2FA: disabled");
-    const [btnStyle, setBtnStyle] = useState<string>('default');
+  const [state2fa, setState2fa] = useState<boolean>(false);
+  const [btnTxt2fa, setBtnTxt2fa] = useState<string>("2FA: disabled");
+  const [btnStyle, setBtnStyle] = useState<string>('default');
 
 	const getUserAchievements = async () => {
 		try {
@@ -106,26 +106,20 @@ import '../../css/profile.css';
 		}
 	}
     const ConfigureBtn2fa = () => {
-        if (state2fa)
-        {
+        if (state2fa) {
             setBtnTxt2fa(" 2FA: disabled ");
-            //setBtnStyle('profile_btn disabled');
-        }
-        else
-        {
+		}
+		else {
             setBtnTxt2fa(" 2FA: active ");
-            //setBtnStyle('profile_btn active');
         }
 
     }
 
     const Handle2faBtnClick = () => {
-        if (state2fa)
-        {
+        if (state2fa) {
             setState2fa(false) 
         }
-        else
-        {
+        else {
             setState2fa(true);
         }
         ConfigureBtn2fa();
@@ -152,34 +146,35 @@ import '../../css/profile.css';
 	  }, [userAchievements, allGoals]);
 	
 		useEffect(() => {
-			if (userInfo === null) {
-				getUserInfo();
-			}
-			if (userStats === null) {
-				getUserStats();
-			}
-			if (userAchievements === null) {
-				getUserAchievements();
-			}
-			if (allGoals === null) {
-				getAllGoals();
-			}
-			if (friends === null) {
-				getFriends()
-			}
-			if (usersInfo === null) {
-				getUsersInfo()
-			}
-			if (userFriends === null && usersInfo) {
-				const usersFriends = usersInfo?.filter((user) =>
-					friends?.some((friend) => friend.sender === user.id || friend.receiver === user.id && user.id != userId)
-				);
-				setUserFriends(usersFriends);
-			}
-			setState2fa(is2faEnable); // should be substituted with getuserinfo for latest 2fa status
-			ConfigureBtn2fa();
-	}, []);
-
+			(async () => {
+				if (userInfo === null) {
+					await getUserInfo();
+				}
+				if (userStats === null) {
+					await getUserStats();
+				}
+				if (userAchievements === null) {
+					await getUserAchievements();
+				}
+				if (allGoals === null) {
+					await getAllGoals();
+				}
+				if (friends === null) {
+					await getFriends()
+				}
+				if (usersInfo === null) {
+					await getUsersInfo()
+				}
+				if (userFriends === null && usersInfo) {
+					const usersFriends = usersInfo?.filter((user) =>
+						friends?.some((friend) => friend.sender === user.id || friend.receiver === user.id && user.id != userId)
+					);
+					setUserFriends(usersFriends);
+				}
+				userInfo && setState2fa(userInfo.is2Fa)// should be substituted with getuserinfo for latest 2fa status
+				ConfigureBtn2fa();
+			})();
+	}, [userInfo]);
 
 	return (
 		<div className='absolute h-full w-full'>

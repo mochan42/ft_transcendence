@@ -18,53 +18,55 @@ import Footer from './components/Footer';
 import Layout from './components/pages/Layout';
 import GameSelection from './components/pages/GameSelection';
 import { Utils__isAPICodeAvailable } from './utils/utils__isAPICodeAvailable';
-
+import Cookies from 'js-cookie';
 
 
 const App: React.FC = () => {
 
-	const [isAuth, setIsAuth] = useState<boolean>(false)
-	const [userId, setUserId] = useState<string | null>(null);
+	const authSession: boolean = Cookies.get('isAuth')? true : false;
+	const idSession: any = Cookies.get('userId');
+	const [isAuth, setIsAuth] = useState<boolean>(authSession)
+	const [userId, setUserId] = useState<string | null>(idSession || null);
 	const [code, setCode] = useState<string | null>(null);
 	const state = 'this must be very secure but lazy dev put just a string';
-	const [is2faEnabled, setIs2faEnable] = useState<boolean>(true);
-
 
 	// const getUserId = (): number => {
 	// 	const id = sessionStorage.getItem('userId');
-	// 	return (id?.length) ? +id : -1; 
+	// 	return (id?.length) ? +id : -1;
 	// }
 
-    // check if code available for backend to exchange for token
-    Utils__isAPICodeAvailable({setIsAuth, isAuth, setCode, code, is2faEnabled}, state)
-    
+	// check if code available for backend to exchange for token
+	useEffect(() => {
+		Utils__isAPICodeAvailable({ setIsAuth, isAuth, setCode, code }, state)
+	}, [isAuth, code]);
+
 	return (
 		<div className='grid gap-2 font-mono dark:bg-white/75 bg-slate-900 bg-opacity-80'>
 			<Router>
 				<div className='shadow-xl flex backdrop-blur-sm bg-white/75 dark:bg-slate-900 z-50 top-0 left-0 right-0 h-20 border border-white/75 dark:border-slate-700 item-center justify-between'>
-					<Navbar setIsAuth={setIsAuth} isAuth={isAuth} setCode={setCode} setUserId={ setUserId }/>
+					<Navbar setIsAuth={setIsAuth} isAuth={isAuth} setCode={setCode} setUserId={setUserId} />
 				</div>
 				<div className='rounded-2xl shadow-xl h-screen min-h-[50px]'>
 					<div>
 						<Routes>
-							<Route path='about' element={<About isAuth = {isAuth}/>} />
-							<Route path='/' element={<Home userCode={{ code: code, setCode: setCode }} loginState={{ isLogin: isAuth, setIsLogin: setIsAuth }} setUserId={setUserId} userId={userId} is2faEnabled={is2faEnabled} state={state} /> } /> 
-                            <Route path='/login' element={<Login isAuth={isAuth} setIsAuth={setIsAuth} state={state} />} />
-							<Route path='/login2fa' element={<Login2fa isAuth={isAuth} setIsAuth={setIsAuth} is2faEnabled={is2faEnabled} setCode={setCode} userId={userId} />} />
-							<Route path='/game' element={<ProtectedRoute isAuth={isAuth} path='/game' element={<GameSelection userId={userId}/>} />} />
-							<Route path='/profile' element={<ProtectedRoute isAuth={isAuth} path='/profile' element={<Profile userId={userId} is2faEnable={is2faEnabled}/>} />} />
+							<Route path='about' element={<About isAuth={isAuth} />} />
+							<Route path='/' element={<Home userCode={{ code: code, setCode: setCode }} loginState={{ isLogin: isAuth, setIsLogin: setIsAuth }} setUserId={setUserId} userId={userId} state={state} />} />
+							<Route path='/login' element={<Login isAuth={isAuth} setIsAuth={setIsAuth} state={state} />} />
+							<Route path='/login2fa' element={<Login2fa isAuth={isAuth} setIsAuth={setIsAuth} setCode={setCode} userId={userId} />} />
+							<Route path='/game' element={<ProtectedRoute isAuth={isAuth} path='/game' element={<GameSelection userId={userId} />} />} />
+							<Route path='/profile' element={<ProtectedRoute isAuth={isAuth} path='/profile' element={<Profile userId={userId} isAuth={isAuth} />} />} />
 							<Route path='/landingpage' element={<ProtectedRoute isAuth={isAuth} path='/landingpage' element={<LandingPage />} />} />
 							<Route path='/layout' element={<Layout />} />
-							<Route path='/*' element={<PageNotFound />}/>
+							<Route path='/*' element={<PageNotFound />} />
 						</Routes>
 					</div>
-				</div>	
-					<div className=' shadow-xl flex backdrop-blur-sm bg-white/75 dark:bg-slate-900 z-50 top-0 left-0 right-0 h-20 border-b border-slate-300 dark:border-slate-700 items-center justify-evenly'>
-						<Footer/>
-					</div>
-				</Router>
-			</div>
-		)
+				</div>
+				<div className=' shadow-xl flex backdrop-blur-sm bg-white/75 dark:bg-slate-900 z-50 top-0 left-0 right-0 h-20 border-b border-slate-300 dark:border-slate-700 items-center justify-evenly'>
+					<Footer />
+				</div>
+			</Router>
+		</div>
+	)
 }
 export default App;
 

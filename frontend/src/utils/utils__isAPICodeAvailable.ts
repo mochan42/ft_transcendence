@@ -22,7 +22,7 @@ export const Utils__isAPICodeAvailable = ( userAuth : TUserAuth, state: string):
         Array.from((urlSearchParams.entries())).map(([key, value]) => {
             if (key === "code") {
                 userAuth.setCode(value);
-                if ( !(userAuth.is2faEnabled) ) userAuth.setIsAuth(true);
+                userAuth.setIsAuth(true);
                 result = true;
             }
         });

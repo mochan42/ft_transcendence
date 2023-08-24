@@ -5,49 +5,58 @@ import UserCard from "../UserCard";
 import Leaderboard from "../LeaderBoard";
 import { Friend, User } from "../../types";
 import About from './About';
+import Cookies from 'js-cookie';
+
 
 
 type TUserState = {
-    userCode : {
-        code: (string | null )
-        setCode: React.Dispatch<React.SetStateAction<string | null>>
-    },
-    loginState : {
-        isLogin: boolean
-        setIsLogin: React.Dispatch<React.SetStateAction<boolean>>
+	userCode: {
+		code: (string | null)
+		setCode: React.Dispatch<React.SetStateAction<string | null>>
+	},
+	loginState: {
+		isLogin: boolean
+		setIsLogin: React.Dispatch<React.SetStateAction<boolean>>
 	},
 	userId: string | null,
-    setUserId: React.Dispatch<React.SetStateAction<string | null>>,
-	is2faEnabled: boolean,
+	setUserId: React.Dispatch<React.SetStateAction<string | null>>,
+	// is2faEnabled: boolean,
 	state: string
 }
 
-const Home = ({ userCode, loginState, userId, setUserId, is2faEnabled, state }: TUserState) => {
-	const [usersInfo, setUsersInfo] = useState< User[] | null >(null);
+const Home = ({ userCode, loginState, userId, setUserId, state }: TUserState) => {
+	const [usersInfo, setUsersInfo] = useState<User[] | null>(null);
 	const id = userId;
 	const urlFriends = 'http://localhost:5000/pong/users/' + id + '/friends';
-	const [userFriends, setUserFriends] = useState<User [] | null >(null);
-	const [friends, setFriends] = useState< Friend [] | null>(null);
-    const navigate = useNavigate();
-    
+	const [userFriends, setUserFriends] = useState<User[] | null>(null);
+	const [friends, setFriends] = useState<Friend[] | null>(null);
+	const navigate = useNavigate();
+
 
 	const authenticateToAPI = async (token: string, state: string) => {
-		try {
-			const resp = await axios.post('http://localhost:5000/pong/users/auth', { token, state });
-			if (resp.status === 200) {
-				setUserId(resp.data);
-				return;
+		if (token.length !== 0 && state.length !== 0) {
+			try {
+				const resp = await axios.post('http://localhost:5000/pong/users/auth', { token, state });
+				if (resp.status === 200) {
+					const user = resp.data;
+					setUserId(user.id.toString());
+					Cookies.set('userId', user.id, { expires: 7 });
+					Cookies.set('isAuth', 'true', { expires: 7 });
+					if (user.is2Fa)
+						navigate('/login2fa');
+					else
+						navigate('/');
+				}
+			}
+			catch (error) {
+				console.log('Error auth', error);
 			}
 		}
-		catch (error) {
-			loginState.setIsLogin(false);
-			userCode.setCode(null);
-		}
-		
-    }
+
+	}
 	const getUsersInfo = async () => {
 		try {
-			const response = await axios.get< User[] >('http://localhost:5000/pong/users/');
+			const response = await axios.get<User[]>('http://localhost:5000/pong/users/');
 			if (response.status === 200) {
 				setUsersInfo(response.data);
 				console.log('Received Users Info: ', response.data)
@@ -74,41 +83,37 @@ const Home = ({ userCode, loginState, userId, setUserId, is2faEnabled, state }: 
 	}
 
 	useEffect(() => {
-		if (userCode.code === null)
-        { 
-            return navigate('/about')
-        }
-		if (id != null) {
-			if (friends === null) {
-				getFriends()
-			}
-			if (usersInfo === null) {
-				getUsersInfo()
-			}
-			if (userFriends === null && usersInfo) {
-				const usersFriends = usersInfo?.filter((user) =>
-					friends?.some((friend) => friend.sender === user.id || friend.receiver === user.id && user.id != userId)
-				);
-				if (userFriends != null) {
-					setUserFriends(usersFriends);
+		(async () => {
+			if (userId != null && loginState.isLogin) {
+				if (friends === null) {
+					await getFriends()
+				}
+				if (usersInfo === null) {
+					await getUsersInfo()
+				}
+				if (userFriends === null && usersInfo) {
+					const usersFriends = usersInfo?.filter((user) =>
+						friends?.some((friend) => friend.sender === user.id || friend.receiver === user.id && user.id != userId)
+					);
+					if (userFriends != null) {
+						setUserFriends(usersFriends);
+					}
 				}
 			}
-		}
-	}, []);
-
-    useEffect( () => {
-       if (is2faEnabled && loginState.isLogin === false && userCode.code != null)
-            { navigate('/login2fa') }
-    },
-    [])
-	if (userCode.code !== null) {
-		authenticateToAPI(userCode.code, state);
-	}
-	else
-		return <About isAuth = {loginState.isLogin}/>
+		})();
+	}, [userId, loginState.isLogin]);
+	useEffect(() => {
+		(async () => {
+			if (userCode.code !== null && !id) {
+				authenticateToAPI(userCode.code, state);
+			}
+		})();
+	}, [userId, loginState]);
+	if (!id)
+		return <><About isAuth={loginState.isLogin}></About></>
 	return (
 		<>
-            <div className="flex flex-wrap h-screen">
+			<div className="flex flex-wrap h-screen">
 				<div className="w-1/3 bg-slate-200 p-4 h-1/2">
 					<UserCard userId={userId} foundMatch={false} info={'profile'}></UserCard>
 				</div>
@@ -124,13 +129,13 @@ const Home = ({ userCode, loginState, userId, setUserId, is2faEnabled, state }: 
 								{userFriends != null ? userFriends.map((user, index) => (
 									<div key={index}>
 										<img
-										className="h-6 w-6 dark:bg-slate-200 rounded-full"
-										src={user.avatar}
-										alt="Achievement badge"
+											className="h-6 w-6 dark:bg-slate-200 rounded-full"
+											src={user.avatar}
+											alt="Achievement badge"
 										/>
-											{user.userNameLoc}
+										{user.userNameLoc}
 									</div>
-								)) : <img className='h-96 w-96 rounded-lg' src='https://media0.giphy.com/media/KG4ST0tXOrt1yQRsv0/200.webp?cid=ecf05e4732is65t7ah6nvhvwst9hkjqv0c52bhfnilk0b9g0&ep=v1_stickers_search&rid=200.webp&ct=s'/>}
+								)) : <img className='h-96 w-96 rounded-lg' src='https://media0.giphy.com/media/KG4ST0tXOrt1yQRsv0/200.webp?cid=ecf05e4732is65t7ah6nvhvwst9hkjqv0c52bhfnilk0b9g0&ep=v1_stickers_search&rid=200.webp&ct=s' />}
 							</div>
 						</div>
 					</div>
@@ -140,11 +145,6 @@ const Home = ({ userCode, loginState, userId, setUserId, is2faEnabled, state }: 
 						{/* Chat window content goes here */}
 					</div>
 				</div>
-			</div>
-			<div className="dark:text-slate-200">
-
-           		{ loginState.isLogin && <h3>Received code : { userCode.code }</h3> }
-            	<h3>Login state : { (loginState.isLogin && userCode.code) ? "Active" : "Inactive" }</h3>
 			</div>
 		</>
 	)
