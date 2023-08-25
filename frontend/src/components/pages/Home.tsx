@@ -30,6 +30,7 @@ const Home = ({ userCode, loginState, userId, setUserId, state }: TUserState) =>
 	const urlFriends = 'http://localhost:5000/pong/users/' + id + '/friends';
 	const [userFriends, setUserFriends] = useState<User[] | null>(null);
 	const [friends, setFriends] = useState<Friend[] | null>(null);
+	const [is2fa, setIs2fa] = useState<boolean>(false);
 	const navigate = useNavigate();
 
 
@@ -44,7 +45,7 @@ const Home = ({ userCode, loginState, userId, setUserId, state }: TUserState) =>
 						loginState.setIsLogin(false);
 						Cookies.remove('userId');
 						Cookies.remove('isAuth');
-						navigate('/login2fa');
+						return navigate('/login2fa');
 					}
 					else {
 						setUserId(user.id.toString());
@@ -111,49 +112,52 @@ const Home = ({ userCode, loginState, userId, setUserId, state }: TUserState) =>
 	useEffect(() => {
 		(async () => {
 			if (userCode.code !== null && !id) {
-				authenticateToAPI(userCode.code, state);
+				return authenticateToAPI(userCode.code, state);
 			}
 		})();
 	}, [userId, loginState]);
-	if (!id && !loginState.isLogin)
+	if (!userId && !loginState.isLogin)
 		return <><About isAuth={loginState.isLogin}></About></>
-	return (
-		<>
-			<div className="flex flex-wrap h-screen">
-				<div className="w-1/3 bg-slate-200 p-4 h-1/2">
-					<UserCard userId={userId} foundMatch={false} info={'profile'}></UserCard>
-				</div>
-				<div className="w-2/3 bg-slate-200 p-4">
-					<div className='bg-slate-900 rounded-lg h-full w-full'>
-						<Leaderboard userId={userId} />
+	if (userId && loginState)
+		return (
+			<>
+				<div className="flex flex-wrap h-screen">
+					<div className="w-1/3 bg-slate-200 p-4 h-1/2">
+						<UserCard userId={userId} foundMatch={false} info={'profile'}></UserCard>
 					</div>
-				</div>
-				<div className="w-1/3 bg-slate-200 p-4 h-1/2">
-					<div className="h-full overflow-y-auto flex-cols text-center space-y-4 rounded-lg flex items-center justify-center">
-						<div className="space-y-2 flex flex-col justify-between gap-4 rounded-lg">
-							<div className="flex flex-row justify-between items-center min-w-[220px] bg-slate-900 text-center rounded-lg">
-								{userFriends != null ? userFriends.map((user, index) => (
-									<div key={index}>
-										<img
-											className="h-6 w-6 dark:bg-slate-200 rounded-full"
-											src={user.avatar}
-											alt="Achievement badge"
-										/>
-										{user.userNameLoc}
-									</div>
-								)) : <img className='h-96 w-96 rounded-lg' src='https://media0.giphy.com/media/KG4ST0tXOrt1yQRsv0/200.webp?cid=ecf05e4732is65t7ah6nvhvwst9hkjqv0c52bhfnilk0b9g0&ep=v1_stickers_search&rid=200.webp&ct=s' />}
+					<div className="w-2/3 bg-slate-200 p-4">
+						<div className='bg-slate-900 rounded-lg h-full w-full'>
+							<Leaderboard userId={userId} />
+						</div>
+					</div>
+					<div className="w-1/3 bg-slate-200 p-4 h-1/2">
+						<div className="h-full overflow-y-auto flex-cols text-center space-y-4 rounded-lg flex items-center justify-center">
+							<div className="space-y-2 flex flex-col justify-between gap-4 rounded-lg">
+								<div className="flex flex-row justify-between items-center min-w-[220px] bg-slate-900 text-center rounded-lg">
+									{userFriends != null ? userFriends.map((user, index) => (
+										<div key={index}>
+											<img
+												className="h-6 w-6 dark:bg-slate-200 rounded-full"
+												src={user.avatar}
+												alt="Achievement badge"
+											/>
+											{user.userNameLoc}
+										</div>
+									)) : <img className='h-96 w-96 rounded-lg' src='https://media0.giphy.com/media/KG4ST0tXOrt1yQRsv0/200.webp?cid=ecf05e4732is65t7ah6nvhvwst9hkjqv0c52bhfnilk0b9g0&ep=v1_stickers_search&rid=200.webp&ct=s' />}
+								</div>
 							</div>
 						</div>
 					</div>
-				</div>
-				<div className="w-2/3 bg-slate-200 p-4 h-1/2">
-					<div className='bg-slate-900 rounded-lg h-full w-full'>
-						{/* Chat window content goes here */}
+					<div className="w-2/3 bg-slate-200 p-4 h-1/2">
+						<div className='bg-slate-900 rounded-lg h-full w-full'>
+							{/* Chat window content goes here */}
+						</div>
 					</div>
 				</div>
-			</div>
-		</>
-	)
+			</>
+		)
+	return <></>
+
 }
 
 export default Home

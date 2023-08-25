@@ -99,7 +99,7 @@ export class UsersService {
 
   async generateSecret(id: string) {
     const secret = authenticator.generateSecret();
-    const secret2fa: string = totp.generate(secret);
+    const secret2fa: string = authenticator.generate(secret);
     try {
       const user = await this.findOne(+id);
       const updatedUser = { ...user, secret2Fa: secret };
@@ -115,12 +115,12 @@ export class UsersService {
   async verify(secret: Secret2faDTO) {
     try {
       const user = await this.findOne(+secret.userId);
-      const isValid = totp.check(secret.token, user.secret2Fa);
+      const isValid = authenticator.check(secret.token, user.secret2Fa);
       if (isValid) {
-        this.generateSecret(user.id.toString());
+        await this.generateSecret(user.id.toString());
         return 'OK';
       } else {
-        throw new HttpException('token not valid', HttpStatus.UNAUTHORIZED);
+        return 'NO';
       }
     } catch (error) {
       throw new HttpException('user not found', HttpStatus.NOT_FOUND);

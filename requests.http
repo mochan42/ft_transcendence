@@ -29,7 +29,7 @@ Content-Type: application/json
   "userNameLoc": "fakouyat",
   "firstName": "Facinet",
   "lastName": "Kouyate",
-  "is2Fa": false,
+  "is2Fa": true,
   "authToken": "dkdkd",
   "email": "fakouyat@student.42wolfsburg.de",
   "secret2Fa": "H4DHQUYSIY6XOJTP",

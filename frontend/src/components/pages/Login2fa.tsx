@@ -17,25 +17,24 @@ import '../../css/login.css'
 interface Props {
     isAuth: boolean
     setIsAuth: React.Dispatch<React.SetStateAction<boolean>>
-    setCode: React.Dispatch<React.SetStateAction<string | null>>
+    setUserId: React.Dispatch<React.SetStateAction<string | null>>
     userId: string | null
 }
 
 
 
 
-const Login2fa: React.FC<Props> = ({ setIsAuth, isAuth, setCode, userId }) => {
+const Login2fa: React.FC<Props> = ({ setIsAuth, isAuth, setUserId, userId }) => {
 
     const [otp, setOTP] = useState<string>('');
     const [secret2FA, setSecret2FA] = useState<string>('');
     const [btnValidate, setBtnValidate] = useState<number>(0);
+    const [id, setId] = useState<string | null>(userId);
     const navigate = useNavigate();
-
     const generateSecret = async () => {
-        console.log('USER ID : ', userId);
-        console.log('USER ID : ', Cookies.get('userId'));
+        console.log('USER ID : ', id);
         try {
-            const url2Fa = 'http://localhost:5000/pong/users/auth/2fa/' + userId;
+            const url2Fa = 'http://localhost:5000/pong/users/auth/2fa/' + id;
             const secret = await axios.get<string>(url2Fa);
             if (secret.status === 200) {
                 return secret.data;
@@ -52,23 +51,19 @@ const Login2fa: React.FC<Props> = ({ setIsAuth, isAuth, setCode, userId }) => {
         if (secret2FA)
             setSecret2FA(String(generatedSecret));
     }
-    useEffect(() => {
-        (async () => {
-            await utils_2faSetup(secret2FA);
-        })();
-    }, [btnValidate]);
-
     const handle2fa = async () => {
         // send code to backend for verification
         try {
             console.log(secret2FA);
             console.log(otp);
-            console.log(userId);
-            const validate = await axios.post('http://localhost:5000/pong/users/auth/2fa', { token: otp, userId: userId + '' });
+            console.log("USER ID", id, "WHY ?");
+            const validate = await axios.post('http://localhost:5000/pong/users/auth/2fa', { token: otp, userId: id + '' });
             if (validate.status === 200) {
                 if (validate.data == 'OK') {
-                    Cookies.set('userId', userId + '', { expires: 7 });
+                    Cookies.set('userId', id + '', { expires: 7 });
                     Cookies.set('isAuth', 'true', { expires: 7 });
+                    setIsAuth(true);
+                    setUserId(id);
                     navigate('/');
                 }
                 else
@@ -80,6 +75,13 @@ const Login2fa: React.FC<Props> = ({ setIsAuth, isAuth, setCode, userId }) => {
         }
         setBtnValidate(btnValidate + 1);
     }
+    useEffect(() => {
+        (async () => {
+            setUserId(null);
+            await utils_2faSetup(secret2FA);
+        })();
+    }, [btnValidate]);
+
     return (
         <div className='h-screen bg-gray-200 dark:bg-slate-900 w-full grid place-items-center'>
             <div >

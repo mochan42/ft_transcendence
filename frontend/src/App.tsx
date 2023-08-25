@@ -23,10 +23,11 @@ import Cookies from 'js-cookie';
 
 const App: React.FC = () => {
 
-	const authSession: boolean = Cookies.get('isAuth')? true : false;
-	const idSession: any = Cookies.get('userId');
+	const authSession: boolean = Cookies.get('isAuth') ? true : false;
+	const userCookie = Cookies.get('userId');
+	const idSession: string | null =  userCookie ? userCookie : null ;
 	const [isAuth, setIsAuth] = useState<boolean>(authSession)
-	const [userId, setUserId] = useState<string | null>(idSession || null);
+	const [userId, setUserId] = useState<string | null>(idSession);
 	const [code, setCode] = useState<string | null>(null);
 	const state = 'this must be very secure but lazy dev put just a string';
 
@@ -52,7 +53,7 @@ const App: React.FC = () => {
 							<Route path='about' element={<About isAuth={isAuth} />} />
 							<Route path='/' element={<Home userCode={{ code: code, setCode: setCode }} loginState={{ isLogin: isAuth, setIsLogin: setIsAuth }} setUserId={setUserId} userId={userId} state={state} />} />
 							<Route path='/login' element={<Login isAuth={isAuth} setIsAuth={setIsAuth} state={state} />} />
-							<Route path='/login2fa' element={<Login2fa isAuth={isAuth} setIsAuth={setIsAuth} setCode={setCode} userId={userId} />} />
+							<Route path='/login2fa' element={<Login2fa isAuth={isAuth} setIsAuth={setIsAuth} setUserId={setUserId} userId={userId} />} />
 							<Route path='/game' element={<ProtectedRoute isAuth={isAuth} path='/game' element={<GameSelection userId={userId} />} />} />
 							<Route path='/profile' element={<ProtectedRoute isAuth={isAuth} path='/profile' element={<Profile userId={userId} isAuth={isAuth} />} />} />
 							<Route path='/landingpage' element={<ProtectedRoute isAuth={isAuth} path='/landingpage' element={<LandingPage />} />} />

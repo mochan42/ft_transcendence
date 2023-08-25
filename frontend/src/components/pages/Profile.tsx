@@ -106,7 +106,7 @@ import '../../css/profile.css';
 		}
 	}
     const ConfigureBtn2fa = () => {
-        if (state2fa) {
+        if (!state2fa) {
             setBtnTxt2fa(" 2FA: disabled ");
 		}
 		else {
