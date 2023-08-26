@@ -46,12 +46,12 @@ const UserCard: React.FC<UserCardProps> = ({ userId, info, setState, foundMatch}
 		<div className="h-full bg-slate-900 rounded-lg p-12 flex flex-col justify-around gap-y-8">
 			<div className="flex flex-col items-center justify-between flex-grow text-slate-200">
 				<img
-					className="h-48 w-48 rounded-full object-cover"
+					className="h-40 w-40 rounded-full object-cover" // Nice feature would be to place a border like so: 'border-b-8 border-t-8 border-amber-400'
 					src={userInfo?.avatar ? userInfo.avatar : 'https://www.svgrepo.com/show/170615/robot.svg'}
 					alt="User Avatar"
 				/>
 				<button
-					className='font-medium text-amber-400 text-2xl bg-transparent dark:bg-transparent underline-offset-4 hover:underline hover:bg-transparent dark:hover:bg-transparent'
+					className='font-medium text-amber-400 text-2xl bg-transparent dark:bg-transparent underline-offset-4 hover:underline hover:bg-transparent dark:hover:bg-transparent border-t-8'
 					onClick={() => handleCardClick()}>
 					{userInfo?.userNameLoc}
 				</button>

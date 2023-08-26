@@ -86,83 +86,73 @@ const ChatConversation: React.FC<ChatProps> = ({ userId }) => {
         }
     };
 
-    return ( 
-        <Stack sx={{ height: "100%", width: "100%",
-            }} 
-        >
-            {/* Chat header */}
-            <Box p={1} sx={{ 
-                width: "100%", backgroundColor: "white",
-                boxShadow: "0px 0px 2px rgba(0, 0, 0, 0.25)" }}
-            >
-                <Stack direction={"row"} justifyContent={"space-between"} sx={{ height:"100%", width:"100%"}}>
-                    <Stack direction={"row"} spacing={2} alignContent={"center"}>
 
-                        <Box p={1}>
-                            <Badge 
-                                color="success" 
-                                variant="dot" 
-                                anchorOrigin={{vertical:"bottom", horizontal:"left"}}
-                                overlap="circular"
+	return (
+        <div className="h-full w-full">
+            <div className="p-1 bg-white shadow-md">
+                <div className="flex justify-between items-center h-full w-full">
+                    <div className="flex items-center space-x-2">
+                        <div className="p-1">
+                            <span className="relative">
+                                <span className="block w-8 h-8 bg-green-500 rounded-full">
+                                    <img src="avatar-image-url" alt="Avatar" className="w-8 h-8 rounded-full" />
+                                </span>
+                                <span className="absolute w-3 h-3 bg-green-400 rounded-full bottom-0 right-0"></span>
+                            </span>
+                        </div>
+                        <div className="space-y-0.2">
+                            <p className="text-base font-medium">pmeising</p>
+                            <p className="text-xs text-gray-500">Online</p>
+                        </div>
+                    </div>
+                    <div>
+                        <button>
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 32 32"
+                                className="w-6 h-6"
                             >
-                                <Avatar alt="image"/>
-                            </Badge>
-                        </Box>
-                        <Stack spacing={0.2}>
-                            <Typography variant="subtitle1">pmeising</Typography>
-                            <Typography variant="caption">Online</Typography>
-                        </Stack>
-                    </Stack>
-                    <Stack>
-                        <IconButton>
-                            <CaretDown />
-                        </IconButton>
-                    </Stack>
-
-                </Stack>
-
-            </Box>
-
+                                <path d="M24 12l-8 8-8-8" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
 
             {/* Chat message */}
-            <Box p={1} sx={{ height: "100%", width: "100%", backgroundColor: "#eee", overflowY:"scroll"}} >
-                <ChatMessage/>
-				<div className='w-4/5 p-4' ref={messageContainerRef}>
-                    <div className='flex-1'>
+            <div className="p-1 h-full w-full bg-gray-200 overflow-y-scroll">
+                <ChatMessage />
+                <div className="w-4/5 p-4" ref={messageContainerRef}>
+                    <div className="flex-1">
                         {messages.map((message) => (
-                            <div key={message.id} className='mb-2'>
+                            <div key={message.id} className="mb-2">
                                 <p>{message.user}: {message.message}</p>
                             </div>
                         ))}
                     </div>
                 </div>
-            </Box>
-
+            </div>
 
             {/* Chat footer */}
-            <Box p={1} sx={{ width: "100%", backgroundColor: "white", 
-                boxShadow: "0px 0px 2px rgba(0, 0, 0, 0.25)"}} 
-            >
-                <Stack direction={"row"} sx={{ width:"100%"}} p={0}>
-                    
-                <input 
-                    placeholder="Type here..."
-                    className='flex-1 px-3 py-2 text-slate-800 rounded border border-slate-300 focus:outline-none focus:border-amber-400'
-                    value={userMessage}
-                    onChange={(e) => setUserMessage(e.target.value)}
-                    //{/*onKeyDown={handleKeyDown}*/}
-                />
-                <button
-                    //{/*onClick={onMessageSubmit}*/}
-                    className='bg-amber-400 text-white px-4 py-2 rounded hover:bg-amber-500'
-                >
-                    Send
-                </button>
-                </Stack>
-
-            </Box>
-        </Stack>
-     );
+            <div className="p-1 bg-white shadow-md">
+                <div className="flex items-center p-0 w-full">
+                    <input
+                        placeholder="Type here..."
+                        className="flex-1 px-3 py-2 text-gray-800 rounded border border-gray-300 focus:outline-none focus:border-yellow-400"
+                        value={userMessage}
+                        onChange={(e) => setUserMessage(e.target.value)}
+                        onKeyDown={handleKeyDown}
+                    />
+                    <button
+                        onClick={onMessageSubmit}
+                        className="bg-yellow-400 text-white px-4 py-2 rounded hover:bg-yellow-500"
+                    >
+                        Send
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
 }
  
 export default ChatConversation;    

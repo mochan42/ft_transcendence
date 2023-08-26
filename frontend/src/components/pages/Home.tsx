@@ -118,63 +118,64 @@ const Home = ({ userCode, loginState, userId, setUserId, state }: TUserState) =>
 			}
 		})();
 	}, [userId, loginState]);
+
+	console.log('userID und Loginstate: ', userId, ', ', loginState)
 	if (!userId && !loginState.isLogin)
 		return <><About isAuth={loginState.isLogin}></About></>
-	if (userId && loginState)
-		
-	
-	return (
-			<div className='h-5/6'>
-				<div className="flex flex-wrap h-screen">
-					<div className="w-1/3 bg-slate-200 p-4 h-1/2">
-						<UserCard userId={userId} foundMatch={false} info={'profile'}></UserCard>
-					</div>
-					<div className="w-2/3 bg-slate-200 p-4">
-						<div className='bg-slate-900 rounded-lg h-full w-full'>
-							<Leaderboard userId={userId} />
+	// else if (userId && loginState)
+	else
+		return (
+			<>
+				<div className='h-5/6'>
+					<div className="flex flex-wrap h-full">
+						<div className="w-1/3 bg-slate-200 p-4 h-1/2">
+							<UserCard userId={userId} foundMatch={false} info={'profile'}></UserCard>
 						</div>
-					</div>
-					<div className="w-1/3 bg-slate-200 p-4 h-1/2">
-						<div className="h-full overflow-y-auto flex-cols text-center space-y-4 rounded-lg flex items-center justify-center">
-							<div className="space-y-2 flex flex-col justify-between gap-4 rounded-lg">
-								<div className="flex flex-row justify-between items-center min-w-[220px] bg-slate-900 text-center rounded-lg">
-									{userFriends != null ? userFriends.map((user, index) => (
-										<div key={index}>
-											<img
-												className="h-6 w-6 dark:bg-slate-200 rounded-full"
-												src={user.avatar}
-												alt="Achievement badge"
-											/>
-											{user.userNameLoc}
-										</div>
-									)) : <img className='h-96 w-96 rounded-lg' src='https://media0.giphy.com/media/KG4ST0tXOrt1yQRsv0/200.webp?cid=ecf05e4732is65t7ah6nvhvwst9hkjqv0c52bhfnilk0b9g0&ep=v1_stickers_search&rid=200.webp&ct=s' />}
+						<div className="w-2/3 bg-slate-200 p-4">
+							<div className='bg-slate-900 rounded-lg h-full w-full'>
+								<Leaderboard userId={userId} />
+							</div>
+						</div>
+						<div className="w-1/3 bg-slate-200 p-4 h-1/2">
+							<div className="overflow-y-auto flex-cols text-center space-y-4 rounded-lg flex items-center justify-center">
+								<div className="space-y-2 flex flex-col justify-between gap-4 rounded-lg">
+									<div className="flex flex-row justify-between items-center min-w-[200px] min-h-[300px] bg-slate-900 text-center rounded-lg">
+										{userFriends != null ? userFriends.map((user, index) => (
+											<div key={index}>
+												<img
+													className="h-6 w-6 dark:bg-slate-200 rounded-full"
+													src={user.avatar}
+													alt="Achievement badge"
+													/>
+												{user.userNameLoc}
+											</div>
+										)) : <img className='h-full w-full rounded-lg' src='https://media0.giphy.com/media/KG4ST0tXOrt1yQRsv0/200.webp?cid=ecf05e4732is65t7ah6nvhvwst9hkjqv0c52bhfnilk0b9g0&ep=v1_stickers_search&rid=200.webp&ct=s' />}
+									</div>
 								</div>
+							</div>
+						</div>
+						<div className="w-2/3 bg-slate-200 p-4 h-1/2">
+							<div className='bg-slate-900 rounded-lg w-full'>
+								<Stack p={1} direction={"row"}
+									// sx={{
+									// 	//display:"grid",
+									// 	//gridTemplateColumns: "0.1fr 0.4fr 1.5fr",
+									// 	//gridTemplateRows: "1fr",
+									// 	gridGap: "0px",
+									// 	height:"100%",
+									// 	width: "100%",
+									// }}
+								>
+									<ChatBoard/>
+									{/* <ChatPageUsers/> */}
+									<ChatConversation userId={userId}/>
+								</Stack>
 							</div>
 						</div>
 					</div>
 				</div>
-				<div className="w-2/3 bg-slate-200 p-4 h-1/2">
-					<div className='bg-slate-900 rounded-lg h-full w-full'>
-						{/* Chat window content goes here */}
-						<Stack p={1} direction={"row"}
-							sx={{
-								//display:"grid",
-								//gridTemplateColumns: "0.1fr 0.4fr 1.5fr",
-								//gridTemplateRows: "1fr",
-								gridGap: "0px",
-								height:"100%",
-								width: "100%",
-							}}
-							>
-						</Stack>
-                    <ChatBoard/>
-                    <ChatPageUsers/>
-                    <ChatConversation userId={userId}/>
-					</div>
-				</div>
-			</div>
+			</>
 		)
-	return <></>
 }
 
 export default Home
