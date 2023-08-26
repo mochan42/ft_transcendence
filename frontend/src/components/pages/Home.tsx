@@ -121,8 +121,10 @@ const Home = ({ userCode, loginState, userId, setUserId, state }: TUserState) =>
 	if (!userId && !loginState.isLogin)
 		return <><About isAuth={loginState.isLogin}></About></>
 	if (userId && loginState)
-		return (
-			<>
+		
+	
+	return (
+			<div className='h-5/6'>
 				<div className="flex flex-wrap h-screen">
 					<div className="w-1/3 bg-slate-200 p-4 h-1/2">
 						<UserCard userId={userId} foundMatch={false} info={'profile'}></UserCard>
@@ -154,26 +156,25 @@ const Home = ({ userCode, loginState, userId, setUserId, state }: TUserState) =>
 				<div className="w-2/3 bg-slate-200 p-4 h-1/2">
 					<div className='bg-slate-900 rounded-lg h-full w-full'>
 						{/* Chat window content goes here */}
-                <Stack p={1} direction={"row"}
-                    sx={{
-                        //display:"grid",
-                        //gridTemplateColumns: "0.1fr 0.4fr 1.5fr",
-                        //gridTemplateRows: "1fr",
-                        gridGap: "0px",
-                        height:"100%",
-                        width: "100%",
-                    }}
-                >
+						<Stack p={1} direction={"row"}
+							sx={{
+								//display:"grid",
+								//gridTemplateColumns: "0.1fr 0.4fr 1.5fr",
+								//gridTemplateRows: "1fr",
+								gridGap: "0px",
+								height:"100%",
+								width: "100%",
+							}}
+							>
+						</Stack>
                     <ChatBoard/>
                     <ChatPageUsers/>
                     <ChatConversation userId={userId}/>
-                </Stack>
 					</div>
 				</div>
-			</>
+			</div>
 		)
 	return <></>
-
 }
 
 export default Home

@@ -19,7 +19,7 @@ import Cookies from 'js-cookie';
 
 const App: React.FC = () => {
 
-	const authSession: boolean = Cookies.get('isAuth') ? true : false;
+	const authSession: boolean = Cookies.get('isAuth') ? true : true; // While auth is broken, changing it to 'true : true' was 'true : false'
 	const userCookie = Cookies.get('userId');
 	const idSession: string | null =  userCookie ? userCookie : null ;
 	const [isAuth, setIsAuth] = useState<boolean>(authSession)
@@ -38,27 +38,23 @@ const App: React.FC = () => {
 	}, [isAuth, code]);
 
 	return (
-		<div className='grid gap-2 font-mono dark:bg-white/75 bg-slate-900 bg-opacity-80'>
+		<div className='flex-cols font-mono dark:bg-white/75 bg-slate-900 bg-opacity-80 h-screen'>
 			<Router>
-				<div className='shadow-xl flex backdrop-blur-sm bg-white/75 dark:bg-slate-900 z-50 top-0 left-0 right-0 h-20 border border-white/75 dark:border-slate-700 item-center justify-between'>
+				<div className='h-20 flex backdrop-blur-sm bg-white/75 dark:bg-slate-900 border-b-4 border-white/75 dark:border-slate-600 item-center justify-between'>
 					<Navbar setIsAuth={setIsAuth} isAuth={isAuth} setCode={setCode} setUserId={setUserId} />
 				</div>
-				<div className='rounded-2xl shadow-xl h-screen min-h-[50px]'>
-					<div>
-						<Routes>
-							<Route path='about' element={<About isAuth={isAuth} />} />
-							<Route path='/' element={<Home userCode={{ code: code, setCode: setCode }} loginState={{ isLogin: isAuth, setIsLogin: setIsAuth }} setUserId={setUserId} userId={userId} state={state} />} />
-							<Route path='/login' element={<Login isAuth={isAuth} setIsAuth={setIsAuth} state={state} />} />
-							<Route path='/login2fa' element={<Login2fa isAuth={isAuth} setIsAuth={setIsAuth} setUserId={setUserId} userId={userId} />} />
-							<Route path='/game' element={<ProtectedRoute isAuth={isAuth} path='/game' element={<GameSelection userId={userId} />} />} />
-							<Route path='/profile' element={<ProtectedRoute isAuth={isAuth} path='/profile' element={<Profile userId={userId} isAuth={isAuth} />} />} />
-							<Route path='/landingpage' element={<ProtectedRoute isAuth={isAuth} path='/landingpage' element={<LandingPage />} />} />
-							<Route path='/layout' element={<Layout />} />
-							<Route path='/*' element={<PageNotFound />} />
-						</Routes>
-					</div>
-				</div>
-				<div className=' shadow-xl flex backdrop-blur-sm bg-white/75 dark:bg-slate-900 z-50 top-0 left-0 right-0 h-20 border-b border-slate-300 dark:border-slate-700 items-center justify-evenly'>
+				<Routes>
+					<Route path='about' element={<About isAuth={isAuth} />} />
+					<Route path='/' element={<Home userCode={{ code: code, setCode: setCode }} loginState={{ isLogin: isAuth, setIsLogin: setIsAuth }} setUserId={setUserId} userId={userId} state={state} />} />
+					<Route path='/login' element={<Login isAuth={isAuth} setIsAuth={setIsAuth} state={state} />} />
+					<Route path='/login2fa' element={<Login2fa isAuth={isAuth} setIsAuth={setIsAuth} setUserId={setUserId} userId={userId} />} />
+					<Route path='/game' element={<ProtectedRoute isAuth={isAuth} path='/game' element={<GameSelection userId={userId} />} />} />
+					<Route path='/profile' element={<ProtectedRoute isAuth={isAuth} path='/profile' element={<Profile userId={userId} isAuth={isAuth} />} />} />
+					<Route path='/landingpage' element={<ProtectedRoute isAuth={isAuth} path='/landingpage' element={<LandingPage />} />} />
+					<Route path='/layout' element={<Layout />} />
+					<Route path='/*' element={<PageNotFound />} />
+				</Routes>
+				<div className='shadow-xl flex backdrop-blur-sm bg-white/75 dark:bg-slate-900 h-11 border-t-4 border-slate-300 dark:border-slate-700 items-center justify-evenly'>
 					<Footer />
 				</div>
 			</Router>
