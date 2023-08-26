@@ -1,13 +1,15 @@
 import { useEffect, useState } from 'react';
+import { Box, Stack, IconButton } from "@mui/material";
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import UserCard from "../UserCard";
 import Leaderboard from "../LeaderBoard";
+import ChatBoard from '../ChatBoard';
 import { Friend, User } from "../../types";
+import ChatPageUsers from '../ChatPageUsers';
+import ChatConversation from '../ChatConversation';
 import About from './About';
 import Cookies from 'js-cookie';
-
-
 
 type TUserState = {
 	userCode: {
@@ -148,10 +150,24 @@ const Home = ({ userCode, loginState, userId, setUserId, state }: TUserState) =>
 							</div>
 						</div>
 					</div>
-					<div className="w-2/3 bg-slate-200 p-4 h-1/2">
-						<div className='bg-slate-900 rounded-lg h-full w-full'>
-							{/* Chat window content goes here */}
-						</div>
+				</div>
+				<div className="w-2/3 bg-slate-200 p-4 h-1/2">
+					<div className='bg-slate-900 rounded-lg h-full w-full'>
+						{/* Chat window content goes here */}
+                <Stack p={1} direction={"row"}
+                    sx={{
+                        //display:"grid",
+                        //gridTemplateColumns: "0.1fr 0.4fr 1.5fr",
+                        //gridTemplateRows: "1fr",
+                        gridGap: "0px",
+                        height:"100%",
+                        width: "100%",
+                    }}
+                >
+                    <ChatBoard/>
+                    <ChatPageUsers/>
+                    <ChatConversation userId={userId}/>
+                </Stack>
 					</div>
 				</div>
 			</>
