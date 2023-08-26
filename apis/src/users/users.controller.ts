@@ -12,11 +12,11 @@ import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { AuthUserDto } from './dto/auth-user.dto';
 import { CreateUserDto } from './dto/create-user.dto';
+import { Secret2faDTO } from './dto/secret-2fa.dto';
 
 @Controller('pong/users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
-
   @Get()
   findAll() {
     return this.usersService.findAll();
@@ -46,5 +46,16 @@ export class UsersController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.usersService.remove(id);
+  }
+
+  @Get('auth/2fa/:id')
+  generateSecret(@Param('id') id: string) {
+    return this.usersService.generateSecret(id);
+  }
+
+  @Post('auth/2fa')
+  @HttpCode(200)
+  validateSecret(@Body() secret: Secret2faDTO) {
+    return this.usersService.verify(secret);
   }
 }

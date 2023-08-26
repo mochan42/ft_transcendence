@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -6,7 +6,8 @@ import { User } from './entities/user.entity';
 import { AuthUserDto } from './dto/auth-user.dto';
 import axios from 'axios';
 import { CreateUserDto } from './dto/create-user.dto';
-import { access } from 'fs';
+import { Secret2faDTO } from './dto/secret-2fa.dto';
+import { totp, authenticator } from 'otplib';
 
 @Injectable()
 export class UsersService {
@@ -19,13 +20,11 @@ export class UsersService {
     const urlAuth42 = 'https://api.intra.42.fr/oauth/token';
     const params42 = {
       grant_type: 'authorization_code',
-      client_id:
-        'u-s4t2ud-9c04e10e264f25f8b3cb9bef48ae57df091de510f43e87c7647da4b885b6210b',
-      client_secret:
-        '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',
+      client_id: process.env.UID,
+      client_secret: process.env.SECRET,
       code: authUserDto.token,
       redirect_uri: 'http://localhost:3000',
-      state: 'this must be very secure but lazy dev put just a string',
+      state: authUserDto.state,
     };
     const resp = await axios.post(urlAuth42, params42);
     return resp.data;
@@ -66,10 +65,10 @@ export class UsersService {
     const pongUser = this.createPongUser(user42);
     const matchedUser = await this.findByUserName(pongUser.userName);
     if (matchedUser) {
-      return matchedUser.id.toString();
+      return matchedUser;
     }
     const newUser = await this.UserRepository.save(pongUser);
-    return newUser.id.toString();
+    return newUser;
   }
 
   async findAll(): Promise<User[]> {
@@ -95,7 +94,36 @@ export class UsersService {
   }
 
   async create(createUserDto: CreateUserDto) {
-    console.log(createUserDto);
     return await this.UserRepository.save(createUserDto);
+  }
+
+  async generateSecret(id: string) {
+    const secret = authenticator.generateSecret();
+    const secret2fa: string = authenticator.generate(secret);
+    try {
+      const user = await this.findOne(+id);
+      const updatedUser = { ...user, secret2Fa: secret };
+      const updated = await this.UserRepository.save(updatedUser);
+      if (user && updated) {
+        return secret2fa;
+      }
+    } catch (error) {
+      console.log('user not found', error);
+    }
+    throw new HttpException('Gerating secret failled', HttpStatus.FAILED_DEPENDENCY);
+  }
+  async verify(secret: Secret2faDTO) {
+    try {
+      const user = await this.findOne(+secret.userId);
+      const isValid = authenticator.check(secret.token, user.secret2Fa);
+      if (isValid) {
+        await this.generateSecret(user.id.toString());
+        return 'OK';
+      } else {
+        return 'NO';
+      }
+    } catch (error) {
+      throw new HttpException('user not found', HttpStatus.NOT_FOUND);
+    }
   }
 }

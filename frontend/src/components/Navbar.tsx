@@ -3,6 +3,7 @@ import { Button } from './ui/Button'
 import React, { Children } from 'react';
 import axios from 'axios'
 import { useEffect, useState } from 'react';
+import Cookies from 'js-cookie';
 
 // Icons from https://heroicons.com/
 
@@ -24,6 +25,8 @@ const Navbar: React.FC<Props> = ({ setIsAuth, isAuth, setCode, setUserId }) => {
 			setIsAuth(false)
 			setCode(null);
 			setUserId(null);
+			Cookies.remove('userId');
+			Cookies.remove('isAuth');
 			navigate('/about')
 		}
 		else {
