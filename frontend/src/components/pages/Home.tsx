@@ -156,20 +156,20 @@ const Home = ({ userCode, loginState, userId, setUserId, state }: TUserState) =>
 						</div>
 						<div className="w-2/3 bg-slate-200 p-4 h-1/2">
 							<div className='bg-slate-900 rounded-lg w-full'>
-								<Stack p={1} direction={"row"}
-									// sx={{
-									// 	//display:"grid",
-									// 	//gridTemplateColumns: "0.1fr 0.4fr 1.5fr",
-									// 	//gridTemplateRows: "1fr",
-									// 	gridGap: "0px",
-									// 	height:"100%",
-									// 	width: "100%",
-									// }}
-								>
+								{/* <Stack p={1} direction={"row"}
+									sx={{
+										//display:"grid",
+										//gridTemplateColumns: "0.1fr 0.4fr 1.5fr",
+										//gridTemplateRows: "1fr",
+										gridGap: "0px",
+										height:"100%",
+										width: "100%",
+									}}
+								> */}
 									<ChatBoard/>
-									{/* <ChatPageUsers/> */}
+									<ChatPageUsers/>
 									<ChatConversation userId={userId}/>
-								</Stack>
+								{/* </Stack> */}
 							</div>
 						</div>
 					</div>
