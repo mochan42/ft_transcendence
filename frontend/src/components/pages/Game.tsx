@@ -82,7 +82,7 @@ const Game:React.FC<GameProps> = ({ difficulty, userId, includeBoost, opponent, 
 	}
 
 	return (
-		<div className='h-5/6 w-full flex flex-col items-center justify-between bg-gray-200 dark:bg-slate-900 border-t-8 dark:border-slate-900'>
+		<div className='h-full w-full flex flex-col items-center justify-between bg-gray-200 dark:bg-slate-900 border-t-8 dark:border-slate-900'>
 			<div className='h-1/6 gap-6 items-center justify-between flex'>
 				<div className='left-10'>
 					<Button variant={'link'} onClick={() => setState('select')}>
