@@ -1,6 +1,3 @@
-import { Button } from "../ui/Button"
-import SmallHeading from "../ui/SmallHeading"
-import { Fetcher } from "react-router-dom";
 
 const Layout = () => {
 	var name = 'Bill';

@@ -1,10 +1,7 @@
-import { Box, Stack, IconButton, Typography, Divider, Avatar, Badge } from "@mui/material";
-import { CaretDown } from "phosphor-react";
-import { useEffect, useRef, useState } from "react";
-import { io, Socket } from "socket.io-client";
-import { ChatMessageProps, Message, User } from "../types";
+import { useRef, useState } from "react";
+import { Socket } from "socket.io-client";
+import { ChatMessageProps, User } from "../types";
 import ChatMessage from "./ChatMessage";
-import { Chat_History } from "../data/ChatData";
 
 interface ChatProps {
     userId: string | null;

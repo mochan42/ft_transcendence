@@ -1,8 +1,5 @@
-import React, { useEffect } from 'react';
-import { Button } from '../ui/Button';
-import { useNavigate } from 'react-router-dom';
+import React from 'react';
 import icon_42 from '../../img/icon_42-blank.png';
-import icon_gmail from '../../img/google-icon-blank.png';
 import '../../css/login.css';
 
 interface Props {

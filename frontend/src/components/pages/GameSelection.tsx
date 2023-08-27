@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react"
 import { Button } from "../ui/Button"
 import Game from "./Game";
-import PageNotFound from "./PageNotFound";
 import { cn } from "../../lib/utils";
 
 interface GameSelectionProps {

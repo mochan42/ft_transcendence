@@ -1,5 +1,3 @@
-import { Button } from "./ui/Button"
-
 const Footer = () => {
 	return (
 		<div className="text-slate-900 dark:text-slate-200">

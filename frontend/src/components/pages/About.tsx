@@ -1,4 +1,3 @@
-import { useNavigate } from 'react-router-dom'
 import { Button } from '../ui/Button'
 
 type AboutProps = 
@@ -6,7 +5,6 @@ type AboutProps =
     isAuth: boolean
 }
 const About = (props: AboutProps) => {
-	const navigate = useNavigate()
 	return (
 			<div className='bg-slate-200 dark:bg-slate-900 h-5/6 flex flex-col flex-wrap justify-start text-slate-900 dark:text-slate-200 border-8 dark:border-slate-900'>
 				<div className='flex flex-wrap justify-around text-center gap-8 h-200'>
@@ -29,14 +27,6 @@ const About = (props: AboutProps) => {
 							Come on in and start adventuring!
 						</p>
 					</div>
-
-					{/* <div className='text-center'>
-						<Button
-						</>
-						onClick={() => navigate('/login')}>
-						Login!
-						</Button>
-					</div> */}
 				</div>
 			</div>
 		)
