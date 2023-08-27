@@ -43,7 +43,7 @@ const ChatElement = (user : TChatUserData) => {
 
 const  ChatPageUsers = () => {
     return (
-		<div className="h-full w-1/3 flex flex-col bg-green-200 space-y-2">
+		<div className="h-full w-1/3 flex flex-col space-y-2 bg-white">
 			<div className="h-1/6">
 				Chats
 			</div>
