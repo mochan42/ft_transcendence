@@ -2,7 +2,6 @@ import { Box, Stack, IconButton, Typography, Divider, Avatar, Badge } from "@mui
 import { useTheme } from "@mui/material/styles";
 import { Users, ChatCircleDots, Phone } from "phosphor-react";
 import { useState } from "react";
-//import { faker } from 'faker-js';
 
 import { TChatUserData } from "../types";
 import { ChatUserList } from '../data/ChatData';
@@ -21,20 +20,20 @@ const ChatElement = (user : TChatUserData) => {
                             </span>
                         </span>
                     ) : (
-                        // <img src={user.avatarUrl} alt={user.name} className="w-8 h-8 rounded-full" />
+                        <img src={user.avatarUrl} alt={user.name} className="w-8 h-8 rounded-full" />
                     )} */}
-                    {/* <div className="space-y-0.2">
+                    <div className="space-y-0.2">
                         <p className="text-base font-semibold">{user.name}</p>
                         <p className="text-xs">{user.msg}</p>
-                    </div> */}
+                    </div>
                 </div>
                 <div className="space-x-2 flex items-center">
-                    {/* <p className="text-xs">{user.time}</p>
+                    <p className="text-xs">{user.time}</p>
                     {user.unread > 0 && (
                         <span className="bg-blue-500 text-white px-2 py-1 rounded-full">
                             {user.unread}
                         </span>
-                    )} */}
+                    )}
                 </div>
             </div>
         </div>
@@ -44,28 +43,18 @@ const ChatElement = (user : TChatUserData) => {
 
 const  ChatPageUsers = () => {
     return (
-		<>
-		<div className='bg-white shadow-md'>
-			<div className="p-3 space-y-1">
-				{/* <div className="flex items-center">
-					<h5 className="text-xl font-semibold">
-						Chats
-					</h5>
-				</div> */}
-				<hr className="border-8 border-yellow-300" />
-				<div className="flex flex-col space-y-0.5 overflow-auto">
-					<Footer/>
-					<Footer/>
-					<Footer/>
-					<Footer/>
-					<Footer/>
-					{/* {ChatUserList.map((el) => (
+		<div className="h-full w-1/3 flex flex-col bg-green-200 space-y-2">
+			<div className="h-1/6">
+				Chats
+			</div>
+			<div className="h-5/6 border-2">
+				<div className="h-full flex flex-col space-y-1 overflow-y-auto">
+					{ChatUserList.map((el) => (
 						<ChatElement key={el.id} {...el} />
-						))} */}
+						))}
 				</div>
 			</div>
 		</div>
-		</>
 	);
 }
  

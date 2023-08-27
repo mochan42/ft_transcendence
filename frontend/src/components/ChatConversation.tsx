@@ -88,8 +88,8 @@ const ChatConversation: React.FC<ChatProps> = ({ userId }) => {
 
 
 	return (
-        <div className="h-full w-full">
-            <div className="p-1 bg-white shadow-md">
+        <div className="h-full w-full flex flex-col bg-green-200">
+            <div className="p-1 h-1/6 bg-white shadow-md">
                 <div className="flex justify-between items-center h-full w-full">
                     <div className="flex items-center space-x-2">
                         <div className="p-1">
@@ -118,39 +118,37 @@ const ChatConversation: React.FC<ChatProps> = ({ userId }) => {
                     </div>
                 </div>
             </div>
-
-            {/* Chat message */}
-            <div className="p-1 h-full w-full bg-gray-200 overflow-y-scroll">
-                <ChatMessage />
-                <div className="w-4/5 p-4" ref={messageContainerRef}>
-                    <div className="flex-1">
-                        {messages.map((message) => (
-                            <div key={message.id} className="mb-2">
-                                <p>{message.user}: {message.message}</p>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </div>
-
-            {/* Chat footer */}
-            <div className="p-1 bg-white shadow-md">
-                <div className="flex items-center p-0 w-full">
-                    <input
-                        placeholder="Type here..."
-                        className="flex-1 px-3 py-2 text-gray-800 rounded border border-gray-300 focus:outline-none focus:border-yellow-400"
-                        value={userMessage}
-                        onChange={(e) => setUserMessage(e.target.value)}
-                        onKeyDown={handleKeyDown}
-                    />
-                    <button
-                        onClick={onMessageSubmit}
-                        className="bg-yellow-400 text-white px-4 py-2 rounded hover:bg-yellow-500"
-                    >
-                        Send
-                    </button>
-                </div>
-            </div>
+			<div className="h-4/5 w-full">
+				<div className="p-1 h-5/6 w-full bg-gray-200 overflow-y-auto">
+					<ChatMessage />
+					<div className="w-4/5 p-4" ref={messageContainerRef}>
+						<div className="flex-1">
+							{messages.map((message) => (
+								<div key={message.id} className="mb-2">
+									<p>{message.user}: {message.message}</p>
+								</div>
+							))}
+						</div>
+					</div>
+				</div>
+				<div className="h-1/6 bg-white">
+					<div className="flex items-center w-full">
+						<input
+							placeholder="Type here..."
+							className="flex-1 px-3 py-2 text-gray-800 rounded border border-gray-300 focus:outline-none focus:border-yellow-400"
+							value={userMessage}
+							onChange={(e) => setUserMessage(e.target.value)}
+							onKeyDown={handleKeyDown}
+						/>
+						<button
+							onClick={onMessageSubmit}
+							className="bg-yellow-400 text-white px-4 py-2 rounded hover:bg-yellow-500"
+						>
+							Send
+						</button>
+					</div>
+				</div>
+			</div>
         </div>
     );
 }

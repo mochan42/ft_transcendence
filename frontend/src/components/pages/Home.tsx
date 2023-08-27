@@ -137,9 +137,9 @@ const Home = ({ userCode, loginState, userId, setUserId, state }: TUserState) =>
 							</div>
 						</div>
 						<div className="w-1/3 bg-slate-200 p-4 h-1/2">
-							<div className="overflow-y-auto flex-cols text-center space-y-4 rounded-lg flex items-center justify-center">
+							<div className="overflow-y-auto flex-cols text-center h-full space-y-4 rounded-lg flex items-center justify-center">
 								<div className="space-y-2 flex flex-col justify-between gap-4 rounded-lg">
-									<div className="flex flex-row justify-between items-center min-w-[200px] min-h-[300px] bg-slate-900 text-center rounded-lg">
+									<div className="flex flex-row justify-between items-center min-w-[200px] min-h-[200px] bg-slate-900 text-center rounded-lg">
 										{userFriends != null ? userFriends.map((user, index) => (
 											<div key={index}>
 												<img
@@ -154,22 +154,11 @@ const Home = ({ userCode, loginState, userId, setUserId, state }: TUserState) =>
 								</div>
 							</div>
 						</div>
-						<div className="w-2/3 bg-slate-200 p-4 h-1/2">
-							<div className='bg-slate-900 rounded-lg w-full'>
-								{/* <Stack p={1} direction={"row"}
-									sx={{
-										//display:"grid",
-										//gridTemplateColumns: "0.1fr 0.4fr 1.5fr",
-										//gridTemplateRows: "1fr",
-										gridGap: "0px",
-										height:"100%",
-										width: "100%",
-									}}
-								> */}
-									<ChatBoard/>
-									<ChatPageUsers/>
-									<ChatConversation userId={userId}/>
-								{/* </Stack> */}
+						<div className="h-1/2 w-2/3 bg-slate-200 p-4">
+							<div className="flex h-full w-full bg-slate-900 p-4 text-center rounded-lg">
+								<ChatBoard/>
+								<ChatPageUsers/>
+								<ChatConversation userId={userId}/>
 							</div>
 						</div>
 					</div>
