@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { User } from "../types";
 import axios from "axios";
-import { Button } from "./ui/Button";
 
 interface UpdateUserInfoProps {
     userId: number;

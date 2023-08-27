@@ -177,12 +177,12 @@ import '../../css/profile.css';
 	}, [userInfo]);
 
 	return (
-		<div className='absolute h-full w-full'>
-			<div className='bg-slate-200 dark:bg-slate-900 h-screen flex flex-col flex-wrap justify-start text-slate-900 dark:text-slate-200 border-8 dark:border-slate-900 z-0'>
-				<div className='h-1/2 flex justify-around items-center z-0'>
-					<div className='flex flex-col flex-wrap items-center gap-6 border-4 dark:border-slate-900'>
+		<div className='h-5/6 w-full'>
+			<div className='bg-slate-200 dark:bg-slate-900 h-full flex flex-wrap justify-start text-slate-900 dark:text-slate-200 border-8 dark:border-slate-900'>
+				{/* <div className='flex justify-around items-center z-0'> */}
+					<div className='flex flex-col w-1/3 items-center gap-6 border-4 dark:border-slate-900'>
 						<img
-							className="h-48 w-48 rounded-full object-cover"
+							className="h-2/5 w-2/5 rounded-full object-cover"
 							src={(userInfo?.avatar) ?? 'https://www.svgrepo.com/show/170615/robot.svg'}
 							alt='Your Profile Picture'
 							/>
@@ -203,98 +203,99 @@ import '../../css/profile.css';
 							</Button>
                         </div>
 					</div>
-					<div className='w-auto text-center space-y-8'>
-						<h3 className='w-[300px] bg-slate-900 text-lg font-bold mb-4 border-slate-900 border-2 rounded-lg text-white dark:bg-slate-200 dark:text-slate-900'>
-							Stats and numbers
-						</h3>
-						<div className='flex flex-wrap items-center justify-around gap-8'>
-							<div>
-								<div className='space-y-2 flex flex-col justify-between gap-4'>
-									<div className='flex flex-row justify-between'>
-										Total Games Played: {(userStats?.wins ?? 0) + (userStats?.losses ?? 0)}
-									</div>
-									<div className='flex flex-row justify-between'>
-										Total Victories: {(userStats?.wins) ?? 0}
-									</div>
-									<div className='flex flex-row justify-between'>
-										Total Defeats: {(userStats?.losses) ?? 0}
+					<div className='w-2/3 flex flex-col justify-around items-center text-center z-0'>
+						<div className='flex flex-col items-center gap-y-4'>
+							<h3 className='text-center w-[300px] bg-slate-900 text-lg font-bold mb-4 border-slate-900 border-2 rounded-lg text-white dark:bg-slate-200 dark:text-slate-900'>
+								Stats and numbers
+							</h3>
+							<div className='flex flex-wrap items-center justify-around gap-8'>
+								<div>
+									<div className='space-y-2 flex flex-col justify-between gap-4'>
+										<div className='flex flex-row justify-between'>
+											Total Games Played: {(userStats?.wins ?? 0) + (userStats?.losses ?? 0)}
+										</div>
+										<div className='flex flex-row justify-between'>
+											Total Victories: {(userStats?.wins) ?? 0}
+										</div>
+										<div className='flex flex-row justify-between'>
+											Total Defeats: {(userStats?.losses) ?? 0}
+										</div>
 									</div>
 								</div>
 							</div>
+							<div>
+								<Button variant={'link'} onClick={() => setShowScreen('stats')}>
+									more
+								</Button>
+							</div>
 						</div>
-						<div>
-							<Button variant={'link'} onClick={() => setShowScreen('stats')}>
-								more
-							</Button>
+						<div className='flex flex-wrap justify-around z-0 w-full items-baseline'>
+							<div className='w-1/2 h-full text-center space-y-8 flex flex-col items-center'>
+								<h3 className='w-min-[250px] w-4/5 text-center bg-slate-900 text-lg font-bold mb-4 border-slate-900 border-2 rounded-lg text-white dark:bg-slate-200 dark:text-slate-900'>
+									Achievements
+								</h3>
+								<div className="grid grid-cols-2 gap-8">
+									{achievedGoals?.map((goal, index) => (
+										<div key={index}>
+											<div className="space-y-2 flex flex-col justify-between gap-4">
+												<div className="flex flex-row justify-between">
+													<img
+													className="h-6 w-6"
+													src={goal.image}
+													alt="Achievement badge"
+													/>
+													{goal.label}
+												</div>
+											</div>
+										</div>
+									))}
+									{notAchievedGoals?.map((goal, index) => (
+										<div key={index}>
+											<div className="space-y-2 flex flex-col justify-between gap-4">
+												<div className="flex flex-row justify-between min-w-[220px]">
+													<img
+													className="h-6 w-6 dark:bg-slate-200 rounded-full"
+													src='https://www.svgrepo.com/show/529148/question-circle.svg'
+													alt="Achievement badge"
+													/>
+													{goal.label}
+												</div>
+											</div>
+										</div>
+									))}
+								</div>
+								<div>
+									<Button variant={'link'} onClick={() => setShowScreen('achievements')}>
+										more
+									</Button>
+								</div>
+							</div>
+							<div className='w-1/2 text-center space-y-8 flex flex-col items-center'>
+								<h3 className='w-min-[250px] w-4/5 bg-slate-900 text-lg font-bold mb-4 border-slate-900 border-2 rounded-lg text-white dark:bg-slate-200 dark:text-slate-900'>
+									Friends of the World
+								</h3>
+								<div className='space-y-2 flex flex-col justify-between items-center gap-4'>
+									{userFriends != null ? userFriends?.map((user, index) => (
+										<div key={index}>
+											<div className="space-y-2 flex flex-col justify-between gap-4">
+												<div className="flex flex-row justify-between min-w-[220px]">
+													<img
+													className="h-6 w-6 dark:bg-slate-200 rounded-full"
+													src={user.avatar}
+													alt="Achievement badge"
+													/>
+														{user.userNameLoc}
+												</div>
+											</div>
+										</div>
+									)) : <img className='h-40 w-40 rounded-lg' src='https://media0.giphy.com/media/KG4ST0tXOrt1yQRsv0/200.webp?cid=ecf05e4732is65t7ah6nvhvwst9hkjqv0c52bhfnilk0b9g0&ep=v1_stickers_search&rid=200.webp&ct=s'/>}
+									<Button variant={'link'} onClick={() => setShowScreen('friends')}>
+										more
+									</Button>
+								</div> 
+							</div>
 						</div>
 					</div>
-				</div>
-				<div className='h-1/2 flex flex-wrap justify-around items-center z-0'>
-					<div className='w-auto text-center space-y-8'>
-						<h3 className='w-min-[300px] bg-slate-900 text-lg font-bold mb-4 border-slate-900 border-2 rounded-lg text-white dark:bg-slate-200 dark:text-slate-900'>
-							Achievements
-						</h3>
-						<div className="grid grid-cols-2 gap-8">
-							{achievedGoals?.map((goal, index) => (
-								<div key={index}>
-									<div className="space-y-2 flex flex-col justify-between gap-4">
-										<div className="flex flex-row justify-between">
-											<img
-											className="h-6 w-6"
-											src={goal.image}
-											alt="Achievement badge"
-											/>
-											{goal.label}
-										</div>
-									</div>
-								</div>
-							))}
-							{notAchievedGoals?.map((goal, index) => (
-								<div key={index}>
-									<div className="space-y-2 flex flex-col justify-between gap-4">
-										<div className="flex flex-row justify-between min-w-[220px]">
-											<img
-											className="h-6 w-6 dark:bg-slate-200 rounded-full"
-											src='https://www.svgrepo.com/show/529148/question-circle.svg'
-											alt="Achievement badge"
-											/>
-											{goal.label}
-										</div>
-									</div>
-								</div>
-							))}
-						</div>
-						<div>
-							<Button variant={'link'} onClick={() => setShowScreen('achievements')}>
-								more
-							</Button>
-						</div>
-					</div>
-					<div className='w-1/4 text-center space-y-8'>
-						<h3 className='w-[300px] bg-slate-900 text-lg font-bold mb-4 border-slate-900 border-2 rounded-lg text-white dark:bg-slate-200 dark:text-slate-900'>
-							Friends of the World
-						</h3>
-						<div className='space-y-2 flex flex-col justify-between items-center gap-4'>
-							{userFriends != null ? userFriends?.map((user, index) => (
-								<div key={index}>
-									<div className="space-y-2 flex flex-col justify-between gap-4">
-										<div className="flex flex-row justify-between min-w-[220px]">
-											<img
-											className="h-6 w-6 dark:bg-slate-200 rounded-full"
-											src={user.avatar}
-											alt="Achievement badge"
-											/>
-												{user.userNameLoc}
-										</div>
-									</div>
-								</div>
-							)) : <img className='h-40 w-40 rounded-lg' src='https://media0.giphy.com/media/KG4ST0tXOrt1yQRsv0/200.webp?cid=ecf05e4732is65t7ah6nvhvwst9hkjqv0c52bhfnilk0b9g0&ep=v1_stickers_search&rid=200.webp&ct=s'/>}
-							<Button variant={'link'} onClick={() => setShowScreen('friends')}>
-								more
-							</Button>
-						</div> 
-					</div>
-				</div>
 			</div>
 			{showScreen === 'achievements' ? 
 				<Achievements userId={userId} setShowScreen={setShowScreen} />

@@ -75,4 +75,14 @@ type Message = {
   incoming: boolean,
   outgoing: boolean,
 }
-export  { User, UserStats, UserAchievements, ProfileProps, Goal, TUserAuth, Friend, TChatUserData, Message};
+
+interface ChatMessageProps {
+	incoming: boolean,
+	message: string,
+	user: string,
+	chatID?: number,
+	timeOfSend: Date,
+	id: number,
+}
+
+export  { User, UserStats, UserAchievements, ProfileProps, Goal, TUserAuth, Friend, TChatUserData, Message, ChatMessageProps};

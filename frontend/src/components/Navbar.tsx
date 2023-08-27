@@ -1,7 +1,6 @@
-import { Navigate, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { Button } from './ui/Button'
-import React, { Children } from 'react';
-import axios from 'axios'
+import React from 'react';
 import { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
 
@@ -57,52 +56,52 @@ const Navbar: React.FC<Props> = ({ setIsAuth, isAuth, setCode, setUserId }) => {
 	return(
 		<div className='w-full flex items-center justify-evenly'>
 			<Button
-					variant='link'
-					onClick={() => navigate('/about')}
-				>
-					Transcendence 42
-				</Button>
-				
-				<Button
-					variant='link'
-					type='submit'
-					onClick={() => navigate('/')}
-				>
-					Home
-				</Button>
+				variant='link'
+				onClick={() => navigate('/about')}
+			>
+				Transcendence 42
+			</Button>
+			
+			<Button
+				variant='link'
+				type='submit'
+				onClick={() => navigate('/')}
+			>
+				Home
+			</Button>
 
-				<Button
-					variant='link'
-					type='submit'
-					onClick={() => navigate('/profile')}
-				>
-					Profile
-				</Button>
+			<Button
+				variant='link'
+				type='submit'
+				onClick={() => navigate('/profile')}
+			>
+				Profile
+			</Button>
 
-				<Button
-					variant='link'
-					type='submit'
-					onClick={() => navigate('/game')}
-				>
-					Play Pong
-				</Button>
-				
-                <Button
-					variant='ghost'
-					onClick={handleThemeSwitch}
-				>
-					<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-  						<path strokeLinecap="round" strokeLinejoin="round" d={path}/>
-					</svg>
-				</Button>
-				<Button
-					onClick={ handleLogout }
-				>
-					<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-						<path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
-					</svg>
-					{ isAuth ? "Log Out" : "Log In" }
-        </Button>
+			<Button
+				variant='link'
+				type='submit'
+				onClick={() => navigate('/game')}
+			>
+				Play Pong
+			</Button>
+			
+			<Button
+				variant='ghost'
+				onClick={handleThemeSwitch}
+			>
+				<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+					<path strokeLinecap="round" strokeLinejoin="round" d={path}/>
+				</svg>
+			</Button>
+			<Button
+				onClick={ handleLogout }
+			>
+				<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+					<path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
+				</svg>
+				{ isAuth ? "Log Out" : "Log In" }
+			</Button>
 		</div>
 	)
 }

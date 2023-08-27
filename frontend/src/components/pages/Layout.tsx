@@ -1,6 +1,3 @@
-import { Button } from "../ui/Button"
-import SmallHeading from "../ui/SmallHeading"
-import { Fetcher } from "react-router-dom";
 
 const Layout = () => {
 	var name = 'Bill';
@@ -11,7 +8,7 @@ const Layout = () => {
 					<img
 						className="min-w-[250px] min-h-[250px] w-1/2 h-1/2 rounded-full mx-auto"
 						src="https://fastly.picsum.photos/id/294/200/200.jpg?hmac=tSuqBbGGNYqgxQ-6KO7-wxq8B4m3GbZqQAbr7tNApz8"
-						alt="User Image"
+						alt="User"
 					/>
 					<h1 className="text-2xl text-white/75 font-extrabold dark:text-amber-300 drop-shadow-lg">
 						{name}
