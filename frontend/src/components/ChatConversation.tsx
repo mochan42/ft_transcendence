@@ -70,10 +70,10 @@ const ChatConversation: React.FC<ChatProps> = ({ userId }) => {
                     <div className="flex items-center space-x-2">
                         <div className="p-1">
                             <span className="relative">
-                                <span className="block w-8 h-8 bg-green-500 rounded-full">
+                                <span className="block w-8 h-8 rounded-full">
                                     <img src="avatar-image-url" alt="Avatar" className="w-8 h-8 rounded-full" />
                                 </span>
-                                <span className="absolute w-3 h-3 bg-green-400 rounded-full bottom-0 right-0"></span>
+                                <span className="absolute w-3 h-3 rounded-full bottom-0 right-0"></span>
                             </span>
                         </div>
                         <div className="space-y-0.2">

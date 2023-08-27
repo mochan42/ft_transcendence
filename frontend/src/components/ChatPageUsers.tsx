@@ -3,9 +3,9 @@ import { ChatUserList } from '../data/ChatData';
 
 const ChatElement = (user : TChatUserData) => {
     return (
-        <div className="w-full h-1/2 bg-gray-300 rounded p-2">
+        <div className="w-full h-1/3 bg-slate-900 rounded text-slate-200">
             <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-2 overflow-auto p-4">
+                <div className="flex items-center space-x-2 overflow-auto p-1">
                     {/* {user.online ? (
                         <span className="relative">
                             <span className="block w-8 h-8 bg-green-500 rounded-full">
@@ -16,14 +16,20 @@ const ChatElement = (user : TChatUserData) => {
                         <img src={user.avatarUrl} alt={user.name} className="w-8 h-8 rounded-full" />
                     )} */}
                     <div className="space-y-0.2">
-                        <p className="text-base font-semibold">{user.name}</p>
-                        <p className="text-xs">{user.msg}</p>
+                        <p className="text-base font-semibold">
+							{user.name}
+						</p>
+                        <p className="text-xs">
+							{user.msg}
+						</p>
                     </div>
                 </div>
                 <div className="space-x-2 flex items-center">
-                    <p className="text-xs">{user.time}</p>
+                    <p className="text-xs">
+						{user.time}
+					</p>
                     {user.unread > 0 && (
-                        <span className="bg-blue-500 text-white px-2 py-1 rounded-full">
+                        <span className="bg-amber-400 text-white px-2 py-1 rounded-full">
                             {user.unread}
                         </span>
                     )}

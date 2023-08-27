@@ -25,33 +25,30 @@ const ChatBoard = () => {
     const [selected, setSelected] = useState<Number>(0)
 
     return (  
-        <Box p={2} 
-            sx={ {
-                backgroundColor: theme.palette.background.paper, 
-                boxShadow: "2px rgba{0.25}",  height: "100%", width:"80px"}}
-        >
-            <Stack direction="column" sx={{ width:"100%" }} alignItems={"center"} spacing={3}>
-                { ChatBoardBtns.map((el) => (
-                    el.index === selected ? 
-                    <Box sx={{background: theme.palette.primary.main, borderRadius:1.5}}>
-                        <IconButton
-                            sx={{ color:"#fff", width:"100%" }}
-                            key={el.index}
-                        >
-                            {el.icon} 
-                        </IconButton>
-                    </Box>
-                   :
-                   <IconButton 
-                     onClick={ ()=> setSelected(el.index) }
-                     sx={{ color:"#000", width:"100%" }}
-                     key={el.index}
-                   > 
-                    {el.icon} 
-                   </IconButton>
-                ))}
-            </Stack>
-        </Box>
+        <div className="p-2 bg-slate-200 shadow-md h-full w-1/5">
+			<div className="space-y-3 flex flex-col items-center w-full">
+				{ChatBoardBtns.map((el) => (
+					<div key={el.index}>
+						{el.index === selected ? (
+							<div className="bg-slate-900 rounded-md">
+								<button
+									className="w-16 h-16 text-amber-400 py-2 flex items-center justify-center text-2xl"
+								>
+									{el.icon}
+								</button>
+							</div>
+						) : (
+							<button
+								onClick={() => setSelected(el.index)}
+								className="w-full py-2 flex items-center justify-center text-2xl"
+							>
+								{el.icon}
+							</button>
+						)}
+					</div>
+				))}
+			</div>
+		</div>
     );
 }
  

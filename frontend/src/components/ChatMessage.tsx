@@ -5,7 +5,7 @@ import { ChatMessageProps } from "../types";
 const ChatMessage: React.FC<ChatMessageProps> = ({ incoming, user, message }) => {
 
    	const containerClasses = incoming ? "justify-start" : "justify-end";
-    const backgroundColor = incoming ? "bg-gray-300" : "bg-blue-500";
+    const backgroundColor = incoming ? "bg-gray-300" : "bg-slate-900";
     const textColor = incoming ? "text-gray-700" : "text-white";
 
     return (
