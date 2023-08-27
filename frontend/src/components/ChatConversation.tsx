@@ -2,7 +2,7 @@ import { Box, Stack, IconButton, Typography, Divider, Avatar, Badge } from "@mui
 import { CaretDown } from "phosphor-react";
 import { useEffect, useRef, useState } from "react";
 import { io, Socket } from "socket.io-client";
-import { Message, User } from "../types";
+import { ChatMessageProps, Message, User } from "../types";
 import ChatMessage from "./ChatMessage";
 import { Chat_History } from "../data/ChatData";
 
@@ -15,7 +15,7 @@ const ChatConversation: React.FC<ChatProps> = ({ userId }) => {
 	const [channels, setChannels] = useState<string[]>([]);
     const [userInfo, setUserInfo] = useState<User | null>(null);
     const [userMessage, setUserMessage] = useState<string>('');
-    const [messages, setMessages] = useState<Message[]>([]);
+    const [messages, setMessages] = useState< ChatMessageProps [] >([]);
     const [socket, setSocket] = useState<Socket | undefined>();
     const [username, setUserName] = useState<string>('');
     const messageContainerRef = useRef<HTMLDivElement>(null);
@@ -23,23 +23,6 @@ const ChatConversation: React.FC<ChatProps> = ({ userId }) => {
 	var id = 0;
 
     const url_info = 'http://localhost:5000/pong/users/' + userId;
-	useEffect(() => {
-        const socket: Socket = io('ws://localhost:8080');
-        setSocket(socket);
-	  
-		socket.on('connect', () => {
-		  console.log('Connected to socket');
-		});
-	  
-		socket.on('message', (data: Message) => {
-		  setMessages((prevMessages) => [...prevMessages, data]);
-		});
-	  
-		return () => {
-		  socket.disconnect();
-		};
-	  }, []);
-
 	
 	const scrollToBottom = () => {
 		if (messageContainerRef.current) {
@@ -60,16 +43,12 @@ const ChatConversation: React.FC<ChatProps> = ({ userId }) => {
                 id++;
             }
     
-            const newMessage: Message = {
+            const newMessage: ChatMessageProps = {
                 user: username,
                 id: id,
-                type:"msg",
-                subtype: "",
                 message: userMessage,
-                img: "",
                 incoming: false,
-				outgoing: true,
-
+				timeOfSend: new Date,
             };
     
             setMessages((prevMessages) => [...prevMessages, newMessage]);
@@ -120,16 +99,13 @@ const ChatConversation: React.FC<ChatProps> = ({ userId }) => {
             </div>
 			<div className="h-4/5 w-full">
 				<div className="p-1 h-5/6 w-full bg-gray-200 overflow-y-auto">
-					<ChatMessage />
-					<div className="w-4/5 p-4" ref={messageContainerRef}>
-						<div className="flex-1">
-							{messages.map((message) => (
-								<div key={message.id} className="mb-2">
-									<p>{message.user}: {message.message}</p>
-								</div>
-							))}
+					<ChatMessage incoming={true} user="facinet" message="Hello there" timeOfSend={new Date} id={1}/>
+					<ChatMessage incoming={false} user="cudoh" message="How are you doing?" timeOfSend={new Date} id={2} />
+					{messages.map((message) => (
+						<div key={message.id} className="mb-2">
+							<ChatMessage incoming={message.incoming} user={message.user} message={message.message} timeOfSend={message.timeOfSend} id={message.id} />
 						</div>
-					</div>
+					))}
 				</div>
 				<div className="h-1/6 bg-white">
 					<div className="flex items-center w-full">

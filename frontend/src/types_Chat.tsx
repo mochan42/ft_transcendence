@@ -1,9 +1,7 @@
-import { useTheme } from "@mui/material/styles";
 import { Message } from './types';
 
 const ChatTextMsg = (el: Message) => {
 
-    const theme = useTheme();
     const containerClasses = el.incoming ? "justify-start" : "justify-end";
     const backgroundColor = el.incoming ? "bg-gray-300" : "bg-blue-500";
     const textColor = el.incoming ? "text-gray-700" : "text-white";
