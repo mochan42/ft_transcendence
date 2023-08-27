@@ -27,84 +27,10 @@ import '../../css/profile.css';
 	const [achievedGoals, setAchievedGoals] = useState<Goal[]>();
 	const [notAchievedGoals, setNotAchievedGoals] = useState<Goal[]>();
 	const [userFriends, setUserFriends] = useState<User [] | null >(null)
-  const [state2fa, setState2fa] = useState<boolean>(false);
-  const [btnTxt2fa, setBtnTxt2fa] = useState<string>("2FA: disabled");
-  const [btnStyle, setBtnStyle] = useState<string>('default');
+	const [state2fa, setState2fa] = useState<boolean>(false);
+	const [btnTxt2fa, setBtnTxt2fa] = useState<string>("2FA: disabled");
+	const [btnStyle, setBtnStyle] = useState<string>('default');
 
-	const getUserAchievements = async () => {
-		try {
-			const response: AxiosResponse<UserAchievements[]> = await axios.get(url_achievements);
-			if (response.status === 200) {
-				setUserAchievements(response.data);
-				console.log('Received User Achievements: ', response.data);
-			}
-		} catch (error) {
-			console.log('Error fetching user achievements:', error);
-		}
-	};
-	
-	const getAllGoals = async () => {
-		try {
-			const response: AxiosResponse<Goal[] | null> = await axios.get(url_goals);
-			if (response.status === 200) {
-				setAllGoals(response.data);
-				console.log('Received Goals: ', response.data);
-			}
-		} catch (error) {
-			console.log('Error fetching Goals:', error);
-		}
-	};
-
-		const getUserInfo = async () => {
-			try {
-				const response = await axios.get<User>(url_info);
-				if (response.status === 200) {
-					setUserInfo(response.data);
-					console.log('Received User Info: ', response.data)
-				}
-			}
-			catch (error) {
-				console.log('Error fetching user infos', error);
-			}
-	}
-
-	const getUsersInfo = async () => {
-		try {
-			const response = await axios.get< User[] >('http://localhost:5000/pong/users/');
-			if (response.status === 200) {
-				setUsersInfo(response.data);
-				console.log('Received Users Info: ', response.data)
-			}
-		}
-		catch (error) {
-			console.log('Error fetching users infos', error);
-		}
-	}
-
-	const getUserStats = async () => {
-		try {
-			const response = await axios.get<UserStats>(url_stats);
-			if (response.status === 200) {
-				setUserStats(response.data);
-				console.log('Received User Stats: ', response.data);
-			}
-		} catch (error) {
-			console.log('Error fetching user stats:', error);
-		}
-	};
-
-	const getFriends = async () => {
-		try {
-			const response = await axios.get< Friend [] >(urlFriends);
-			if (response.status === 200) {
-				setFriends(response.data);
-				console.log('Received Friends data', response.data);
-			}
-		}
-		catch (error) {
-			console.log('Error receiving Friends information: ', error);
-		}
-	}
     const ConfigureBtn2fa = () => {
         if (!state2fa) {
             setBtnTxt2fa(" 2FA: disabled ");
@@ -148,33 +74,84 @@ import '../../css/profile.css';
 		useEffect(() => {
 			(async () => {
 				if (userInfo === null) {
-					await getUserInfo();
+					try {
+						const response = await axios.get<User>(url_info);
+						if (response.status === 200) {
+							setUserInfo(response.data);
+							console.log('Received User Info: ', response.data)
+						}
+					}
+					catch (error) {
+						console.log('Error fetching user infos', error);
+					}
 				}
 				if (userStats === null) {
-					await getUserStats();
+					try {
+						const response = await axios.get<UserStats>(url_stats);
+						if (response.status === 200) {
+							setUserStats(response.data);
+							console.log('Received User Stats: ', response.data);
+						}
+					} catch (error) {
+						console.log('Error fetching user stats:', error);
+					}
 				}
 				if (userAchievements === null) {
-					await getUserAchievements();
+					try {
+						const response: AxiosResponse<UserAchievements[]> = await axios.get(url_achievements);
+						if (response.status === 200) {
+							setUserAchievements(response.data);
+							console.log('Received User Achievements: ', response.data);
+						}
+					} catch (error) {
+						console.log('Error fetching user achievements:', error);
+					}
 				}
 				if (allGoals === null) {
-					await getAllGoals();
+					try {
+						const response: AxiosResponse<Goal[] | null> = await axios.get(url_goals);
+						if (response.status === 200) {
+							setAllGoals(response.data);
+							console.log('Received Goals: ', response.data);
+						}
+					} catch (error) {
+						console.log('Error fetching Goals:', error);
+					}
 				}
 				if (friends === null) {
-					await getFriends()
+					try {
+						const response = await axios.get< Friend [] >(urlFriends);
+						if (response.status === 200) {
+							setFriends(response.data);
+							console.log('Received Friends data', response.data);
+						}
+					}
+					catch (error) {
+						console.log('Error receiving Friends information: ', error);
+					}
 				}
 				if (usersInfo === null) {
-					await getUsersInfo()
+					try {
+						const response = await axios.get< User[] >('http://localhost:5000/pong/users/');
+						if (response.status === 200) {
+							setUsersInfo(response.data);
+							console.log('Received Users Info: ', response.data)
+						}
+					}
+					catch (error) {
+						console.log('Error fetching users infos', error);
+					}
 				}
 				if (userFriends === null && usersInfo) {
 					const usersFriends = usersInfo?.filter((user) =>
-						friends?.some((friend) => friend.sender === user.id || friend.receiver === user.id && user.id != userId)
+						friends?.some((friend) => (friend.sender === user.id || friend.receiver === user.id) && user.id !== userId)
 					);
 					setUserFriends(usersFriends);
 				}
 				userInfo && setState2fa(userInfo.is2Fa)// should be substituted with getuserinfo for latest 2fa status
 				ConfigureBtn2fa();
 			})();
-	}, [userInfo]);
+	}, [userInfo, ConfigureBtn2fa, allGoals, friends, userAchievements, userFriends, userId, userStats, usersInfo, url_info, url_stats, url_achievements, urlFriends, url_goals]);
 
 	return (
 		<div className='h-5/6 w-full'>
