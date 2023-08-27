@@ -15,28 +15,26 @@ const GameSelection:React.FC<GameSelectionProps> =({ userId }) => {
 	const [isHoveredBot, setIsHoveredBot] = useState(false);
 	const [isHoveredPlayer, setIsHoveredPlayer] = useState(false);
 	const [includeBoost, setIncludeBoost] = useState(true);
-
+	
 	const handleMouseEnterBot = () => {
-	setIsHoveredBot(true);
+		setIsHoveredBot(true);
 	};
-
+	
 	const handleMouseLeaveBot = () => {
-	setIsHoveredBot(false);
+		setIsHoveredBot(false);
 	};
-
+	
 	const handleMouseEnterPlayer = () => {
-	setIsHoveredPlayer(true);
+		setIsHoveredPlayer(true);
 	};
-
+	
 	const handleMouseLeavePlayer = () => {
-	setIsHoveredPlayer(false);
+		setIsHoveredPlayer(false);
 	};
-
+	
+	
+	
 	useEffect(() => {
-		handleDifficultyStyle();
-	}, [difficulty])
-
-	const  handleDifficultyStyle = () => {
 		if (difficulty === 0) {
 			setDifficultyStyle('bg-green-400')
 		} else if (difficulty === 1) {
@@ -48,7 +46,8 @@ const GameSelection:React.FC<GameSelectionProps> =({ userId }) => {
 		} else if (difficulty === 4) {
 			setDifficultyStyle('bg-amber-500')
 		}
-	}
+	}, [difficulty])
+
 	
 	const handleDifficulty = () => {
 		if (difficulty === 4) {
@@ -60,7 +59,7 @@ const GameSelection:React.FC<GameSelectionProps> =({ userId }) => {
 
 	return (
 		<div className='h-5/6 dark:bg-slate-900 bg-slate-200 w-full grid place-items-center'>
-			{state == 'select' ?
+			{state === 'select' ?
 				<div className='h-full w-full relative'>
 					<Button
 						className={'border-r-4 border-slate-200 dark:border-slate-900 h-full w-1/2 text-slate-200 text-2xl font-extrabold z-0 bg-center bg-[url(https://wallpaperaccess.com/full/2019427.jpg)]'}

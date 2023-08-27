@@ -24,7 +24,7 @@ const Login: React.FC<Props> = ({setIsAuth, isAuth, state}) => {
                     </div>
                     <div className='login__form_item'>
                         <button type='submit' onClick={handleLogin} className="login__form_btn btn-42 ">
-                            <img src={icon_42} />
+                            <img src={icon_42} alt='42 Icon'/>
                         </button>
                     </div>
                 </div>

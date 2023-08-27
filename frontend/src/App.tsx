@@ -8,7 +8,6 @@ import Navbar from './components/Navbar';
 import ProtectedRoute from './components/ProtectedRoute';
 import Home from './components/pages/Home';
 import Profile from './components/pages/Profile';
-import LandingPage from './components/pages/LandingPage';
 import About from './components/pages/About';
 import PageNotFound from './components/pages/PageNotFound';
 import Footer from './components/Footer';
@@ -50,7 +49,7 @@ const App: React.FC = () => {
 					<Route path='/login2fa' element={<Login2fa isAuth={isAuth} setIsAuth={setIsAuth} setUserId={setUserId} userId={userId} />} />
 					<Route path='/game' element={<ProtectedRoute isAuth={isAuth} path='/game' element={<GameSelection userId={userId} />} />} />
 					<Route path='/profile' element={<ProtectedRoute isAuth={isAuth} path='/profile' element={<Profile userId={userId} isAuth={isAuth} />} />} />
-					<Route path='/landingpage' element={<ProtectedRoute isAuth={isAuth} path='/landingpage' element={<LandingPage />} />} />
+					{/* <Route path='/landingpage' element={<ProtectedRoute isAuth={isAuth} path='/landingpage' element={<LandingPage />} />} /> */}
 					<Route path='/layout' element={<Layout />} />
 					<Route path='/*' element={<PageNotFound />} />
 				</Routes>
