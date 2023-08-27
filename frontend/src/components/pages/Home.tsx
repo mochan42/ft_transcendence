@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { Box, Stack, IconButton } from "@mui/material";
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import UserCard from "../UserCard";

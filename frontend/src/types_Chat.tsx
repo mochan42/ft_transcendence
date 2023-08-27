@@ -1,31 +1,22 @@
-import React from 'react';
-import { Stack, Box, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { Message } from './types';
 
 const ChatTextMsg = (el: Message) => {
 
     const theme = useTheme();
+    const containerClasses = el.incoming ? "justify-start" : "justify-end";
+    const backgroundColor = el.incoming ? "bg-gray-300" : "bg-blue-500";
+    const textColor = el.incoming ? "text-gray-700" : "text-white";
+
     return (
-        <Stack direction={"row"}
-            justifyContent={ el.incoming ? "start" : "end" }
-        >
-            <Box p={1.5}
-                sx={{
-                    backgroundColor: el.incoming ? theme.palette.background.default : theme.palette.primary.main,
-                    borderRadius: 1.5,
-                    width: "max-content"
-                }}
-            >
-                <Typography 
-                    variant="body2"
-                    //color={ el.incoming ? theme.palette.text : "#fff" }
-                >
-                     { el.message } 
-                </Typography>
-            </Box>
-        </Stack>
-    )
-}   
+        <div className={`flex flex-row ${containerClasses}`}>
+            <div className={`p-3 ${backgroundColor} rounded-lg max-w-max`}>
+                <p className={`text-sm ${textColor}`}>
+                    {el.message}
+                </p>
+            </div>
+        </div>
+    );
+};   
 
 export  { ChatTextMsg };

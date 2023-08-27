@@ -1,12 +1,5 @@
-import { Box, Stack, IconButton, Typography, Divider, Avatar, Badge } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
-import { Users, ChatCircleDots, Phone } from "phosphor-react";
-import { useState } from "react";
-
 import { TChatUserData } from "../types";
 import { ChatUserList } from '../data/ChatData';
-import UserCard from "./UserCard";
-import Footer from "./Footer";
 
 const ChatElement = (user : TChatUserData) => {
     return (
