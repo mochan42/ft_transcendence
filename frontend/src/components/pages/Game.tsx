@@ -26,14 +26,14 @@ const Game:React.FC<GameProps> = ({ difficulty, userId, includeBoost, opponent, 
 
 	const playerPoint = () => {
 		setPlayerScore(playerScore + 1);
-		if (playerScore === 5) {
+		if (playerScore === 10) {
 			setIsGameOver(true);
 		}
 	}
 
 	const opponentPoint = () => {
 		setOpponentScore(opponentScore + 1);
-		if (opponentScore === 5) {
+		if (opponentScore === 10) {
 			setIsGameOver(true);
 		}
 	}
