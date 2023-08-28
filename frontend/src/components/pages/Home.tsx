@@ -3,11 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import UserCard from "../UserCard";
 import Leaderboard from "../LeaderBoard";
+import ChatBoard from '../ChatBoard';
 import { Friend, User } from "../../types";
+import ChatPageUsers from '../ChatPageUsers';
+import ChatConversation from '../ChatConversation';
 import About from './About';
 import Cookies from 'js-cookie';
-
-
 
 type TUserState = {
 	userCode: {
@@ -118,48 +119,53 @@ const Home = ({ userCode, loginState, userId, setUserId, state }: TUserState) =>
 			}
 		})();
 	}, [userId, loginState]);
+
+	console.log('userID und Loginstate: ', userId, ', ', loginState)
 	if (!userId && !loginState.isLogin)
 		return <><About isAuth={loginState.isLogin}></About></>
-	if (userId && loginState)
+	// else if (userId && loginState)
+	else
 		return (
 			<>
-				<div className="flex flex-wrap h-screen">
-					<div className="w-1/3 bg-slate-200 p-4 h-1/2">
-						<UserCard userId={userId} foundMatch={false} info={'profile'}></UserCard>
-					</div>
-					<div className="w-2/3 bg-slate-200 p-4">
-						<div className='bg-slate-900 rounded-lg h-full w-full'>
-							<Leaderboard userId={userId} />
+				<div className='h-5/6'>
+					<div className="flex flex-wrap h-full">
+						<div className="w-1/3 bg-slate-200 p-4 h-1/2">
+							<UserCard userId={userId} foundMatch={false} info={'profile'}></UserCard>
 						</div>
-					</div>
-					<div className="w-1/3 bg-slate-200 p-4 h-1/2">
-						<div className="h-full overflow-y-auto flex-cols text-center space-y-4 rounded-lg flex items-center justify-center">
-							<div className="space-y-2 flex flex-col justify-between gap-4 rounded-lg">
-								<div className="flex flex-row justify-between items-center min-w-[220px] bg-slate-900 text-center rounded-lg">
-									{userFriends != null ? userFriends.map((user, index) => (
-										<div key={index}>
-											<img
-												className="h-6 w-6 dark:bg-slate-200 rounded-full"
-												src={user.avatar}
-												alt="Achievement badge"
-											/>
-											{user.userNameLoc}
-										</div>
-									)) : <img className='h-96 w-96 rounded-lg' src='https://media0.giphy.com/media/KG4ST0tXOrt1yQRsv0/200.webp?cid=ecf05e4732is65t7ah6nvhvwst9hkjqv0c52bhfnilk0b9g0&ep=v1_stickers_search&rid=200.webp&ct=s' />}
+						<div className="w-2/3 bg-slate-200 p-4">
+							<div className='bg-slate-900 rounded-lg h-full w-full'>
+								<Leaderboard userId={userId} />
+							</div>
+						</div>
+						<div className="w-1/3 bg-slate-200 p-4 h-1/2">
+							<div className="overflow-y-auto flex-cols text-center h-full space-y-4 rounded-lg flex items-center justify-center">
+								<div className="space-y-2 flex flex-col justify-between gap-4 rounded-lg">
+									<div className="flex flex-row justify-between items-center min-w-[200px] min-h-[200px] bg-slate-900 text-center rounded-lg">
+										{userFriends != null ? userFriends.map((user, index) => (
+											<div key={index}>
+												<img
+													className="h-6 w-6 dark:bg-slate-200 rounded-full"
+													src={user.avatar}
+													alt="Achievement badge"
+													/>
+												{user.userNameLoc}
+											</div>
+										)) : <img className='h-full w-full rounded-lg' src='https://media0.giphy.com/media/KG4ST0tXOrt1yQRsv0/200.webp?cid=ecf05e4732is65t7ah6nvhvwst9hkjqv0c52bhfnilk0b9g0&ep=v1_stickers_search&rid=200.webp&ct=s' />}
+									</div>
 								</div>
 							</div>
 						</div>
-					</div>
-					<div className="w-2/3 bg-slate-200 p-4 h-1/2">
-						<div className='bg-slate-900 rounded-lg h-full w-full'>
-							{/* Chat window content goes here */}
+						<div className="h-1/2 w-2/3 bg-slate-200 p-4">
+							<div className="flex h-full w-full bg-slate-900 p-4 text-center rounded-lg">
+								<ChatBoard/>
+								<ChatPageUsers/>
+								<ChatConversation userId={userId}/>
+							</div>
 						</div>
 					</div>
 				</div>
 			</>
 		)
-	return <></>
-
 }
 
 export default Home

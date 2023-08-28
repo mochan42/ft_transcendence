@@ -1,8 +1,5 @@
-import React, { useEffect } from 'react';
-import { Button } from '../ui/Button';
-import { useNavigate } from 'react-router-dom';
+import React from 'react';
 import icon_42 from '../../img/icon_42-blank.png';
-import icon_gmail from '../../img/google-icon-blank.png';
 import '../../css/login.css';
 
 interface Props {
@@ -27,7 +24,7 @@ const Login: React.FC<Props> = ({setIsAuth, isAuth, state}) => {
                     </div>
                     <div className='login__form_item'>
                         <button type='submit' onClick={handleLogin} className="login__form_btn btn-42 ">
-                            <img src={icon_42} />
+                            <img src={icon_42} alt='42 Icon'/>
                         </button>
                     </div>
                 </div>

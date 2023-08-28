@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Button } from "./ui/Button"
-import { Pie } from "react-chartjs-2";
 import axios, { AxiosResponse } from "axios";
 
 interface StatsProps {

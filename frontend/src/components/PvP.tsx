@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useRef } from 'react'
 import VictoryLoss from './VictoryLoss';
 import Boost from './Boost';
 import Ball from './Ball';
@@ -32,14 +32,14 @@ const PvP: React.FC<PvPProps> = ({ userId, difficulty, isGameOver, playerScore, 
 	const PvPRef = useRef<HTMLDivElement>(null);
 	const paddleLengths = [200, 150, 100, 80, 50]
 	const opponentLengths = [50, 60, 70, 80, 90]
-	const [playerScore2, setPlayerScore2] = useState(0);
-	const [speedX, setSpeedX] = useState(-(itsdifficult));
-	const [speedY, setSpeedY] = useState(-(itsdifficult));
+	// const [playerScore2, setPlayerScore2] = useState(0);
+	// const [speedX, setSpeedX] = useState(-(itsdifficult));
+	// const [speedY, setSpeedY] = useState(-(itsdifficult));
 	const [isBoost, setIsBoost] = useState(false);
 	const [boostWidth, setBoostWidth] = useState(80);
-	const [playerPaddleDirection, setPlayerPaddleDirection] = useState<number>(0);
-	const [playerPaddleSpeed, setPlayerPaddleSpeed] = useState(18 - (difficulty * 2));
-	const [opponentPaddleSpeed, setopponentPaddleSpeed] = useState(0.5 + (difficulty));
+	// const [playerPaddleDirection, setPlayerPaddleDirection] = useState<number>(0);
+	// const [playerPaddleSpeed, setPlayerPaddleSpeed] = useState(18 - (difficulty * 2));
+	// const [opponentPaddleSpeed, setopponentPaddleSpeed] = useState(0.5 + (difficulty));
 	const [leftPaddleY, setLeftPaddleY] = useState(0);
 	const [rightPaddleY, setRightPaddleY] = useState(0);
 	var startX = 50;
@@ -52,7 +52,7 @@ const PvP: React.FC<PvPProps> = ({ userId, difficulty, isGameOver, playerScore, 
 	const [boostStartY, setBoostStartY] = useState(200);
 	const [ballX, setBallX] = useState(startX);
 	const [ballY, setBallY] = useState(startY);
-	const [lastBoost, setLastBoost] = useState<number>(Date.now);
+	// const [lastBoost, setLastBoost] = useState<number>(Date.now);
 
 	// const checkCollision = () => {
 
