@@ -32,7 +32,6 @@ const Login2fa: React.FC<Props> = ({ setIsAuth, isAuth, setUserId, userId }) => 
     const [id, setId] = useState<string | null>(userId);
     const navigate = useNavigate();
     const generateSecret = async () => {
-        console.log('USER ID : ', id);
         try {
             const url2Fa = 'http://localhost:5000/pong/users/auth/2fa/' + id;
             const secret = await axios.get<string>(url2Fa);
@@ -55,8 +54,6 @@ const Login2fa: React.FC<Props> = ({ setIsAuth, isAuth, setUserId, userId }) => 
         // send code to backend for verification
         try {
             console.log(secret2FA);
-            console.log(otp);
-            console.log("USER ID", id, "WHY ?");
             const validate = await axios.post('http://localhost:5000/pong/users/auth/2fa', { token: otp, userId: id + '' });
             if (validate.status === 200) {
                 if (validate.data == 'OK') {

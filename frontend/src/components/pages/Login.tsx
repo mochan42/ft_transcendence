@@ -13,10 +13,10 @@ interface Props {
 
 const Login: React.FC<Props> = ({setIsAuth, isAuth, state}) => {
     const handleLogin = () => {
-			const generatedState = state;
-			const client_id_42 = process.env.REACT_APP_UID;
-			const url_auth_42 = `https://api.intra.42.fr/oauth/authorize?client_id=${client_id_42}&redirect_uri=http%3A%2F%2Flocalhost%3A3000&response_type=code&state=${generatedState}`;
-			window.location.href = url_auth_42;
+        const generatedState = state;
+        const client_id_42 = process.env.REACT_APP_UID;
+        const url_auth_42 = `https://api.intra.42.fr/oauth/authorize?client_id=${client_id_42}&redirect_uri=http%3A%2F%2Flocalhost%3A3000&response_type=code&state=${generatedState}`;
+        window.location.href = url_auth_42;
     }
 	return (
         <>

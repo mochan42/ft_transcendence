@@ -10,6 +10,7 @@ import { AchievementsModule } from './achievements/achievements.module';
 import { GoalsModule } from './goals/goals.module';
 import { FriendsModule } from './friends/friends.module';
 import { AuthModule } from './auth/auth.module';
+import { ChatsModule } from './chats/chats.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { AuthModule } from './auth/auth.module';
     GoalsModule,
     FriendsModule,
     AuthModule,
+    ChatsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

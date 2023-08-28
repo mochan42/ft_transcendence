@@ -57,6 +57,8 @@ const Home = ({ userCode, loginState, userId, setUserId, state }: TUserState) =>
 			}
 			catch (error) {
 				console.log('Error auth', error);
+				loginState.setIsLogin(false);
+				navigate('/login');
 			}
 		}
 

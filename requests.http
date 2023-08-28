@@ -29,7 +29,7 @@ Content-Type: application/json
   "userNameLoc": "fakouyat",
   "firstName": "Facinet",
   "lastName": "Kouyate",
-  "is2Fa": true,
+  "is2Fa": false,
   "authToken": "dkdkd",
   "email": "fakouyat@student.42wolfsburg.de",
   "secret2Fa": "H4DHQUYSIY6XOJTP",
@@ -205,13 +205,13 @@ Content-Type: application/json
 }
 
 ### Generate secrete for 2FA
-GET http://localhost:5000/pong/users/auth/2fa/21
+GET http://localhost:5000/pong/users/auth/2fa/30
 
 ### Validate the secrete
 POST http://localhost:5000/pong/users/auth/2fa
 Content-Type: application/json
 
 {
-	"token": "570425",
+	"token": "259641",
 	"userId": "30"
 }

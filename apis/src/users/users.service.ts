@@ -26,8 +26,15 @@ export class UsersService {
       redirect_uri: 'http://localhost:3000',
       state: authUserDto.state,
     };
-    const resp = await axios.post(urlAuth42, params42);
-    return resp.data;
+    try {
+      const resp = await axios.post(urlAuth42, params42);
+      return resp.data;
+      
+    } catch (error) {
+      console.log("QUOI ?");
+      console.log(error);
+    }
+    //console.log(resp.data);
   }
 
   private async getFortyTwoUserInfo(token: string) {
@@ -99,25 +106,36 @@ export class UsersService {
 
   async generateSecret(id: string) {
     const secret = authenticator.generateSecret();
-    const secret2fa: string = authenticator.generate(secret);
+    const secret2fa: string = totp.generate(secret);
     try {
       const user = await this.findOne(+id);
-      const updatedUser = { ...user, secret2Fa: secret };
+      const updatedUser = { ...user, secret2Fa: secret, authToken: secret2fa };
       const updated = await this.UserRepository.save(updatedUser);
+      console.log('FIRST', updated);
+      console.log("SECRET 2FA : ", secret2fa);
       if (user && updated) {
         return secret2fa;
       }
     } catch (error) {
       console.log('user not found', error);
     }
-    throw new HttpException('Gerating secret failled', HttpStatus.FAILED_DEPENDENCY);
+    throw new HttpException(
+      'Generating secret failled',
+      HttpStatus.FAILED_DEPENDENCY,
+    );
   }
+
   async verify(secret: Secret2faDTO) {
     try {
       const user = await this.findOne(+secret.userId);
-      const isValid = authenticator.check(secret.token, user.secret2Fa);
+      console.log("********************************\n");
+      console.log("USER SECRET :", secret.token, "\n");
+      console.log(user);
+      console.log("********************************\n");
+      //const isValid = totp.check(secret.token, user.secret2Fa);
+      const isValid = secret.token === user.authToken;
       if (isValid) {
-        await this.generateSecret(user.id.toString());
+        //await this.generateSecret(user.id.toString());
         return 'OK';
       } else {
         return 'NO';
