@@ -15,7 +15,6 @@ import Layout from './components/pages/Layout';
 import GameSelection from './components/pages/GameSelection';
 import { Utils__isAPICodeAvailable } from './utils/utils__isAPICodeAvailable';
 import Cookies from 'js-cookie';
-import { authenticator } from 'otplib';
 
 const App: React.FC = () => {
 
@@ -25,7 +24,7 @@ const App: React.FC = () => {
 	const [isAuth, setIsAuth] = useState<boolean>(authSession)
 	const [userId, setUserId] = useState<string | null>(idSession);
 	const [code, setCode] = useState<string | null>(null);
-	const state = authenticator.generateSecret();
+	const state = "Must be secure";
 
 	// check if code available for backend to exchange for token
 	useEffect(() => {

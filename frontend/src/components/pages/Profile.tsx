@@ -151,9 +151,6 @@ import '../../css/profile.css';
 				userInfo && setState2fa(userInfo.is2Fa)// should be substituted with getuserinfo for latest 2fa status
 				ConfigureBtn2fa();
 			})();
-<<<<<<< Updated upstream
-	}, [userInfo, ConfigureBtn2fa, allGoals, friends, userAchievements, userFriends, userId, userStats, usersInfo, url_info, url_stats, url_achievements, urlFriends, url_goals]);
-=======
 		}, [
 			userInfo, ConfigureBtn2fa, allGoals,
 			friends, userAchievements, userFriends,
@@ -162,7 +159,6 @@ import '../../css/profile.css';
 			url_goals
 		]
 		);
->>>>>>> Stashed changes
 
 	return (
 		<div className='h-5/6 w-full'>
