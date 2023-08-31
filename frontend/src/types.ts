@@ -85,4 +85,8 @@ interface ChatMessageProps {
 	id: number,
 }
 
+<<<<<<< Updated upstream
 export  { User, UserStats, UserAchievements, ProfileProps, Goal, TUserAuth, Friend, TChatUserData, Message, ChatMessageProps};
+=======
+export  type { User, UserStats, UserAchievements, ProfileProps, Goal, TUserAuth, Friend, TChatUserData, Message, ChatMessageProps};
+>>>>>>> Stashed changes

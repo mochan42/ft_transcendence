@@ -115,7 +115,8 @@ const Home = ({ userCode, loginState, userId, setUserId, state }: TUserState) =>
 	useEffect(() => {
 		(async () => {
 			if (userCode.code !== null && !id) {
-				return authenticateToAPI(userCode.code, state);
+				console.log("HHHH\n");
+				authenticateToAPI(userCode.code, state);
 			}
 		})();
 	}, [userId, loginState]);

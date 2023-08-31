@@ -8,7 +8,9 @@ COPY package*.json ./
 
 RUN npm install -g npm@9.8.1
 RUN npm cache verify
-RUN npm ci
+RUN npm install --legacy-peer-deps
+
+#RUN npm ci
 
 # Bundle app source
 COPY . .

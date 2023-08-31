@@ -15,21 +15,17 @@ import Layout from './components/pages/Layout';
 import GameSelection from './components/pages/GameSelection';
 import { Utils__isAPICodeAvailable } from './utils/utils__isAPICodeAvailable';
 import Cookies from 'js-cookie';
+import { authenticator } from 'otplib';
 
 const App: React.FC = () => {
 
-	const authSession: boolean = Cookies.get('isAuth') ? true : true; // While auth is broken, changing it to 'true : true' was 'true : false'
+	const authSession: boolean = Cookies.get('isAuth') ? true : false; // While auth is broken, changing it to 'true : true' was 'true : false'
 	const userCookie = Cookies.get('userId');
 	const idSession: string | null =  userCookie ? userCookie : null ;
 	const [isAuth, setIsAuth] = useState<boolean>(authSession)
 	const [userId, setUserId] = useState<string | null>(idSession);
 	const [code, setCode] = useState<string | null>(null);
-	const state = 'this must be very secure but lazy dev put just a string';
-
-	// const getUserId = (): number => {
-	// 	const id = sessionStorage.getItem('userId');
-	// 	return (id?.length) ? +id : -1;
-	// }
+	const state = authenticator.generateSecret();
 
 	// check if code available for backend to exchange for token
 	useEffect(() => {

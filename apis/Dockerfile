@@ -11,7 +11,7 @@ RUN npm install -g @nestjs/cli
 RUN npm install -g npm@9.8.1
 RUN npm cache verify
 RUN rm  -rf node_modules
-RUN npm install
+RUN npm install  --legacy-peer-deps
 
 # Bundle app source
 COPY . .
