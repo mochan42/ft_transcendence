@@ -1,4 +1,4 @@
 *.env
 docker.env
 db/*
-apis/avatars/*
+./apis/avatars/*
