@@ -8,6 +8,7 @@ import axios from 'axios';
 import { CreateUserDto } from './dto/create-user.dto';
 import { Secret2faDTO } from './dto/secret-2fa.dto';
 import { totp, authenticator } from 'otplib';
+import { join } from 'path';
 
 @Injectable()
 export class UsersService {
@@ -29,9 +30,8 @@ export class UsersService {
     try {
       const resp = await axios.post(urlAuth42, params42);
       return resp.data;
-      
     } catch (error) {
-      console.log("QUOI ?");
+      console.log('QUOI ?');
       console.log(error);
     }
     //console.log(resp.data);
@@ -90,9 +90,19 @@ export class UsersService {
     return await this.UserRepository.findOne({ where: { userName } });
   }
 
-  async update(id: number, updateUserDto: UpdateUserDto) {
+  async update(id: number, userNameLoc: string, avatar: string) {
     const toUpdate = await this.UserRepository.findOne({ where: { id } });
-    const updated = Object.assign(toUpdate, updateUserDto);
+    if (avatar) {
+      avatar = 'http://localhost:5000/pong/users/avatar/' + avatar;
+    }
+    else {
+      avatar = toUpdate.avatar;
+    }
+    const updated = {
+      ...toUpdate,
+      userNameLoc,
+      avatar
+    }
     return await this.UserRepository.save(updated);
   }
 
@@ -112,7 +122,7 @@ export class UsersService {
       const updatedUser = { ...user, secret2Fa: secret, authToken: secret2fa };
       const updated = await this.UserRepository.save(updatedUser);
       console.log('FIRST', updated);
-      console.log("SECRET 2FA : ", secret2fa);
+      console.log('SECRET 2FA : ', secret2fa);
       if (user && updated) {
         return secret2fa;
       }
@@ -128,10 +138,10 @@ export class UsersService {
   async verify(secret: Secret2faDTO) {
     try {
       const user = await this.findOne(+secret.userId);
-      console.log("********************************\n");
-      console.log("USER SECRET :", secret.token, "\n");
+      console.log('********************************\n');
+      console.log('USER SECRET :', secret.token, '\n');
       console.log(user);
-      console.log("********************************\n");
+      console.log('********************************\n');
       //const isValid = totp.check(secret.token, user.secret2Fa);
       const isValid = secret.token === user.authToken;
       if (isValid) {
@@ -144,4 +154,8 @@ export class UsersService {
       throw new HttpException('user not found', HttpStatus.NOT_FOUND);
     }
   }
+
+  // getAvatar(avatar: string, res: Response) {
+    
+  // }
 }

@@ -1,5 +1,5 @@
 ### get all users
-GET http://localhost:5000/pong/users/
+GET http://localhost:5000/pong/users/30
 
 #### add user
 POST http://localhost:5000/pong/users
@@ -26,7 +26,7 @@ Content-Type: application/json
 
 {
   "userName": "fakouyat",
-  "userNameLoc": "fakouyat",
+  "userNameLoc": "kouyaBoss",
   "firstName": "Facinet",
   "lastName": "Kouyate",
   "is2Fa": false,
@@ -215,3 +215,6 @@ Content-Type: application/json
 	"token": "259641",
 	"userId": "30"
 }
+
+### avatar
+GET http://localhost:5000/pong/users/avatar/faci30682023382.jpg

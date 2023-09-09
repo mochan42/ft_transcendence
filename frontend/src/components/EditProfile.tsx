@@ -8,24 +8,21 @@ interface EditProfileProps {
     userId: string | null;
 }
 
-interface FormData {
+interface FormDataLoc {
     name: string;
-    image: string;
-    nameloc: string;
+    image: any;
 }
 
 const EditProfile:React.FC<EditProfileProps> = ({ setShowScreen, userId }) => {
 
-    const [userInfo, setUserInfo] = useState< User | null >(null);
-    const [errors, setErrors] = useState<Partial<FormData>>({});
+    const [userInfo, setUserInfo] = useState<User | null>(null);
+    const [errors, setErrors] = useState<Partial<FormDataLoc>>({});
     const url_info = 'http://localhost:5000/pong/users/' + userId;
-    const [formData, setFormData] = useState<FormData>({
+    const [formData, setFormData] = useState<FormDataLoc>({
         name: '',
-        image: '',
-        nameloc: '',
+        image: null,
     });
-      
-    
+
     const getUserInfo = async () => {
         try {
             const response = await axios.get<User>(url_info);
@@ -39,27 +36,37 @@ const EditProfile:React.FC<EditProfileProps> = ({ setShowScreen, userId }) => {
         }
     }
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        const validationErrors: Partial<FormData> = {};
+        const validationErrors: Partial<FormDataLoc> = {};
 
+        //---- This block is useless, doesn't it ? --------
         if (Object.keys(validationErrors).length > 0) {
             setErrors(validationErrors);
             return;
         }
-    
-        if (userInfo) {
-            userInfo.avatar = formData.image;
-            userInfo.userName = formData.name;
+        //---------------------------------------------------
+
+        if (userInfo && (formData.name || formData.image)) {
+            const updatedUser = new FormData();
+            updatedUser.append('id', userInfo.id);
+            updatedUser.append('name', formData.name || userInfo.userNameLoc);
+            updatedUser.append('avatar', formData.image);
+
+            await updateUser(updatedUser);
         }
     };
 
-    const updateUser = async ( ) => {
+    const updateUser = async (updatedUser: FormData) => {
 		if (userInfo) {
-			try {
+            try {
 				console.log('In try block')
-				
-				const response = await axios.patch(url_info, userInfo);
+                //console.log(userInfo);
+                const response = await axios.patch(url_info, updatedUser, {
+                     headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+                });
 				if (response.status === 200) {
                     console.log("Updated user information");
 				}
@@ -88,7 +95,7 @@ const EditProfile:React.FC<EditProfileProps> = ({ setShowScreen, userId }) => {
 					</Button>
 					<div className="h-4/5 overflow-y-auto p-4 flex-cols text-center justify-between space-y-4">
                         <div className="container mx-auto p-4">
-                            <form onSubmit={handleSubmit} className="space-y-8 w-full">
+                            <form onSubmit={handleSubmit} className="space-y-8 w-full" encType="multipart/form-data">
                                 <div className='text-slate-200 dark:text-black'>
                                     Name
                                 </div>
@@ -100,7 +107,7 @@ const EditProfile:React.FC<EditProfileProps> = ({ setShowScreen, userId }) => {
                                     <input
                                         type="text"
                                         className="form-input mt-1 text-center"
-                                        defaultValue={userInfo?.userName}
+                                        defaultValue={userInfo?.userNameLoc}
                                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                                     />
                                     {errors.name && <p className="text-red-500">{errors.name}</p>}
@@ -110,9 +117,10 @@ const EditProfile:React.FC<EditProfileProps> = ({ setShowScreen, userId }) => {
                                     <label className="block text-slate-200 dark:text-black">Profile picture</label>
                                     <input
                                         type="file"
+                                        accept=".jpg, .jpeg, .png"
+                                        name="avatar"
                                         className="form-input mt-1 w-1/2 text-slate-200 dark:text-black text-center"
-                                        value={formData.image}
-                                        onChange={(e) => setFormData({ ...formData, image: e.target.value })}
+                                        onChange={(e) => setFormData({ ...formData, image: e.target.files?.[0] || null })}
                                     />
                                     {errors.image && <p className="text-red-500">{errors.image}</p>}
                                 </div>
@@ -120,12 +128,11 @@ const EditProfile:React.FC<EditProfileProps> = ({ setShowScreen, userId }) => {
                                     <button
                                         type="submit"
                                         className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
-                                        onClick={() => updateUser()}
                                     >
                                         Update
                                     </button>
                                     <button
-                                        type="submit"
+                                        type="reset"
                                         onClick={() => setShowScreen('default')}
                                         className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded"
                                     >
