@@ -57,7 +57,7 @@ const Login2fa: React.FC<Props> = ({ setIsAuth, isAuth, setUserId, userId }) => 
                     navigate('/');
                 }
                 else
-                    console.log('NOOOOO');
+                    console.log('Error 2FA');
             }
         }
         catch (error) {

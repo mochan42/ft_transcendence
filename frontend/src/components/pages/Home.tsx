@@ -9,6 +9,7 @@ import ChatPageUsers from '../ChatPageUsers';
 import ChatConversation from '../ChatConversation';
 import About from './About';
 import Cookies from 'js-cookie';
+import { io } from 'socket.io-client';
 
 type TUserState = {
 	userCode: {
@@ -22,10 +23,19 @@ type TUserState = {
 	userId: string | null,
 	setUserId: React.Dispatch<React.SetStateAction<string | null>>,
 	// is2faEnabled: boolean,
-	state: string
+    state: string,
+    socket: any,
+    setSocket: React.Dispatch<React.SetStateAction<any>>,
 }
 
-const Home = ({ userCode, loginState, userId, setUserId, state }: TUserState) => {
+const Home = ({
+	userCode,
+	loginState,
+	userId, setUserId,
+	state,
+	socket,
+    setSocket
+}: TUserState) => {
 	const [usersInfo, setUsersInfo] = useState<User[] | null>(null);
 	const id = userId;
 	const urlFriends = 'http://localhost:5000/pong/users/' + id + '/friends';
@@ -52,6 +62,15 @@ const Home = ({ userCode, loginState, userId, setUserId, state }: TUserState) =>
 						setUserId(user.id.toString());
 						Cookies.set('userId', user.id, { expires: 7 });
 						Cookies.set('isAuth', 'true', { expires: 7 });
+                        const newSocket = io('http://localhost:5000', {
+                            extraHeaders: {
+                                'X-Custom-Data': user.id
+                            }
+                        });
+                        setSocket(newSocket);
+                        newSocket.on('message', (message: string) => {
+                            console.log(message);
+                        });
 						navigate('/');
 					}
 				}
@@ -115,7 +134,6 @@ const Home = ({ userCode, loginState, userId, setUserId, state }: TUserState) =>
 	useEffect(() => {
 		(async () => {
 			if (userCode.code !== null && !id) {
-				console.log("HHHH\n");
 				authenticateToAPI(userCode.code, state);
 			}
 		})();
@@ -160,7 +178,7 @@ const Home = ({ userCode, loginState, userId, setUserId, state }: TUserState) =>
 							<div className="flex h-full w-full bg-slate-900 p-4 text-center rounded-lg">
 								<ChatBoard/>
 								<ChatPageUsers/>
-								<ChatConversation userId={userId}/>
+								<ChatConversation userId={userId} />
 							</div>
 						</div>
 					</div>

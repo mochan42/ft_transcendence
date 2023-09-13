@@ -25,6 +25,7 @@ const App: React.FC = () => {
 	const [userId, setUserId] = useState<string | null>(idSession);
 	const [code, setCode] = useState<string | null>(null);
 	const state = "Must be secure";
+	const [socket, setSocket] = useState<any>(null);
 
 	// check if code available for backend to exchange for token
 	useEffect(() => {
@@ -39,7 +40,12 @@ const App: React.FC = () => {
 				</div>
 				<Routes>
 					<Route path='about' element={<About isAuth={isAuth} />} />
-					<Route path='/' element={<Home userCode={{ code: code, setCode: setCode }} loginState={{ isLogin: isAuth, setIsLogin: setIsAuth }} setUserId={setUserId} userId={userId} state={state} />} />
+					<Route path='/' element={<Home
+						userCode={{ code: code, setCode: setCode }}
+						loginState={{ isLogin: isAuth, setIsLogin: setIsAuth }} setUserId={setUserId}
+						userId={userId} state={state}
+						socket={socket} setSocket={setSocket}
+					/>} />
 					<Route path='/login' element={<Login isAuth={isAuth} setIsAuth={setIsAuth} state={state} />} />
 					<Route path='/login2fa' element={<Login2fa isAuth={isAuth} setIsAuth={setIsAuth} setUserId={setUserId} userId={userId} />} />
 					<Route path='/game' element={<ProtectedRoute isAuth={isAuth} path='/game' element={<GameSelection userId={userId} />} />} />

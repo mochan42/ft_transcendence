@@ -11,6 +11,7 @@ import { GoalsModule } from './goals/goals.module';
 import { FriendsModule } from './friends/friends.module';
 import { AuthModule } from './auth/auth.module';
 import { ChatsModule } from './chats/chats.module';
+import { EventGateway } from './event.gateway';
 
 @Module({
   imports: [
@@ -27,6 +28,6 @@ import { ChatsModule } from './chats/chats.module';
     ChatsModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, EventGateway],
 })
 export class AppModule {}

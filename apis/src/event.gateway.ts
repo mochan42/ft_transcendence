@@ -1,22 +1,34 @@
 import {
   ConnectedSocket,
   MessageBody,
+  OnGatewayConnection,
+  OnGatewayDisconnect,
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
-import { Server, Socket } from 'socket.io';
-import { ChatsService } from './chats.service';
 
-@WebSocketGateway()
-export class ChatGateway {
+import { Server, Socket } from 'socket.io';
+import { ChatsService } from './chats/chats.service';
+
+@WebSocketGateway({
+  cors: {
+    origin: 'http://localhost:3000',
+  },
+})
+export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server: Server;
 
   constructor(private readonly chatsService: ChatsService) {}
-  // listen for send_message events
-  async handleConnection(socket: Socket) {
-    await this.chatsService.getUserFromSocket(socket);
+  async handleConnection(@ConnectedSocket() socket: Socket) {
+    const user = await this.chatsService.getUserFromSocket(socket);
+    this.server.emit('message', `Welcome ${user.userName}, you're connected`);
+  }
+
+  async handleDisconnect(socket: Socket) {
+    const user = await this.chatsService.getUserFromSocket(socket);
+    socket.emit(user.userNameLoc, 'is disconnected');
   }
 
   @SubscribeMessage('send_message')

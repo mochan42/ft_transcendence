@@ -16,8 +16,7 @@ export class ChatsService {
   ) {}
 
   async getUserFromSocket(socket: Socket) {
-    const cookie = socket.handshake.headers.cookie;
-    const [userId, isAuth] = cookie.split(' ');
+    const userId = socket.handshake.headers['x-custom-data'];
     const user = await this.usersService.findOne(+userId);
     if (!user) {
       throw new WsException('Invalid user');

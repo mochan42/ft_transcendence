@@ -5,6 +5,7 @@ import axios from "axios";
 
 interface ChatProps {
     userId: string | null;
+    socket: any
 }
 
 type Message = {
@@ -13,13 +14,12 @@ type Message = {
     id: number;
 }
 
-const Chat: React.FC<ChatProps> = ({ userId }) => {
+const Chat: React.FC<ChatProps> = ({ userId, socket }) => {
 
     const [channels, setChannels] = useState<string[]>([]);
     const [userInfo, setUserInfo] = useState<User | null>(null);
     const [userMessage, setUserMessage] = useState<string>('');
     const [messages, setMessages] = useState<Message[]>([]);
-    const [socket, setSocket] = useState<Socket | undefined>();
     const [username, setUserName] = useState<string>('');
     const messageContainerRef = useRef<HTMLDivElement>(null);
 
@@ -54,20 +54,7 @@ const Chat: React.FC<ChatProps> = ({ userId }) => {
     }, [userInfo]);
 
     useEffect(() => {
-        const socketInstance = io('http://localhost:5000');
-        setSocket(socketInstance);
-
-        socketInstance.on('connect', () => {
-            console.log('Connected to socket');
-        });
-
-        socketInstance.on('message', (data: Message) => {
-            setMessages((prevMessages) => [...prevMessages, data]);
-        });
-
-        return () => {
-            socketInstance.disconnect();
-        };
+        
     }, []);
 
     const onMessageSubmit = (e: React.FormEvent) => {
