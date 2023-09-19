@@ -97,4 +97,9 @@ export class UsersController {
     const pathToAvar = join(__dirname, '..', '..', 'avatars', avatar);
     res.sendFile(pathToAvar);
   }
+
+  @Get('exist/:userNameLoc')
+  isUsedUsername(@Param('userNameLoc') userNameLoc: string) {
+    return this.usersService.isUsedUsername(userNameLoc);
+  }
 }

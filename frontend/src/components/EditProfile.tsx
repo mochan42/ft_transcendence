@@ -58,7 +58,14 @@ const EditProfile:React.FC<EditProfileProps> = ({ setShowScreen, userId }) => {
     };
 
     const updateUser = async (updatedUser: FormData) => {
-		if (userInfo) {
+        if (userInfo) {
+            const verifyUserName = await axios.get('http://localhost:5000/pong/users/exist/' + updatedUser.get('name'));
+            if (verifyUserName.status === 200) {
+                if (verifyUserName.data) {
+                    alert('username already exists');
+                    return;
+                }
+            }
             try {
 				console.log('In try block')
                 //console.log(userInfo);
@@ -74,8 +81,9 @@ const EditProfile:React.FC<EditProfileProps> = ({ setShowScreen, userId }) => {
 			} catch (error) {
 				console.log('Error updating userInfo:', error);
 			}
-		}
+        }
         setShowScreen('default');
+        window.location.reload(); 
 	};
 
     useEffect(() => {

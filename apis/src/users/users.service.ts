@@ -145,4 +145,9 @@ export class UsersService {
       throw new HttpException('user not found', HttpStatus.NOT_FOUND);
     }
   }
+
+  async isUsedUsername(userNameLoc: string) {
+    const user = await this.UserRepository.findOne({ where: { userNameLoc } });
+    return (user) ? true : false;
+  }
 }
