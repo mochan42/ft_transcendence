@@ -150,4 +150,11 @@ export class UsersService {
     const user = await this.UserRepository.findOne({ where: { userNameLoc } });
     return (user) ? true : false;
   }
+
+  async update2faOption(id: string) {
+    const user = await this.findOne(+id);
+    const is2Fa = (user.is2Fa) ? false : true;
+    const updateUser = { ...user, is2Fa }
+    return this.UserRepository.save(updateUser);
+  }
 }

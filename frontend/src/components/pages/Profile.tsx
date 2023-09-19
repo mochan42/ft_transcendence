@@ -31,8 +31,8 @@ import '../../css/profile.css';
 	const [btnTxt2fa, setBtnTxt2fa] = useState<string>("2FA: disabled");
 	const [btnStyle, setBtnStyle] = useState<string>('default');
 
-    const ConfigureBtn2fa = () => {
-        if (!state2fa) {
+      const ConfigureBtn2fa = (updated2faState: boolean) => {
+        if (!updated2faState) {
             setBtnTxt2fa(" 2FA: disabled ");
 		}
 		else {
@@ -41,19 +41,15 @@ import '../../css/profile.css';
 
     }
 
-    const Handle2faBtnClick = () => {
-        if (state2fa) {
-            setState2fa(false) 
+	const Handle2faBtnClick = async () => {
+        const resp = await axios.patch<User>('http://localhost:5000/pong/users/2fa/' + id);
+        if (resp.status === 200) {
+            // This is a temporary solution, better would be to affecte trigger useEffect hook
+            window.location.reload()
+            console.log('2FA options updated successfully');
         }
-        else {
-            setState2fa(true);
-        }
-        ConfigureBtn2fa();
-        console.log(state2fa);
-        // make a post request to backend to update latest 2fa settings 
-        // This should not affect the current session.
-        
-        
+		// make a post request to backend to update latest 2fa settings 
+		// This should not affect the current session.  
     }
 
 	useEffect(() => {
@@ -147,9 +143,11 @@ import '../../css/profile.css';
 						friends?.some((friend) => (friend.sender === user.id || friend.receiver === user.id) && user.id !== userId)
 					);
 					setUserFriends(usersFriends);
-				}
-				userInfo && setState2fa(userInfo.is2Fa)// should be substituted with getuserinfo for latest 2fa status
-				ConfigureBtn2fa();
+                }
+                if (userInfo) {
+                    setState2fa(userInfo.is2Fa)// should be substituted with getuserinfo for latest 2fa status
+                    ConfigureBtn2fa(userInfo.is2Fa);
+                }
 			})();
 		}, [
 			userInfo, ConfigureBtn2fa, allGoals,

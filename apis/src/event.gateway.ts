@@ -28,7 +28,7 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   async handleDisconnect(socket: Socket) {
     const user = await this.chatsService.getUserFromSocket(socket);
-    socket.emit(user.userNameLoc, 'is disconnected');
+    socket.emit('message', `${user.userNameLoc} is deconnected`);
   }
 
   @SubscribeMessage('send_message')
@@ -55,5 +55,10 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const messages = await this.chatsService.getAllMessagesInChannel(1);
 
     socket.emit('send_all_messages', messages);
+  }
+
+  @SubscribeMessage('create_channel')
+  async create_channel(@ConnectedSocket() socket: Socket) {
+    
   }
 }

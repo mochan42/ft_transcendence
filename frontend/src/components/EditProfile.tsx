@@ -83,6 +83,7 @@ const EditProfile:React.FC<EditProfileProps> = ({ setShowScreen, userId }) => {
 			}
         }
         setShowScreen('default');
+        // This is a temporary solution, better would be to affecte trigger useEffect hook
         window.location.reload(); 
 	};
 

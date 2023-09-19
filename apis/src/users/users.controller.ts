@@ -102,4 +102,9 @@ export class UsersController {
   isUsedUsername(@Param('userNameLoc') userNameLoc: string) {
     return this.usersService.isUsedUsername(userNameLoc);
   }
+
+  @Patch('2fa/:id')
+  update2faOption(@Param('id') id: string) {
+    return this.usersService.update2faOption(id);
+  }
 }
