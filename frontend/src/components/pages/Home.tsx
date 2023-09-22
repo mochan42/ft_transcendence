@@ -10,6 +10,7 @@ import ChatConversation from '../ChatConversation';
 import About from './About';
 import Cookies from 'js-cookie';
 import { io } from 'socket.io-client';
+import Login2fa from '../../components/pages/Login2fa';
 
 type TUserState = {
 	userCode: {
@@ -26,6 +27,14 @@ type TUserState = {
     state: string,
     socket: any,
     setSocket: React.Dispatch<React.SetStateAction<any>>,
+    token2fa: string,
+    setToken2fa: React.Dispatch<React.SetStateAction<string>>,
+}
+
+enum logStatus {
+  DEFAULT,
+  IS2FA,
+  ISNOT2FA
 }
 
 const Home = ({
@@ -34,14 +43,18 @@ const Home = ({
 	userId, setUserId,
 	state,
 	socket,
-    setSocket
+  setSocket,
+  token2fa,
+  setToken2fa,
 }: TUserState) => {
+
+  var auth: any;
 	const [usersInfo, setUsersInfo] = useState<User[] | null>(null);
 	const id = userId;
 	const urlFriends = 'http://localhost:5000/pong/users/' + id + '/friends';
 	const [userFriends, setUserFriends] = useState<User[] | null>(null);
-	const [friends, setFriends] = useState<Friend[] | null>(null);
-	const [is2fa, setIs2fa] = useState<boolean>(false);
+  const [friends, setFriends] = useState<Friend[] | null>(null);
+  const [is2fa, setIs2fa] = useState<number>(logStatus.DEFAULT);
 	const navigate = useNavigate();
 
 
@@ -50,34 +63,32 @@ const Home = ({
 			try {
 				const resp = await axios.post('http://localhost:5000/pong/users/auth', { token, state });
 				if (resp.status === 200) {
-					const user = resp.data;
-					if (user.is2Fa) {
-						setUserId(user.id.toString());
+          const user = resp.data;
+          if (user.is2Fa === true) {
 						loginState.setIsLogin(false);
+						setToken2fa(user.token2fa);
 						Cookies.remove('userId');
-						Cookies.remove('isAuth');
-						return navigate('/login2fa');
-					}
-					else {
-						setUserId(user.id.toString());
-						Cookies.set('userId', user.id, { expires: 7 });
-						Cookies.set('isAuth', 'true', { expires: 7 });
-                        const newSocket = io('http://localhost:5000', {
-                            extraHeaders: {
-                                'X-Custom-Data': user.id
-                            }
-                        });
-                        setSocket(newSocket);
-                        newSocket.on('message', (message: string) => {
-                            console.log(message);
-                        });
-						navigate('/');
-					}
+            Cookies.remove('isAuth');
+            return logStatus.IS2FA;
+          }
+          setUserId(user.id.toString());
+          Cookies.set('userId', user.id, { expires: 7 });
+          Cookies.set('isAuth', 'true', { expires: 7 });
+          const newSocket = io('http://localhost:5000', {
+              extraHeaders: {
+                  'X-Custom-Data': user.id
+              }
+          });
+          setSocket(newSocket);
+          newSocket.on('message', (message: string) => {
+              console.log(message);
+          });
+          return logStatus.ISNOT2FA;
 				}
 			}
 			catch (error) {
 				console.log('Error auth', error);
-				loginState.setIsLogin(false);
+        loginState.setIsLogin(false);
 				navigate('/login');
 			}
 		}
@@ -131,19 +142,39 @@ const Home = ({
 			}
 		})();
 	}, [userId, loginState.isLogin]);
-	useEffect(() => {
+  useEffect(() => {
 		(async () => {
 			if (userCode.code !== null && !id) {
-				authenticateToAPI(userCode.code, state);
-			}
-		})();
+        auth = await authenticateToAPI(userCode.code, state);
+        if (auth == logStatus.IS2FA) return navigate('/login2fa');
+      }
+    })();
 	}, [userId, loginState]);
 
-	console.log('userID und Loginstate: ', userId, ', ', loginState)
-	if (!userId && !loginState.isLogin)
-		return <><About isAuth={loginState.isLogin}></About></>
+  console.log('userID und Loginstate: ', userId, ', ', loginState)
+	if (!userId && !loginState.isLogin) {
+		return (
+			<>
+				<About isAuth={loginState.isLogin}></About>
+			</>
+		)
+
+  }
+  
+  else if (auth) {
+    return(
+      <>
+      <Login2fa isAuth={loginState.isLogin}
+							setIsAuth={loginState.setIsLogin}
+							setUserId={setUserId}
+							token2fa={token2fa}
+							setToken2fa={setToken2fa}
+					/>
+      </>
+    )
+  }
 	// else if (userId && loginState)
-	else
+	else {
 		return (
 			<>
 				<div className='h-5/6'>
@@ -185,6 +216,7 @@ const Home = ({
 				</div>
 			</>
 		)
+	}
 }
 
 export default Home

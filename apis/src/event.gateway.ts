@@ -58,7 +58,5 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   @SubscribeMessage('create_channel')
-  async create_channel(@ConnectedSocket() socket: Socket) {
-    
-  }
+  async create_channel(@ConnectedSocket() socket: Socket) {}
 }

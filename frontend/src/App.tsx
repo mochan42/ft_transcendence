@@ -26,6 +26,7 @@ const App: React.FC = () => {
 	const [code, setCode] = useState<string | null>(null);
 	const state = "Must be secure";
 	const [socket, setSocket] = useState<any>(null);
+	const [token2fa, setToken2fa] = useState<string>('');
 
 	// check if code available for backend to exchange for token
 	useEffect(() => {
@@ -45,9 +46,17 @@ const App: React.FC = () => {
 						loginState={{ isLogin: isAuth, setIsLogin: setIsAuth }} setUserId={setUserId}
 						userId={userId} state={state}
 						socket={socket} setSocket={setSocket}
+						token2fa={token2fa}
+						setToken2fa={setToken2fa}
 					/>} />
 					<Route path='/login' element={<Login isAuth={isAuth} setIsAuth={setIsAuth} state={state} />} />
-					<Route path='/login2fa' element={<Login2fa isAuth={isAuth} setIsAuth={setIsAuth} setUserId={setUserId} userId={userId} />} />
+					<Route path='/login2fa' element= {
+						<Login2fa isAuth={isAuth}
+							setIsAuth={setIsAuth}
+							setUserId={setUserId}
+							token2fa={token2fa}
+							setToken2fa={setToken2fa}
+					/>} />
 					<Route path='/game' element={<ProtectedRoute isAuth={isAuth} path='/game' element={<GameSelection userId={userId} />} />} />
 					<Route path='/profile' element={<ProtectedRoute isAuth={isAuth} path='/profile' element={<Profile userId={userId} isAuth={isAuth} />} />} />
 					{/* <Route path='/landingpage' element={<ProtectedRoute isAuth={isAuth} path='/landingpage' element={<LandingPage />} />} /> */}

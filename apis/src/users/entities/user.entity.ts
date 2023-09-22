@@ -12,10 +12,10 @@ export class User {
   userNameLoc: string;
 
   @Column()
-  firstName?: string;
+  firstName: string;
 
   @Column()
-  lastName?: string;
+  lastName: string;
 
   @Column()
   is2Fa: boolean;
@@ -30,7 +30,7 @@ export class User {
   secret2Fa?: string;
 
   @Column()
-  avatar?: string;
+  avatar: string;
 
   @Column()
   xp: number;

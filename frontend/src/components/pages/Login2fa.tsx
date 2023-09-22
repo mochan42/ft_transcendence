@@ -1,129 +1,96 @@
-import React from 'react'
-import { Button } from '../ui/Button'
-import { useNavigate } from 'react-router-dom'
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { Button } from '../ui/Button';
+import { useNavigate } from 'react-router-dom';
 import QRCode from 'qrcode.react';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 
-//import speakeasy from 'speakeasy';
-//import notp from 'notp';
-//import queryString from "query-string"
-import '../../css/login.css'
-
 interface Props {
-    isAuth: boolean
-    setIsAuth: React.Dispatch<React.SetStateAction<boolean>>
-    setUserId: React.Dispatch<React.SetStateAction<string | null>>
-    userId: string | null
+  isAuth: boolean;
+  setIsAuth: React.Dispatch<React.SetStateAction<boolean>>;
+  setUserId: React.Dispatch<React.SetStateAction<string | null>>;
+  token2fa: string;
+  setToken2fa: React.Dispatch<React.SetStateAction<string>>;
 }
 
+const Login2fa: React.FC<Props> = ({ setIsAuth, isAuth, setUserId, token2fa }) => {
+  const [secret, userId] = token2fa.split('_');
+  const [otp, setOTP] = useState<string>('');
+  const [secret2FA, setSecret2FA] = useState<string>(secret);
+  const [btnValidate, setBtnValidate] = useState<number>(0);
+  const [id, setId] = useState<string>(userId);
+  const navigate = useNavigate();
 
-
-
-const Login2fa: React.FC<Props> = ({ setIsAuth, isAuth, setUserId, userId }) => {
-
-    const [otp, setOTP] = useState<string>('');
-    const [secret2FA, setSecret2FA] = useState<string>('');
-    const [btnValidate, setBtnValidate] = useState<number>(0);
-    const [id, setId] = useState<string | null>("0");
-    const navigate = useNavigate();
-    const generateSecret = async () => {
-        try {
-            const url2Fa = 'http://localhost:5000/pong/users/auth/2fa/' + id;
-            const secret = await axios.get<string>(url2Fa);
-            if (secret.status === 200) {
-                return secret.data;
-            }
-        } catch (error) {
-            console.log(error);
-        }
-        //return String(process.env.REACT_APP_DEFAULT_2FA);
+  const generateSecret = async () => {
+    try {
+      const url2Fa = 'http://localhost:5000/pong/users/auth/2fa/' + id;
+      const secret = await axios.get<string>(url2Fa);
+      if (secret.status === 200) {
+        return secret.data;
+      }
+    } catch (error) {
+      console.log(error);
     }
+    return ''; // Return a default value or handle the error as needed.
+  };
 
-
-	setId(userId);
-    const handle2fa = async () => {
-        // send code to backend for verification
-        try {
-            console.log(secret2FA);
-            const validate = await axios.post('http://localhost:5000/pong/users/auth/2fa', { token: otp, userId: id + '' });
-            if (validate.status === 200) {
-                if (validate.data === 'OK') {
-                    Cookies.set('userId', id + '', { expires: 7 });
-                    Cookies.set('isAuth', 'true', { expires: 7 });
-                    setIsAuth(true);
-                    setUserId(id);
-                    navigate('/');
-                }
-                else
-                    console.log('Error 2FA');
-            }
+  const handle2fa = async () => {
+    // send code to backend for verification
+    try {
+      const validate = await axios.post('http://localhost:5000/pong/users/auth/2fa', { token: otp, userId: id + '' });
+      if (validate.status === 200) {
+        if (validate.data === 'OK') {
+          Cookies.set('userId', id + '', { expires: 7 });
+          Cookies.set('isAuth', 'true', { expires: 7 });
+          setIsAuth(true);
+          setUserId(id);
+          navigate('/');
+        } else {
+          const [retry, currId] = validate.data.split('_');
+          setSecret2FA(retry);
         }
-        catch (error) {
-            console.log('Error : ', error);
-        }
-        setBtnValidate(btnValidate + 1);
+      }
+    } catch (error) {
+      console.log('Error : ', error);
     }
+  };
 
-    useEffect(() => {
-        const utils_2faSetup = async (secret2FA: string | undefined) => {
-			const generatedSecret = await generateSecret();
-			secret2FA = generatedSecret;
-			if (secret2FA)
-				setSecret2FA(String(generatedSecret));
-		}
-		const generateSecret = async () => {
-        console.log('USER ID : ', id);
-        try {
-            const url2Fa = 'http://localhost:5000/pong/users/auth/2fa/' + id;
-            const secret = await axios.get<string>(url2Fa);
-            if (secret.status === 200) {
-                return secret.data;
-            }
-        } catch (error) {
-            console.log(error);
-        }
-        //return String(process.env.REACT_APP_DEFAULT_2FA);
-    	}
-		(async () => {
-            setUserId(null);
-            await utils_2faSetup(secret2FA);
-        })();
-		
-    }, [btnValidate, secret2FA, setUserId, id]);
+  useEffect(() => {
+    // Avoid infinite re-renders by checking if btnValidate has changed
+    if (btnValidate > 0) {
+      (async () => {
+        const generatedSecret = await generateSecret();
+        setSecret2FA(String(generatedSecret));
+      })();
+    }
+  }, [btnValidate, setSecret2FA, generateSecret]);
 
-    return (
-        <div className='h-screen bg-gray-200 dark:bg-slate-900 w-full grid place-items-center'>
-            <div >
-                <div className='login__form_item'>
-                    <Button>
-                        Scan QRCode
-                    </Button>
-                </div>
-                <div className='login__form_item'>
-                    <QRCode value={secret2FA} />
-                </div>
-
-                <div className='login__form_item input'>
-                    <input
-                        type="text"
-                        value={otp}
-                        onChange={(e) => setOTP(e.target.value)}
-                        width={50}
-                    />
-                </div>
-                <div className='login__form_item'>
-                    <Button
-                        type='submit'
-                        onClick={handle2fa}
-                    >
-                        validate
-                    </Button>
-                </div>
-            </div>
+  return (
+    <div className='h-screen bg-gray-200 dark:bg-slate-900 w-full grid place-items-center'>
+      <div>
+        <div className='login__form_item'>
+          <Button>Scan QRCode</Button>
         </div>
-    )
-}
+        <div className='login__form_item'>
+          <QRCode value={secret2FA} />
+        </div>
 
-export default Login2fa
+        <div className='login__form_item input'>
+          <input
+            type="text"
+            value={otp}
+            onChange={(e) => setOTP(e.target.value)}
+            width={50}
+          />
+        </div>
+        <div className='login__form_item'>
+          <Button type='submit' onClick={handle2fa}>
+            Validate
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Login2fa;

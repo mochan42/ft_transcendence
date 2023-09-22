@@ -1,6 +1,5 @@
-
 export class MessageDto {
-	authorId: number;
-	message: string;
-	channelId: number;
+  authorId: number;
+  message: string;
+  channelId: number;
 }

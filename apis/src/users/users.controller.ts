@@ -12,9 +12,7 @@ import {
   Res,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { AuthUserDto } from './dto/auth-user.dto';
 import { CreateUserDto } from './dto/create-user.dto';
-import { Secret2faDTO } from './dto/secret-2fa.dto';
 import { Express } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
@@ -32,12 +30,6 @@ export class UsersController {
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
-  }
-
-  @Post('auth')
-  @HttpCode(200)
-  authenticate(@Body() authUserDto: AuthUserDto) {
-    return this.usersService.authenticate(authUserDto);
   }
 
   @Get(':id')
@@ -79,17 +71,6 @@ export class UsersController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.usersService.remove(id);
-  }
-
-  @Get('auth/2fa/:id')
-  generateSecret(@Param('id') id: string) {
-    return this.usersService.generateSecret(id);
-  }
-
-  @Post('auth/2fa')
-  @HttpCode(200)
-  validateSecret(@Body() secret: Secret2faDTO) {
-    return this.usersService.verify(secret);
   }
 
   @Get('avatar/:image')
