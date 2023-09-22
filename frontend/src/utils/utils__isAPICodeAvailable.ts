@@ -8,11 +8,11 @@ import { TUserAuth } from "../types";
  * @returns true if code string is available
  *          false if not available
  */
-export const Utils__isAPICodeAvailable = ( userAuth : TUserAuth, state: string): boolean =>
+export const Utils__isAPICodeAvailable = ( userAuth : TUserAuth ): boolean =>
 {
     var result = false;
     const urlBrowser = window.location.href;
-    console.log("HOME_APP entry: call to app " + urlBrowser);
+    console.log("HOME_APP entry: call to app " +  urlBrowser);
     
     if (userAuth.code === null && userAuth.isAuth === false)
     {
@@ -22,7 +22,7 @@ export const Utils__isAPICodeAvailable = ( userAuth : TUserAuth, state: string):
         Array.from((urlSearchParams.entries())).map(([key, value]) => {
             if (key === "code") {
                 userAuth.setCode(value);
-                userAuth.setIsAuth(true);
+                if ( !(userAuth.is2faEnabled) ) userAuth.setIsAuth(true);
                 result = true;
             }
         });

@@ -31,7 +31,7 @@ type UserAchievements = {
 
 interface ProfileProps {
   userId: string | null;
-  isAuth: boolean;
+    is2faEnable: boolean,
 };
 
 type Goal = {
@@ -53,6 +53,7 @@ type TUserAuth= {
     isAuth: boolean,
     setCode: React.Dispatch<React.SetStateAction<string | null>>,
     code: (string | null),
+    is2faEnabled: boolean
 }
 
 type TChatUserData = {

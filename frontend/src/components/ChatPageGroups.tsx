@@ -1,11 +1,15 @@
-import { Box, Stack, IconButton, Typography, Divider, Avatar, Badge } from "@mui/material";
+
+import { Box, Stack, IconButton, Typography, Divider, Avatar, Badge, Link, Icon} from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import { Users, ChatCircleDots, Phone } from "phosphor-react";
+import { Users, ChatCircleDots, Phone, Plus} from "phosphor-react";
 import { useState } from "react";
-//import { faker } from 'faker-js';
+import { faker } from "@faker-js/faker";
 
 import { TChatUserData } from "../types";
-import  { ChatUserList } from '../data/ChatData';
+import { ChatUserList } from "../data/ChatData";
+import ChatPageGroupsCreate from "./ChatPageGroupsCreate";
+
+
 
 const ChatElement = (user : TChatUserData) => {
     return (
@@ -50,8 +54,17 @@ const ChatElement = (user : TChatUserData) => {
 }
 
 
-const  ChatPageUsers = () => {
+const  ChatPageGroups = () => {
+    const theme = useTheme();
+    const [openDialog, setOpenDialog] = useState<boolean>(false);
+
+    const handleCloseDialog = () => {
+        setOpenDialog(false);
+    }
     return (
+        <>
+        <Stack direction={"row"}>
+
         <Box 
           sx={{
             position:"relative",
@@ -62,7 +75,16 @@ const  ChatPageUsers = () => {
           }}>
             <Stack p={3} spacing={1} sx={{height:"100%"}}>
                 <Stack alignItems={"centered"} >
-                    <Typography variant='h5'>Chats</Typography>
+                    <Typography variant='h5'>Groups</Typography>
+                </Stack>
+                <Divider/>
+                <Stack direction={"row"} justifyContent={"space-between"} alignContent={"center"} >
+                    <Typography variant="subtitle2" component={Link}>
+                        Create New Group
+                    </Typography>
+                    <IconButton onClick={() => { setOpenDialog(true) }} >
+                        <Plus style={{ color: theme.palette.primary.main }}/>
+                    </IconButton>
                 </Stack>
                 <Divider/>
                 <Stack 
@@ -73,9 +95,15 @@ const  ChatPageUsers = () => {
                     { ChatUserList.map((el) => { return (<ChatElement {...el} />) })}
                 </Stack>
             </Stack>
+
         </Box>
+        {/* Right side : conversation panel */}
+        {/* // TODO */}
+        </Stack>
+        {openDialog && <ChatPageGroupsCreate openState={openDialog} handlerClose={handleCloseDialog} />}
+        </>
       );
 }
  
 
-export default ChatPageUsers  ;
+export default ChatPageGroups;

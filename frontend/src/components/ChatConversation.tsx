@@ -4,7 +4,10 @@ import { useEffect, useRef, useState } from "react";
 import { io, Socket } from "socket.io-client";
 import { Message, User } from "../types";
 import ChatMessage from "./ChatMessage";
-import { Chat_History } from "../data/ChatData";
+//import { Chat_History } from "../data/ChatData";
+import { toggleSidebar, updateSidebarType } from "../redux/slices/chatSideBar";
+import { useDispatch, useSelector } from "react-redux";
+import { selectChatSidebar } from "../redux/store";
 
 interface ChatProps {
     userId: string | null;
@@ -19,6 +22,8 @@ const ChatConversation: React.FC<ChatProps> = ({ userId }) => {
     const [socket, setSocket] = useState<Socket | undefined>();
     const [username, setUserName] = useState<string>('');
     const messageContainerRef = useRef<HTMLDivElement>(null);
+    const dispatch = useDispatch();
+    const chatSideBar = useSelector(selectChatSidebar);
 
 	var id = 0;
 
@@ -96,8 +101,14 @@ const ChatConversation: React.FC<ChatProps> = ({ userId }) => {
                 boxShadow: "0px 0px 2px rgba(0, 0, 0, 0.25)" }}
             >
                 <Stack direction={"row"} justifyContent={"space-between"} sx={{ height:"100%", width:"100%"}}>
-                    <Stack direction={"row"} spacing={2} alignContent={"center"}>
-
+                    <Stack onClick={ ()=> { 
+                                            dispatch(toggleSidebar());
+                                            console.log(chatSideBar.chatSideBar.type);
+                                            console.log(chatSideBar.chatSideBar.open);
+                                        } 
+                                   }
+                           direction={"row"} spacing={2} alignContent={"center"}
+                    >
                         <Box p={1}>
                             <Badge 
                                 color="success" 
@@ -118,9 +129,7 @@ const ChatConversation: React.FC<ChatProps> = ({ userId }) => {
                             <CaretDown />
                         </IconButton>
                     </Stack>
-
                 </Stack>
-
             </Box>
 
 

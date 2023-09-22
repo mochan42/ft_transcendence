@@ -7,3 +7,9 @@
 
 --- CHAT ROOM  ---
 01. watch video how to create chat on react.
+02. select one from chatmessage layout.
+03. Dialog box : v07
+
+
+installation
+npm i yup @hookform/resolvers

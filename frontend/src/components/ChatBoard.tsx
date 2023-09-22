@@ -23,7 +23,10 @@ const ChatBoard = () => {
     const theme = useTheme();
 
     const [selected, setSelected] = useState<Number>(0)
+    
 
+
+    
     return (  
         <Box p={2} 
             sx={ {
