@@ -10,6 +10,10 @@ import {
 
 import { Server, Socket } from 'socket.io';
 import { ChatsService } from './chats/chats.service';
+import { FriendsService } from './friends/friends.service';
+import { CreateFriendDto } from './friends/dto/create-friend.dto';
+import { CreateChannelDto } from './channels/dto/create-channel.dto';
+import { ChannelsService } from './channels/ChannelsService';
 
 @WebSocketGateway({
   cors: {
@@ -20,9 +24,14 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server: Server;
 
-  constructor(private readonly chatsService: ChatsService) {}
+  constructor(
+    private readonly chatsService: ChatsService,
+    private readonly friendsService: FriendsService,
+    private readonly channelsService: ChannelsService
+  ) { }
   async handleConnection(@ConnectedSocket() socket: Socket) {
     const user = await this.chatsService.getUserFromSocket(socket);
+
     this.server.emit('message', `Welcome ${user.userName}, you're connected`);
   }
 
@@ -30,33 +39,50 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const user = await this.chatsService.getUserFromSocket(socket);
     socket.emit('message', `${user.userNameLoc} is deconnected`);
   }
+  
+  @SubscribeMessage('request_friendship')
+  async createFriendship(
+    @ConnectedSocket() socket: Socket, friend: string) {
+    const user = await this.chatsService.getUserFromSocket(socket);
+    const friendDto: CreateFriendDto = {
+      receiver: +friend,
+      sender: user.id,
+      relation: "PENDING",
+      createdAt: new Date().toISOString()
+    }
 
-  @SubscribeMessage('send_message')
-  async listenForMessages(
-    @MessageBody() message: string,
-    @ConnectedSocket() socket: Socket,
-  ) {
-    const author = await this.chatsService.getUserFromSocket(socket);
-    const content = {
-      authorId: author.id,
-      channelId: 1,
-      message,
-    };
-    const newMessage = await this.chatsService.saveMessage(content);
+    const friendShip = await this.friendsService.create(friendDto);
 
-    this.server.sockets.emit('receive_message', { newMessage });
-
-    return newMessage;
+    socket.emit('received_friend_request', friendShip);
   }
 
-  @SubscribeMessage('request_all_messages')
-  async requestAllMessages(@ConnectedSocket() socket: Socket) {
-    await this.chatsService.getUserFromSocket(socket);
-    const messages = await this.chatsService.getAllMessagesInChannel(1);
+  @SubscribeMessage('accept_friend_request')
+  async updateFriendship(
+    @ConnectedSocket() socket: Socket,
+    friendship: CreateFriendDto
+  ) {
 
-    socket.emit('send_all_messages', messages);
+    var updatedFriendship;
+    const user = await this.chatsService.getUserFromSocket(socket);
+
+    if (friendship.receiver === user.id) {
+      const reqToAccept: CreateFriendDto= {
+        ...friendship,
+        relation: 'ACCEPTED' // should define enum values for relation !!!!
+      }  
+      
+      updatedFriendship = await this.friendsService.update(user.id, reqToAccept);
+    }
+
+    this.server.emit('accepted_friend_request', updatedFriendship);
   }
 
   @SubscribeMessage('create_channel')
-  async create_channel(@ConnectedSocket() socket: Socket) {}
+  async createChannel(@ConnectedSocket() socket: Socket, channel: CreateChannelDto) {
+    const newChannel = await this.channelsService.create(channel);
+
+    socket.emit('channel_created', newChannel);
+  }
+
+  @
 }

@@ -63,39 +63,39 @@ const Home = ({
 			try {
 				const resp = await axios.post('http://localhost:5000/pong/users/auth', { token, state });
 				if (resp.status === 200) {
-          const user = resp.data;
-          if (user.is2Fa === true) {
-						loginState.setIsLogin(false);
-						setToken2fa(user.token2fa);
-						Cookies.remove('userId');
-            Cookies.remove('isAuth');
-            return logStatus.IS2FA;
-          }
-          setUserId(user.id.toString());
-          Cookies.set('userId', user.id, { expires: 7 });
-          Cookies.set('isAuth', 'true', { expires: 7 });
-          const newSocket = io('http://localhost:5000', {
-              extraHeaders: {
-                  'X-Custom-Data': user.id
-              }
-          });
-          setSocket(newSocket);
-          newSocket.on('message', (message: string) => {
-              console.log(message);
-          });
-          return logStatus.ISNOT2FA;
+                    const userData = resp.data;
+                    if (userData.is2Fa === true) {
+                        loginState.setIsLogin(false);
+                        setToken2fa(userData.token2fa);
+                        Cookies.remove('userId');
+                        Cookies.remove('isAuth');
+                        return logStatus.IS2FA;
+                    }
+                    setUserId(userData.user.id.toString());
+                    Cookies.set('userId', userData.user.id, { expires: 7 });
+                    Cookies.set('isAuth', 'true', { expires: 7 });
+                    const newSocket = io('http://localhost:5000', {
+						extraHeaders: {
+							'X-Custom-Data': userData.user.id
+						}
+         			 });
+					setSocket(newSocket);
+					newSocket.on('message', (message: string) => {
+						console.log(message);
+					});
+          			return logStatus.ISNOT2FA;
 				}
 			}
 			catch (error) {
 				console.log('Error auth', error);
-        loginState.setIsLogin(false);
+                loginState.setIsLogin(false);
 				navigate('/login');
 			}
 		}
 
 	}
 	const getUsersInfo = async () => {
-		try {
+	    try {
 			const response = await axios.get<User[]>('http://localhost:5000/pong/users/');
 			if (response.status === 200) {
 				setUsersInfo(response.data);
@@ -146,7 +146,7 @@ const Home = ({
 		(async () => {
 			if (userCode.code !== null && !id) {
         auth = await authenticateToAPI(userCode.code, state);
-        if (auth == logStatus.IS2FA) return navigate('/login2fa');
+	    if (auth == logStatus.IS2FA) return navigate('/login2fa');	
       }
     })();
 	}, [userId, loginState]);

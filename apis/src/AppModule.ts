@@ -12,6 +12,7 @@ import { FriendsModule } from './friends/friends.module';
 import { AuthModule } from './auth/auth.module';
 import { ChatsModule } from './chats/chats.module';
 import { EventGateway } from './event.gateway';
+import { ChannelsModule } from './channels/channels.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { EventGateway } from './event.gateway';
     FriendsModule,
     AuthModule,
     ChatsModule,
+    ChannelsModule
   ],
   controllers: [AppController],
   providers: [AppService, EventGateway],

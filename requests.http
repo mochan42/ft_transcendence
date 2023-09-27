@@ -40,7 +40,7 @@ Content-Type: application/json
 }
 
 ### udpate 2FA option
-GET  http://localhost:5000/pong/users/auth/2fa/30
+PATCH   http://localhost:5000/pong/users/2fa/30
 
 ###  delete user
 DELETE  http://localhost:5000/pong/users/8
