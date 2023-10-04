@@ -100,7 +100,7 @@ const  ChatPageGroups = () => {
         {/* Right side : conversation panel */}
         {/* // TODO */}
         </Stack>
-        {openDialog && <ChatPageGroupsCreate openState={openDialog} handlerClose={handleCloseDialog} />}
+        {openDialog && <ChatPageGroupsCreate openState={openDialog} handleClose={handleCloseDialog} />}
         </>
       );
 }

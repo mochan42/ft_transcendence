@@ -1,3 +1,4 @@
 *.env
 docker.env
 db/*
+frontend/todo.txt
