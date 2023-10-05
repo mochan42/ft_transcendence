@@ -2,6 +2,10 @@ import { useRef, useState } from "react";
 import { Socket } from "socket.io-client";
 import { ChatMessageProps, User } from "../types";
 import ChatMessage from "./ChatMessage";
+//import { Chat_History } from "../data/ChatData";
+import { toggleSidebar, updateSidebarType } from "../redux/slices/chatSideBar";
+import { useDispatch, useSelector } from "react-redux";
+import { selectChatSidebar } from "../redux/store";
 
 interface ChatProps {
     userId: string | null;
@@ -16,6 +20,8 @@ const ChatConversation: React.FC<ChatProps> = ({ userId }) => {
     const [socket, setSocket] = useState<Socket | undefined>();
     const [username, setUserName] = useState<string>('');
     const messageContainerRef = useRef<HTMLDivElement>(null);
+    const dispatch = useDispatch();
+    const chatSideBar = useSelector(selectChatSidebar);
 
 	var id = 0;
 
@@ -62,35 +68,58 @@ const ChatConversation: React.FC<ChatProps> = ({ userId }) => {
         }
     };
 
-
-	return (
-        <div className="h-full w-full flex flex-col bg-green-200">
-            <div className="p-1 h-1/6 bg-white shadow-md">
-                <div className="flex justify-between items-center h-full w-full">
-                    <div className="flex items-center space-x-2">
-                        <div className="p-1">
-                            <span className="relative">
-                                <span className="block w-8 h-8 rounded-full">
-                                    <img src="avatar-image-url" alt="Avatar" className="w-8 h-8 rounded-full" />
-                                </span>
-                                <span className="absolute w-3 h-3 rounded-full bottom-0 right-0"></span>
-                            </span>
-                        </div>
-                        <div className="space-y-0.2">
-                            <p className="text-base font-medium">pmeising</p>
-                            <p className="text-xs text-gray-500">Online</p>
-                        </div>
-                    </div>
-                    <div>
-                        <button>
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 32 32"
-                                className="w-6 h-6"
+    return ( 
+        <Stack sx={{ height: "100%", width: "100%",
+            }} 
+        >
+            {/* Chat header */}
+            <Box p={1} sx={{ 
+                width: "100%", backgroundColor: "white",
+                boxShadow: "0px 0px 2px rgba(0, 0, 0, 0.25)" }}
+            >
+                <Stack direction={"row"} justifyContent={"space-between"} sx={{ height:"100%", width:"100%"}}>
+                    <Stack onClick={ ()=> { 
+                                            dispatch(toggleSidebar());
+                                            console.log(chatSideBar.chatSideBar.type);
+                                            console.log(chatSideBar.chatSideBar.open);
+                                        } 
+                                   }
+                           direction={"row"} spacing={2} alignContent={"center"}
+                    >
+                        <Box p={1}>
+                            <Badge 
+                                color="success" 
+                                variant="dot" 
+                                anchorOrigin={{vertical:"bottom", horizontal:"left"}}
+                                overlap="circular"
                             >
-                                <path d="M24 12l-8 8-8-8" />
-                            </svg>
-                        </button>
+                                <Avatar alt="image"/>
+                            </Badge>
+                        </Box>
+                        <Stack spacing={0.2}>
+                            <Typography variant="subtitle1">pmeising</Typography>
+                            <Typography variant="caption">Online</Typography>
+                        </Stack>
+                    </Stack>
+                    <Stack>
+                        <IconButton>
+                            <CaretDown />
+                        </IconButton>
+                    </Stack>
+                </Stack>
+            </Box>
+
+
+            {/* Chat message */}
+            <Box p={1} sx={{ height: "100%", width: "100%", backgroundColor: "#eee", overflowY:"scroll"}} >
+                <ChatMessage/>
+				<div className='w-4/5 p-4' ref={messageContainerRef}>
+                    <div className='flex-1'>
+                        {messages.map((message) => (
+                            <div key={message.id} className='mb-2'>
+                                <p>{message.user}: {message.message}</p>
+                            </div>
+                        ))}
                     </div>
                 </div>
             </div>

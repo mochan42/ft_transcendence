@@ -1,5 +1,5 @@
 import { TChatUserData } from "../types";
-import { ChatUserList } from '../data/ChatData';
+import  { ChatUserList } from '../data/ChatData';
 
 const ChatElement = (user : TChatUserData) => {
     return (
@@ -42,19 +42,29 @@ const ChatElement = (user : TChatUserData) => {
 
 const  ChatPageUsers = () => {
     return (
-		<div className="h-full w-1/3 flex flex-col space-y-2 bg-white">
-			<div className="h-1/6">
-				Chats
-			</div>
-			<div className="h-5/6 border-2">
-				<div className="h-full flex flex-col space-y-1 overflow-y-auto">
-					{ChatUserList.map((el) => (
-						<ChatElement key={el.id} {...el} />
-						))}
-				</div>
-			</div>
-		</div>
-	);
+        <Box 
+          sx={{
+            position:"relative",
+            height: "100%",
+            minWidth: "350px",
+            backgroundColor: "white",
+            boxShadow: "0px 0px 2px rgba(0, 0, 0, 0.25)"
+          }}>
+            <Stack p={3} spacing={1} sx={{height:"100%"}}>
+                <Stack alignItems={"centered"} >
+                    <Typography variant='h5'>Chats</Typography>
+                </Stack>
+                <Divider/>
+                <Stack 
+                    sx={{flexGrow:1, overflowY:"scroll", height:"100%"}}
+                    direction={"column"} 
+                    spacing={0.5} 
+                >
+                    { ChatUserList.map((el) => { return (<ChatElement {...el} />) })}
+                </Stack>
+            </Stack>
+        </Box>
+      );
 }
  
 

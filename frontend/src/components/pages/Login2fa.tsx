@@ -5,6 +5,7 @@ import QRCode from 'qrcode.react';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 
+
 interface Props {
   isAuth: boolean;
   setIsAuth: React.Dispatch<React.SetStateAction<boolean>>;

@@ -1,4 +1,3 @@
-
 const ChatUserList = [
     {
         id: 0,
@@ -118,4 +117,5 @@ const Chat_History = [
         outgoing: false,
     },
 ]
-export  { ChatUserList, Chat_History};
+
+export  { ChatUserList, Chat_History };

@@ -16,6 +16,8 @@ import GameSelection from './components/pages/GameSelection';
 import { Utils__isAPICodeAvailable } from './utils/utils__isAPICodeAvailable';
 import Cookies from 'js-cookie';
 
+
+
 const App: React.FC = () => {
 
 	const authSession: boolean = Cookies.get('isAuth') ? true : false; // While auth is broken, changing it to 'true : true' was 'true : false'
@@ -28,11 +30,9 @@ const App: React.FC = () => {
 	const [socket, setSocket] = useState<any>(null);
 	const [token2fa, setToken2fa] = useState<string>('');
 
-	// check if code available for backend to exchange for token
-	useEffect(() => {
-		Utils__isAPICodeAvailable({ setIsAuth, isAuth, setCode, code }, state)
-	}, [isAuth, code]);
-
+    // check if code available for backend to exchange for token
+    Utils__isAPICodeAvailable({setIsAuth, isAuth, setCode, code })
+    
 	return (
 		<div className='flex-cols font-mono dark:bg-white/75 bg-slate-900 bg-opacity-80 h-screen'>
 			<Router>

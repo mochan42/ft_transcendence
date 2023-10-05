@@ -23,7 +23,10 @@ const ChatBoard = () => {
     const theme = useTheme();
 
     const [selected, setSelected] = useState<Number>(0)
+    
 
+
+    
     return (  
         <div className="p-2 bg-slate-200 shadow-md h-full w-1/5">
 			<div className="space-y-3 flex flex-col items-center w-full">

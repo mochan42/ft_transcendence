@@ -9,7 +9,7 @@ import EditProfile from '../EditProfile';
 
 import '../../css/profile.css';
 
-  const Profile:React.FC<ProfileProps> =({ userId, isAuth }) => {
+    const Profile:React.FC<ProfileProps> =({ userId, is2faEnable }) => {
 	
 	const [userInfo, setUserInfo] = useState< User | null >(null);
 	const [usersInfo, setUsersInfo] = useState< User[] | null >(null);
@@ -34,9 +34,12 @@ import '../../css/profile.css';
       const ConfigureBtn2fa = (updated2faState: boolean) => {
         if (!updated2faState) {
             setBtnTxt2fa(" 2FA: disabled ");
-		}
-		else {
+            //setBtnStyle('profile_btn disabled');
+        }
+        else
+        {
             setBtnTxt2fa(" 2FA: active ");
+            //setBtnStyle('profile_btn active');
         }
 
     }

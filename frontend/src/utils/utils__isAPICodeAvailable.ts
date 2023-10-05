@@ -8,11 +8,10 @@ import { TUserAuth } from "../types";
  * @returns true if code string is available
  *          false if not available
  */
-export const Utils__isAPICodeAvailable = ( userAuth : TUserAuth, state: string): boolean =>
+export const Utils__isAPICodeAvailable = ( userAuth : TUserAuth ) =>
 {
-    var result = false;
     const urlBrowser = window.location.href;
-    console.log("HOME_APP entry: call to app " + urlBrowser);
+    console.log("HOME_APP entry: call to app " +  urlBrowser);
     
     if (userAuth.code === null && userAuth.isAuth === false)
     {
@@ -23,12 +22,10 @@ export const Utils__isAPICodeAvailable = ( userAuth : TUserAuth, state: string):
             if (key === "code") {
                 userAuth.setCode(value);
                 userAuth.setIsAuth(true);
-                result = true;
             }
         });
     }
     console.log("HOME_APP exit: call to app " + userAuth.code + "; state: " + userAuth.isAuth);
-    return (result);
 }
 
 export default Utils__isAPICodeAvailable

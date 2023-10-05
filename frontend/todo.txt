@@ -7,3 +7,59 @@
 
 --- CHAT ROOM  ---
 01. watch video how to create chat on react.
+02. select one from chatmessage layout.
+03. Dialog box : v07
+04. ChangeGroup to Room
+
+*---
+01. access the profile of other user through the chat interface
+02. invite other users to play game through the chat interface
+03. user should be able to block other user - see no messages from user
+04. user can send direct messages to other user.
+05. user can create channel (public, private and protected by password)
+06. Channel owner can do the following.
+    - automatically the channel owner until they leave
+    - can set, change and remove password
+    - can set other user as channel admin
+    - admin can remove, kick, ban other user for period of time except for channel owner.
+
+
+installation
+npm i yup @hookform/resolvers
+
+-----
+LINKS
+-----
+
+reactjs - beginner
+https://www.youtube.com/playlist?list=PLC3y8-rFHvwgg3vaYJgHGnModB54rxOk3
+
+
+react-typescript
+https://www.youtube.com/watch?v=mDu54a5U3OU&list=PLC3y8-rFHvwi1AXijGTKM0BKtHzVC-LSK&index=5
+
+
+react-redux
+https://www.youtube.com/watch?v=eFh2Kr9hfyo
+
+
+react-hook-form - typescript
+https://youtu.be/nt8NTuUbuG4?list=PLzYM-WGWIJDQaDnYnaaQHgStfoL200xF2
+https://www.youtube.com/watch?v=kV5wfVyN6xI&list=PLC3y8-rFHvwjmgBr1327BA5bVXoQH-w5s&index=29
+
+
+react chat app
+https://www.youtube.com/watch?v=SxzVk2ZteSY&list=PLdLUE-L26MMbXYkddCi6Cb1jy5dKczosk&index=13
+
+
+
+
+-----------------
+npm installations
+-----------------
+forms : npm i yup @hookform/resolvers
+forms : npm i react-hook-form
+devtool : npm i -D  @hookform/devtools
+
+html element, css styling : npm i @mui/material @emotion/react @emotion/styled
+prop types : npm i prop-types

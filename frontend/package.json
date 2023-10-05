@@ -6,33 +6,54 @@
 	"dependencies": {
 		"@emotion/react": "^11.11.1",
 		"@emotion/styled": "^11.11.0",
+<<<<<<< HEAD
 		"@mui/material": "^5.14.6",
+=======
+		"@faker-js/faker": "^8.0.2",
+		"@hookform/resolvers": "^3.3.1",
+		"@mui/material": "^5.14.5",
+		"@reduxjs/toolkit": "^1.9.5",
+>>>>>>> 688662e2dab6646e82e1b08497fa09891ba7aac1
 		"@testing-library/jest-dom": "^5.16.5",
 		"@testing-library/react": "^13.4.0",
 		"@testing-library/user-event": "^13.5.0",
+		"@types/react-redux": "^7.1.26",
+		"@types/redux": "^3.6.0",
+		"@types/redux-persist": "^4.3.1",
+		"add": "^2.0.6",
 		"axios": "^1.4.0",
 		"base32-encode": "^2.0.0",
 		"chart.js": "^4.3.1",
 		"class-variance-authority": "^0.6.1",
 		"crypto-browserify": "^3.12.0",
+		"faker": "^5.5.3",
 		"hi-base32": "^0.5.1",
-		"js-cookie": "^3.0.5",
 		"notp": "^2.0.3",
 		"otplib": "^12.0.1",
 		"phosphor-react": "^1.4.1",
+		"prop-types": "^15.8.1",
 		"qrcode": "^1.5.3",
 		"qrcode.react": "^3.1.0",
 		"react": "^18.2.0",
 		"react-chartjs-2": "^5.2.0",
 		"react-dom": "^18.2.0",
+		"react-hook-form": "^7.46.2",
 		"react-otp-input": "^3.0.4",
+		"react-redux": "^8.1.2",
 		"react-scripts": "^5.0.1",
+		"redux": "^4.2.1",
+		"redux-persist": "^6.0.0",
 		"socket.io": "^4.7.1",
 		"socket.io-client": "^4.7.2",
 		"speakeasy": "^2.0.0",
 		"tailwind-merge": "^1.14.0",
+<<<<<<< HEAD
 		"typescript": "^5.2.2",
 		"web-vitals": "^2.1.4"
+=======
+		"web-vitals": "^2.1.4",
+		"yup": "^1.2.0"
+>>>>>>> 688662e2dab6646e82e1b08497fa09891ba7aac1
 	},
 	"scripts": {
 		"start": "react-scripts start",
@@ -59,7 +80,7 @@
 		]
 	},
 	"devDependencies": {
-		"@types/js-cookie": "^3.0.3",
+		"@hookform/devtools": "^4.3.1",
 		"@types/react-router-dom": "^5.3.3",
 		"react-router-dom": "^6.14.1",
 		"tailwindcss": "^3.3.2",

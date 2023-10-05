@@ -6,20 +6,27 @@ import Leaderboard from "../LeaderBoard";
 import ChatBoard from '../ChatBoard';
 import { Friend, User } from "../../types";
 import ChatPageUsers from '../ChatPageUsers';
+import ChatPageGroups from '../ChatPageGroups';
 import ChatConversation from '../ChatConversation';
 import About from './About';
 import Cookies from 'js-cookie';
 import { io } from 'socket.io-client';
 import Login2fa from '../../components/pages/Login2fa';
+import ChatContact from '../ChatContact';
+import chatSideBar, { toggleSidebar, updateSidebarType } from "../../redux/slices/chatSideBar";
+import { useDispatch, useSelector } from "react-redux";
+import { selectChatSidebar } from "../../redux/store";
+import { Stack } from 'phosphor-react';
+
 
 type TUserState = {
-	userCode: {
-		code: (string | null)
-		setCode: React.Dispatch<React.SetStateAction<string | null>>
-	},
-	loginState: {
-		isLogin: boolean
-		setIsLogin: React.Dispatch<React.SetStateAction<boolean>>
+    userCode : {
+        code: (string | null )
+        setCode: React.Dispatch<React.SetStateAction<string | null>>
+    },
+    loginState : {
+        isLogin: boolean
+        setIsLogin: React.Dispatch<React.SetStateAction<boolean>>
 	},
 	userId: string | null,
 	setUserId: React.Dispatch<React.SetStateAction<string | null>>,
@@ -83,8 +90,8 @@ const Home = ({
 				navigate('/login');
 			}
 		}
-
 	}
+	
 	const getUsersInfo = async () => {
 	    try {
 			const response = await axios.get<User[]>('http://localhost:5000/pong/users/');
@@ -117,10 +124,10 @@ const Home = ({
 		(async () => {
 			if (userId != null && loginState.isLogin) {
 				if (friends === null) {
-					await getFriends()
+					getFriends()
 				}
 				if (usersInfo === null) {
-					await getUsersInfo()
+					getUsersInfo()
 				}
 				if (userFriends === null && usersInfo) {
 					const usersFriends = usersInfo?.filter((user) =>
@@ -137,7 +144,7 @@ const Home = ({
 	(async () => {
 		if (userCode.code !== null && !id) {
 			auth = await authenticateToAPI(userCode.code, state);
-			if (auth == logStatus.IS2FA) return navigate('/login2fa');	
+			if (auth == logStatus.IS2FA) navigate('/login2fa');	
 		}
     })();
 	}, [userId, loginState]);
@@ -211,13 +218,25 @@ const Home = ({
 								</div>
 							</div>
 						</div>
-						<div className="h-1/2 w-2/3 bg-slate-200 p-4">
-							<div className="flex h-full w-full bg-slate-900 p-4 text-center rounded-lg">
-								<ChatBoard/>
-								<ChatPageUsers/>
-								<ChatConversation userId={userId} />
-							</div>
-						</div>
+						<div className="w-2/3 bg-slate-200 p-4 h-1/2">
+					<div className='bg-slate-900 rounded-lg h-full w-full'>
+						{/* Chat window content goes here */}
+                        <Stack p={1} direction={"row"}
+                            sx={{
+                                gridGap: "0px",
+                                height:"100%",
+                                width: "100%",
+                            }}
+                        >
+                            <ChatBoard/>
+                            {/* <ChatPageUsers/> */}
+                            <ChatPageGroups/>
+                            {/* conversation element should be integral part of Group and user page */}
+                            <ChatConversation userId={userId}/>
+                            {chatSideBar.chatSideBar.open && <ChatContact /> }
+                        </Stack>
+					</div>
+				</div>
 					</div>
 				</div>
 			</>
