@@ -3,7 +3,7 @@ import { CreateChannelDto } from './dto/create-channel.dto';
 import { UpdateChannelDto } from './dto/update-channel.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Channel } from '../channels/entities/channel.entity';
+import { Channel } from './entities/channel.entity';
 
 @Injectable()
 export class ChannelsService {

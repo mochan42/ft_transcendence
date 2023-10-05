@@ -43,18 +43,18 @@ const Home = ({
 	userId, setUserId,
 	state,
 	socket,
-  setSocket,
-  token2fa,
-  setToken2fa,
+	setSocket,
+  	token2fa,
+  	setToken2fa,
 }: TUserState) => {
 
-  var auth: any;
+ 	 var auth: any;
 	const [usersInfo, setUsersInfo] = useState<User[] | null>(null);
 	const id = userId;
 	const urlFriends = 'http://localhost:5000/pong/users/' + id + '/friends';
 	const [userFriends, setUserFriends] = useState<User[] | null>(null);
-  const [friends, setFriends] = useState<Friend[] | null>(null);
-  const [is2fa, setIs2fa] = useState<number>(logStatus.DEFAULT);
+  	const [friends, setFriends] = useState<Friend[] | null>(null);
+ 	const [is2fa, setIs2fa] = useState<number>(logStatus.DEFAULT);
 	const navigate = useNavigate();
 
 
@@ -74,15 +74,6 @@ const Home = ({
                     setUserId(userData.user.id.toString());
                     Cookies.set('userId', userData.user.id, { expires: 7 });
                     Cookies.set('isAuth', 'true', { expires: 7 });
-                    const newSocket = io('http://localhost:5000', {
-						extraHeaders: {
-							'X-Custom-Data': userData.user.id
-						}
-         			 });
-					setSocket(newSocket);
-					newSocket.on('message', (message: string) => {
-						console.log(message);
-					});
           			return logStatus.ISNOT2FA;
 				}
 			}
@@ -142,15 +133,30 @@ const Home = ({
 			}
 		})();
 	}, [userId, loginState.isLogin]);
-  useEffect(() => {
-		(async () => {
-			if (userCode.code !== null && !id) {
-        auth = await authenticateToAPI(userCode.code, state);
-	    if (auth == logStatus.IS2FA) return navigate('/login2fa');	
-      }
+  	useEffect(() => {
+	(async () => {
+		if (userCode.code !== null && !id) {
+			auth = await authenticateToAPI(userCode.code, state);
+			if (auth == logStatus.IS2FA) return navigate('/login2fa');	
+		}
     })();
 	}, [userId, loginState]);
-
+    
+    useEffect(() => {
+        if (userId !== null && !socket) {
+            /************** Creating socket */
+            const newSocket = io('http://localhost:5000', {
+            extraHeaders: {
+                'X-Custom-Data': userId
+            }
+            });
+            setSocket(newSocket);
+            newSocket.on('message', (message: string) => {
+                console.log(message);
+            });
+            /******************************* */
+        }
+    });
   console.log('userID und Loginstate: ', userId, ', ', loginState)
 	if (!userId && !loginState.isLogin) {
 		return (
@@ -184,7 +190,7 @@ const Home = ({
 						</div>
 						<div className="w-2/3 bg-slate-200 p-4">
 							<div className='bg-slate-900 rounded-lg h-full w-full'>
-								<Leaderboard userId={userId} />
+								{(socket !== null) ? (<Leaderboard userId={userId} socket={socket} />) : (<></>)}
 							</div>
 						</div>
 						<div className="w-1/3 bg-slate-200 p-4 h-1/2">

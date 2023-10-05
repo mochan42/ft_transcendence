@@ -6,16 +6,24 @@ import { Button } from "./ui/Button";
 
 interface LeaderboardProps {
 	userId: string | null;
+	socket: any;
 }
 
-const Leaderboard:React.FC<LeaderboardProps> =({ userId }) => {
+const Leaderboard:React.FC<LeaderboardProps> =({ userId, socket }) => {
 
-	const [usersInfo, setUsersInfo] = useState< User[] >([]);
+	const [usersInfo, setUsersInfo] = useState<User[]>([]);
+	const [showScreen, setShowScreen] = useState< 'default' | 'FriendView'>('default');
 	const [topUsers, setTopUsers] = useState< User[] >([]);
 	const [friends, setFriends] = useState< Friend [] | null>(null)
 	const urlFriends = 'http://localhost:5000/pong/users/' + userId + '/friends';
 	
-	const getUsersInfo = async () => {
+	const sendReqFriend = () => {
+		const friend = '42';
+		alert('QUOI ?');
+		socket.emit('request_friendship', friend);
+	}
+
+	const getUsersInfo = async () => { 
 		try {
 			const response = await axios.get< User[] >('http://localhost:5000/pong/users/');
 			if (response.status === 200) {
@@ -75,6 +83,12 @@ const Leaderboard:React.FC<LeaderboardProps> =({ userId }) => {
 			setTopUsers(top5Users);
 	}, [usersInfo])
 
+	//*************Event sourcing*************
+	useEffect(() => {
+		socket.on('received_friend_request', (friendship: any) => {
+			
+		});
+	});
 	return (
 		<div className="h-full w-full bg-slate-900 p-4 text-center rounded-lg">
 			<h2 className="text-2xl text-amber-400 font-semibold mb-4">Leaderboard</h2>
@@ -87,8 +101,9 @@ const Leaderboard:React.FC<LeaderboardProps> =({ userId }) => {
 					<div className='flex justify-between gap-x-6 items-center'>
 						<Button variant={'ghost'} onClick={
 							(() => {
-								if (!(friends?.some((friend) => friend.receiver === user.id || friends?.some((friend) => friend.sender === user.id)))) {
-									return addFriend(user.id);
+									if (!(friends?.some((friend) => friend.receiver === user.id || friends?.some((friend) => friend.sender === user.id)))) {
+										alert('TOI DOU VIENS TU ?');
+										return addFriend(user.id);
 								}
 							})
 						}>
@@ -110,7 +125,7 @@ const Leaderboard:React.FC<LeaderboardProps> =({ userId }) => {
 							/>
 						</Button>
 						<img className='h-6 w-6 rounded-full' src={user.avatar != "" ? user.avatar : 'https://www.svgrepo.com/show/170615/robot.svg'}/>
-						<button className="text-lg mr-2 hover:underline">{user.userNameLoc}</button>
+							<button className="text-lg mr-2 hover:underline" onClick={() => { sendReqFriend() }} >{user.userNameLoc}</button>
 					</div>
 					<span className="text-slate-300">{user.xp} points</span>
 					<div className="text-amber-400">

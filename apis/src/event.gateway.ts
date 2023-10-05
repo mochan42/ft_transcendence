@@ -13,7 +13,7 @@ import { ChatsService } from './chats/chats.service';
 import { FriendsService } from './friends/friends.service';
 import { CreateFriendDto } from './friends/dto/create-friend.dto';
 import { CreateChannelDto } from './channels/dto/create-channel.dto';
-import { ChannelsService } from './channels/ChannelsService';
+import { ChannelsService } from './channels/channels.service';
 
 @WebSocketGateway({
   cors: {
@@ -29,7 +29,7 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
     private readonly friendsService: FriendsService,
     private readonly channelsService: ChannelsService
   ) { }
-  async handleConnection(@ConnectedSocket() socket: Socket) {
+  async handleConnection(@ConnectedSocket() socket: Socket, ...args: any[]) {
     const user = await this.chatsService.getUserFromSocket(socket);
 
     this.server.emit('message', `Welcome ${user.userName}, you're connected`);
@@ -42,15 +42,15 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
   
   @SubscribeMessage('request_friendship')
   async createFriendship(
-    @ConnectedSocket() socket: Socket, friend: string) {
+    @ConnectedSocket() socket: Socket,
+    @MessageBody() payload: string) {
     const user = await this.chatsService.getUserFromSocket(socket);
     const friendDto: CreateFriendDto = {
-      receiver: +friend,
+      receiver: +payload,
       sender: user.id,
       relation: "PENDING",
       createdAt: new Date().toISOString()
-    }
-
+    };
     const friendShip = await this.friendsService.create(friendDto);
 
     socket.emit('received_friend_request', friendShip);
@@ -84,5 +84,4 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
     socket.emit('channel_created', newChannel);
   }
 
-  @
 }
