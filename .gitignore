@@ -2,4 +2,4 @@
 docker.env
 db/*
 frontend/todo.txt
-./node_modules/*
+node_modules
