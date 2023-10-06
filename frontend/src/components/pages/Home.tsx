@@ -55,7 +55,7 @@ const Home = ({
   	setToken2fa,
 }: TUserState) => {
 
- 	 var auth: any;
+ 	var auth: any;
 	const [usersInfo, setUsersInfo] = useState<User[] | null>(null);
 	const id = userId;
 	const urlFriends = 'http://localhost:5000/pong/users/' + id + '/friends';
@@ -63,6 +63,8 @@ const Home = ({
   	const [friends, setFriends] = useState<Friend[] | null>(null);
  	const [is2fa, setIs2fa] = useState<number>(logStatus.DEFAULT);
 	const navigate = useNavigate();
+	const dispatch = useDispatch();
+    const chatSideBar = useSelector(selectChatSidebar);
 
 
 	const authenticateToAPI = async (token: string, state: string) => {
