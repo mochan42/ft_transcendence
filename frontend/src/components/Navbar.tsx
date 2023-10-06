@@ -3,6 +3,7 @@ import { Button } from './ui/Button'
 import React from 'react';
 import { useEffect, useState } from 'react';
 import { Box } from '@mui/material';
+import Cookies from 'js-cookie';
 
 // Icons from https://heroicons.com/
 
@@ -21,9 +22,11 @@ const Navbar: React.FC<Props> = ({ setIsAuth, isAuth, setCode, setUserId }) => {
 	const handleLogout = () => {
             // contact server to delete access token
 		if (isAuth) {
-			setIsAuth(false)
+			setIsAuth(false);
 			setCode(null);
 			setUserId(null);
+			Cookies.remove('isAuth');
+			Cookies.remove('userId');
 			navigate('/about')
 		}
 		else {
