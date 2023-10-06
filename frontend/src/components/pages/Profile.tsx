@@ -9,7 +9,7 @@ import EditProfile from '../EditProfile';
 
 import '../../css/profile.css';
 
-    const Profile:React.FC<ProfileProps> =({ userId, is2faEnable }) => {
+    const Profile:React.FC<ProfileProps> =({ userId, isAuth }) => {
 	
 	const [userInfo, setUserInfo] = useState< User | null >(null);
 	const [usersInfo, setUsersInfo] = useState< User[] | null >(null);

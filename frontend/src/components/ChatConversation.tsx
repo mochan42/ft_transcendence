@@ -6,6 +6,16 @@ import ChatMessage from "./ChatMessage";
 import { toggleSidebar, updateSidebarType } from "../redux/slices/chatSideBar";
 import { useDispatch, useSelector } from "react-redux";
 import { selectChatSidebar } from "../redux/store";
+import CaretDown from '@mui/icons-material/CaretDown';
+
+import {
+  Stack,
+  Box,
+  Badge,
+  Avatar,
+  Typography,
+  IconButton,
+} from "@mui/material";
 
 interface ChatProps {
     userId: string | null;
@@ -122,7 +132,7 @@ const ChatConversation: React.FC<ChatProps> = ({ userId }) => {
                         ))}
                     </div>
                 </div>
-            </div>
+            </Box>
 			<div className="h-4/5 w-full">
 				<div className="p-1 h-5/6 w-full bg-gray-200 overflow-y-auto">
 					<ChatMessage incoming={true} user="facinet" message="Hello there" timeOfSend={new Date} id={1}/>
@@ -151,7 +161,7 @@ const ChatConversation: React.FC<ChatProps> = ({ userId }) => {
 					</div>
 				</div>
 			</div>
-        </div>
+        </Stack>
     );
 }
  

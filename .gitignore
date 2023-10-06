@@ -1,9 +1,15 @@
+
+# environment
 *.env
-docker.env
-<<<<<<< HEAD
+
+# database volume
 db/*
+
+# IDE-specific files
+.idea/
+.vscode/
+
+# others
+
 /apis/avatars/
-=======
-db/*
 frontend/todo.txt
->>>>>>> 688662e2dab6646e82e1b08497fa09891ba7aac1

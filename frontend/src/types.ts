@@ -31,7 +31,7 @@ type UserAchievements = {
 
 interface ProfileProps {
   userId: string | null;
-    is2faEnable: boolean,
+  isAuth: boolean,
 };
 
 type Goal = {

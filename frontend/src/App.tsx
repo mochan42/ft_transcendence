@@ -13,8 +13,8 @@ import PageNotFound from './components/pages/PageNotFound';
 import Footer from './components/Footer';
 import Layout from './components/pages/Layout';
 import GameSelection from './components/pages/GameSelection';
-import { Utils__isAPICodeAvailable } from './utils/utils__isAPICodeAvailable';
 import Cookies from 'js-cookie';
+import { Utils__isAPICodeAvailable } from './utils/utils__isAPICodeAvailable';
 
 
 
