@@ -1,5 +1,7 @@
 import { TChatUserData } from "../types";
-import  { ChatUserList } from '../data/ChatData';
+import { ChatUserList } from '../data/ChatData';
+import { Box, Stack, IconButton, Typography, Divider, Avatar, Badge } from "@mui/material";
+import { CaretDown } from "phosphor-react";
 
 const ChatElement = (user : TChatUserData) => {
     return (

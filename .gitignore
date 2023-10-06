@@ -10,6 +10,7 @@ db/*
 .vscode/
 
 # others
-
 /apis/avatars/
 frontend/todo.txt
+frontend/todo.txt
+node_modules

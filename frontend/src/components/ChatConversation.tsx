@@ -1,4 +1,6 @@
 import { useRef, useState } from "react";
+import { Box, Stack, IconButton, Typography, Divider, Avatar, Badge } from "@mui/material";
+import { CaretDown } from "phosphor-react";
 import { Socket } from "socket.io-client";
 import { ChatMessageProps, User } from "../types";
 import ChatMessage from "./ChatMessage";
@@ -6,16 +8,6 @@ import ChatMessage from "./ChatMessage";
 import { toggleSidebar, updateSidebarType } from "../redux/slices/chatSideBar";
 import { useDispatch, useSelector } from "react-redux";
 import { selectChatSidebar } from "../redux/store";
-import CaretDown from '@mui/icons-material/CaretDown';
-
-import {
-  Stack,
-  Box,
-  Badge,
-  Avatar,
-  Typography,
-  IconButton,
-} from "@mui/material";
 
 interface ChatProps {
     userId: string | null;
@@ -121,8 +113,10 @@ const ChatConversation: React.FC<ChatProps> = ({ userId }) => {
 
 
             {/* Chat message */}
-            <Box p={1} sx={{ height: "100%", width: "100%", backgroundColor: "#eee", overflowY:"scroll"}} >
-                <ChatMessage/>
+            <Box p={1} sx={{ height: "100%", width: "100%", backgroundColor: "#eee", overflowY: "scroll" }} >
+                {/* what's the diff with others ChatMessage */}
+                {/* <ChatMessage {new} /> */}
+                <ChatMessage incoming={true} user="facinet" message="Hello there" timeOfSend={new Date} id={1}/>
 				<div className='w-4/5 p-4' ref={messageContainerRef}>
                     <div className='flex-1'>
                         {messages.map((message) => (

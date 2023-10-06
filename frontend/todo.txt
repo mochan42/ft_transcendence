@@ -60,6 +60,13 @@ npm installations
 forms : npm i yup @hookform/resolvers
 forms : npm i react-hook-form
 devtool : npm i -D  @hookform/devtools
+npm i @mui/material axios --save-prod --save-dev
+npm i @mui/material react-router-dom --save-prod --save-dev
+----
+chat
+----
+npm i @mui/material @emotion/react @emotion/styled socket.io-client react-redux phosphor-react yup @hookform/resolvers redux-persist react-hook-form --save-prod --save-dev
+npm i react-scripts axios @faker-js/faker  hi-base32 qrcode.react @reduxjs/toolkit tailwind-merge class-variance-authority react-otp-input --save-prod --save-dev
 
 html element, css styling : npm i @mui/material @emotion/react @emotion/styled
 prop types : npm i prop-types

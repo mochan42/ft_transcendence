@@ -16,7 +16,7 @@ import ChatContact from '../ChatContact';
 import chatSideBar, { toggleSidebar, updateSidebarType } from "../../redux/slices/chatSideBar";
 import { useDispatch, useSelector } from "react-redux";
 import { selectChatSidebar } from "../../redux/store";
-import { Stack } from 'phosphor-react';
+import { Stack } from "@mui/material";
 
 
 type TUserState = {
