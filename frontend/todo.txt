@@ -67,6 +67,10 @@ chat
 ----
 npm i @mui/material @emotion/react @emotion/styled socket.io-client react-redux phosphor-react yup @hookform/resolvers redux-persist react-hook-form --save-prod --save-dev
 npm i react-scripts axios @faker-js/faker  hi-base32 qrcode.react @reduxjs/toolkit tailwind-merge class-variance-authority react-otp-input --save-prod --save-dev
+npm i js-cookie --save-dev --save-prod
 
 html element, css styling : npm i @mui/material @emotion/react @emotion/styled
 prop types : npm i prop-types
+
+npm config set legacy-peer-deps true    : Fix depenpendencies issue while installing package js-cookie
+npm cache clean --force                 : clear the cache

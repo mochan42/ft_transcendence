@@ -11,7 +11,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - ./db/data:/var/lib/postgresql/data
+      - postgres-data:/var/lib/postgresql/data
     env_file:
       - ./docker.env
     networks:
@@ -53,6 +53,10 @@ services:
       - apis
     stdin_open: true
 
+
+volumes:
+    postgres-data:
+        
 # define network
 networks:
   app-network:
