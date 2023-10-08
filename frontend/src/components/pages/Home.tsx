@@ -17,6 +17,7 @@ import chatSideBar, { toggleSidebar, updateSidebarType } from "../../redux/slice
 import { useDispatch, useSelector } from "react-redux";
 import { selectChatSidebar } from "../../redux/store";
 import { Stack } from "@mui/material";
+import { HOME_SECTION, logStatus } from "../../enums";
 
 
 type TUserState = {
@@ -38,11 +39,7 @@ type TUserState = {
     setToken2fa: React.Dispatch<React.SetStateAction<string>>,
 }
 
-enum logStatus {
-  DEFAULT,
-  IS2FA,
-  ISNOT2FA
-}
+
 
 const Home = ({
 	userCode,
@@ -65,6 +62,7 @@ const Home = ({
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
     const chatSideBar = useSelector(selectChatSidebar);
+	const [section, setSection] = useState<Number>(0)
 
 
 	const authenticateToAPI = async (token: string, state: string) => {
@@ -194,6 +192,7 @@ const Home = ({
 			<>
 				<div className='h-5/6'>
 					<div className="flex flex-wrap h-full">
+						<ChatBoard section={section} setSection={setSection}/>
 						<div className="w-1/3 bg-slate-200 p-4 h-1/2">
 							<UserCard userId={userId} foundMatch={false} info={'profile'}></UserCard>
 						</div>
@@ -221,24 +220,25 @@ const Home = ({
 							</div>
 						</div>
 						<div className="w-2/3 bg-slate-200 p-4 h-1/2">
-					<div className='bg-slate-900 rounded-lg h-full w-full'>
-						{/* Chat window content goes here */}
-                        <Stack p={1} direction={"row"}
-                            sx={{
-                                gridGap: "0px",
-                                height:"100%",
-                                width: "100%",
-                            }}
-                        >
-                            <ChatBoard/>
-                            {/* <ChatPageUsers/> */}
-                            <ChatPageGroups/>
-                            {/* conversation element should be integral part of Group and user page */}
-                            <ChatConversation userId={userId}/>
-                            {chatSideBar.chatSideBar.open && <ChatContact /> }
-                        </Stack>
-					</div>
-				</div>
+							<div className='bg-slate-900 rounded-lg h-full w-full'>
+								{/* Chat window content goes here */}
+		                        <Stack p={1} direction={"row"}
+		                            sx={{
+		                                gridGap: "0px",
+		                                height:"100%",
+		                                width: "100%",
+		                            }}
+		                        >
+		                            {/* <ChatBoard /> */}
+		                            {/* <ChatPageUsers/> */}
+		                            { section === HOME_SECTION.CHAT_USER ? <ChatPageUsers/> : null}
+		                            { section === HOME_SECTION.CHAT_GROUP ? <ChatPageGroups/> : null}
+		                            {/* conversation element should be integral part of Group and user page */}
+		                            <ChatConversation userId={userId}/>
+		                            {chatSideBar.chatSideBar.open && <ChatContact /> }
+		                        </Stack>
+							</div>
+						</div>
 					</div>
 				</div>
 			</>

@@ -1,28 +1,44 @@
 import { Box, Stack, IconButton } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import { Users, ChatCircleDots, Phone } from "phosphor-react";
+import { Users, ChatCircleDots, Phone, Browser} from "phosphor-react";
 import { useState } from "react";
+import { useNavigate } from 'react-router-dom'
+import ChatPageUsers from './ChatPageUsers';
+import ChatPageGroups from './ChatPageGroups';
+import { HOME_SECTION } from "../enums";
+
 
 const ChatBoardBtns = [
     {
-        index: 0,
+        index: HOME_SECTION.PROFILE,
+        icon: <Browser />,
+    },
+    {
+        index: HOME_SECTION.CHAT_USER,
         icon: <ChatCircleDots/>,
     },
     {
-        index: 1,
+        index: HOME_SECTION.CHAT_GROUP,
         icon: <Users/>,
     },
     {
-        index: 2,
+        index: HOME_SECTION.REQUEST,
         icon: <Phone/>,
     }
 ]
 
-const ChatBoard = () => {
+interface ISelectSection {
+	section: Number,
+	setSection: React.Dispatch<React.SetStateAction<Number>>
+}
+
+const ChatBoard = (select : ISelectSection) => {
 
     const theme = useTheme();
 
-    const [selected, setSelected] = useState<Number>(0)
+	const navigate = useNavigate();
+
+    //const [selected, setSelected] = useState<Number>(0)
     
 
 
@@ -32,7 +48,7 @@ const ChatBoard = () => {
 			<div className="space-y-3 flex flex-col items-center w-full">
 				{ChatBoardBtns.map((el) => (
 					<div key={el.index}>
-						{el.index === selected ? (
+						{el.index === select.section ? (
 							<div className="bg-slate-900 rounded-md">
 								<button
 									className="w-16 h-16 text-amber-400 py-2 flex items-center justify-center text-2xl"
@@ -42,7 +58,15 @@ const ChatBoard = () => {
 							</div>
 						) : (
 							<button
-								onClick={() => setSelected(el.index)}
+								onClick={() => {
+									select.setSection(el.index);
+									console.log("Select:", select.section, "-", el.index)
+									navigate('/')
+									// { selected === HOME_SECTION.CHAT_USER 
+									// 	? <ChatPageUsers/>
+									// 	: <ChatPageGroups/>}
+
+								}}
 								className="w-full py-2 flex items-center justify-center text-2xl"
 							>
 								{el.icon}

@@ -74,3 +74,13 @@ prop types : npm i prop-types
 
 npm config set legacy-peer-deps true    : Fix depenpendencies issue while installing package js-cookie
 npm cache clean --force                 : clear the cache
+
+
+
+
+----
++ update channel form schema
+  + Handle protect and password connection for user
++ update home page with navigation
++ integrate conversation to chatgroup and chatuser
++ update the navigation tabs
