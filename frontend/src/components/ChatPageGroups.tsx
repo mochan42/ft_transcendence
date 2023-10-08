@@ -9,6 +9,8 @@ import { TChatUserData } from "../types";
 import { ChatUserList } from "../data/ChatData";
 import ChatPageGroupsCreate from "./ChatPageGroupsCreate";
 
+import { ChatProps } from "../types";
+import ChatConversation from "./ChatConversation";
 
 
 const ChatElement = (user : TChatUserData) => {
@@ -54,7 +56,7 @@ const ChatElement = (user : TChatUserData) => {
 }
 
 
-const  ChatPageGroups = () => {
+const  ChatPageGroups = (chatProp : ChatProps) => {
     const theme = useTheme();
     const [openDialog, setOpenDialog] = useState<boolean>(false);
 
@@ -99,6 +101,8 @@ const  ChatPageGroups = () => {
         </Box>
         {/* Right side : conversation panel */}
         {/* // TODO */}
+		<ChatConversation userId={chatProp.userId}/>
+
         </Stack>
         {openDialog && <ChatPageGroupsCreate openState={openDialog} handleClose={handleCloseDialog} />}
         </>

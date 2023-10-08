@@ -85,4 +85,9 @@ interface ChatMessageProps {
 	id: number,
 }
 
-export  type { User, UserStats, UserAchievements, ProfileProps, Goal, TUserAuth, Friend, TChatUserData, Message, ChatMessageProps};
+interface ChatProps {
+    userId: string | null;
+}
+export  type { User, UserStats, UserAchievements, ProfileProps, 
+  Goal, TUserAuth, Friend, TChatUserData, Message, 
+  ChatMessageProps, ChatProps};

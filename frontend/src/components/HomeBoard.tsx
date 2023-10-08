@@ -1,6 +1,6 @@
-import { Box, Stack, IconButton } from "@mui/material";
+import { Box, Stack, IconButton, Divider } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import { Users, ChatCircleDots, Phone, Browser} from "phosphor-react";
+import { Users, ChatCircleDots, GameController, Browser, Handshake} from "phosphor-react";
 import { useState } from "react";
 import { useNavigate } from 'react-router-dom'
 import ChatPageUsers from './ChatPageUsers';
@@ -22,8 +22,12 @@ const ChatBoardBtns = [
         icon: <Users/>,
     },
     {
-        index: HOME_SECTION.REQUEST,
-        icon: <Phone/>,
+        index: HOME_SECTION.GAME_REQUEST,
+        icon: <GameController/>,
+    },
+    {
+        index: HOME_SECTION.GROUP_REQUEST,
+        icon: <Handshake/>,
     }
 ]
 
@@ -32,7 +36,7 @@ interface ISelectSection {
 	setSection: React.Dispatch<React.SetStateAction<Number>>
 }
 
-const ChatBoard = (select : ISelectSection) => {
+const HomeBoard = (select : ISelectSection) => {
 
     const theme = useTheme();
 
@@ -44,7 +48,6 @@ const ChatBoard = (select : ISelectSection) => {
 
     
     return (  
-        <div className="p-2 bg-slate-200 shadow-md h-full w-1/5">
 			<div className="space-y-3 flex flex-col items-center w-full">
 				{ChatBoardBtns.map((el) => (
 					<div key={el.index}>
@@ -55,6 +58,7 @@ const ChatBoard = (select : ISelectSection) => {
 								>
 									{el.icon}
 								</button>
+								<Divider/>
 							</div>
 						) : (
 							<button
@@ -62,10 +66,6 @@ const ChatBoard = (select : ISelectSection) => {
 									select.setSection(el.index);
 									console.log("Select:", select.section, "-", el.index)
 									navigate('/')
-									// { selected === HOME_SECTION.CHAT_USER 
-									// 	? <ChatPageUsers/>
-									// 	: <ChatPageGroups/>}
-
 								}}
 								className="w-full py-2 flex items-center justify-center text-2xl"
 							>
@@ -75,8 +75,7 @@ const ChatBoard = (select : ISelectSection) => {
 					</div>
 				))}
 			</div>
-		</div>
     );
 }
  
-export default ChatBoard;
+export default HomeBoard;

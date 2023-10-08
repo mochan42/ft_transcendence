@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import UserCard from "../UserCard";
 import Leaderboard from "../LeaderBoard";
-import ChatBoard from '../ChatBoard';
+import ChatBoard from '../HomeBoard';
 import { Friend, User } from "../../types";
 import ChatPageUsers from '../ChatPageUsers';
 import ChatPageGroups from '../ChatPageGroups';
@@ -18,6 +18,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { selectChatSidebar } from "../../redux/store";
 import { Stack } from "@mui/material";
 import { HOME_SECTION, logStatus } from "../../enums";
+import HomeBoard from '../HomeBoard';
 
 
 type TUserState = {
@@ -119,7 +120,7 @@ const Home = ({
 			console.log('Error receiving Friends information: ', error);
 		}
 	}
-
+	
 	useEffect(() => {
 		(async () => {
 			if (userId != null && loginState.isLogin) {
@@ -192,53 +193,52 @@ const Home = ({
 			<>
 				<div className='h-5/6'>
 					<div className="flex flex-wrap h-full">
-						<ChatBoard section={section} setSection={setSection}/>
-						<div className="w-1/3 bg-slate-200 p-4 h-1/2">
-							<UserCard userId={userId} foundMatch={false} info={'profile'}></UserCard>
-						</div>
-						<div className="w-2/3 bg-slate-200 p-4">
-							<div className='bg-slate-900 rounded-lg h-full w-full'>
-								{(socket !== null) ? (<Leaderboard userId={userId} socket={socket} />) : (<></>)}
-							</div>
-						</div>
-						<div className="w-1/3 bg-slate-200 p-4 h-1/2">
-							<div className="overflow-y-auto flex-cols text-center h-full space-y-4 rounded-lg flex items-center justify-center">
-								<div className="space-y-2 flex flex-col justify-between gap-4 rounded-lg">
-									<div className="flex flex-row justify-between items-center min-w-[200px] min-h-[200px] bg-slate-900 text-center rounded-lg">
-										{userFriends != null ? userFriends.map((user, index) => (
-											<div key={index}>
-												<img
-													className="h-6 w-6 dark:bg-slate-200 rounded-full"
-													src={user.avatar}
-													alt="Achievement badge"
-													/>
-												{user.userNameLoc}
-											</div>
-										)) : <img className='h-full w-full rounded-lg' src='https://media0.giphy.com/media/KG4ST0tXOrt1yQRsv0/200.webp?cid=ecf05e4732is65t7ah6nvhvwst9hkjqv0c52bhfnilk0b9g0&ep=v1_stickers_search&rid=200.webp&ct=s' />}
-									</div>
-								</div>
-							</div>
-						</div>
-						<div className="w-2/3 bg-slate-200 p-4 h-1/2">
-							<div className='bg-slate-900 rounded-lg h-full w-full'>
-								{/* Chat window content goes here */}
-		                        <Stack p={1} direction={"row"}
-		                            sx={{
+						<Stack 
+							direction={"row"} height={"100%"} p={1} bgcolor={"#eee"}
+							justifyContent={"space-between"} alignItems={"centered"}
+						>
+							<Stack spacing={2} width={70}>
+								<HomeBoard section={section} setSection={setSection}/>
+							</Stack>
+							<Stack sx={{	
 		                                gridGap: "0px",
 		                                height:"100%",
 		                                width: "100%",
 		                            }}
-		                        >
-		                            {/* <ChatBoard /> */}
-		                            {/* <ChatPageUsers/> */}
-		                            { section === HOME_SECTION.CHAT_USER ? <ChatPageUsers/> : null}
-		                            { section === HOME_SECTION.CHAT_GROUP ? <ChatPageGroups/> : null}
-		                            {/* conversation element should be integral part of Group and user page */}
-		                            <ChatConversation userId={userId}/>
-		                            {chatSideBar.chatSideBar.open && <ChatContact /> }
-		                        </Stack>
-							</div>
-						</div>
+							>
+		                        { 		
+									(section === HOME_SECTION.PROFILE) ?
+									(
+										<Stack direction={"row"} justifyContent={"space-between"}
+											alignItems={"centered"}
+										>
+											<Stack width={400} spacing={2} justifyContent={"space-between"}>
+												<UserCard userId={userId} foundMatch={false} info={'profile'}></UserCard>
+												<div className="flex flex-row justify-between items-center min-w-[200px] min-h-[200px] bg-slate-900 text-center rounded-lg">
+													{userFriends != null ? userFriends.map((user, index) => (
+														<div key={index}>
+															<img
+																className="h-6 w-6 dark:bg-slate-200 rounded-full"
+																src={user.avatar}
+																alt="Achievement badge"
+															/> {user.userNameLoc}
+														</div>
+													)) : <img className='h-full w-full rounded-lg' src='https://media0.giphy.com/media/KG4ST0tXOrt1yQRsv0/200.webp?cid=ecf05e4732is65t7ah6nvhvwst9hkjqv0c52bhfnilk0b9g0&ep=v1_stickers_search&rid=200.webp&ct=s' />}
+												</div>
+											</Stack>
+											<Stack width={1440} paddingLeft={1} >
+												{(socket !== null) ? (<Leaderboard userId={userId} socket={socket} />) : (<></>)}
+											</Stack>
+										</Stack>
+									)
+									: null
+								
+								}
+								{ section === HOME_SECTION.CHAT_USER ? <ChatPageUsers userId={userId}/> : null}
+		                        { section === HOME_SECTION.CHAT_GROUP ? <ChatPageGroups userId={userId}/> : null}
+		                        {chatSideBar.chatSideBar.open && <ChatContact /> }
+							</Stack>
+						</Stack>
 					</div>
 				</div>
 			</>

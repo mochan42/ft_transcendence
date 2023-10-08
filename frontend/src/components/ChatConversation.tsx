@@ -8,10 +8,8 @@ import ChatMessage from "./ChatMessage";
 import { toggleSidebar, updateSidebarType } from "../redux/slices/chatSideBar";
 import { useDispatch, useSelector } from "react-redux";
 import { selectChatSidebar } from "../redux/store";
+import { ChatProps } from "../types";
 
-interface ChatProps {
-    userId: string | null;
-}
 
 const ChatConversation: React.FC<ChatProps> = ({ userId }) => {
 
