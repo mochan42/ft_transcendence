@@ -12,11 +12,12 @@ RHF_TextField.propTypes = {
 interface IRHF_TextFieldProps {
     name: string;
     label: string;
+    type: string;
     helperText?: string;
   }
 
 
-export default function RHF_TextField({ name, helperText, ...other }: IRHF_TextFieldProps)
+export default function RHF_TextField({ name, helperText, ...other }: any)
 {   
     const {control} = useFormContext();
     return(

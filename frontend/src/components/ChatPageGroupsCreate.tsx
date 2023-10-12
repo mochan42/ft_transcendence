@@ -1,11 +1,11 @@
 import React from 'react';
 import { useState } from 'react';
 import { FormProvider, useForm, SubmitHandler, UseFormHandleSubmit } from 'react-hook-form';
-import { Dialog, Slide, DialogTitle, DialogContent } from '@mui/material';
+import { Dialog, Slide, DialogTitle, DialogContent, RadioGroup, FormLabel } from '@mui/material';
 import { TransitionProps } from '@mui/material/transitions';
 import * as Yup from 'yup';
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Button, Stack, IconButton } from "@mui/material";  
+import { Button, Stack, Radio } from "@mui/material";  
 import Checkbox from "@mui/material/Checkbox";  
 import FormControlLabel from "@mui/material/FormControlLabel";  
 import RHF_TextField from './ui/RHF_TextField';
@@ -40,6 +40,9 @@ const CreateGroupForm = ( handleFormClose: THandler ) => {
         {
             title: Yup.string().required("Title is required"),
             members: Yup.array().min(2, "Must at least 2 members"),
+            state_private: Yup.string(),
+            state_protected: Yup.string(),
+            privacy_state: Yup.string().required("Privacy level is required")
         }
     )
 
@@ -47,6 +50,9 @@ const CreateGroupForm = ( handleFormClose: THandler ) => {
     const defaultValues = { 
         title: "" ,
         members: [],
+        state_private: 'private',
+        state_protected: 'protected',
+        privacy_state: 'public'
     }
 
 
@@ -60,8 +66,20 @@ const CreateGroupForm = ( handleFormClose: THandler ) => {
         watch,
         setError,
         handleSubmit,
+        getValues,
+        setValue,
         formState: { errors, isSubmitting, isSubmitSuccessful, isValid },
     } = methods;
+
+    const [statePasswd, setStatePasswd] = useState<boolean>(true);
+
+    const handleRadioBtn = (e : React.ChangeEvent<HTMLInputElement>) =>{
+        const state = e.target.value;
+        // setPrivacy(e.target.value);
+        setValue('privacy_state', state)
+        console.log(state);
+        setStatePasswd(prevStatePasswd => !prevStatePasswd);
+    }
 
     //const onSubmit:SubmitHandler<TFormInputs> = async (data: TFormInputs) => {
     const onSubmit = async (data: any) => {
@@ -81,19 +99,31 @@ const CreateGroupForm = ( handleFormClose: THandler ) => {
             <form onSubmit={methods.handleSubmit(onSubmit)}>
                 <Stack spacing={3} padding={2}>
                     {/* channel title */}
-                    <RHF_TextField name="title" label="Title"/>
-                    {/* channel private */}
-                    <FormControlLabel
-                        label="Private"
-                        control={<Checkbox checked={false} onChange={()=>{}} />}
-                    />
-                    {/* channel protection */}
-                    <FormControlLabel
-                        label="Protected"
-                        control={<Checkbox checked={true} onChange={()=>{}} />}
-                    />
+                    <RHF_TextField name="title" label="Title" type="text"/>
+                    {/* Privacy */}
+                    <FormLabel>Privacy</FormLabel>
+                        {/* channel private */}
+                        <RadioGroup name='privacy_state' onChange={handleRadioBtn}>
+                            <FormControlLabel
+                                name='state_private'
+                                label="Private"
+                                control={<Radio />}
+                                value={defaultValues.state_private}
+                            />
+                            {/* channel protection */}
+                            <FormControlLabel
+                                name='state_protected'
+                                label="Protected"
+                                control={<Radio />}
+                                value={defaultValues.state_protected}
+                            />
+                        </RadioGroup>
                     {/* channel password */}
-                    <RHF_TextField name="name" label="Password"/>
+                    <RHF_TextField name="passwd" 
+                        label="Password" 
+                        type="password" 
+                        disabled={statePasswd}
+                    />
                     {/* channel members */}
                     <RHF_AutoCompDropDown name="members" label="Members" options={MEMBERS}/>
                 </Stack>
