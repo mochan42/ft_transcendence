@@ -73,6 +73,7 @@ const App: React.FC = () => {
 					{/* <Route path='/landingpage' element={<ProtectedRoute isAuth={isAuth} path='/landingpage' element={<LandingPage />} />} /> */}
 					<Route path='/layout' element={<Layout />} />
 					<Route path='/*' element={<PageNotFound />} />
+					<Route path='/chat' element={<Layout />} />
 				</Routes>
 				<div className='shadow-xl flex backdrop-blur-sm bg-white/75 dark:bg-slate-900 h-11 border-t-4 border-slate-300 dark:border-slate-700 items-center justify-evenly'>
 					<Footer />

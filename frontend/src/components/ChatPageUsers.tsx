@@ -2,6 +2,10 @@ import { TChatUserData } from "../types";
 import { ChatUserList } from '../data/ChatData';
 import { Box, Stack, IconButton, Typography, Divider, Avatar, Badge } from "@mui/material";
 import { CaretDown } from "phosphor-react";
+import ChatConversation from "./ChatConversation";
+import { ChatProps } from "../types";
+
+
 
 const ChatElement = (user : TChatUserData) => {
     return (
@@ -42,7 +46,7 @@ const ChatElement = (user : TChatUserData) => {
 }
 
 
-const  ChatPageUsers = () => {
+const  ChatPageUsers = (chatProp : ChatProps) => {
     return (
         <Box 
           sx={{
@@ -52,17 +56,22 @@ const  ChatPageUsers = () => {
             backgroundColor: "white",
             boxShadow: "0px 0px 2px rgba(0, 0, 0, 0.25)"
           }}>
-            <Stack p={3} spacing={1} sx={{height:"100%"}}>
-                <Stack alignItems={"centered"} >
-                    <Typography variant='h5'>Chats</Typography>
+            <Stack direction={"row"} p={3} spacing={1}>
+                <Stack p={3} spacing={1} sx={{height:"100%"}}>
+                    <Stack alignItems={"centered"} >
+                        <Typography variant='h5'>Chats</Typography>
+                    </Stack>
+                    <Divider/>
+                    <Stack 
+                        sx={{flexGrow:1, overflowY:"scroll", height:"100%"}}
+                        direction={"column"} 
+                        spacing={0.5} 
+                    >
+                        { ChatUserList.map((el) => { return (<ChatElement {...el} />) })}
+                    </Stack>
                 </Stack>
-                <Divider/>
-                <Stack 
-                    sx={{flexGrow:1, overflowY:"scroll", height:"100%"}}
-                    direction={"column"} 
-                    spacing={0.5} 
-                >
-                    { ChatUserList.map((el) => { return (<ChatElement {...el} />) })}
+                <Stack>
+		            <ChatConversation userId={chatProp.userId}/>
                 </Stack>
             </Stack>
         </Box>
