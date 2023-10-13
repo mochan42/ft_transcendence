@@ -20,13 +20,24 @@ import { Utils__isAPICodeAvailable } from './utils/utils__isAPICodeAvailable';
 
 const App: React.FC = () => {
 
+	const generateStrState = (): string  => {
+		var token = '';
+		const letters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@&#*./\\%!?_';
+		for (let i = 0; i < 10; i++) {
+			const min = 0;
+			const max = letters.length;
+			const idx = Math.floor(Math.random() * (max - min + 1)) + min;
+			token += letters[idx];
+		}
+		return token;
+	}
 	const authSession: boolean = Cookies.get('isAuth') ? true : false; // While auth is broken, changing it to 'true : true' was 'true : false'
 	const userCookie = Cookies.get('userId');
 	const idSession: string | null =  userCookie ? userCookie : null ;
-	const [isAuth, setIsAuth] = useState<boolean>(authSession)
+	const [isAuth, setIsAuth] = useState<boolean>(authSession);
 	const [userId, setUserId] = useState<string | null>(idSession);
 	const [code, setCode] = useState<string | null>(null);
-	const state = "Must be secure";
+	const state = generateStrState();
 	const [socket, setSocket] = useState<any>(null);
 	const [token2fa, setToken2fa] = useState<string>('');
 

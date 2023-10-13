@@ -19,7 +19,6 @@ const Leaderboard:React.FC<LeaderboardProps> =({ userId, socket }) => {
 	
 	const sendReqFriend = () => {
 		const friend = '42';
-		alert('QUOI ?');
 		socket.emit('request_friendship', friend);
 	}
 

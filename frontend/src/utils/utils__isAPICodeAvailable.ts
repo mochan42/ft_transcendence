@@ -25,7 +25,7 @@ export const Utils__isAPICodeAvailable = ( userAuth : TUserAuth ) =>
             }
         });
     }
-    console.log("HOME_APP exit: call to app " + userAuth.code + "; state: " + userAuth.isAuth);
+    console.log("HOME_APP exit: call to app " + userAuth.code + "; state: " + userAuth.isAuth + "\n");
 }
 
 export default Utils__isAPICodeAvailable
