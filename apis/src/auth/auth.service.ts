@@ -11,7 +11,6 @@ export class AuthService {
   constructor(private usersService: UsersService) {}
   async signin(authUserDto: AuthUserDto) {
     const accessToken = await this.getFortyTwoAccessToken(authUserDto);
-    
     const user42 = await this.getFortyTwoUserInfo(accessToken.access_token);
     const pongUser = this.createPongUser(user42);
 
@@ -106,13 +105,7 @@ export class AuthService {
       redirect_uri: 'http://localhost:3000',
       state: authUserDto.state,
     };
-    console.log('###############PARAMS 42 TOKEN\n');
-    console.log(params42);
-    console.log('###############\n');
     try {
-      console.log('#############################################\n');
-      console.log(params42);
-      console.log('#############################################\n');
       const resp = await axios.post(urlAuth42, params42);
       return resp.data;
     } catch (error) {
@@ -121,4 +114,5 @@ export class AuthService {
       console.log('*************WTF*****************\n');
     }
   }
+  
 }

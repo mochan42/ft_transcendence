@@ -53,9 +53,14 @@ const Home = ({
 	setToken2fa,
 }: TUserState) => {
 
-	var auth: any;
-	var countAut = 0;
+	const enum AuthResp {
+		DEFAULT,
+		IS2FA,
+		ISNOT2FA
+	}
+	
 	const [usersInfo, setUsersInfo] = useState<User[] | null>(null);
+	const [authCount, setAuthCount] = useState<number>(0);
 	const id = userId;
 	const urlFriends = 'http://localhost:5000/pong/users/' + id + '/friends';
 	const [userFriends, setUserFriends] = useState<User[] | null>(null);
@@ -66,37 +71,33 @@ const Home = ({
 	const [section, setSection] = useState<Number>(0)
 
 
-	const authenticateToAPI = async (token: string, state: string) => {
-		if (token.length !== 0 && state.length !== 0) {
+	const authenticateToAPI = async (token: string, state: string): Promise<any> => {
+		console.log('###AGAIN###\n');
+		if (token.length != 0 && state.length !== 0) {
 			try {
-				userCode.setCode(null);
 				const resp = await axios.post('http://localhost:5000/pong/users/auth', { token, state });
 				if (resp.status === 200) {
+					console.log('PERFECT ' + (new Date()).getMilliseconds() + ' #### time ' + authCount + '\n');
 					const userData = resp.data;
-					console.log('***************Toi tu viens d\'où?*****************\n');
-					console.log(userData);
-					console.log('**********************************\n');
+					console.log(userData.user.id);
 					if (userData.is2Fa === true) {
 						loginState.setIsLogin(false);
 						setToken2fa(userData.token2fa);
 						Cookies.remove('userId');
 						Cookies.remove('isAuth');
-						navigate('/login2fa');
+						return AuthResp.IS2FA;
 					}
-					console.log(userData);
-					setUserId(userData.user.id.toString());
-					Cookies.set('userId', userData.user.id, { expires: 7 });
-					Cookies.set('isAuth', 'true', { expires: 7 });
+					else {
+						loginState.setIsLogin(true);
+						setUserId(userData.user.id.toString());
+						Cookies.set('userId', userData.user.id, { expires: 7 });
+						Cookies.set('isAuth', 'true', { expires: 7 });
+						return AuthResp.ISNOT2FA;
+					}
 				}
 			}
 			catch (error) {
 				console.log('--------------------------Error authentication--------------------------\n');
-				console.log('QUEL BLEM ?');
-				loginState.setIsLogin(false);
-				setUserId(null);
-				Cookies.remove('userId');
-				Cookies.remove('isAuth');
-				navigate('/login');
 			}
 		}
 	}
@@ -128,10 +129,25 @@ const Home = ({
 			console.log('Error receiving Friends information: ', error);
 		}
 	}
-	
+
+	useEffect(() => {
+		if (userCode.code !== null && loginState.isLogin && userId === null) {
+			(async () => {
+				const codeTok = userCode.code + '';
+				const auth = await authenticateToAPI(codeTok, state);
+				if (auth == AuthResp.ISNOT2FA) {
+					navigate('/');
+				}
+				if (auth === AuthResp.IS2FA) {
+					navigate('/login2fa');
+				}
+			})();
+		}
+	}, [userId]);
+
 	useEffect(() => {
 		(async () => {
-			if (userId != null && loginState.isLogin) {
+			if (userId !== null && loginState.isLogin) {
 				if (friends === null) {
 					getFriends()
 				}
@@ -142,23 +158,14 @@ const Home = ({
 					const usersFriends = usersInfo?.filter((user) =>
 						friends?.some((friend) => friend.sender === user.id || friend.receiver === user.id && user.id != userId)
 					);
-					if (userFriends != null) {
+					if (userFriends !== null) {
 						setUserFriends(usersFriends);
 					}
 				}
 			}
 		})();
 	}, [userId, loginState.isLogin]);
-
-	useEffect(() => {
-		(async () => {
-			if (userCode.code !== null && !userId) {
-				console.log('CODE : ' + userCode.code, '\n');
-				authenticateToAPI(userCode.code, state);
-			}
-		})();
-	}, [userId]);
-    
+	
 	useEffect(() => {
 		if (userId !== null && !socket) {
 			/************** Creating socket */
@@ -182,9 +189,7 @@ const Home = ({
 		);
 
 	}
-  
-	// else if (userId && loginState)
-	else {
+  	else {
 		return (
 			<>
 				<div className='h-5/6'>

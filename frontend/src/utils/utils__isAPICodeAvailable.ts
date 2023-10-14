@@ -10,9 +10,7 @@ import { TUserAuth } from "../types";
  */
 export const Utils__isAPICodeAvailable = ( userAuth : TUserAuth ) =>
 {
-    const urlBrowser = window.location.href;
-    console.log("HOME_APP entry: call to app " +  urlBrowser);
-    
+    const urlBrowser = window.location.href;    
     if (userAuth.code === null && userAuth.isAuth === false)
     {
         // parse the url and retrieve the query parameters where code value is stored

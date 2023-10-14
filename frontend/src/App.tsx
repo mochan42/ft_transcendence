@@ -42,7 +42,7 @@ const App: React.FC = () => {
 	const [token2fa, setToken2fa] = useState<string>('');
 
     // check if code available for backend to exchange for token
-    Utils__isAPICodeAvailable({setIsAuth, isAuth, setCode, code })
+	Utils__isAPICodeAvailable({ setIsAuth, isAuth, setCode, code })
     
 	return (
 		<div className='flex-cols font-mono dark:bg-white/75 bg-slate-900 bg-opacity-80 h-screen'>

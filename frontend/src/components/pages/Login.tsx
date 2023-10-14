@@ -5,10 +5,8 @@ import '../../css/login.css';
 interface Props {
     isAuth: boolean
     setIsAuth: React.Dispatch<React.SetStateAction<boolean>>
-    state: any
-}
-//    const   client_id_google = "770314806688-o3cr2rn0mcnh6hvb7p0dtlabpg0p0f8n.apps.googleusercontent.com"
-    
+    state: string
+}    
 
 const Login: React.FC<Props> = ({setIsAuth, isAuth, state}) => {
     const handleLogin = () => {

@@ -78,7 +78,10 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   @SubscribeMessage('create_channel')
-  async createChannel(@ConnectedSocket() socket: Socket, channel: CreateChannelDto) {
+  async createChannel(
+    @ConnectedSocket() socket: Socket,
+    channel: CreateChannelDto
+  ) {
     const newChannel = await this.channelsService.create(channel);
 
     socket.emit('channel_created', newChannel);
