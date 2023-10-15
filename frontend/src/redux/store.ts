@@ -2,17 +2,17 @@ import { configureStore, getDefaultMiddleware } from "@reduxjs/toolkit";
 import { useDispatch as useAppDispatch, useSelector as useAppSelector } from "react-redux"
 import { persistStore, persistReducer } from "redux-persist"
 import { rootPersistConfig, rootReducer } from "./rootReducer";
-import chatSidebarSlice  from './slices/chatSideBar'
+import chatSlice  from './slices/chatSlice'
 
 
 const store = configureStore({
     reducer: {
-        chatSidebar : chatSidebarSlice.reducer  
+        chatStore : chatSlice.reducer  
     }
 })
 
 export type RootState = ReturnType<typeof store.getState>
-export const selectChatSidebar = (state: RootState) => state.chatSidebar;
+export const selectChatStore = (state: RootState) => state.chatStore;
 
 export default store;
 /*

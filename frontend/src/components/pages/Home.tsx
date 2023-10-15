@@ -13,9 +13,9 @@ import Cookies from 'js-cookie';
 import { io } from 'socket.io-client';
 import Login2fa from '../../components/pages/Login2fa';
 import ChatContact from '../ChatContact';
-import chatSideBar, { toggleSidebar, updateSidebarType } from "../../redux/slices/chatSideBar";
+import chatSideBar, { toggleSidebar, updateSidebarType } from "../../redux/slices/chatSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { selectChatSidebar } from "../../redux/store";
+import { selectChatStore } from "../../redux/store";
 import { Stack } from "@mui/material";
 import { HOME_SECTION, logStatus } from "../../enums";
 import HomeBoard from '../HomeBoard';
@@ -62,7 +62,7 @@ const Home = ({
  	const [is2fa, setIs2fa] = useState<number>(logStatus.DEFAULT);
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
-    const chatSideBar = useSelector(selectChatSidebar);
+    const chatSideBar = useSelector(selectChatStore);
 	const [section, setSection] = useState<Number>(0)
 
 
@@ -165,6 +165,8 @@ const Home = ({
             /******************************* */
         }
     });
+  setUserId("tmp_access")
+  loginState.setIsLogin(true);
   console.log('userID und Loginstate: ', userId, ', ', loginState)
 	if (!userId && !loginState.isLogin) {
 		return (

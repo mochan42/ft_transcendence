@@ -81,6 +81,13 @@ npm cache clean --force                 : clear the cache
 ----
 + update channel form schema
   + Handle protect and password connection for user
-+ update home page with navigation
 + integrate conversation to chatgroup and chatuser
-+ update the navigation tabs
+
+----- PUSH TODO ------------------
++ remove access hacker before push
++ remove .env
+
+
+
+
+video 27 - handle friend request with socket.io 27:00

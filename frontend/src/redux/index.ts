@@ -14,6 +14,9 @@ export interface IChatSidebar {
 
 export interface IChatState {
     chatSideBar: IChatSidebar,
+    chatUsers: any[],
+    chatUserFriends: any[],
+    chatUserFriendRequests: any[],
 }
 
 interface IActionPayload {
