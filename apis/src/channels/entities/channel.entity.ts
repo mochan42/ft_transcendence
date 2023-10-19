@@ -1,18 +1,19 @@
-import { Column, PrimaryGeneratedColumn } from "typeorm"
+import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
+@Entity()
 export class Channel {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
   owner: number;
-  
+
   @Column()
   label: String;
-	
+
   @Column()
   type: String;
-	
+
   @Column()
-  password?: String;
+  password: String | null;
 }

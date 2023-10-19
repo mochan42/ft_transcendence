@@ -11,13 +11,12 @@ import { selectChatSidebar } from "../redux/store";
 import { ChatProps } from "../types";
 
 
-const ChatConversation: React.FC<ChatProps> = ({ userId }) => {
+const ChatConversation: React.FC<ChatProps> = ({ userId, socket }) => {
 
 	const [channels, setChannels] = useState<string[]>([]);
     const [userInfo, setUserInfo] = useState<User | null>(null);
     const [userMessage, setUserMessage] = useState<string>('');
     const [messages, setMessages] = useState< ChatMessageProps [] >([]);
-    const [socket, setSocket] = useState<Socket | undefined>();
     const [username, setUserName] = useState<string>('');
     const messageContainerRef = useRef<HTMLDivElement>(null);
     const dispatch = useDispatch();

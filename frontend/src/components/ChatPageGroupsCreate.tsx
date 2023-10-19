@@ -10,6 +10,7 @@ import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";  
 import RHF_TextField from './ui/RHF_TextField';
 import RHF_AutoCompDropDown from './ui/RHF_AutoCompDropDown';
+import Cookies from 'js-cookie';
 
 
 /**
@@ -26,11 +27,13 @@ const Transition = React.forwardRef(function Transition (
 
 type TGroupDialog = {
     openState: boolean,
-    handleClose: React.Dispatch<React.SetStateAction<boolean>>
+    handleClose: React.Dispatch<React.SetStateAction<boolean>>,
+    socket: any
 }
 
 type THandler = {
     close: React.Dispatch<React.SetStateAction<boolean>>
+    socket: any
 }
 
 const MEMBERS = ["Name1", "Name2"];
@@ -54,7 +57,6 @@ const CreateGroupForm = ( handleFormClose: THandler ) => {
         state_protected: 'protected',
         privacy_state: 'public'
     }
-
 
     const methods = useForm({
         resolver: yupResolver(groupSchema),
@@ -82,10 +84,18 @@ const CreateGroupForm = ( handleFormClose: THandler ) => {
     }
 
     //const onSubmit:SubmitHandler<TFormInputs> = async (data: TFormInputs) => {
+    // would be easier if data has the same names with channels colums in apis side
     const onSubmit = async (data: any) => {
         try{
-            // API CALL
-            console.log("DATA", data);
+            //API CALL
+            const newChannel = {
+                owner: Cookies.get('userId'),
+                label: data.title,
+                type: data.privacy_state,
+                password: data.passwd,
+                createdAt: new Date().toISOString()
+            };
+            handleFormClose.socket.emit('create_channel', newChannel);
             handleFormClose.close(false);
         }
         catch (error)
@@ -154,7 +164,7 @@ const ChatPageGroupsCreate = (state: TGroupDialog) => {
             <DialogContent>
 
                 {/* Create form */}
-                <CreateGroupForm close={state.handleClose} />
+                <CreateGroupForm close={state.handleClose} socket={state.socket} />
             </DialogContent>
          
         </Dialog>

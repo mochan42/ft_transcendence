@@ -101,10 +101,10 @@ const  ChatPageGroups = (chatProp : ChatProps) => {
         </Box>
         {/* Right side : conversation panel */}
         {/* // TODO */}
-		<ChatConversation userId={chatProp.userId}/>
+                <ChatConversation userId={chatProp.userId} socket={chatProp.socket} />
 
         </Stack>
-        {openDialog && <ChatPageGroupsCreate openState={openDialog} handleClose={handleCloseDialog} />}
+            {openDialog && <ChatPageGroupsCreate openState={openDialog} handleClose={handleCloseDialog} socket={chatProp.socket} />}
         </>
       );
 }

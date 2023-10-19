@@ -67,11 +67,11 @@ const  ChatPageUsers = (chatProp : ChatProps) => {
                         direction={"column"} 
                         spacing={0.5} 
                     >
-                        { ChatUserList.map((el) => { return (<ChatElement {...el} />) })}
+                        {ChatUserList.map((el) => { return (<ChatElement {...el} />) })}
                     </Stack>
                 </Stack>
                 <Stack>
-		            <ChatConversation userId={chatProp.userId}/>
+                    <ChatConversation userId={chatProp.userId} socket={chatProp.socket} />
                 </Stack>
             </Stack>
         </Box>

@@ -62,7 +62,7 @@ type TChatUserData = {
    msg:  string,
    time: string,
    unread: number,
-   online: boolean
+   online: boolean,
 }
 
 type Message = {
@@ -86,7 +86,8 @@ interface ChatMessageProps {
 }
 
 interface ChatProps {
-    userId: string | null;
+  userId: string | null;
+  socket: any;
 }
 export  type { User, UserStats, UserAchievements, ProfileProps, 
   Goal, TUserAuth, Friend, TChatUserData, Message, 

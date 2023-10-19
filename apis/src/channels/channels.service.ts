@@ -12,7 +12,12 @@ export class ChannelsService {
     private ChannelRepo: Repository<Channel>
   ) {}
   async create(createChannelDto: CreateChannelDto) {
-    return await this.ChannelRepo.save(createChannelDto);
+    const newChannel = {
+      ...createChannelDto,
+      owner: +createChannelDto.owner
+    };
+
+    return await this.ChannelRepo.save(newChannel);
   }
 
   async findAll() {

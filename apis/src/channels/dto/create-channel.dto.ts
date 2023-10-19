@@ -1,15 +1,15 @@
-import { IsNumber, IsString } from "class-validator";
+import { IsString } from "class-validator";
 
 
 export class CreateChannelDto {
-	@IsNumber()
-	owner: number;
+	@IsString()
+	owner: string;
 
 	@IsString()
 	label: string;
 
 	@IsString()
-	type: 'PUBLIC' | 'PRIVATE' | ' PROTECTED';
+	type: string;
 
 	@IsString()
 	password?: string;

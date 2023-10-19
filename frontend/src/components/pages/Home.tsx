@@ -1,3 +1,6 @@
+
+
+
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -175,8 +178,14 @@ const Home = ({
 				}
 			});
 			setSocket(newSocket);
+			//---connexion established
 			newSocket.on('message', (message: string) => {
 				console.log(message);
+			});
+			// ---new channel created---------------
+			newSocket.on('channel_created', (channel: any) => {
+				console.log('channel created successfully');
+				console.log(channel);
 			});
 			/******************************* */
 		}
@@ -235,8 +244,8 @@ const Home = ({
 										: null
 							
 								}
-								{section === HOME_SECTION.CHAT_USER ? <ChatPageUsers userId={userId} /> : null}
-								{section === HOME_SECTION.CHAT_GROUP ? <ChatPageGroups userId={userId} /> : null}
+								{section === HOME_SECTION.CHAT_USER ? <ChatPageUsers userId={userId} socket={socket} /> : null}
+								{section === HOME_SECTION.CHAT_GROUP ? <ChatPageGroups userId={userId} socket={socket}  /> : null}
 								{chatSideBar.chatSideBar.open && <ChatContact />}
 							</Stack>
 						</Stack>
