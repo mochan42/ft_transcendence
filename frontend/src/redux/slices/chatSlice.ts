@@ -4,6 +4,7 @@ import { ThunkAction } from "redux-thunk"
 import { CHAT_ACTION_TYPE, IChatState, TAction } from "..";
 import { User } from "../../types";
 import axios from 'axios'
+import { ChatUserList } from "../../data/ChatData";
 
 
 
@@ -12,8 +13,8 @@ const initialState: IChatState = {
         open: false,
         type: CHAT_ACTION_TYPE.CHAT_CONTACT // options: 'CONTACT' 'STARRED' 'SHARED'
     },
-    chatUsers: [],
-    chatUserFriends: [],
+    chatUsers: ChatUserList,
+    chatUserFriends: ChatUserList,
     chatUserFriendRequests: [],
 }
 
@@ -21,7 +22,7 @@ const initialState: IChatState = {
 
 
 const chatSlice = createSlice({
-    name: 'chatSidebar',
+    name: 'chatStoreSlice',
     initialState,
     reducers: {
         // toggle side bar

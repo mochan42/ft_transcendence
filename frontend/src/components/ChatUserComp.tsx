@@ -1,14 +1,7 @@
 import React from 'react'
 import { styled, useTheme } from '@mui/material/styles'
 import { Stack, Avatar, Typography, Button, Box, Badge } from '@mui/material'
-
-
-interface IChatUserListData {
-    userName: String,
-    id : String,
-    online: Boolean,
-    img : any
-}
+import { TChatUserData } from '../types';
 
 
 
@@ -20,7 +13,7 @@ const StyledChatBox = styled(Box)(({ theme }) => ({
 }));
 
 
-const ChatUserComp = (usrData : IChatUserListData) => {
+const ChatUserComp = (usrData : TChatUserData) => {
     const theme = useTheme()
     return (
         <StyledChatBox sx={{
@@ -49,11 +42,11 @@ const ChatUserComp = (usrData : IChatUserListData) => {
                                 <Avatar alt="image" src={usrData.img} />
                             </Badge>
                          )
-                         : (<Avatar alt="image" src={usrData.img} />)
+                         : (<Avatar alt={usrData.name} src={usrData.img} />)
                         //  : (<Avatar alt={usrData.userName} src={usrData.img} />)
                     }
                     <Stack>
-                        <Typography variant="subtitle2"> { usrData.userName }</Typography>
+                        <Typography variant="subtitle2"> { usrData.name }</Typography>
                     </Stack>
                 </Stack>
                 <Stack direction={"row"} alignItems={"center"} spacing={2}>

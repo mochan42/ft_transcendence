@@ -10,14 +10,14 @@ import { ChatUserComp } from './ChatUserComp';
 const ChatUsersList = ()=> {
     const dispatch = useDispatch();
     
-    useEffect(()=>{
-        dispatch({type: FetchUsers()});
-    }, []);
+    // useEffect(()=>{
+    //     dispatch({type: FetchUsers()});
+    // }, []);
 
     const chatStore = useSelector(selectChatStore)
     return (
         <>
-            { chatStore.chatUsers.map((el, idx) => {
+            { chatStore.chatUsers.map((el) => {
                 // TODO : CREATE USER COMPONENT
                 return <ChatUserComp key={el.id} {...el}/>
             })};
@@ -28,16 +28,16 @@ const ChatUsersList = ()=> {
 const ChatUserFriendsList = ()=> {
     const dispatch = useDispatch();
     
-    useEffect(()=>{
-        dispatch({type: FetchUsers()});
-    }, []);
+    // useEffect(()=>{
+    //     dispatch({type: FetchUsers()});
+    // }, []);
 
     const chatStore = useSelector(selectChatStore)
     return (
         <>
-            { chatStore.chatUserFriends.map((el, idx) => {
+            { chatStore.chatUserFriends.map((el) => {
                 // TODO : CREATE USER COMPONENT
-                return <></>
+                return <ChatUserComp key={el.id} {...el}/>
             })};
         </>
     );
@@ -94,11 +94,11 @@ const ChatFriends = ({ open, handleClose } : any )=>{
                         {
                             case 0:
                                 return (<>
-                                {/* <ChatUsersList /> */}
+                                    <ChatUsersList />
                                 </>);
                             case 1:
                                 return (<>
-                                {/* <ChatUserFriendsList /> */}
+                                <ChatUserFriendsList />
                                 </>);
                             case 2:
                                 return (<>

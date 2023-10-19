@@ -1,7 +1,8 @@
+import { faker } from "@faker-js/faker"
 const ChatUserList = [
     {
         id: 0,
-        img: "avatar_img",
+        img: faker.image.avatar(),
         name: "pmeising",
         msg:  "Wo bist du?",
         time: "1:26",
@@ -10,7 +11,7 @@ const ChatUserList = [
     },
     {
         id: 1,
-        img: "avatar_img",
+        img: faker.image.avatar(),
         name: "monine",
         msg:  "Ques que ces",
         time: "5:16",
@@ -19,7 +20,7 @@ const ChatUserList = [
     },
     {
         id: 2,
-        img: "avatar_img",
+        img: faker.image.avatar(),
         name: "facinet",
         msg:  "Bonjour mes ami",
         time: "3:46",
@@ -28,7 +29,7 @@ const ChatUserList = [
     },
     {
         id: 3,
-        img: "avatar_img",
+        img: faker.image.avatar(),
         name: "cudoh",
         msg:  "See you tomorrow",
         time: "3:46",
@@ -37,7 +38,7 @@ const ChatUserList = [
     },
     {
         id: 4,
-        img: "avatar_img",
+        img: faker.image.avatar(),
         name: "Martin",
         msg:  "Holy shit",
         time: "3:46",
@@ -46,7 +47,7 @@ const ChatUserList = [
     },
     {
         id: 4,
-        img: "avatar_img",
+        img: faker.image.avatar(),
         name: "Martin",
         msg:  "Holy shit",
         time: "3:46",
