@@ -80,9 +80,10 @@ const Home = ({
 			try {
 				const resp = await axios.post('http://localhost:5000/pong/users/auth', { token, state });
 				if (resp.status === 200) {
-					console.log('PERFECT ' + (new Date()).getMilliseconds() + ' #### time ' + authCount + '\n');
 					const userData = resp.data;
-					console.log(userData.user.id);
+					console.log('------------------------------\n');
+					console.log(userData);
+					console.log('------------------------------\n');
 					if (userData.is2Fa === true) {
 						loginState.setIsLogin(false);
 						setToken2fa(userData.token2fa);
