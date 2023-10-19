@@ -2,7 +2,7 @@ import { Avatar, Box, Button, Divider, IconButton, Stack, Typography } from "@mu
 import { useTheme } from "@mui/material/styles";
 import { Prohibit, Trash, X } from "phosphor-react";
 import { useDispatch, useSelector } from "react-redux";
-import { toggleSidebar } from "../redux/slices/chatSideBar";
+import { toggleSidebar } from "../redux/slices/chatSlice";
 import { faker } from "@faker-js/faker"
 
 /* component to show contact profile */

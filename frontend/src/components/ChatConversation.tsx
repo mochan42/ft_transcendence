@@ -5,9 +5,9 @@ import { Socket } from "socket.io-client";
 import { ChatMessageProps, User } from "../types";
 import ChatMessage from "./ChatMessage";
 //import { Chat_History } from "../data/ChatData";
-import { toggleSidebar, updateSidebarType } from "../redux/slices/chatSideBar";
+import { toggleSidebar, updateSidebarType } from "../redux/slices/chatSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { selectChatSidebar } from "../redux/store";
+import { selectChatStore } from "../redux/store";
 import { ChatProps } from "../types";
 
 
@@ -20,7 +20,7 @@ const ChatConversation: React.FC<ChatProps> = ({ userId, socket }) => {
     const [username, setUserName] = useState<string>('');
     const messageContainerRef = useRef<HTMLDivElement>(null);
     const dispatch = useDispatch();
-    const chatSideBar = useSelector(selectChatSidebar);
+    const chatStore = useSelector(selectChatStore);
 
 	var id = 0;
 
@@ -79,8 +79,8 @@ const ChatConversation: React.FC<ChatProps> = ({ userId, socket }) => {
                 <Stack direction={"row"} justifyContent={"space-between"} sx={{ height:"100%", width:"100%"}}>
                     <Stack onClick={ ()=> { 
                                             dispatch(toggleSidebar());
-                                            console.log(chatSideBar.chatSideBar.type);
-                                            console.log(chatSideBar.chatSideBar.open);
+                                            console.log(chatStore.chatSideBar.type);
+                                            console.log(chatStore.chatSideBar.open);
                                         } 
                                    }
                            direction={"row"} spacing={2} alignContent={"center"}

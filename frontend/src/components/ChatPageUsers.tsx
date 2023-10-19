@@ -1,9 +1,11 @@
+import { useState } from "react";
 import { TChatUserData } from "../types";
 import { ChatUserList } from '../data/ChatData';
 import { Box, Stack, IconButton, Typography, Divider, Avatar, Badge } from "@mui/material";
-import { CaretDown } from "phosphor-react";
+import { CircleDashed, Handshake } from "phosphor-react";
 import ChatConversation from "./ChatConversation";
 import { ChatProps } from "../types";
+import ChatFriends from "./ChatFriends";
 
 
 
@@ -47,7 +49,16 @@ const ChatElement = (user : TChatUserData) => {
 
 
 const  ChatPageUsers = (chatProp : ChatProps) => {
+    const [dialogState, setDialogState] = useState<boolean>(false);
+
+    const handleOpenDialog = ()=>{
+        setDialogState(true)
+    }
+    const handleCloseDialog = ()=>{
+        setDialogState(false)
+    }
     return (
+    <>
         <Box 
           sx={{
             position:"relative",
@@ -58,8 +69,16 @@ const  ChatPageUsers = (chatProp : ChatProps) => {
           }}>
             <Stack direction={"row"} p={3} spacing={1}>
                 <Stack p={3} spacing={1} sx={{height:"100%"}}>
-                    <Stack alignItems={"centered"} >
+                    <Stack direction={"row"} alignItems={"centered"} justifyContent={"space-between"}>
                         <Typography variant='h5'>Chats</Typography>
+                        <Stack direction={"row"} alignItems={"centered"} spacing={1}>
+                            <IconButton onClick={()=>{handleOpenDialog()}}>
+                                <Handshake/>
+                            </IconButton>
+                            <IconButton>
+                                <CircleDashed/>
+                            </IconButton>
+                        </Stack>
                     </Stack>
                     <Divider/>
                     <Stack 
@@ -75,6 +94,8 @@ const  ChatPageUsers = (chatProp : ChatProps) => {
                 </Stack>
             </Stack>
         </Box>
+        { dialogState && <ChatFriends open={dialogState} handleClose={handleCloseDialog}/>}
+    </>
       );
 }
  

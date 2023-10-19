@@ -36,7 +36,7 @@ const ChatElement = (user : TChatUserData) => {
                         anchorOrigin={{vertical:"bottom", horizontal:"left"}}
                         overlap="circular"
                     >
-                        <Avatar />
+                        <Avatar src={ user.img }/>
                     </Badge>
                     : <Avatar alt={ user.name }/>
                     }

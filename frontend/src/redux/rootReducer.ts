@@ -1,6 +1,6 @@
 import { combineReducers } from "redux";
 import storage  from 'redux-persist/lib/storage';
-import chatSidebarSlice from './slices/chatSideBar'
+import chatSidebarSlice from './slices/chatSlice'
 
 
 // slices
