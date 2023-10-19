@@ -14,6 +14,6 @@ export class Channel {
   @Column()
   type: String;
 
-  @Column()
-  password: String | null;
+  @Column({ nullable: true })
+  password: String;
 }

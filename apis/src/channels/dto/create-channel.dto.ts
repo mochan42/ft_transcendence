@@ -1,9 +1,9 @@
-import { IsString } from "class-validator";
+import { IsNumber, IsString } from "class-validator";
 
 
 export class CreateChannelDto {
-	@IsString()
-	owner: string;
+	@IsNumber()
+	owner: number;
 
 	@IsString()
 	label: string;

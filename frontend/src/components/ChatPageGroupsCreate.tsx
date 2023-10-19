@@ -49,7 +49,6 @@ const CreateGroupForm = ( handleFormClose: THandler ) => {
         }
     )
 
-
     const defaultValues = { 
         title: "" ,
         members: [],
@@ -88,14 +87,7 @@ const CreateGroupForm = ( handleFormClose: THandler ) => {
     const onSubmit = async (data: any) => {
         try{
             //API CALL
-            const newChannel = {
-                owner: Cookies.get('userId'),
-                label: data.title,
-                type: data.privacy_state,
-                password: data.passwd,
-                createdAt: new Date().toISOString()
-            };
-            handleFormClose.socket.emit('create_channel', newChannel);
+            handleFormClose.socket.emit('create_channel', data);
             handleFormClose.close(false);
         }
         catch (error)

@@ -27,8 +27,9 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
   constructor(
     private readonly chatsService: ChatsService,
     private readonly friendsService: FriendsService,
-    private readonly channelsService: ChannelsService
+    private readonly channelsService: ChannelsService,
   ) { }
+  
   async handleConnection(@ConnectedSocket() socket: Socket, ...args: any[]) {
     const user = await this.chatsService.getUserFromSocket(socket);
 
@@ -39,18 +40,20 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const user = await this.chatsService.getUserFromSocket(socket);
     socket.emit('message', `${user.userNameLoc} is deconnected`);
   }
-  
-  @SubscribeMessage('request_friendship')
+
+  @SubscribeMessage('invite_friend')
   async createFriendship(
     @ConnectedSocket() socket: Socket,
-    @MessageBody() payload: string) {
+    @MessageBody() payload: string,
+  ) {
     const user = await this.chatsService.getUserFromSocket(socket);
     const friendDto: CreateFriendDto = {
       receiver: +payload,
       sender: user.id,
-      relation: "PENDING",
-      createdAt: new Date().toISOString()
+      relation: 'PENDING',
+      createdAt: new Date().toISOString(),
     };
+    
     const friendShip = await this.friendsService.create(friendDto);
 
     socket.emit('received_friend_request', friendShip);
@@ -59,19 +62,21 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @SubscribeMessage('accept_friend_request')
   async updateFriendship(
     @ConnectedSocket() socket: Socket,
-    friendship: CreateFriendDto
+    friendship: CreateFriendDto,
   ) {
-
     var updatedFriendship;
     const user = await this.chatsService.getUserFromSocket(socket);
 
     if (friendship.receiver === user.id) {
-      const reqToAccept: CreateFriendDto= {
+      const reqToAccept: CreateFriendDto = {
         ...friendship,
-        relation: 'ACCEPTED' // should define enum values for relation !!!!
-      }  
-      
-      updatedFriendship = await this.friendsService.update(user.id, reqToAccept);
+        relation: 'ACCEPTED', // should define enum values for relation !!!!
+      };
+
+      updatedFriendship = await this.friendsService.update(
+        user.id,
+        reqToAccept,
+      );
     }
 
     this.server.emit('accepted_friend_request', updatedFriendship);
@@ -80,13 +85,23 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @SubscribeMessage('create_channel')
   async createChannel(
     @ConnectedSocket() socket: Socket,
-    @MessageBody() channel: CreateChannelDto
+    @MessageBody() payload: any,
   ) {
-    console.log(channel);
-    
+    const user = await this.chatsService.getUserFromSocket(socket);
+    const channel: CreateChannelDto = {
+      owner: +user.id,
+      label: payload.title,
+      type: payload.privacy_state,
+      password: payload.passwd,
+      createdAt: new Date().toISOString(),
+    };
     const newChannel = await this.channelsService.create(channel);
+
+    const members = [...payload.members];
+    if (members.length && newChannel) {
+      // add memebers
+    }
 
     socket.emit('channel_created', newChannel);
   }
-
 }
