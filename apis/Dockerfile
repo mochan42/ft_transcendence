@@ -6,8 +6,9 @@ WORKDIR /usr/src/app
 # Copy package.json and package-lock.json
 COPY package*.json ./
 
-# Install app dependencies
-RUN npm install
+# Clean cache and install app dependencies
+RUN npm cache clean --force
+RUN npm install --legacy-peer-deps
 
 # Bundle app source
 COPY . .

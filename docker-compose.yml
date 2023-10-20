@@ -23,7 +23,7 @@ services:
     container_name: apis
     build:
       context: ./apis
-      dockerfile: Dockerfile.apis
+      dockerfile: Dockerfile
     ports:
       - "5000:5000"
     volumes:
@@ -40,7 +40,7 @@ services:
     container_name: frontend
     build:
       context: ./frontend
-      dockerfile: Dockerfile.frontend
+      dockerfile: Dockerfile
     ports:
       - "3000:3000"
     volumes:
