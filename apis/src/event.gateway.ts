@@ -28,8 +28,8 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
     private readonly chatsService: ChatsService,
     private readonly friendsService: FriendsService,
     private readonly channelsService: ChannelsService,
-  ) { }
-  
+  ) {}
+
   async handleConnection(@ConnectedSocket() socket: Socket, ...args: any[]) {
     const user = await this.chatsService.getUserFromSocket(socket);
 
@@ -53,10 +53,10 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
       relation: 'PENDING',
       createdAt: new Date().toISOString(),
     };
-    
+
     const friendShip = await this.friendsService.create(friendDto);
 
-    socket.emit('received_friend_request', friendShip);
+    socket.emit('invite_friend_success', friendShip);
   }
 
   @SubscribeMessage('accept_friend_request')

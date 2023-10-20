@@ -188,7 +188,13 @@ const Home = ({
 				console.log('channel created successfully');
 				console.log(channel);
 			});
+
+			// --friend invitation sent ------
+			newSocket.on('invite_friend_success', (friend: any) => {
+				console.log('friend invited successfully', friend);
+			});
 			/******************************* */
+			
 		}
 	});
 	if (!userId && !loginState.isLogin) {

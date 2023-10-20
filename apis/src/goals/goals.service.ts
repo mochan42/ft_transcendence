@@ -4,6 +4,7 @@ import { UpdateGoalDto } from './dto/update-goal.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Goal } from './entities/goal.entity';
+
 @Injectable()
 export class GoalsService {
   constructor(

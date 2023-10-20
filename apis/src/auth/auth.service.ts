@@ -114,5 +114,4 @@ export class AuthService {
       console.log('*************WTF*****************\n');
     }
   }
-  
 }

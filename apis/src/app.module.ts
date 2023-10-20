@@ -13,6 +13,9 @@ import { AuthModule } from './auth/auth.module';
 import { ChatsModule } from './chats/chats.module';
 import { EventGateway } from './event.gateway';
 import { ChannelsModule } from './channels/channels.module';
+import { JoinchannelModule } from './joinchannel/joinchannel.module';
+import { JoinchannelServiceService } from './joinchannel-service/joinchannel-service.service';
+import { JoinchannelModule } from './joinchannel/joinchannel.module';
 
 @Module({
   imports: [
@@ -28,8 +31,9 @@ import { ChannelsModule } from './channels/channels.module';
     AuthModule,
     ChatsModule,
     ChannelsModule,
+    JoinchannelModule,
   ],
   controllers: [AppController],
-  providers: [AppService, EventGateway],
+  providers: [AppService, EventGateway, JoinchannelServiceService],
 })
 export class AppModule {}

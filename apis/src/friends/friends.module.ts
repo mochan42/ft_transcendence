@@ -7,6 +7,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
   imports: [TypeOrmModule.forFeature([Friend])],
   controllers: [FriendsController],
   providers: [FriendsService],
-  exports: [FriendsService]
+  exports: [FriendsService],
 })
 export class FriendsModule {}

@@ -13,11 +13,7 @@ export class FriendsService {
   ) {}
 
   async create(createFriendDto: CreateFriendDto): Promise<Friend> {
-    const friend = {
-      ...createFriendDto,
-      createdAt: new Date().toUTCString(),
-    };
-    return await this.FriendRepo.save(friend);
+    return await this.FriendRepo.save(createFriendDto);
   }
 
   async find(userId: string) {

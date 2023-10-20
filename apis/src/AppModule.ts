@@ -13,6 +13,7 @@ import { AuthModule } from './auth/auth.module';
 import { ChatsModule } from './chats/chats.module';
 import { EventGateway } from './event.gateway';
 import { ChannelsModule } from './channels/channels.module';
+import { JoinchannelModule } from './joinchannel/joinchannel.module';
 
 @Module({
   imports: [
@@ -27,7 +28,8 @@ import { ChannelsModule } from './channels/channels.module';
     FriendsModule,
     AuthModule,
     ChatsModule,
-    ChannelsModule
+    ChannelsModule,
+    JoinchannelModule,
   ],
   controllers: [AppController],
   providers: [AppService, EventGateway],
