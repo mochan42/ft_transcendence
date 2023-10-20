@@ -1,6 +1,6 @@
 version: "3.7"
 services:
-  #database container
+  # Database container
   db:
     container_name: db
     environment:
@@ -18,16 +18,16 @@ services:
       - app-network
     restart: always
 
-  #backend container
+  # Backend container
   apis:
     container_name: apis
-    # image: pmeising/docker_hub_repo:backend_v1.0
-    build: ./apis
+    build:
+      context: ./apis
+      dockerfile: Dockerfile.apis
     ports:
       - "5000:5000"
     volumes:
       - ./apis:/usr/src/app
-      - /app/node_modules
     env_file:
       - ./docker.env
     networks:
@@ -35,16 +35,16 @@ services:
     depends_on:
       - db
 
-  #frontend container
+  # Frontend container
   frontend:
     container_name: frontend
-    # image: pmeising/docker_hub_repo:frontend_v1.0
-    build: ./frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.frontend
     ports:
       - "3000:3000"
     volumes:
       - ./frontend:/usr/src/client
-      - /client/node_modules
     env_file:
       - ./docker.env
     networks:
@@ -53,10 +53,9 @@ services:
       - apis
     stdin_open: true
 
-
 volumes:
-    postgres-data:
-        
-# define network
+  postgres-data:
+
+# Define network
 networks:
   app-network:

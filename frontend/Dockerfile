@@ -1,23 +1,21 @@
-FROM node:16
+FROM node:latest
 
 # Create app directory
 WORKDIR /usr/src/client
 
-# Install app dependencies
+# Copy package.json and package-lock.json
 COPY package*.json ./
 
-RUN npm install -g npm@9.8.1
-RUN npm cache verify
-RUN npm install --legacy-peer-deps --force
-
-#RUN npm ci
+# Install app dependencies
+RUN npm install
 
 # Bundle app source
 COPY . .
 
+# Build your application
 RUN npm run build
 
-#EXPOSE 80:80
-EXPOSE 3000:3000
+# Expose the port
+EXPOSE 3000
 
 CMD ["npm", "run", "start"]
