@@ -1,5 +1,7 @@
 FROM node:latest
 
+COPY ./src/img ./
+
 # Create app directory
 WORKDIR /usr/src/client
 

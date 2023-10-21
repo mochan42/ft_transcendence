@@ -17,7 +17,7 @@ const About = (props: AboutProps) => {
 						</h1>
 					</div>
 					<div className='overflow-hidden mx-auto rounded-3xl object-scale-down w-2/3'>
-						<img src='https://42wolfsburg.de/wp-content/uploads/2021/08/1_CyuMA9NNfSsJ7yu7rGZL_A-e1629378913780-1024x546.jpeg' alt='Whale and flower pot falling from sky. Reference to "The Hitchhikers Guide To The Galaxy"'></img>
+						<img src='https://miro.medium.com/v2/resize:fit:828/format:webp/1*URh4D_6vn85u_-KbBwW-Cw.jpeg' alt='Whale and flower pot falling from sky. Reference to "The Hitchhikers Guide To The Galaxy"'></img>
 					</div>
 					<div className=''>
 						<p className=''>
