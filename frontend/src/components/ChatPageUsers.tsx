@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { TChatUserData } from "../types";
 import { ChatUserList } from '../data/ChatData';
 import { Box, Stack, IconButton, Typography, Divider, Avatar, Badge } from "@mui/material";
@@ -6,6 +6,9 @@ import { CircleDashed, Handshake } from "phosphor-react";
 import ChatConversation from "./ChatConversation";
 import { ChatProps } from "../types";
 import ChatFriends from "./ChatFriends";
+import { useSelector } from "react-redux";
+import { selectChatStore } from "../redux/store";
+import ChatContact from "./ChatContact";
 
 
 
@@ -50,6 +53,8 @@ const ChatElement = (user : TChatUserData) => {
 
 const  ChatPageUsers = (chatProp : ChatProps) => {
     const [dialogState, setDialogState] = useState<boolean>(false);
+    const chatStore = useSelector(selectChatStore)
+    const [userListCompWidth, setUserListCompWidth] = useState<Number>(350)
 
     const handleOpenDialog = ()=>{
         setDialogState(true)
@@ -57,19 +62,39 @@ const  ChatPageUsers = (chatProp : ChatProps) => {
     const handleCloseDialog = ()=>{
         setDialogState(false)
     }
+    useEffect(()=>{
+        if (chatStore.chatSideBar.open)
+        {
+            setUserListCompWidth(500);
+        }
+        else
+        {
+            setUserListCompWidth(350);
+        }
+
+    }, [chatStore.chatSideBar.open])
     return (
     <>
         <Box 
           sx={{
             position:"relative",
             height: "100%",
-            minWidth: "350px",
+            width: "95vw",
+            //minWidth: "1200px",
             backgroundColor: "white",
             boxShadow: "0px 0px 2px rgba(0, 0, 0, 0.25)"
           }}>
             <Stack direction={"row"} p={3} spacing={1}>
-                <Stack p={3} spacing={1} sx={{height:"100%"}}>
-                    <Stack direction={"row"} alignItems={"centered"} justifyContent={"space-between"}>
+                <Stack p={3}
+                    spacing={1}
+                    sx={{height:"75vh", 
+                        width: `${userListCompWidth}px`, 
+                        borderColor:"grey", borderWidth:"1px"}}
+                >
+                    {/* Chatuserlist */}
+                    <Stack direction={"row"} 
+                        alignItems={"centered"} 
+                        justifyContent={"space-between"}>
                         <Typography variant='h5'>Chats</Typography>
                         <Stack direction={"row"} alignItems={"centered"} spacing={1}>
                             <IconButton onClick={()=>{handleOpenDialog()}}>
@@ -83,17 +108,23 @@ const  ChatPageUsers = (chatProp : ChatProps) => {
                     <Divider/>
                     <Stack 
                         sx={{flexGrow:1, overflowY:"scroll", height:"100%"}}
-                        direction={"column"} 
                         spacing={0.5} 
                     >
                         {ChatUserList.map((el) => { return (<ChatElement {...el} />) })}
                     </Stack>
                 </Stack>
-                <Stack>
+                {/* conversation panel */}
+                <Stack sx={{ width: "100%" }}>
                     <ChatConversation userId={chatProp.userId} socket={chatProp.socket} />
+                </Stack>
+
+                {/* show the contact profile on toggle */}
+                <Stack>
+    			{ chatStore.chatSideBar.open && <ChatContact/> }
                 </Stack>
             </Stack>
         </Box>
+        {/* handle friend request dialog panel */}
         { dialogState && <ChatFriends open={dialogState} handleClose={handleCloseDialog}/>}
     </>
       );

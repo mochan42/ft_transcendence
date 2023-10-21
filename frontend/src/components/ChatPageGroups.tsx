@@ -11,6 +11,9 @@ import ChatPageGroupsCreate from "./ChatPageGroupsCreate";
 
 import { ChatProps } from "../types";
 import ChatConversation from "./ChatConversation";
+import ChatContact from "./ChatContact";
+import { selectChatStore } from "../redux/store";
+import { useSelector } from "react-redux";
 
 
 const ChatElement = (user : TChatUserData) => {
@@ -59,52 +62,64 @@ const ChatElement = (user : TChatUserData) => {
 const  ChatPageGroups = (chatProp : ChatProps) => {
     const theme = useTheme();
     const [openDialog, setOpenDialog] = useState<boolean>(false);
+    const chatStore = useSelector(selectChatStore)
 
     const handleCloseDialog = () => {
         setOpenDialog(false);
     }
     return (
         <>
-        <Stack direction={"row"}>
+        <Stack direction={"row"} sx={{ width: "95vw"}}>
 
-        <Box 
-          sx={{
-            position:"relative",
-            height: "100%",
-            minWidth: "350px",
-            backgroundColor: "white",
-            boxShadow: "0px 0px 2px rgba(0, 0, 0, 0.25)"
-          }}>
-            <Stack p={3} spacing={1} sx={{height:"100%"}}>
-                <Stack alignItems={"centered"} >
-                    <Typography variant='h5'>Groups</Typography>
-                </Stack>
-                <Divider/>
-                <Stack direction={"row"} justifyContent={"space-between"} alignContent={"center"} >
-                    <Typography variant="subtitle2" component={Link}>
-                        Create New Group
-                    </Typography>
-                    <IconButton onClick={() => { setOpenDialog(true) }} >
-                        <Plus style={{ color: theme.palette.primary.main }}/>
-                    </IconButton>
-                </Stack>
-                <Divider/>
-                <Stack 
-                    sx={{flexGrow:1, overflowY:"scroll", height:"100%"}}
-                    direction={"column"} 
-                    spacing={0.5} 
+            <Box 
+              sx={{
+                position:"relative",
+                height: "100%",
+                minWidth: "350px",
+                backgroundColor: "white",
+                boxShadow: "0px 0px 2px rgba(0, 0, 0, 0.25)"
+              }}>
+                <Stack p={3} 
+                    spacing={1} 
+                    sx={{height:"75vh"}}
                 >
-                    { ChatUserList.map((el) => { return (<ChatElement {...el} />) })}
+                    <Stack alignItems={"centered"} >
+                        <Typography variant='h5'>Groups</Typography>
+                    </Stack>
+                    <Divider/>
+                    <Stack direction={"row"} justifyContent={"space-between"} alignContent={"center"} >
+                        <Typography variant="subtitle2" component={Link}>
+                            Create New Group
+                        </Typography>
+                        <IconButton onClick={() => { setOpenDialog(true) }} >
+                            <Plus style={{ color: theme.palette.primary.main }}/>
+                        </IconButton>
+                    </Stack>
+                    <Divider/>
+                    <Stack 
+                        sx={{flexGrow:1, overflowY:"scroll", height:"100%"}}
+                        direction={"column"} 
+                        spacing={0.5} 
+                    >
+                        { ChatUserList.map((el) => { return (<ChatElement {...el} />) })}
+                    </Stack>
                 </Stack>
-            </Stack>
 
-        </Box>
-        {/* Right side : conversation panel */}
-        {/* // TODO */}
+            </Box>
+            {/* Right side : conversation panel */}
+            {/* // TODO */}
+            <Stack sx={{ width: "100%"}}>
                 <ChatConversation userId={chatProp.userId} socket={chatProp.socket} />
-
+            </Stack>
+                
+            {/* show the contact profile on toggle */}
+            <Stack>
+			{ chatStore.chatSideBar.open && <ChatContact/> }
+            </Stack>
         </Stack>
-            {openDialog && <ChatPageGroupsCreate openState={openDialog} handleClose={handleCloseDialog} socket={chatProp.socket} />}
+
+        {/* create group channel form */}
+        {openDialog && <ChatPageGroupsCreate openState={openDialog} handleClose={handleCloseDialog} socket={chatProp.socket} />}
         </>
       );
 }

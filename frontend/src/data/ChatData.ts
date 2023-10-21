@@ -46,13 +46,76 @@ const ChatUserList = [
         online: false
     },
     {
-        id: 4,
+        id: 5,
         img: faker.image.avatar(),
-        name: "Martin",
+        name: "Pascal",
         msg:  "Holy shit",
         time: "3:46",
         unread: 1,
         online: false
+    },
+    {
+        id: 6,
+        img: faker.image.avatar(),
+        name: "Maxwell",
+        msg:  "Go home",
+        time: "3:46",
+        unread: 1,
+        online: false
+    },
+    {
+        id: 7,
+        img: faker.image.avatar(),
+        name: "Thomas",
+        msg:  "Go home",
+        time: "3:46",
+        unread: 0,
+        online: false
+    },
+    {
+        id: 8,
+        img: faker.image.avatar(),
+        name: "Heinz",
+        msg:  "You have a package",
+        time: "3:46",
+        unread: 0,
+        online: true
+    },
+    {
+        id: 9,
+        img: faker.image.avatar(),
+        name: "Kirill",
+        msg:  "I working late",
+        time: "3:46",
+        unread: 0,
+        online: true
+    },
+    {
+        id: 10,
+        img: faker.image.avatar(),
+        name: "Pavel",
+        msg:  "see you tomorrow",
+        time: "3:46",
+        unread: 1,
+        online: true
+    },
+    {
+        id: 11,
+        img: faker.image.avatar(),
+        name: "Tobias",
+        msg:  "crazy programming",
+        time: "3:46",
+        unread: 1,
+        online: true
+    },
+    {
+        id: 12,
+        img: faker.image.avatar(),
+        name: "Michael",
+        msg:  "who does it best",
+        time: "3:46",
+        unread: 1,
+        online: true
     },
 ];
 

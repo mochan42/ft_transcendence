@@ -70,7 +70,6 @@ const Home = ({
 	const [friends, setFriends] = useState<Friend[] | null>(null);
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
-    const chatSideBar = useSelector(selectChatStore);
 	const [section, setSection] = useState<Number>(0)
 
 
@@ -191,6 +190,10 @@ const Home = ({
 			/******************************* */
 		}
 	});
+	// hack for access
+	// to be removed later
+	// loginState.setIsLogin(true);
+	// setUserId("access");
 	if (!userId && !loginState.isLogin) {
 		return (
 			<>
@@ -247,7 +250,6 @@ const Home = ({
 								}
 								{section === HOME_SECTION.CHAT_USER ? <ChatPageUsers userId={userId} socket={socket} /> : null}
 								{section === HOME_SECTION.CHAT_GROUP ? <ChatPageGroups userId={userId} socket={socket}  /> : null}
-								{chatSideBar.chatSideBar.open && <ChatContact />}
 							</Stack>
 						</Stack>
 					</div>

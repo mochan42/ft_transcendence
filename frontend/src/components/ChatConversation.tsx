@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { Box, Stack, IconButton, Typography, Divider, Avatar, Badge } from "@mui/material";
 import { CaretDown } from "phosphor-react";
 import { Socket } from "socket.io-client";
@@ -18,7 +18,7 @@ const ChatConversation: React.FC<ChatProps> = ({ userId, socket }) => {
     const [userMessage, setUserMessage] = useState<string>('');
     const [messages, setMessages] = useState< ChatMessageProps [] >([]);
     const [username, setUserName] = useState<string>('');
-    const messageContainerRef = useRef<HTMLDivElement>(null);
+    const messageContainerRef = useRef<HTMLDivElement | null>(null);
     const dispatch = useDispatch();
     const chatStore = useSelector(selectChatStore);
 
@@ -28,7 +28,7 @@ const ChatConversation: React.FC<ChatProps> = ({ userId, socket }) => {
 	
 	const scrollToBottom = () => {
 		if (messageContainerRef.current) {
-			messageContainerRef.current.scrollTop = messageContainerRef.current.scrollHeight;
+            messageContainerRef.current.scrollIntoView()
 		}
 	};
 
@@ -67,9 +67,14 @@ const ChatConversation: React.FC<ChatProps> = ({ userId, socket }) => {
         }
     };
 
+    useEffect(() => {
+        scrollToBottom();
+
+    }, [messages]);
+
     return ( 
-        <Stack sx={{ height: "100%", width: "100%",
-            }} 
+        <Stack sx={{ height: "75vh", width: "100%", }} 
+            justifyContent={"space-between"}
         >
             {/* Chat header */}
             <Box p={1} sx={{ 
@@ -109,31 +114,42 @@ const ChatConversation: React.FC<ChatProps> = ({ userId, socket }) => {
             </Box>
 
 
-            {/* Chat message */}
-            <Box p={1} sx={{ height: "100%", width: "100%", backgroundColor: "#eee", overflowY: "scroll" }} >
+            {/* Chat message window */}
+            <Box p={1} sx={{ height: "100%", width: "100%", backgroundColor: "#eee", overflowY: "auto" }} >
                 {/* what's the diff with others ChatMessage */}
                 {/* <ChatMessage {new} /> */}
-                <ChatMessage incoming={true} user="facinet" message="Hello there" timeOfSend={new Date} id={1}/>
-				<div className='w-4/5 p-4' ref={messageContainerRef}>
+				<div className='w-4/5 p-4' >
                     <div className='flex-1'>
-                        {messages.map((message) => (
+                        {/* {messages.map((message) => (
                             <div key={message.id} className='mb-2'>
                                 <p>{message.user}: {message.message}</p>
                             </div>
-                        ))}
+                        ))} */}
+                        <ChatMessage incoming={true} user="facinet" message="Hello there" timeOfSend={new Date} id={1}/>
+					    {messages.map((message) => (
+						    <div key={message.id} className="mb-2">
+							    <ChatMessage incoming={message.incoming} user={message.user} message={message.message} timeOfSend={message.timeOfSend} id={message.id} />
+						    </div>
+					    ))}
                     </div>
                 </div>
+                {/* Refer to div element for auto scroll to most recent message */}
+                <div ref={messageContainerRef}/>
             </Box>
+            
+            {/* chat message input box */}
+            <Box>
 			<div className="h-4/5 w-full">
-				<div className="p-1 h-5/6 w-full bg-gray-200 overflow-y-auto">
+				{/* <div className="p-1 h-5/6 w-full bg-gray-200 overflow-y-auto">
 					<ChatMessage incoming={true} user="facinet" message="Hello there" timeOfSend={new Date} id={1}/>
 					<ChatMessage incoming={false} user="cudoh" message="How are you doing?" timeOfSend={new Date} id={2} />
 					{messages.map((message) => (
 						<div key={message.id} className="mb-2">
 							<ChatMessage incoming={message.incoming} user={message.user} message={message.message} timeOfSend={message.timeOfSend} id={message.id} />
 						</div>
-					))}
-				</div>
+					))} */}
+				{/* </div> */}
+
 				<div className="h-1/6 bg-white">
 					<div className="flex items-center w-full">
 						<input
@@ -152,6 +168,7 @@ const ChatConversation: React.FC<ChatProps> = ({ userId, socket }) => {
 					</div>
 				</div>
 			</div>
+            </Box>
         </Stack>
     );
 }
