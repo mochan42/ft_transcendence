@@ -14,12 +14,14 @@ import { FriendsService } from './friends/friends.service';
 import { CreateFriendDto } from './friends/dto/create-friend.dto';
 import { CreateChannelDto } from './channels/dto/create-channel.dto';
 import { ChannelsService } from './channels/channels.service';
+import { JoinchannelService } from './joinchannel/joinchannel/joinchannel.service';
 
 @WebSocketGateway({
   cors: {
     origin: 'http://localhost:3000',
   },
 })
+
 export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server: Server;
@@ -28,8 +30,9 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
     private readonly chatsService: ChatsService,
     private readonly friendsService: FriendsService,
     private readonly channelsService: ChannelsService,
+    private readonly joinchannelService: JoinchannelService
   ) {}
-
+  
   async handleConnection(@ConnectedSocket() socket: Socket, ...args: any[]) {
     const user = await this.chatsService.getUserFromSocket(socket);
 
@@ -56,13 +59,13 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     const friendShip = await this.friendsService.create(friendDto);
 
-    socket.emit('invite_friend_success', friendShip);
+    this.server.emit('invite_friend_success', friendShip);
   }
 
   @SubscribeMessage('accept_friend_request')
   async updateFriendship(
     @ConnectedSocket() socket: Socket,
-    friendship: CreateFriendDto,
+    @MessageBody() friendship: CreateFriendDto,
   ) {
     var updatedFriendship;
     const user = await this.chatsService.getUserFromSocket(socket);
@@ -88,6 +91,7 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @MessageBody() payload: any,
   ) {
     const user = await this.chatsService.getUserFromSocket(socket);
+
     const channel: CreateChannelDto = {
       owner: +user.id,
       label: payload.title,
@@ -95,11 +99,23 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
       password: payload.passwd,
       createdAt: new Date().toISOString(),
     };
-    const newChannel = await this.channelsService.create(channel);
 
+    const newChannel = await this.channelsService.create(channel);
     const members = [...payload.members];
+
     if (members.length && newChannel) {
-      // add memebers
+      const createdAt = new Date().toISOString();
+
+      members.forEach(async (member) => {
+        const joinchannelDTo = {
+          user: +member,
+          channel: newChannel.id,
+          status: null,
+          createdAt: createdAt
+        };
+
+        await this.joinchannelService.create(joinchannelDTo);
+      });
     }
 
     socket.emit('channel_created', newChannel);

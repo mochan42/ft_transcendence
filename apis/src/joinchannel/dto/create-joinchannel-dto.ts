@@ -10,6 +10,6 @@ export class CreateJoinchannelDto {
   @IsString()
   status?: string;
 
-  @Istring()
+  @IsString()
   createdAt: string;
 }

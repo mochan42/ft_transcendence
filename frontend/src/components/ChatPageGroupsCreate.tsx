@@ -36,7 +36,11 @@ type THandler = {
     socket: any
 }
 
-const MEMBERS = ["Name1", "Name2"];
+const MEMBERS = [
+    {id: "2", name: "Cudoh"},
+    {id: "3", name: "Philip"},
+    {id: "4", name: "Monine"},
+];
 const CreateGroupForm = ( handleFormClose: THandler ) => {
 
     const groupSchema = Yup.object().shape(
@@ -87,7 +91,12 @@ const CreateGroupForm = ( handleFormClose: THandler ) => {
     const onSubmit = async (data: any) => {
         try{
             //API CALL
-            handleFormClose.socket.emit('create_channel', data);
+            const newMembers = data.members.map((elt: {id: any, name: any }) => elt.id);
+            const formatedData = {
+                ...data,
+                members: newMembers
+            };
+            handleFormClose.socket.emit('create_channel', formatedData);
             handleFormClose.close(false);
         }
         catch (error)
