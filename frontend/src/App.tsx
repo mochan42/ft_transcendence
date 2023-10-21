@@ -31,7 +31,7 @@ const App: React.FC = () => {
 		}
 		return token;
 	}
-	const authSession: boolean = Cookies.get('isAuth') ? true : false; // While auth is broken, changing it to 'true : true' was 'true : false'
+	const authSession: boolean = Cookies.get('isAuth') ? true : false;
 	const userCookie = Cookies.get('userId');
 	const idSession: string | null =  userCookie ? userCookie : null ;
 	const [isAuth, setIsAuth] = useState<boolean>(authSession);
@@ -70,10 +70,9 @@ const App: React.FC = () => {
 					/>} />
 					<Route path='/game' element={<ProtectedRoute isAuth={isAuth} path='/game' element={<GameSelection userId={userId} />} />} />
 					<Route path='/profile' element={<ProtectedRoute isAuth={isAuth} path='/profile' element={<Profile userId={userId} isAuth={isAuth} />} />} />
-					{/* <Route path='/landingpage' element={<ProtectedRoute isAuth={isAuth} path='/landingpage' element={<LandingPage />} />} /> */}
-					<Route path='/layout' element={<Layout />} />
+					{/* <Route path='/layout' element={<Layout />} /> */}
 					<Route path='/*' element={<PageNotFound />} />
-					<Route path='/chat' element={<Layout />} />
+					{/* <Route path='/chat' element={<Layout />} /> */}
 				</Routes>
 				<div className='shadow-xl flex backdrop-blur-sm bg-white/75 dark:bg-slate-900 h-11 border-t-4 border-slate-300 dark:border-slate-700 items-center justify-evenly'>
 					<Footer />

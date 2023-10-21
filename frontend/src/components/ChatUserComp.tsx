@@ -3,8 +3,6 @@ import { styled, useTheme } from '@mui/material/styles'
 import { Stack, Avatar, Typography, Button, Box, Badge } from '@mui/material'
 import { TChatUserData } from '../types';
 
-
-
 const StyledChatBox = styled(Box)(({ theme }) => ({
     "&:hover": {
         cursor: "pointer",
