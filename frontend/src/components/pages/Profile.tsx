@@ -47,8 +47,8 @@ import '../../css/profile.css';
 	const Handle2faBtnClick = async () => {
         const resp = await axios.patch<User>('http://localhost:5000/pong/users/2fa/' + id);
         if (resp.status === 200) {
-            // This is a temporary solution, better would be to affecte trigger useEffect hook
-            window.location.reload()
+			setUserInfo(resp.data);
+            //window.location.reload()
             console.log('2FA options updated successfully');
         }
 		// make a post request to backend to update latest 2fa settings 

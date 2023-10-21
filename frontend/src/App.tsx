@@ -37,7 +37,7 @@ const App: React.FC = () => {
 	const [isAuth, setIsAuth] = useState<boolean>(authSession);
 	const [userId, setUserId] = useState<string | null>(idSession);
 	const [code, setCode] = useState<string | null>(null);
-	const state = generateStrState();
+	const [state, setState] = useState<string>(generateStrState());
 	const [socket, setSocket] = useState<any>(null);
 	const [token2fa, setToken2fa] = useState<string>('');
 

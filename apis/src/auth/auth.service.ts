@@ -11,20 +11,32 @@ export class AuthService {
   constructor(private usersService: UsersService) {}
   async signin(authUserDto: AuthUserDto) {
     const accessToken = await this.getFortyTwoAccessToken(authUserDto);
+    if (!accessToken) {
+      console.log('----FAILLED ACCESS TOKEN--------\n');
+      return { is2Fa: false, user: null };
+    }
     const user42 = await this.getFortyTwoUserInfo(accessToken.access_token);
     const pongUser = this.createPongUser(user42);
 
     const matchedUser = await this.usersService.findByUserName(
       pongUser.userName,
     );
+    var signedUser;
+    var logTimes = true;
 
-    const signedUser = matchedUser
-      ? matchedUser
-      : await this.usersService.create(pongUser);
+    if (matchedUser) {
+      signedUser = matchedUser;
+      logTimes = false;
+    }
+    else {
+      signedUser = await this.usersService.create(pongUser);
+    }
 
-    if (!signedUser.is2Fa) return { is2Fa: false, user: signedUser };
+    if (!signedUser.is2Fa) {
+      return { is2Fa: false, user: signedUser, isFirstLogin: logTimes };
+    }
     const token2fa = await this.generateSecret(signedUser.id.toString());
-    return { is2Fa: true, token2fa };
+    return { is2Fa: true, token2fa, isFirstLogin: false };
   }
 
   private createPongUser(user42: any) {
