@@ -114,7 +114,6 @@ const  ChatPageGroups = (chatProp : ChatProps) => {
             </Box>
 
             {/* Right side : conversation panel */}
-            {/* // TODO */}
             <Stack sx={{ width: "100%" }} alignItems={"center"} justifyContent={"center"}>
                 {chatStore.chatRoomId !== null && chatStore.chatType === enChatType.Group 
                     ? <ChatConversation userId={chatProp.userId} socket={chatProp.socket} />

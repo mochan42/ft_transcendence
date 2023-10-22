@@ -88,14 +88,17 @@ const ChatConversation: React.FC<ChatProps> = ({ userId, socket }) => {
                 width: "100%", backgroundColor: "white",
                 boxShadow: "0px 0px 2px rgba(0, 0, 0, 0.25)" }}
             >
-                <Stack direction={"row"} justifyContent={"space-between"} sx={{ height:"100%", width:"100%"}}>
+                <Stack direction={"row"} 
+                    justifyContent={"space-between"} 
+                    sx={{ height:"100%", width:"100%"}}
+                >
                     <Stack onClick={ ()=> { 
                                             dispatch(toggleSidebar());
-                                            console.log(chatStore.chatSideBar.type);
-                                            console.log(chatStore.chatSideBar.open);
+                                            //console.log(chatStore.chatSideBar.type);
+                                            //console.log(chatStore.chatSideBar.open);
                                         } 
                                    }
-                           direction={"row"} spacing={2} alignContent={"center"}
+                           direction={"row"} spacing={2} alignItems={"center"}
                     >
                         <Box p={1}>
                             <Badge 
@@ -107,11 +110,17 @@ const ChatConversation: React.FC<ChatProps> = ({ userId, socket }) => {
                                 <Avatar alt="image"/>
                             </Badge>
                         </Box>
-                        <Stack spacing={0.2}>
+                        <Stack spacing={1.2}>
                             {/* update with username */}
                             {/* API call to fetch user info using user_id */}
-                            <Typography variant="subtitle1">pmeising</Typography>
-                            <Typography variant="caption">Online</Typography>
+                            <Typography variant="subtitle1"
+                            > {
+                                chatStore.chatActiveUser
+                                ? chatStore.chatActiveUser.name
+                                : null
+                              }
+                            </Typography>
+
                         </Stack>
                     </Stack>
                     <Stack>

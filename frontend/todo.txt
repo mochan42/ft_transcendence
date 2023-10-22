@@ -79,8 +79,12 @@ npm cache clean --force                 : clear the cache
 
 
 ----
-+ add state for user and group in redux.
-+ update user data in ChatConversation head panel
++ handle send msg button in friends dialogue
++ add state for group in redux.
+
++ update group data in ChatConversation head panel for group
++ Make all group to have 42 logo image
++ Fix dynamic resizing of chatUserList
 + chatElement for group should be different from user by interface type
 + update contact profile on toggle for both user and group pages
   - handle button actions
@@ -88,6 +92,14 @@ npm cache clean --force                 : clear the cache
   - update information with real data.
   - create ChatChannelProfile
 + add all users in channel creation form.
++ Handle deny button for receiver
++ Handle accept button for receiver
++ Add dialog page to view profile from user list (friend dialog)
++ Create dialog for group just like one_on_one chat.
+  - tab 1 : list all groups in one tab - show their type (public, protected, private)
+  - tab 2 : show all invites received and sent
+  - listing all invite in dialog with join or cancel button.
+  - Note: ChatGroupPage will only list groups which user is a member of.
 
 
 ----- PUSH TODO ------------------
@@ -100,8 +112,8 @@ npm cache clean --force                 : clear the cache
 
 video 27 - handle friend request with socket.io 27:00
 
-[21.10.23 - Activities  ]
--------------------------
-+ Update ChatConversation panel upon user element click for user and group page
-+ Handle deny button
-+ Handle accept button
+[ Activities ]
+--------------
++ Add state for user in redux.
++ Remove online feature in ChatConversation header panel
++ update user data in ChatConversation head panel for user

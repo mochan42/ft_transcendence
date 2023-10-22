@@ -21,6 +21,7 @@ export interface IChatState {
     chatUserFriendRequests: TUserFriendRequest[],
     chatType: String | null,
     chatRoomId: String | null,
+    chatActiveUser: TChatUserData | null,
 }
 
 interface IActionPayload {

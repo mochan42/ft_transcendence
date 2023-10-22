@@ -10,7 +10,7 @@ import { useSelector } from "react-redux";
 import { selectChatStore } from "../redux/store";
 import ChatContact from "./ChatContact";
 import { useDispatch } from "react-redux";
-import { selectConversation } from "../redux/slices/chatSlice";
+import { selectConversation, updateChatActiveUser } from "../redux/slices/chatSlice";
 import { enChatType } from "../enums";
 
 
@@ -20,6 +20,7 @@ const ChatElement = (user : TChatUserData) => {
         <div 
             onClick={()=>{
                 dispatch(selectConversation({chatRoomId: user.id, chatType: enChatType.OneOnOne}))
+                dispatch(updateChatActiveUser(user));
             }}
 
             className="w-full h-1/3 bg-slate-900 rounded text-slate-200"

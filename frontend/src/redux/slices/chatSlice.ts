@@ -18,6 +18,7 @@ const initialState: IChatState = {
     chatUserFriendRequests: ChatUserFriendRequestList,
     chatType: null,
     chatRoomId: null,
+    chatActiveUser: null,
 }
 
 //export default (state: ISidebarData, action: TAction) : ISidebarData => {}
@@ -38,8 +39,8 @@ const chatSlice = createSlice({
             return action.payload
         },
         // update list of users
-        updateChatUsers: (state, action) => {
-            state.chatUsers = action.payload.chatUsers
+        updateChatUsers: (state, action:PayloadAction<TChatUserData[]>) => {
+            state.chatUsers = action.payload
         },
         // update list of user friends
         updateChatUserFriends: (state, action:PayloadAction<TChatUserData[]>) => {
@@ -53,6 +54,10 @@ const chatSlice = createSlice({
         selectConversation:(state, action) => {
             state.chatType = action.payload.chatType;
             state.chatRoomId = action.payload.chatRoomId;
+        },
+        // onclick of chat item, update chatActiveUser
+        updateChatActiveUser: (state, action: PayloadAction<TChatUserData>) => {
+            state.chatActiveUser = action.payload;
         }
     }
 })                                                                                                                                      
@@ -65,6 +70,7 @@ export const {
     updateChatUserFriends,
     updateChatUserFriendRequests,
     selectConversation,
+    updateChatActiveUser,
 } = chatSlice.actions;
 export default chatSlice;
 
@@ -75,9 +81,9 @@ export const FetchUsers = () =>{
 
     return async(): Promise<void> => {
         try {
-            const response = await axios.get<User[]>('http://localhost:5000/pong/users/');
+            const response = await axios.get<TChatUserData[]>('http://localhost:5000/pong/users/');
             if (response.status === 200) {
-                dispatch(chatSlice.actions.updateChatUsers({ChatUsers: response.data}));
+                dispatch(chatSlice.actions.updateChatUsers(response.data));
                 console.log('Received Users Info: ', response.data)
             }
         }
