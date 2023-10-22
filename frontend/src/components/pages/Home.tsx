@@ -233,7 +233,7 @@ const Home = ({
 												alignItems={"centered"}
 											>
 												<Stack width={400} spacing={2} justifyContent={"space-between"}>
-													<UserCard userId={userId} foundMatch={false} info={'profile'}></UserCard>
+													<UserCard userId={userId}></UserCard>
 													<div className="flex flex-row justify-between items-center min-w-[200px] min-h-[200px] bg-slate-900 text-center rounded-lg">
 														{userFriends != null ? userFriends.map((user, index) => (
 															<div key={index}>

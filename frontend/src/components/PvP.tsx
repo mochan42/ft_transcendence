@@ -8,7 +8,7 @@ import MatchMaking from './MatchMaking';
 
 
 interface PvPProps {
-	userId: string | null;
+	userId: string | null | undefined;
 	difficulty: number;
 	isGameActive: boolean;
 	isReset: boolean;
@@ -21,28 +21,29 @@ interface PvPProps {
 	playerPoint: () => void;
 	opponentPoint: () => void;
 	setReset: (boolean: boolean) => void;
-	setOpponentInfo: (User: User) => void;
 	setState: React.Dispatch<React.SetStateAction<'select' | 'bot' | 'player'>>;
   }
 
-const PvP: React.FC<PvPProps> = ({ userId, difficulty, isGameOver, playerScore, isReset, opponentScore, includeBoost, socket, playerPoint, opponentPoint, setIsGameOver, setReset, setOpponentInfo, setState }) => {
+const PvP: React.FC<PvPProps> = ({ userId, difficulty, isGameOver, playerScore, isReset, opponentScore, includeBoost, socket, playerPoint, opponentPoint, setIsGameOver, setReset, setState }) => {
 
 	// const [player1PaddleDirection, setPlayer1PaddleDirection] = useState<number>(0); // dynamic
 	// const [player2PaddleDirection, setPlayer2PaddleDirection] = useState<number>(0); // dynamic
-	// const [playerScore1, setPlayerScore1] = useState(0); // dynamic
-	// const [playerScore2, setPlayerScore2] = useState(0); // dynamic
 	// const [speedX, setSpeedX] = useState(-(itsdifficult)); // dynamic
 	// const [speedY, setSpeedY] = useState(-(itsdifficult)); // dynamic
-	// const [ballX, setBallX] = useState(startX); // dynamic
-	// const [ballY, setBallY] = useState(startY); // dynamic
 	// const [player1PaddleSpeed, setPlayerPaddleSpeed] = useState(18 - (difficulty * 2)); // dynamic
 	// const [player2PaddleSpeed, setopponentPaddleSpeed] = useState(0.5 + (difficulty)); // dynamic
+	
+	
+	
+	const [playerScore1, setPlayerScore1] = useState(0); // dynamic
+	const [playerScore2, setPlayerScore2] = useState(0); // dynamic
+	const [ballX, setBallX] = useState(400); // dynamic
+	const [ballY, setBallY] = useState(400); // dynamic
 	const [leftPaddleY, setLeftPaddleY] = useState(0); // dynamic
 	const [rightPaddleY, setRightPaddleY] = useState(0); // dynamic
-	// const [boostStartX, setBoostStartX] = useState(200); // dynamic
-	// const [boostStartY, setBoostStartY] = useState(200); // dynamic
-	
-	const [matchFound, setMatchFound] = useState(false); // static
+	const [boostX, setBoostX] = useState(200); // dynamic
+	const [boostY, setBoostY] = useState(200); // dynamic
+	const [matchFound, setMatchFound] = useState< true | false | undefined >(false); // static
 	const itsdifficult = (difficulty + 2) * 2 // static
 	const PvPRef = useRef<HTMLDivElement>(null);
 	const paddleLengths = [200, 150, 100, 80, 50] // static
@@ -55,8 +56,134 @@ const PvP: React.FC<PvPProps> = ({ userId, difficulty, isGameOver, playerScore, 
 		startY = (PvPRef.current?.clientHeight - 30) / 2
 	}
 	
+
+	if (socket !== null) {
+		socket.emit('difficulty', difficulty);
+		socket.emit('includeBoost', includeBoost);
+		socket.on('isGameOver', (data: boolean) => {
+			setIsGameOver(data);
+		});
+		socket.on('matchFound', (data: boolean) => {
+			setMatchFound(data);
+		});
+		socket.on('playerScore1', (data: number) => {
+			setPlayerScore1(data);
+		});
+		socket.on('playerScore2', (data: number) => {
+			setPlayerScore2(data);
+		});
+		socket.on('ballX', (data: number) => {
+			setBallX(data);
+		});
+		socket.on('ballY', (data: number) => {
+			setBallY(data);
+		});
+		socket.on('leftPaddleY', (data: number) => {
+			setLeftPaddleY(data);
+		});
+		socket.on('rightPaddleY', (data: number) => {
+			setRightPaddleY(data);
+		});
+		socket.on('boostX', (data: number) => {
+			setBoostX(data);
+		});
+		socket.on('boostY', (data: number) => {
+			setBoostY(data);
+		});
+	}
 	
-	// const [lastBoost, setLastBoost] = useState<number>(Date.now);
+
+	// useEffect(() => {
+		// const gameLoop = setInterval(() => {
+		// 	if (!isGameOver) {
+		// 		movePaddles();
+		// 		// moveBall();
+		// 		// checkCollision();
+		// 	}
+			// if (playerScore >= 10 || opponentScore >= 10) {
+			// 	setIsGameOver(true);
+			// }
+			// if (isReset && !isGameOver) {
+			// 	setBallX(startX);
+			// 	setBallY(startY);
+			// 	setSpeedX(Math.sign(speedX) * itsdifficult);
+			// 	setSpeedY(Math.sign(speedY) * itsdifficult);
+			// 	setReset(false);
+			// }
+			// if (isBoost && includeBoost) {
+			// 	const minX = startX / 2;
+			// 	const maxX = startX + minX;
+			// 	const minY = startY / 2;
+			// 	const maxY = startY + minY;
+
+			// 	// Calculate the random coordinates for the Boost region
+			// 	const newBoostX = minX + Math.random() * (maxX - minX);
+			// 	const newBoostY = minY + Math.random() * (maxY - minY);
+
+			// 	setBoostStartX(newBoostX);
+			// 	setBoostStartY(newBoostY);
+			// }
+
+		// }, 1000 / 60);
+
+		// return () => clearInterval(gameLoop);
+	// }, [isGameOver, isReset, includeBoost, startX, startY, isBoost, boostStartX, boostStartY, difficulty, playerScore2, ballX, ballY, speedX, speedY, leftPaddleY, rightPaddleY, checkCollision, moveBall, movePaddles]);
+
+	// Track player key input
+	useEffect(() => {
+		const handleKeyDown = (event: KeyboardEvent) => {
+			if (event.key === 'w' || event.key === 'ArrowUp') {
+				event.preventDefault();
+				if (socket !== null) {
+					socket.emit("paddleMove", 1); // Move paddle up
+				}
+			} else if (event.key === 's' || event.key === 'ArrowDown') {
+				event.preventDefault();
+				if (socket !== null) {
+					socket.emit("paddleMove", -1); // Move paddle down
+				}
+			}
+		};
+	  
+		const handleKeyUp = (event: KeyboardEvent) => {
+			if (event.key === 'w' || event.key === 'ArrowUp' || event.key === 's' || event.key === 'ArrowDown') {
+				if (socket !== null) {
+					socket.emit("PlayerPaddleDirection", 0); // Stop paddle movement
+				}
+			}
+		};
+	  
+		document.addEventListener('keydown', handleKeyDown);
+		document.addEventListener('keyup', handleKeyUp);
+	  
+		return () => {
+			document.removeEventListener('keydown', handleKeyDown);
+			document.removeEventListener('keyup', handleKeyUp);
+		};
+	}, []);
+
+	return (
+		<div className="relative w-full h-full" ref={PvPRef}>
+			<Paddle yPosition={leftPaddleY} paddleHeight={paddleLengths[difficulty]} style={{ left: 0 }}/>
+			<Paddle yPosition={rightPaddleY} paddleHeight={paddleLengths[difficulty]} style={{ right: 0 }}/>
+			<div className="relative bg-slate-900">
+				<Ball xPosition={ballX} yPosition={ballY} />
+			</div>
+			{includeBoost && !isBoost ? <Boost x={boostX} y={boostY} width={boostWidth} height={boostWidth} /> : null}
+			{isGameOver ? (
+				<div className="absolute inset-0 bg-black bg-opacity-80">
+						<VictoryLoss userId={userId} isVictory={playerScore1 === 1} difficulty={difficulty} />
+					</div>
+				) : null
+			}
+			{!matchFound ? <MatchMaking socket={socket} setMatchFound={setMatchFound} userId={userId} setState={setState} /> : null }
+		</div>
+	)
+}
+
+export default PvP
+
+// const [lastBoost, setLastBoost] = useState<number>(Date.now);
 
 	// const checkCollision = () => {
 
@@ -231,90 +358,3 @@ const PvP: React.FC<PvPProps> = ({ userId, difficulty, isGameOver, playerScore, 
 	// 		return newY;
 	// 	})
 	// }
-
-	useEffect(() => {
-		const gameLoop = setInterval(() => {
-			if (!isGameOver) {
-				movePaddles();
-				// moveBall();
-				// checkCollision();
-			}
-			// if (playerScore >= 10 || opponentScore >= 10) {
-			// 	setIsGameOver(true);
-			// }
-			// if (isReset && !isGameOver) {
-			// 	setBallX(startX);
-			// 	setBallY(startY);
-			// 	setSpeedX(Math.sign(speedX) * itsdifficult);
-			// 	setSpeedY(Math.sign(speedY) * itsdifficult);
-			// 	setReset(false);
-			// }
-			// if (isBoost && includeBoost) {
-			// 	const minX = startX / 2;
-			// 	const maxX = startX + minX;
-			// 	const minY = startY / 2;
-			// 	const maxY = startY + minY;
-
-			// 	// Calculate the random coordinates for the Boost region
-			// 	const newBoostX = minX + Math.random() * (maxX - minX);
-			// 	const newBoostY = minY + Math.random() * (maxY - minY);
-
-			// 	setBoostStartX(newBoostX);
-			// 	setBoostStartY(newBoostY);
-			// }
-
-		}, 1000 / 60);
-
-		return () => clearInterval(gameLoop);
-	}, [isGameOver, isReset, includeBoost, startX, startY, isBoost, boostStartX, boostStartY, difficulty, playerScore2, ballX, ballY, speedX, speedY, leftPaddleY, rightPaddleY, checkCollision, moveBall, movePaddles]);
-
-	// Track player key input
-	useEffect(() => {
-		const handleKeyDown = (event: KeyboardEvent) => {
-			if (event.key === 'w' || event.key === 'ArrowUp') {
-				event.preventDefault();
-				socket.emit("PlayerPaddleDirection", -1); // Move paddle up
-				// setPlayerPaddleDirection(-1); 
-			} else if (event.key === 's' || event.key === 'ArrowDown') {
-				event.preventDefault();
-				socket.emit("PlayerPaddleDirection", 1); // Move paddle down
-				// setPlayerPaddleDirection(1); 
-			}
-		};
-	  
-		const handleKeyUp = (event: KeyboardEvent) => {
-			if (event.key === 'w' || event.key === 'ArrowUp' || event.key === 's' || event.key === 'ArrowDown') {
-				socket.emit("PlayerPaddleDirection", 0); // Stop paddle movement
-				// setPlayerPaddleDirection(0);
-			}
-		};
-	  
-		document.addEventListener('keydown', handleKeyDown);
-		document.addEventListener('keyup', handleKeyUp);
-	  
-		return () => {
-			document.removeEventListener('keydown', handleKeyDown);
-			document.removeEventListener('keyup', handleKeyUp);
-		};
-	}, []);
-
-	return (
-		<div className="relative w-full h-full" ref={PvPRef}>
-			<Paddle yPosition={leftPaddleY} paddleHeight={paddleLengths[difficulty]} style={{ left: 0 }}/>
-			<Paddle yPosition={rightPaddleY} paddleHeight={paddleLengths[difficulty]} style={{ right: 0 }}/>
-			<div className="relative bg-slate-900">
-				{/* <Ball xPosition={ballX} yPosition={ballY} /> */}
-			</div>
-			{/* {includeBoost && !isBoost ? <Boost x={boostStartX} y={boostStartY} width={boostWidth} height={boostWidth} /> : null} */}
-			{isGameOver ? (
-				<div className="absolute inset-0 bg-black bg-opacity-80">
-						<VictoryLoss userId={userId} isVictory={playerScore === 1} difficulty={difficulty} />
-					</div>
-				) : null
-			}
-			{!matchFound ? <MatchMaking setMatchFound={setMatchFound} setOpponentInfo={setOpponentInfo} userId={userId} setState={setState} /> : null }
-		</div>
-	)
-}
-
-export default PvP

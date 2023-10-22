@@ -4,7 +4,7 @@ import { UserAchievements, UserStats } from "../types";
 
 interface VictoryLossProps {
 	isVictory: boolean;
-	userId: string | null;
+	userId: string | null | undefined;
 	difficulty: number;
 }
 

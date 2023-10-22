@@ -4,13 +4,10 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 interface UserCardProps {
-  	userId: string | null;
-	setState?: React.Dispatch<React.SetStateAction<'select' | 'bot' | 'player'>>;
-	info: string;
-	foundMatch: boolean | undefined;
+  	userId: string | undefined | null;
 }
 
-const UserCard: React.FC<UserCardProps> = ({ userId, info, setState, foundMatch}) => {
+const UserCard: React.FC<UserCardProps> = ({ userId }) => {
 	
 	const [userInfo, setUserInfo] = useState< User | null >(null);
 	const url_info = 'http://localhost:5000/pong/users/' + userId;
@@ -37,13 +34,6 @@ const UserCard: React.FC<UserCardProps> = ({ userId, info, setState, foundMatch}
 		}
 	});
 
-	const handleCardClick = () => {
-		if (info != 'MatchMaking' || (info === 'MatchMaking' && foundMatch != true)) {
-			// More actions like dropping from MatchMaking list and stuff
-			navigate('/profile');
-		}
-	}
-
 	return (
 		<div className="h-full bg-slate-900 rounded-lg p-12 flex flex-col justify-around gap-y-8">
 			<div className="flex flex-col items-center justify-between flex-grow text-slate-200">
@@ -54,7 +44,7 @@ const UserCard: React.FC<UserCardProps> = ({ userId, info, setState, foundMatch}
 				/>
 				<button
 					className='font-medium text-amber-400 text-2xl bg-transparent dark:bg-transparent underline-offset-4 hover:underline hover:bg-transparent dark:hover:bg-transparent border-t-8'
-					onClick={() => handleCardClick()}>
+				>
 					{userInfo?.userNameLoc}
 				</button>
 				<p>XP earned: {userInfo?.xp}</p>

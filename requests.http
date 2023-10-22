@@ -6,7 +6,7 @@ POST http://localhost:5000/pong/users
 Content-Type: application/json
 
 {
-	"userName": "chiemezie",
+	"userName": "chiemezies",
 	"userNameLoc": "chiemezie",
 	"firstName": "Peter",
 	"lastName": "Parker",
@@ -21,7 +21,7 @@ Content-Type: application/json
 }
 
 ###  Edit user info
-PATCH  http://localhost:5000/pong/users/30
+PATCH  http://localhost:5000/pong/users/2
 Content-Type: application/json
 
 {

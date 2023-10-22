@@ -1,41 +1,70 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { User } from "../types";
 import { Button } from './ui/Button';
 import UserCard from './UserCard';
+import axios from 'axios';
 
 interface MatchMakingProps {
-	userId: string | null;
-	setOpponentInfo: (User: User) => void;
+	userId: string | undefined| null;
+	socket: any;
 	setMatchFound: (boolean: boolean) => void;
 	setState: React.Dispatch<React.SetStateAction<'select' | 'bot' | 'player'>>;
 }
 
-const MatchMaking:React.FC<MatchMakingProps> =({ setMatchFound, setOpponentInfo, userId, setState}) => {
+const MatchMaking:React.FC<MatchMakingProps> =({ setMatchFound, socket, userId, setState}) => {
 	const [foundMatch, setFoundMatch] = useState< boolean | undefined >(undefined);
+	const [opponentInfo, setOpponentInfo] = useState< User | null >(null);
+	const url_info = 'http://localhost:5000/pong/users/';
 	const MatchMaking = 'MatchMaking';
+
+	async function fetchOpponentInfo(id: number) {
+		try {
+		  const response = await axios.get<User>(url_info + id);
+		  if (response.status === 200) {
+			setOpponentInfo(response.data);
+			console.log('Received Opponent Info: ', response.data);
+		  }
+		} catch (error) {
+		  console.log('Error fetching opponent infos', error);
+		}
+	  }
+
+	useEffect(() => {
+		if (socket !== null) {
+			socket.on('foundMatch', (data: boolean) => {
+				setFoundMatch(data);
+			});
+			socket.on('foundOpponent', (data: number) => {
+				fetchOpponentInfo(data);
+			});
+		}
+	});
 
 	return (
 		<div className='h-full w-full absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 bg-slate-400 bg-opacity-70'>
 			<div className='flex rounded min-w-[350px] h-4/5 w-3/5 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 bg-slate-900 text-slate-200'>
 				<div className='h-full w-1/2 border-r-4 border-amber-400 z-0'>
 					<div className={'h-4/5'} >
-						<UserCard userId={userId} setState={setState} foundMatch={foundMatch} info={MatchMaking}/>
+						<UserCard userId={userId}/>
 					</div>
-					<div className='h-1/5'> // For testing purposes
-						<Button onClick={() => setFoundMatch(true)}>
-							find a match
-						</Button>
-					</div>
+				</div>
+				<div>
+					<button onClick={() => setMatchFound(true)}>
+						Select target
+					</button>
 				</div>
 				<div className={'border-l-4 border-amber-400 h-full w-1/2 z-0'}>
 					<div className={'h-4/5'} >
-						<UserCard userId={'3'} setState={setState} foundMatch={foundMatch} info={MatchMaking} />
+						<UserCard userId={opponentInfo?.id}/>
 					</div>
 				</div>
 				<button 
 					onClick={() => {
 						if (foundMatch === undefined) {
 							setFoundMatch(false);
+							if (socket !== null) {
+								socket.emit('requestMatch', userId);
+							}
 						} else if (foundMatch === false) {
 							setState('select');
 						} else {
@@ -44,7 +73,7 @@ const MatchMaking:React.FC<MatchMakingProps> =({ setMatchFound, setOpponentInfo,
 					}}
 					className='border-8 border-slate-200 text-slate-900 h-12 rounded-md absolute top-3/4 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 bg-slate-200'>
 					{foundMatch === undefined ? 'Search for opponent' : null}
-					{foundMatch === false ? 'Return to Selection Screen' : null}
+					{foundMatch === false ? 'Cancel' : null}
 					{foundMatch ? 'Start Match' : null}
 				</button>
 				<div className={'bg-slate-900 border-4 border-amber-400 rounded-full h-32 w-32 text-white text-xl font-extrabold flex-cols justify-around text-center absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 flex flex-col items-center'}>
