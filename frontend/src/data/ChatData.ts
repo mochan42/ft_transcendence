@@ -194,16 +194,16 @@ const ChatUserFriendsList = [
 
 const ChatUserFriendRequestList : TUserFriendRequest[] = [
     {
-        receiverId: null,
-        senderId: ChatUserList[5].id,
-        senderImg: ChatUserList[5].img,
-        senderUsername: ChatUserList[5].name
+        userId: ChatUserList[5].id,
+        userImg: ChatUserList[5].img,
+        userName: ChatUserList[5].name,
+        reqType: "incoming"
     },
     {
-        receiverId: null,
-        senderId: ChatUserList[6].id,
-        senderImg: ChatUserList[6].img,
-        senderUsername: ChatUserList[6].name
+        userId: ChatUserList[6].id,
+        userImg: ChatUserList[6].img,
+        userName: ChatUserList[6].name,
+        reqType: "incoming"
     },
 
 ]

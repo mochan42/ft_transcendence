@@ -19,9 +19,8 @@ enum enChatType {
   Group ="group"
 }
 
-enum enRelationType {
-  MEMBER,
-  FRIEND,
-  UNKNOWN,
+enum enReqType {
+  outgoing,
+  incoming,
 }
-export { HOME_SECTION, logStatus, enChatType};
+export { HOME_SECTION, logStatus, enChatType, enReqType};

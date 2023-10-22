@@ -92,12 +92,12 @@ interface ChatProps {
 
 type TUserFriendRequest = {
   
-  receiverId: number | null,
-  senderId: number | null,
+  userId: number | null,
   // the two attributes below can be fetched by API 
   // using the user id
-  senderImg: string | undefined,
-  senderUsername: string | undefined,
+  userImg: string | undefined,
+  userName: string | undefined,
+  reqType: string | undefined
 }
 
 export  type { User, UserStats, UserAchievements, ProfileProps, 

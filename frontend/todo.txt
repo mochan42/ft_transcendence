@@ -79,11 +79,15 @@ npm cache clean --force                 : clear the cache
 
 
 ----
++ add state for user and group in redux.
 + update user data in ChatConversation head panel
 + chatElement for group should be different from user by interface type
 + update contact profile on toggle for both user and group pages
   - handle button actions
-  - 
+  - change the name from ChatContact.tsx to ChatUserProfile.tsx
+  - update information with real data.
+  - create ChatChannelProfile
++ add all users in channel creation form.
 
 
 ----- PUSH TODO ------------------
@@ -99,3 +103,5 @@ video 27 - handle friend request with socket.io 27:00
 [21.10.23 - Activities  ]
 -------------------------
 + Update ChatConversation panel upon user element click for user and group page
++ Handle deny button
++ Handle accept button

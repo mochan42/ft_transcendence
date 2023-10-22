@@ -52,7 +52,7 @@ const ChatUserFriendRequestsList = ()=> {
     return (
         <>
             { chatStore.chatUserFriendRequests.map((el) => {
-                return <ChatUserFriendRequestComp key={el.senderId} {...el}/>
+                return <ChatUserFriendRequestComp key={el.userId} {...el}/>
             })};
         </>
     );

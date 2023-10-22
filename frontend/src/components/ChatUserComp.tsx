@@ -6,6 +6,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { selectChatStore } from '../redux/store';
 import { updateChatUserFriendRequests } from '../redux/slices/chatSlice';
 import { updateChatUserFriends } from '../redux/slices/chatSlice';
+import { enReqType } from '../enums';
 
 
 
@@ -20,6 +21,48 @@ const StyledChatBox = styled(Box)(({ theme }) => ({
 const ChatUserComp = (usrData : TChatUserData) => {
     const theme = useTheme()
     const chatStore = useSelector(selectChatStore)
+    const dispatch = useDispatch()
+
+    const onSendRequest = ()=>{
+         // Create a new friend request object
+         // Note!!! This object must be populated with data of active user.
+        const newOutgoingReq : TUserFriendRequest= {
+            userId: chatStore.chatUsers[0].id,
+            userImg: chatStore.chatUsers[0].img,
+            userName: chatStore.chatUsers[0].name,
+            reqType: "incoming",
+        }
+        // API CALL
+        // post the above object (newOutgoingReq) to be added to the friendrequestlist
+        // of the receiver. (receiver id has been provided) 
+
+
+        const newReq : TUserFriendRequest= {
+            userId: usrData.id,
+            userImg: usrData.img,
+            userName: usrData.name,
+            reqType: "outgoing",
+        }
+        // Add new friend request to friend request list
+        const newFriendRequestList = [...chatStore.chatUserFriendRequests, newReq]
+        // update the friend request list with new one
+        dispatch(updateChatUserFriendRequests(newFriendRequestList));
+        alert("request_sent");
+        // API CALL
+        // post the updated friendrequestlist to backend.
+        
+        // EMIT SOCKET EVENT : FRIEND_REQUEST
+        // socket.emit("friend_request ", {data}, ()=> {
+        //     alert("request_sent");
+        // });
+    }
+    const isUserKnown = () => {
+        const srcFriendList = chatStore.chatUserFriends.filter(el=> el.id === usrData.id)
+        const srcFriendReqSentList = chatStore.chatUserFriendRequests.filter(el=> el.userId === usrData.id)
+
+        const result : boolean = (srcFriendList.length || srcFriendReqSentList.length) ? true : false
+        return result
+    }
 
     return (
         <StyledChatBox sx={{
@@ -56,20 +99,9 @@ const ChatUserComp = (usrData : TChatUserData) => {
                     </Stack>
                 </Stack>
                 <Stack direction={"row"} alignItems={"center"} spacing={2}>
-                    <Button 
-                        onClick={() => {
-                            alert("request_sent");
-                            const newReq : TUserFriendRequest= {
-                                receiverId: null,
-                                senderId: chatStore.chatUsers[0].id,
-                                senderImg: chatStore.chatUsers[0].img,
-                                senderUsername: chatStore.chatUsers[0].name,
-                            }
-                            // EMIT SOCKET EVENT : FRIEND_REQUEST
-                            // socket.emit("friend_request ", {data}, ()=> {
-                            //     alert("request_sent");
-                            // });
-                        }}
+                    <Button
+                        disabled={isUserKnown()}
+                        onClick={() => onSendRequest()}
                         sx={{backgroundColor: "#eee"}}
                     > Send Request
                     </Button>
@@ -90,7 +122,6 @@ const ChatUserFriendComp = (usrData : TChatUserData) => {
             p: 2
         }}
         >
-
             <Stack
                 direction={"row"} 
                 alignItems={"center"} 
@@ -129,7 +160,6 @@ const ChatUserFriendComp = (usrData : TChatUserData) => {
                     > Send Msg
                     </Button>
                 </Stack>
-
             </Stack>
         </StyledChatBox>
     )
@@ -142,9 +172,9 @@ const ChatUserFriendRequestComp = (reqData : TUserFriendRequest) => {
 
     const onAccept = ()=>{
         // fetch user from user list
-        const stranger = chatStore.chatUsers.filter(el => el.id===reqData.senderId)[0]
+        const stranger = chatStore.chatUsers.filter(el => el.id===reqData.userId)[0]
         // create new list of friend request for user
-        const newFriendRequestList = chatStore.chatUserFriendRequests.filter(el => el.senderId !== stranger.id)
+        const newFriendRequestList = chatStore.chatUserFriendRequests.filter(el => el.userId !== stranger.id)
         // create new friend list for user
         const newFriendList = [...chatStore.chatUserFriends, stranger]
         // update the friend request list with new one
@@ -152,20 +182,34 @@ const ChatUserFriendRequestComp = (reqData : TUserFriendRequest) => {
         // update the friend list with new one.
         dispatch(updateChatUserFriends(newFriendList));
         // API CALLS
-        // - Update user friend list in backend
+        // - Update active user friend list in backend
+        // - Update receiver user friend list in backend
         // - Update user friend request list in backend.
+        // - Update receiver user friend request list in backend - remove from request list.
+        // API CALL
+                            // add user to user friend list in backend
+                            // EMIT SOCKET EVENT : ADD_FRIEND
+                            // socket.emit("friend_request ", {data}, ()=> {
+                            //     alert("request_sent");
+                            // });
 
     }
     const onDeny = ()=>{
         // fetch user from user list
-        const stranger = chatStore.chatUsers.filter(el => el.id===reqData.senderId)[0]
+        const stranger = chatStore.chatUsers.filter(el => el.id===reqData.userId)[0]
         // create new list of friend request for user
-        const newFriendRequestList = chatStore.chatUserFriendRequests.filter(el => el.senderId !== stranger.id)
+        const newFriendRequestList = chatStore.chatUserFriendRequests.filter(el => el.userId !== stranger.id)
         // update the friend request list with new one
         dispatch(updateChatUserFriendRequests(newFriendRequestList));
         // API CALLS
         // - Update user friend request list in backend.
-
+        // - Update receiver user friend request list in backend - remove from request list.
+                            // API CALL
+                            // update user friend request list in backend
+                            // EMIT SOCKET EVENT : DENY_FRIEND
+                            // socket.emit("friend_request ", {data}, ()=> {
+                            //     alert("request_sent");
+                            // });
     }
     return (
         <StyledChatBox sx={{
@@ -182,42 +226,31 @@ const ChatUserFriendRequestComp = (reqData : TUserFriendRequest) => {
             >
                 <Stack direction={"row"} alignItems={"center"} spacing={2}>
                     {" "}
-                    <Avatar alt={reqData.senderUsername} src={reqData.senderImg} />
+                    <Avatar alt={reqData.userName} src={reqData.userImg} />
                     <Stack>
-                        <Typography variant="subtitle2"> { reqData.senderUsername }</Typography>
+                        <Typography variant="subtitle2"> { reqData.userName }</Typography>
                     </Stack>
                 </Stack>
                 <Stack direction={"row"} alignItems={"center"} spacing={2}>
-                    <Button 
-                        onClick={() => {
-                            onAccept();
-                            // API CALL
-                            // add user to user friend list in backend
-                            // EMIT SOCKET EVENT : ADD_FRIEND
-                            // socket.emit("friend_request ", {data}, ()=> {
-                            //     alert("request_sent");
-                            // });
-                        }}
-                        sx={{backgroundColor: "#af9"}}
-                        
-                    > Accept
-                    </Button>
-                    <Button 
-                        onClick={() => {
-                            onDeny()
-
-                            // API CALL
-                            // update user friend request list in backend
-                            // EMIT SOCKET EVENT : DENY_FRIEND
-                            // socket.emit("friend_request ", {data}, ()=> {
-                            //     alert("request_sent");
-                            // });
-                        }}
-                        sx={{backgroundColor: "#fa9"}}
-                    > Deny
-                    </Button>
+                    {
+                        (reqData.reqType === "incoming") &&
+                        <Button onClick={() => onAccept()} sx={{backgroundColor: "#af9"}}
+                        > Accept
+                        </Button>
+                    }
+                    {
+                        (reqData.reqType === "incoming") &&
+                        <Button onClick={() => onDeny()} sx={{backgroundColor: "#fa9"}}
+                        > Deny
+                        </Button>
+                    }
+                    {
+                        (reqData.reqType === "outgoing") &&
+                        <Button disabled sx={{backgroundColor: "#eee"}}
+                        > Pending
+                        </Button>
+                    }
                 </Stack>
-
             </Stack>
         </StyledChatBox>
     )
