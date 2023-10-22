@@ -55,7 +55,7 @@ const CreateGroupForm = ( handleFormClose: THandler ) => {
 
     const defaultValues = { 
         title: "" ,
-        members: [],
+        members: [], // to be replace with list of all users
         state_private: 'private',
         state_protected: 'protected',
         privacy_state: 'public'

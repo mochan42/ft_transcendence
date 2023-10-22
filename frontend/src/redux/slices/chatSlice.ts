@@ -2,9 +2,9 @@ import { AnyAction, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { useDispatch } from "react-redux";
 import { ThunkAction } from "redux-thunk"
 import { CHAT_ACTION_TYPE, IChatState, TAction } from "..";
-import { User } from "../../types";
+import { TChatUserData, TUserFriendRequest, User } from "../../types";
 import axios from 'axios'
-import { ChatUserList } from "../../data/ChatData";
+import { ChatUserFriendRequestList, ChatUserFriendsList, ChatUserList } from "../../data/ChatData";
 
 
 
@@ -14,8 +14,11 @@ const initialState: IChatState = {
         type: CHAT_ACTION_TYPE.CHAT_CONTACT // options: 'CONTACT' 'STARRED' 'SHARED'
     },
     chatUsers: ChatUserList,
-    chatUserFriends: ChatUserList,
-    chatUserFriendRequests: [],
+    chatUserFriends: ChatUserFriendsList,
+    chatUserFriendRequests: ChatUserFriendRequestList,
+    chatType: null,
+    chatRoomId: null,
+    chatActiveUser: null,
 }
 
 //export default (state: ISidebarData, action: TAction) : ISidebarData => {}
@@ -36,16 +39,25 @@ const chatSlice = createSlice({
             return action.payload
         },
         // update list of users
-        updateChatUsers: (state, action) => {
-            state.chatUsers = action.payload.chatUsers
+        updateChatUsers: (state, action:PayloadAction<TChatUserData[]>) => {
+            state.chatUsers = action.payload
         },
         // update list of user friends
-        updateChatUserFriends: (state, action) => {
-            state.chatUserFriends = action.payload.chatUserFriends
+        updateChatUserFriends: (state, action:PayloadAction<TChatUserData[]>) => {
+            state.chatUserFriends = action.payload
         },
-        // update list of user friends
-        updateChatUserFriendRequests: (state, action) => {
-            state.chatUserFriendRequests = action.payload.chatUserFriendRequests
+        // update list of user friend request
+        updateChatUserFriendRequests: (state, action: PayloadAction<TUserFriendRequest[]>) => {
+            state.chatUserFriendRequests = action.payload
+        },
+        // selection conversion : group or one on one chat
+        selectConversation:(state, action) => {
+            state.chatType = action.payload.chatType;
+            state.chatRoomId = action.payload.chatRoomId;
+        },
+        // onclick of chat item, update chatActiveUser
+        updateChatActiveUser: (state, action: PayloadAction<TChatUserData>) => {
+            state.chatActiveUser = action.payload;
         }
     }
 })                                                                                                                                      
@@ -56,7 +68,9 @@ export const {
     updateSidebarType,
     updateChatUsers,
     updateChatUserFriends,
-    updateChatUserFriendRequests
+    updateChatUserFriendRequests,
+    selectConversation,
+    updateChatActiveUser,
 } = chatSlice.actions;
 export default chatSlice;
 
@@ -67,9 +81,9 @@ export const FetchUsers = () =>{
 
     return async(): Promise<void> => {
         try {
-            const response = await axios.get<User[]>('http://localhost:5000/pong/users/');
+            const response = await axios.get<TChatUserData[]>('http://localhost:5000/pong/users/');
             if (response.status === 200) {
-                dispatch(chatSlice.actions.updateChatUsers({ChatUsers: response.data}));
+                dispatch(chatSlice.actions.updateChatUsers(response.data));
                 console.log('Received Users Info: ', response.data)
             }
         }

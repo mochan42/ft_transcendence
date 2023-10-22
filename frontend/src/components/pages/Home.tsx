@@ -204,6 +204,10 @@ const Home = ({
 			
 		}
 	});
+	// hack for access
+	// to be removed later
+	loginState.setIsLogin(true);
+	setUserId("access");
 	if (!userId && !loginState.isLogin) {
 		return (
 			<>
@@ -260,7 +264,6 @@ const Home = ({
 								}
 								{section === HOME_SECTION.CHAT_USER ? <ChatPageUsers userId={userId} socket={socket} /> : null}
 								{section === HOME_SECTION.CHAT_GROUP ? <ChatPageGroups userId={userId} socket={socket}  /> : null}
-								{chatSideBar.chatSideBar.open && <ChatContact />}
 							</Stack>
 						</Stack>
 					</div>

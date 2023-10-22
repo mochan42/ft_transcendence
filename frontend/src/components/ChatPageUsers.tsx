@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { TChatUserData } from "../types";
 import { ChatUserList } from '../data/ChatData';
 import { Box, Stack, IconButton, Typography, Divider, Avatar, Badge } from "@mui/material";
@@ -6,12 +6,25 @@ import { CircleDashed, Handshake } from "phosphor-react";
 import ChatConversation from "./ChatConversation";
 import { ChatProps } from "../types";
 import ChatFriends from "./ChatFriends";
-
+import { useSelector } from "react-redux";
+import { selectChatStore } from "../redux/store";
+import ChatContact from "./ChatContact";
+import { useDispatch } from "react-redux";
+import { selectConversation, updateChatActiveUser } from "../redux/slices/chatSlice";
+import { enChatType } from "../enums";
 
 
 const ChatElement = (user : TChatUserData) => {
+    const dispatch = useDispatch();
     return (
-        <div className="w-full h-1/3 bg-slate-900 rounded text-slate-200">
+        <div 
+            onClick={()=>{
+                dispatch(selectConversation({chatRoomId: user.id, chatType: enChatType.OneOnOne}))
+                dispatch(updateChatActiveUser(user));
+            }}
+
+            className="w-full h-1/3 bg-slate-900 rounded text-slate-200"
+        >
             <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-2 overflow-auto p-1">
                     {/* {user.online ? (
@@ -50,6 +63,8 @@ const ChatElement = (user : TChatUserData) => {
 
 const  ChatPageUsers = (chatProp : ChatProps) => {
     const [dialogState, setDialogState] = useState<boolean>(false);
+    const chatStore = useSelector(selectChatStore)
+    const [userListCompWidth, setUserListCompWidth] = useState<Number>(350)
 
     const handleOpenDialog = ()=>{
         setDialogState(true)
@@ -57,43 +72,73 @@ const  ChatPageUsers = (chatProp : ChatProps) => {
     const handleCloseDialog = ()=>{
         setDialogState(false)
     }
+    useEffect(()=>{
+        if (chatStore.chatSideBar.open)
+        {
+            setUserListCompWidth(500);
+        }
+        else
+        {
+            setUserListCompWidth(350);
+        }
+
+    }, [chatStore.chatSideBar.open])
     return (
     <>
         <Box 
           sx={{
             position:"relative",
             height: "100%",
-            minWidth: "350px",
+            width: "95vw",
+            //minWidth: "1200px",
             backgroundColor: "white",
             boxShadow: "0px 0px 2px rgba(0, 0, 0, 0.25)"
           }}>
             <Stack direction={"row"} p={3} spacing={1}>
-                <Stack p={3} spacing={1} sx={{height:"100%"}}>
-                    <Stack direction={"row"} alignItems={"centered"} justifyContent={"space-between"}>
+                <Stack p={3}
+                    spacing={1}
+                    sx={{height:"75vh", 
+                        width: `${userListCompWidth}px`, 
+                        borderColor:"grey", borderWidth:"1px"}}
+                >
+                    {/* Chatuserlist */}
+                    <Stack direction={"row"} 
+                        alignItems={"centered"} 
+                        justifyContent={"space-between"}>
                         <Typography variant='h5'>Chats</Typography>
                         <Stack direction={"row"} alignItems={"centered"} spacing={1}>
                             <IconButton onClick={()=>{handleOpenDialog()}}>
                                 <Handshake/>
                             </IconButton>
-                            <IconButton>
+                            {/* <IconButton>
                                 <CircleDashed/>
-                            </IconButton>
+                            </IconButton> */}
                         </Stack>
                     </Stack>
                     <Divider/>
                     <Stack 
                         sx={{flexGrow:1, overflowY:"scroll", height:"100%"}}
-                        direction={"column"} 
                         spacing={0.5} 
                     >
-                        {ChatUserList.map((el) => { return (<ChatElement {...el} />) })}
+                        {chatStore.chatUserFriends.map((el) => { return (<ChatElement {...el} />) })}
                     </Stack>
                 </Stack>
+
+                {/* conversation panel */}
+                <Stack sx={{ width: "100%" }} alignItems={"center"} justifyContent={"center"}>
+                    {chatStore.chatRoomId !== null && chatStore.chatType === enChatType.OneOnOne 
+                        ? <ChatConversation userId={chatProp.userId} socket={chatProp.socket} />
+                        : <Typography variant="subtitle2">Select chat or create new</Typography>
+                    }
+                </Stack>
+
+                {/* show the contact profile on toggle */}
                 <Stack>
-                    <ChatConversation userId={chatProp.userId} socket={chatProp.socket} />
+    			{ chatStore.chatSideBar.open && <ChatContact/> }
                 </Stack>
             </Stack>
         </Box>
+        {/* handle friend request dialog panel */}
         { dialogState && <ChatFriends open={dialogState} handleClose={handleCloseDialog}/>}
     </>
       );
