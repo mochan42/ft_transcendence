@@ -13,14 +13,21 @@ import { ChatProps } from "../types";
 
 const ChatConversation: React.FC<ChatProps> = ({ userId, socket }) => {
 
+    const dispatch = useDispatch();
+    const chatStore = useSelector(selectChatStore);
 	const [channels, setChannels] = useState<string[]>([]);
     const [userInfo, setUserInfo] = useState<User | null>(null);
     const [userMessage, setUserMessage] = useState<string>('');
+    // API CALL
+    // Load message for each user or chat group from server.
+    // information about conversation type is store in chatStore
+    // example:
+    // const chatType = chatStore.chatType
+    // you can now decide with it to fetch info for group or one_on_one
+    //
     const [messages, setMessages] = useState< ChatMessageProps [] >([]);
     const [username, setUserName] = useState<string>('');
     const messageContainerRef = useRef<HTMLDivElement | null>(null);
-    const dispatch = useDispatch();
-    const chatStore = useSelector(selectChatStore);
 
 	var id = 0;
 
@@ -101,6 +108,8 @@ const ChatConversation: React.FC<ChatProps> = ({ userId, socket }) => {
                             </Badge>
                         </Box>
                         <Stack spacing={0.2}>
+                            {/* update with username */}
+                            {/* API call to fetch user info using user_id */}
                             <Typography variant="subtitle1">pmeising</Typography>
                             <Typography variant="caption">Online</Typography>
                         </Stack>
