@@ -204,10 +204,10 @@ const Home = ({
 			
 		}
 	});
-	// hack for access
-	// to be removed later
-	loginState.setIsLogin(true);
-	setUserId("access");
+	// // hack for access
+	// // to be removed later
+	// loginState.setIsLogin(true);
+	// setUserId("access");
 	if (!userId && !loginState.isLogin) {
 		return (
 			<>
