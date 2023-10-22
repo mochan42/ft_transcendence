@@ -9,12 +9,21 @@ import ChatFriends from "./ChatFriends";
 import { useSelector } from "react-redux";
 import { selectChatStore } from "../redux/store";
 import ChatContact from "./ChatContact";
-
+import { useDispatch } from "react-redux";
+import { selectConversation } from "../redux/slices/chatSlice";
+import { enChatType } from "../enums";
 
 
 const ChatElement = (user : TChatUserData) => {
+    const dispatch = useDispatch();
     return (
-        <div className="w-full h-1/3 bg-slate-900 rounded text-slate-200">
+        <div 
+            onClick={()=>{
+                dispatch(selectConversation({chatRoomId: user.id, chatType: enChatType.OneOnOne}))
+            }}
+
+            className="w-full h-1/3 bg-slate-900 rounded text-slate-200"
+        >
             <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-2 overflow-auto p-1">
                     {/* {user.online ? (
@@ -113,9 +122,13 @@ const  ChatPageUsers = (chatProp : ChatProps) => {
                         {ChatUserList.map((el) => { return (<ChatElement {...el} />) })}
                     </Stack>
                 </Stack>
+
                 {/* conversation panel */}
-                <Stack sx={{ width: "100%" }}>
-                    <ChatConversation userId={chatProp.userId} socket={chatProp.socket} />
+                <Stack sx={{ width: "100%" }} alignItems={"center"} justifyContent={"center"}>
+                    {chatStore.chatRoomId !== null && chatStore.chatType === enChatType.OneOnOne 
+                        ? <ChatConversation userId={chatProp.userId} socket={chatProp.socket} />
+                        : <Typography variant="subtitle2">Select chat or create new</Typography>
+                    }
                 </Stack>
 
                 {/* show the contact profile on toggle */}

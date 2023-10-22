@@ -17,11 +17,6 @@ const Leaderboard:React.FC<LeaderboardProps> =({ userId, socket }) => {
 	const [friends, setFriends] = useState< Friend [] | null>(null)
 	const urlFriends = 'http://localhost:5000/pong/users/' + userId + '/friends';
 	
-	const sendReqFriend = () => {
-		const friend = '42';
-		socket.emit('request_friendship', friend);
-	}
-
 	const getUsersInfo = async () => { 
 		try {
 			const response = await axios.get< User[] >('http://localhost:5000/pong/users/');
@@ -50,16 +45,7 @@ const Leaderboard:React.FC<LeaderboardProps> =({ userId, socket }) => {
 
 	const addFriend = async (receiver: string) => {
 		try {
-			const friendRequest = {
-				"sender": userId,
-				"receiver": receiver,
-				"relation": 'pending',
-				"createdAt": Date.now().toLocaleString()
-			};
-			const response = await axios.post('http://localhost:5000/pong/friends', friendRequest);
-			if (response.status === 200) {
-				console.log('Requested Friendship');
-			}
+			socket.emit('invite_friend', receiver);
 		}
 		catch (error) {
 			console.log('Error requesting friendship with user: ', receiver, error);
@@ -77,17 +63,11 @@ const Leaderboard:React.FC<LeaderboardProps> =({ userId, socket }) => {
 	}, [getUsersInfo])
 
 	useEffect(() => {
-			const sortedUsers = usersInfo.sort((a, b) => b.xp - a.xp);
-			const top5Users = sortedUsers.slice(0, 5);
-			setTopUsers(top5Users);
-	}, [usersInfo])
+		const sortedUsers = usersInfo.sort((a, b) => b.xp - a.xp);
+		const top5Users = sortedUsers.slice(0, 5);
+		setTopUsers(top5Users);
+	}, [usersInfo]);
 
-	//*************Event sourcing*************
-	useEffect(() => {
-		socket.on('received_friend_request', (friendship: any) => {
-			
-		});
-	});
 	return (
 		<div className="h-full w-full bg-slate-900 p-4 text-center rounded-lg">
 			<h2 className="text-2xl text-amber-400 font-semibold mb-4">Leaderboard</h2>
@@ -101,7 +81,6 @@ const Leaderboard:React.FC<LeaderboardProps> =({ userId, socket }) => {
 						<Button variant={'ghost'} onClick={
 							(() => {
 									if (!(friends?.some((friend) => friend.receiver === user.id || friends?.some((friend) => friend.sender === user.id)))) {
-										alert('TOI DOU VIENS TU ?');
 										return addFriend(user.id);
 								}
 							})
@@ -124,7 +103,7 @@ const Leaderboard:React.FC<LeaderboardProps> =({ userId, socket }) => {
 							/>
 						</Button>
 						<img className='h-6 w-6 rounded-full' src={user.avatar != "" ? user.avatar : 'https://www.svgrepo.com/show/170615/robot.svg'}/>
-							<button className="text-lg mr-2 hover:underline" onClick={() => { sendReqFriend() }} >{user.userNameLoc}</button>
+							<button className="text-lg mr-2 hover:underline" onClick={() => { alert('QUOI ?') }} >{user.userNameLoc}</button>
 					</div>
 					<span className="text-slate-300">{user.xp} points</span>
 					<div className="text-amber-400">

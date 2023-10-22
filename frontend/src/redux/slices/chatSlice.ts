@@ -16,6 +16,8 @@ const initialState: IChatState = {
     chatUsers: ChatUserList,
     chatUserFriends: ChatUserList,
     chatUserFriendRequests: [],
+    chatType: null,
+    chatRoomId: null,
 }
 
 //export default (state: ISidebarData, action: TAction) : ISidebarData => {}
@@ -46,6 +48,11 @@ const chatSlice = createSlice({
         // update list of user friends
         updateChatUserFriendRequests: (state, action) => {
             state.chatUserFriendRequests = action.payload.chatUserFriendRequests
+        },
+        // selection conversion : group or one on one chat
+        selectConversation:(state, action) => {
+            state.chatType = action.payload.chatType;
+            state.chatRoomId = action.payload.chatRoomId;
         }
     }
 })                                                                                                                                      
@@ -56,7 +63,8 @@ export const {
     updateSidebarType,
     updateChatUsers,
     updateChatUserFriends,
-    updateChatUserFriendRequests
+    updateChatUserFriendRequests,
+    selectConversation,
 } = chatSlice.actions;
 export default chatSlice;
 

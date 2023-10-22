@@ -14,11 +14,18 @@ import ChatConversation from "./ChatConversation";
 import ChatContact from "./ChatContact";
 import { selectChatStore } from "../redux/store";
 import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { selectConversation } from "../redux/slices/chatSlice";
+import { enChatType } from "../enums";
 
 
 const ChatElement = (user : TChatUserData) => {
+    const dispatch = useDispatch();
     return (
         <Box 
+            onClick={()=>{
+                dispatch(selectConversation({chatRoomId: user.id, chatType: enChatType.Group}))
+            }}
             sx={{
                 width: "100%",
                 backgroundColor: "#ddd",
@@ -84,12 +91,12 @@ const  ChatPageGroups = (chatProp : ChatProps) => {
                     sx={{height:"75vh"}}
                 >
                     <Stack alignItems={"centered"} >
-                        <Typography variant='h5'>Groups</Typography>
+                        <Typography variant='h5'>Channels</Typography>
                     </Stack>
                     <Divider/>
-                    <Stack direction={"row"} justifyContent={"space-between"} alignContent={"center"} >
+                    <Stack direction={"row"} justifyContent={"space-between"} alignItems={"center"} >
                         <Typography variant="subtitle2" component={Link}>
-                            Create New Group
+                            Create New Channel
                         </Typography>
                         <IconButton onClick={() => { setOpenDialog(true) }} >
                             <Plus style={{ color: theme.palette.primary.main }}/>
@@ -104,12 +111,15 @@ const  ChatPageGroups = (chatProp : ChatProps) => {
                         { ChatUserList.map((el) => { return (<ChatElement {...el} />) })}
                     </Stack>
                 </Stack>
-
             </Box>
+
             {/* Right side : conversation panel */}
             {/* // TODO */}
-            <Stack sx={{ width: "100%"}}>
-                <ChatConversation userId={chatProp.userId} socket={chatProp.socket} />
+            <Stack sx={{ width: "100%" }} alignItems={"center"} justifyContent={"center"}>
+                {chatStore.chatRoomId !== null && chatStore.chatType === enChatType.Group 
+                    ? <ChatConversation userId={chatProp.userId} socket={chatProp.socket} />
+                    : <Typography variant="subtitle2">Select channel chat or create new</Typography>
+                }
             </Stack>
                 
             {/* show the contact profile on toggle */}

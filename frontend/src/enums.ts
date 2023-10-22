@@ -14,4 +14,8 @@ enum logStatus {
   ISNOT2FA
 }
 
-export { HOME_SECTION, logStatus };
+enum enChatType {
+  OneOnOne = "individual",
+  Group ="group"
+}
+export { HOME_SECTION, logStatus, enChatType};

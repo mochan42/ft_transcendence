@@ -24,6 +24,7 @@ export default function RHF_AutoCompDropDown({ name, label, helperText, options,
                     multiple
                     freeSolo
                     options={options}
+                    getOptionLabel={(option) => option.name} 
                     {...field} 
                     fullWidth
                     value={
@@ -31,7 +32,7 @@ export default function RHF_AutoCompDropDown({ name, label, helperText, options,
                             ? ""
                             : field.value   
                     }
-                    onChange={(event, newValue) => setValue(name, newValue, {shouldValidate: true})}
+                    onChange={(event, newValue) =>  setValue(name, newValue, {shouldValidate: true})}
                     {...other}
                     renderInput={ (params)=>(
                         <TextField 

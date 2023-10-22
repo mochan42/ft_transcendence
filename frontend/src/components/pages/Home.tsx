@@ -22,6 +22,7 @@ import { selectChatStore } from "../../redux/store";
 import { Stack } from "@mui/material";
 import { HOME_SECTION, logStatus } from "../../enums";
 import HomeBoard from '../HomeBoard';
+import EditProfile from '../EditProfile';
 
 
 type TUserState = {
@@ -70,11 +71,12 @@ const Home = ({
 	const [friends, setFriends] = useState<Friend[] | null>(null);
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
-	const [section, setSection] = useState<Number>(0)
-
+    const chatSideBar = useSelector(selectChatStore);
+	const [section, setSection] = useState<Number>(0);
+	const [firstLogin, setFirstLogin] = useState<boolean>(false);
+	const [showScreen, setShowScreen] = useState< 'default' | 'achievements' | 'friends' | 'stats' | 'userProfile' >('default');
 
 	const authenticateToAPI = async (token: string, state: string): Promise<any> => {
-		console.log('###AGAIN###\n');
 		if (token.length != 0 && state.length !== 0) {
 			try {
 				const resp = await axios.post('http://localhost:5000/pong/users/auth', { token, state });
@@ -92,7 +94,13 @@ const Home = ({
 					}
 					else {
 						loginState.setIsLogin(true);
+						if (userData.user === null) {
+							return;
+						}
 						setUserId(userData.user.id.toString());
+						if (userData.isFirstLogin) {
+							setShowScreen('userProfile');
+						}
 						Cookies.set('userId', userData.user.id, { expires: 7 });
 						Cookies.set('isAuth', 'true', { expires: 7 });
 						return AuthResp.ISNOT2FA;
@@ -187,7 +195,13 @@ const Home = ({
 				console.log('channel created successfully');
 				console.log(channel);
 			});
+
+			// --friend invitation sent ------
+			newSocket.on('invite_friend_success', (friend: any) => {
+				console.log('friend invited successfully', friend);
+			});
 			/******************************* */
+			
 		}
 	});
 	// hack for access
@@ -254,6 +268,7 @@ const Home = ({
 						</Stack>
 					</div>
 				</div>
+				{showScreen === 'userProfile' ? <EditProfile setShowScreen={setShowScreen} userId={userId}/> : null}
 			</>
 		);
 	}

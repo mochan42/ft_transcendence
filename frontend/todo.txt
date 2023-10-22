@@ -98,8 +98,4 @@ video 27 - handle friend request with socket.io 27:00
 
 [21.10.23 - Activities  ]
 -------------------------
-+ removed handshake and game button from homeboard panel
-+ Fixed the styling for one on chat ChatUserPage and its profile panel display position
-+ Fixed the styling for group chat ChatGroupPage and its profile panel display position
-+ Fixed autoscroll on conversation panel for both ChatUserPage and ChatGroupPage
-+ Fixed the contact profile page to show on side upon toggle.
++ Update ChatConversation panel upon user element click for user and group page
