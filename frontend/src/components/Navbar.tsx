@@ -11,11 +11,12 @@ interface Props {
 	setIsAuth: React.Dispatch<React.SetStateAction<boolean>>,
 	isAuth: boolean,
 	setCode: React.Dispatch<React.SetStateAction<string | null>>,
-    setUserId: React.Dispatch<React.SetStateAction<string | null>>
+	setUserId: React.Dispatch<React.SetStateAction<string | null>>,
+	socket: any
 }
 
 
-const Navbar: React.FC<Props> = ({ setIsAuth, isAuth, setCode, setUserId }) => {
+const Navbar: React.FC<Props> = ({ setIsAuth, isAuth, setCode, setUserId, socket }) => {
 	const navigate = useNavigate();
 	const msg = (isAuth == true) ? 'Logout' : 'Log in';
 	const [theme, setTheme] = useState('dark'); 
@@ -28,8 +29,7 @@ const Navbar: React.FC<Props> = ({ setIsAuth, isAuth, setCode, setUserId }) => {
 			setCode(null);
 			Cookies.remove('isAuth');
 			Cookies.remove('userId');
-			window.location.reload();
-			setTimeout(() => navigate('/'), 10);
+			navigate('/login');
 		}
 		else {
 			navigate('/login');

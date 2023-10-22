@@ -15,6 +15,7 @@ import { CreateFriendDto } from './friends/dto/create-friend.dto';
 import { CreateChannelDto } from './channels/dto/create-channel.dto';
 import { ChannelsService } from './channels/channels.service';
 import { JoinchannelService } from './joinchannel/joinchannel/joinchannel.service';
+import { UsersService } from './users/users.service';
 
 @WebSocketGateway({
   cors: {
@@ -27,10 +28,11 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
   server: Server;
 
   constructor(
+    private readonly userService: UsersService,
     private readonly chatsService: ChatsService,
     private readonly friendsService: FriendsService,
     private readonly channelsService: ChannelsService,
-    private readonly joinchannelService: JoinchannelService
+    private readonly joinchannelService: JoinchannelService,
   ) {}
   
   async handleConnection(@ConnectedSocket() socket: Socket, ...args: any[]) {
@@ -119,5 +121,12 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
 
     socket.emit('channel_created', newChannel);
+  }
+
+  @SubscribeMessage('logout')
+  async disconnect(@ConnectedSocket() socket: Socket) {
+    const user = await this.chatsService.getUserFromSocket(socket);
+    const logoutUser = await this.userService.updateLoginState(+user.id);
+    this.server.emit('disconnected', logoutUser);
   }
 }

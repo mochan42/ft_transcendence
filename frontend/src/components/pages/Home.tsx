@@ -200,6 +200,11 @@ const Home = ({
 			newSocket.on('invite_friend_success', (friend: any) => {
 				console.log('friend invited successfully', friend);
 			});
+
+			// ------------disconnexion-----------------------------
+			newSocket.on('disconnected', (user: any) => {
+					console.log(user.userNameLoc, 'is disconnected\n');
+				});
 			/******************************* */
 			
 		}
