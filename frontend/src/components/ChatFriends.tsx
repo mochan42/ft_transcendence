@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 import { FetchUsers } from '../redux/slices/chatSlice';
 import { useSelector } from 'react-redux';
 import { selectChatStore } from "../redux/store";
-import { ChatUserComp } from './ChatUserComp';
+import { ChatUserComp, ChatUserFriendComp, ChatUserFriendRequestComp } from './ChatUserComp';
 
 
 const ChatUsersList = ()=> {
@@ -18,7 +18,6 @@ const ChatUsersList = ()=> {
     return (
         <>
             { chatStore.chatUsers.map((el) => {
-                // TODO : CREATE USER COMPONENT
                 return <ChatUserComp key={el.id} {...el}/>
             })};
         </>
@@ -36,26 +35,24 @@ const ChatUserFriendsList = ()=> {
     return (
         <>
             { chatStore.chatUserFriends.map((el) => {
-                // TODO : CREATE USER COMPONENT
-                return <ChatUserComp key={el.id} {...el}/>
+                return <ChatUserFriendComp key={el.id} {...el}/>
             })};
         </>
     );
 }
 
-const ChatUserFriendRequestList = ()=> {
+const ChatUserFriendRequestsList = ()=> {
     const dispatch = useDispatch();
     
-    useEffect(()=>{
-        dispatch({type: FetchUsers()});
-    }, []);
+    // useEffect(()=>{
+    //     dispatch({type: FetchUsers()});
+    // }, []);
 
     const chatStore = useSelector(selectChatStore)
     return (
         <>
-            { chatStore.chatUserFriendRequests.map((el, idx) => {
-                // TODO : CREATE USER COMPONENT
-                return <></>
+            { chatStore.chatUserFriendRequests.map((el) => {
+                return <ChatUserFriendRequestComp key={el.senderId} {...el}/>
             })};
         </>
     );
@@ -102,7 +99,7 @@ const ChatFriends = ({ open, handleClose } : any )=>{
                                 </>);
                             case 2:
                                 return (<>
-                                {/* <ChatUserFriendRequestsList /> */}
+                                <ChatUserFriendRequestsList />
                                 </>);
                             default: break
                         }

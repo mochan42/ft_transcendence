@@ -1,4 +1,6 @@
 import { faker } from "@faker-js/faker"
+import { TUserFriendRequest } from "../types";
+
 const ChatUserList = [
     {
         id: 0,
@@ -182,4 +184,29 @@ const Chat_History = [
     },
 ]
 
-export  { ChatUserList, Chat_History };
+const ChatUserFriendsList = [
+    ChatUserList[1],
+    ChatUserList[2],
+    ChatUserList[3],
+    ChatUserList[4],
+    ChatUserList[7],
+]
+
+const ChatUserFriendRequestList : TUserFriendRequest[] = [
+    {
+        receiverId: null,
+        senderId: ChatUserList[5].id,
+        senderImg: ChatUserList[5].img,
+        senderUsername: ChatUserList[5].name
+    },
+    {
+        receiverId: null,
+        senderId: ChatUserList[6].id,
+        senderImg: ChatUserList[6].img,
+        senderUsername: ChatUserList[6].name
+    },
+
+]
+
+export  { ChatUserList, Chat_History,
+     ChatUserFriendsList, ChatUserFriendRequestList };

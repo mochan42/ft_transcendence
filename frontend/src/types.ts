@@ -89,6 +89,17 @@ interface ChatProps {
   userId: string | null;
   socket: any;
 }
+
+type TUserFriendRequest = {
+  
+  receiverId: number | null,
+  senderId: number | null,
+  // the two attributes below can be fetched by API 
+  // using the user id
+  senderImg: string | undefined,
+  senderUsername: string | undefined,
+}
+
 export  type { User, UserStats, UserAchievements, ProfileProps, 
   Goal, TUserAuth, Friend, TChatUserData, Message, 
-  ChatMessageProps, ChatProps};
+  ChatMessageProps, ChatProps, TUserFriendRequest};

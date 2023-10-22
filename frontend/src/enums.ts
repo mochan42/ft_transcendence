@@ -18,4 +18,10 @@ enum enChatType {
   OneOnOne = "individual",
   Group ="group"
 }
+
+enum enRelationType {
+  MEMBER,
+  FRIEND,
+  UNKNOWN,
+}
 export { HOME_SECTION, logStatus, enChatType};

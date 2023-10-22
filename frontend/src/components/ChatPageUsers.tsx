@@ -109,9 +109,9 @@ const  ChatPageUsers = (chatProp : ChatProps) => {
                             <IconButton onClick={()=>{handleOpenDialog()}}>
                                 <Handshake/>
                             </IconButton>
-                            <IconButton>
+                            {/* <IconButton>
                                 <CircleDashed/>
-                            </IconButton>
+                            </IconButton> */}
                         </Stack>
                     </Stack>
                     <Divider/>
@@ -119,7 +119,7 @@ const  ChatPageUsers = (chatProp : ChatProps) => {
                         sx={{flexGrow:1, overflowY:"scroll", height:"100%"}}
                         spacing={0.5} 
                     >
-                        {ChatUserList.map((el) => { return (<ChatElement {...el} />) })}
+                        {chatStore.chatUserFriends.map((el) => { return (<ChatElement {...el} />) })}
                     </Stack>
                 </Stack>
 

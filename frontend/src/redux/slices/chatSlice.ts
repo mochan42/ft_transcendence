@@ -2,9 +2,9 @@ import { AnyAction, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { useDispatch } from "react-redux";
 import { ThunkAction } from "redux-thunk"
 import { CHAT_ACTION_TYPE, IChatState, TAction } from "..";
-import { User } from "../../types";
+import { TChatUserData, TUserFriendRequest, User } from "../../types";
 import axios from 'axios'
-import { ChatUserList } from "../../data/ChatData";
+import { ChatUserFriendRequestList, ChatUserFriendsList, ChatUserList } from "../../data/ChatData";
 
 
 
@@ -14,8 +14,8 @@ const initialState: IChatState = {
         type: CHAT_ACTION_TYPE.CHAT_CONTACT // options: 'CONTACT' 'STARRED' 'SHARED'
     },
     chatUsers: ChatUserList,
-    chatUserFriends: ChatUserList,
-    chatUserFriendRequests: [],
+    chatUserFriends: ChatUserFriendsList,
+    chatUserFriendRequests: ChatUserFriendRequestList,
     chatType: null,
     chatRoomId: null,
 }
@@ -42,12 +42,12 @@ const chatSlice = createSlice({
             state.chatUsers = action.payload.chatUsers
         },
         // update list of user friends
-        updateChatUserFriends: (state, action) => {
-            state.chatUserFriends = action.payload.chatUserFriends
+        updateChatUserFriends: (state, action:PayloadAction<TChatUserData[]>) => {
+            state.chatUserFriends = action.payload
         },
-        // update list of user friends
-        updateChatUserFriendRequests: (state, action) => {
-            state.chatUserFriendRequests = action.payload.chatUserFriendRequests
+        // update list of user friend request
+        updateChatUserFriendRequests: (state, action: PayloadAction<TUserFriendRequest[]>) => {
+            state.chatUserFriendRequests = action.payload
         },
         // selection conversion : group or one on one chat
         selectConversation:(state, action) => {
