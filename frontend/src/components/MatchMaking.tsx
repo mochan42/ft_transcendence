@@ -7,11 +7,13 @@ import axios from 'axios';
 interface MatchMakingProps {
 	userId: string | undefined| null;
 	socket: any;
+	difficulty: number;
+	includeBoost: boolean;
 	setMatchFound: (boolean: boolean) => void;
 	setState: React.Dispatch<React.SetStateAction<'select' | 'bot' | 'player'>>;
 }
 
-const MatchMaking:React.FC<MatchMakingProps> =({ setMatchFound, socket, userId, setState}) => {
+const MatchMaking:React.FC<MatchMakingProps> =({ setMatchFound, socket, userId, setState, difficulty, includeBoost}) => {
 	const [foundMatch, setFoundMatch] = useState< boolean | undefined >(undefined);
 	const [opponentInfo, setOpponentInfo] = useState< User | null >(null);
 	const url_info = 'http://localhost:5000/pong/users/';
@@ -64,6 +66,8 @@ const MatchMaking:React.FC<MatchMakingProps> =({ setMatchFound, socket, userId, 
 							setFoundMatch(false);
 							if (socket !== null) {
 								socket.emit('requestMatch', userId);
+								socket.emit('difficulty', difficulty);
+								socket.emit('includeBoost', includeBoost);
 							}
 						} else if (foundMatch === false) {
 							setState('select');

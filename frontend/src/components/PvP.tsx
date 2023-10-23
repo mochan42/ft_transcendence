@@ -58,8 +58,6 @@ const PvP: React.FC<PvPProps> = ({ userId, difficulty, isGameOver, playerScore, 
 	
 
 	if (socket !== null) {
-		socket.emit('difficulty', difficulty);
-		socket.emit('includeBoost', includeBoost);
 		socket.on('isGameOver', (data: boolean) => {
 			setIsGameOver(data);
 		});
@@ -176,7 +174,7 @@ const PvP: React.FC<PvPProps> = ({ userId, difficulty, isGameOver, playerScore, 
 					</div>
 				) : null
 			}
-			{!matchFound ? <MatchMaking socket={socket} setMatchFound={setMatchFound} userId={userId} setState={setState} /> : null }
+			{!matchFound ? <MatchMaking difficulty={difficulty} includeBoost={includeBoost} socket={socket} setMatchFound={setMatchFound} userId={userId} setState={setState} /> : null }
 		</div>
 	)
 }
