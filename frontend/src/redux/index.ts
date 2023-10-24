@@ -24,6 +24,7 @@ export interface IChatState {
     chatType: String | null,
     chatRoomId: String | null,
     chatActiveUser: TChatUserData | null,
+    chatSocket: any,
 }
 
 interface IActionPayload {

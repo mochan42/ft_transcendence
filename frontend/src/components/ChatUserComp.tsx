@@ -5,8 +5,7 @@ import { TChatUserData, TUserFriendRequest, User } from '../types';
 import { useSelector, useDispatch } from 'react-redux';
 import { selectChatStore } from '../redux/store';
 import { updateChatUserFriendRequests } from '../redux/slices/chatSlice';
-import { updateChatUserFriends } from '../redux/slices/chatSlice';
-import { enReqType } from '../enums';
+import { updateChatUserFriends, updateChatActiveUser } from '../redux/slices/chatSlice';
 
 
 
@@ -109,6 +108,23 @@ const ChatUserComp = (usrData : User) => {
 
 const ChatUserFriendComp = (usrData : User) => {
     const theme = useTheme()
+    const chatStore = useSelector(selectChatStore);
+    const dispatch = useDispatch()
+    const onSendMsg = ()=> {
+        alert("message_sent");
+        const user = chatStore.chatUserFriends.filter(el => el.id === usrData.id)[0]
+        // Create new list which excludes found user
+        const newFriendListExc = chatStore.chatUserFriends.filter(el=> el.id !== user.id)
+        // Add user to the top of the new friend list
+        const newFriendListInc = [user, ...newFriendListExc]
+        // update the store data for user friend list
+        dispatch(updateChatUserFriends(newFriendListInc));
+        dispatch(updateChatActiveUser(user));
+
+        // API CALL - update to backend may be ignore
+        // because we only change user position to top positon on list
+        // the content of the list remains same.
+    }
     return (
         <StyledChatBox sx={{
             width : "100%",
@@ -144,13 +160,7 @@ const ChatUserFriendComp = (usrData : User) => {
                 </Stack>
                 <Stack direction={"row"} alignItems={"center"} spacing={2}>
                     <Button 
-                        onClick={() => {
-                            alert("message_sent");
-                            // EMIT SOCKET EVENT : FRIEND_REQUEST
-                            // socket.emit("friend_request ", {data}, ()=> {
-                            //     alert("request_sent");
-                            // });
-                        }}
+                        onClick={() => onSendMsg()}
                         sx={{backgroundColor: "#eee"}}
                     > Send Msg
                     </Button>

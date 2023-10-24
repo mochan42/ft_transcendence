@@ -15,7 +15,7 @@ import ChatContact from "./ChatContact";
 import { selectChatStore } from "../redux/store";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
-import { selectConversation } from "../redux/slices/chatSlice";
+import { selectConversation, updateChatActiveUser } from "../redux/slices/chatSlice";
 import { enChatType } from "../enums";
 
 
@@ -25,6 +25,7 @@ const ChatElement = (user : TChatUserData) => {
         <Box 
             onClick={()=>{
                 dispatch(selectConversation({chatRoomId: user.id, chatType: enChatType.Group}))
+                dispatch(updateChatActiveUser(user));
             }}
             sx={{
                 width: "100%",
@@ -86,16 +87,19 @@ const  ChatPageGroups = (chatProp : ChatProps) => {
                 backgroundColor: "white",
                 boxShadow: "0px 0px 2px rgba(0, 0, 0, 0.25)"
               }}>
-                <Stack p={3} 
-                    spacing={1} 
-                    sx={{height:"75vh"}}
-                >
+                <Stack p={3} spacing={1} sx={{height:"75vh"}} >
                     <Stack alignItems={"centered"} >
                         <Typography variant='h5'>Channels</Typography>
                     </Stack>
                     <Divider/>
-                    <Stack direction={"row"} justifyContent={"space-between"} alignItems={"center"} >
-                        <Typography variant="subtitle2" component={Link}>
+
+                    {/* Chatgrouplist */}
+                    <Stack 
+                        direction={"row"} 
+                        justifyContent={"space-between"} 
+                        alignItems={"center"} 
+                    >
+                        <Typography variant="h5" component={Link}>
                             Create New Channel
                         </Typography>
                         <IconButton onClick={() => { setOpenDialog(true) }} >
@@ -105,7 +109,6 @@ const  ChatPageGroups = (chatProp : ChatProps) => {
                     <Divider/>
                     <Stack 
                         sx={{flexGrow:1, overflowY:"scroll", height:"100%"}}
-                        direction={"column"} 
                         spacing={0.5} 
                     >
                         { ChatUserList.map((el: any) => { return (<ChatElement {...el} />) })}
