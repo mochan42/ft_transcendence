@@ -14,57 +14,57 @@ import { selectConversation, updateChatActiveUser } from "../redux/slices/chatSl
 import { enChatType } from "../enums";
 
 
+
 const ChatElement = (user : TChatUserData) => {
     const dispatch = useDispatch();
     return (
-        <div 
+        <Box 
             onClick={()=>{
                 dispatch(selectConversation({chatRoomId: user.id, chatType: enChatType.OneOnOne}))
                 dispatch(updateChatActiveUser(user));
             }}
-
-            className="w-full h-1/3 bg-slate-900 rounded text-slate-200"
+            sx={{
+                width: "100%",
+                backgroundColor: "#ddd",
+                borderRadius: 1
+            }}
+            p={2}
         >
-            <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-2 overflow-auto p-1">
-                    {/* {user.online ? (
-                        <span className="relative">
-                            <span className="block w-8 h-8 bg-green-500 rounded-full">
-                                <span className="w-3 h-3 bg-green-400 rounded-full absolute bottom-0 right-0"></span>
-                            </span>
-                        </span>
-                    ) : (
-                        <img src={user.avatarUrl} alt={user.name} className="w-8 h-8 rounded-full" />
-                    )} */}
-                    <div className="space-y-0.2">
-                        <p className="text-base font-semibold">
-							{user.name}
-						</p>
-                        <p className="text-xs">
-							{user.msg}
-						</p>
-                    </div>
-                </div>
-                <div className="space-x-2 flex items-center">
-                    <p className="text-xs">
-						{user.time}
-					</p>
-                    {user.unread > 0 && (
-                        <span className="bg-amber-400 text-white px-2 py-1 rounded-full">
-                            {user.unread}
-                        </span>
-                    )}
-                </div>
-            </div>
-        </div>
+            <Stack 
+                direction={"row"}
+                alignItems={"center"} 
+                justifyContent={"space-between"}
+            >
+                <Stack direction="row" spacing={2}>
+                    {user.online ? 
+                    <Badge 
+                        color="success" 
+                        variant="dot" 
+                        anchorOrigin={{vertical:"bottom", horizontal:"left"}}
+                        overlap="circular"
+                    >
+                        <Avatar src={ user.img }/>
+                    </Badge>
+                    : <Avatar alt={ user.name }/>
+                    }
+                    <Stack spacing={0.2}>
+                        <Typography variant="subtitle2">{ user.name }</Typography>
+                        <Typography variant="caption">{ user.msg } </Typography>
+                    </Stack>
+                </Stack>
+                <Stack spacing={2} alignItems={"center"}>
+                    <Typography variant="caption">{ user.time }</Typography>
+                    <Badge color="primary" badgeContent={ user.unread }></Badge>
+                </Stack>
+
+            </Stack>
+        </Box>
     ); 
 }
-
 
 const  ChatPageUsers = (chatProp : ChatProps) => {
     const [dialogState, setDialogState] = useState<boolean>(false);
     const chatStore = useSelector(selectChatStore)
-    const [userListCompWidth, setUserListCompWidth] = useState<Number>(350)
 
     const handleOpenDialog = ()=>{
         setDialogState(true)
@@ -72,47 +72,30 @@ const  ChatPageUsers = (chatProp : ChatProps) => {
     const handleCloseDialog = ()=>{
         setDialogState(false)
     }
-    useEffect(()=>{
-        if (chatStore.chatSideBar.open)
-        {
-            setUserListCompWidth(500);
-        }
-        else
-        {
-            setUserListCompWidth(350);
-        }
-
-    }, [chatStore.chatSideBar.open])
     return (
     <>
+        <Stack direction={"row"} sx={{ width: "95vw"}}>
         <Box 
           sx={{
             position:"relative",
             height: "100%",
-            width: "95vw",
-            //minWidth: "1200px",
+            minWidth: "350px",
             backgroundColor: "white",
             boxShadow: "0px 0px 2px rgba(0, 0, 0, 0.25)"
           }}>
-            <Stack direction={"row"} p={3} spacing={1}>
-                <Stack p={3}
-                    spacing={1}
-                    sx={{height:"75vh", 
-                        width: `${userListCompWidth}px`, 
-                        borderColor:"grey", borderWidth:"1px"}}
-                >
+                <Stack p={3} spacing={1} sx={{height:"75vh"}} >
+
                     {/* Chatuserlist */}
-                    <Stack direction={"row"} 
+                    <Stack 
+                        direction={"row"} 
                         alignItems={"centered"} 
-                        justifyContent={"space-between"}>
+                        justifyContent={"space-between"}
+                    >
                         <Typography variant='h5'>Chats</Typography>
                         <Stack direction={"row"} alignItems={"centered"} spacing={1}>
                             <IconButton onClick={()=>{handleOpenDialog()}}>
                                 <Handshake/>
                             </IconButton>
-                            {/* <IconButton>
-                                <CircleDashed/>
-                            </IconButton> */}
                         </Stack>
                     </Stack>
                     <Divider/>
@@ -123,6 +106,7 @@ const  ChatPageUsers = (chatProp : ChatProps) => {
                         {chatStore.chatUserFriends.map((el) => { return (<ChatElement {...el} />) })}
                     </Stack>
                 </Stack>
+        </Box>
 
                 {/* conversation panel */}
                 <Stack sx={{ width: "100%" }} alignItems={"center"} justifyContent={"center"}>
@@ -136,8 +120,7 @@ const  ChatPageUsers = (chatProp : ChatProps) => {
                 <Stack>
     			{ chatStore.chatSideBar.open && <ChatContact/> }
                 </Stack>
-            </Stack>
-        </Box>
+        </Stack>
         {/* handle friend request dialog panel */}
         { dialogState && <ChatFriends open={dialogState} handleClose={handleCloseDialog}/>}
     </>

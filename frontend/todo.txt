@@ -81,10 +81,8 @@ npm cache clean --force                 : clear the cache
 ----
 + handle send msg button in friends dialogue
 + add state for group in redux.
-
 + update group data in ChatConversation head panel for group
 + Make all group to have 42 logo image
-+ Fix dynamic resizing of chatUserList
 + chatElement for group should be different from user by interface type
 + update contact profile on toggle for both user and group pages
   - handle button actions
@@ -114,6 +112,4 @@ video 27 - handle friend request with socket.io 27:00
 
 [ Activities ]
 --------------
-+ Add state for user in redux.
-+ Remove online feature in ChatConversation header panel
-+ update user data in ChatConversation head panel for user
++ Fix dynamic resizing of chatUserList and reformatted ChatUserPage

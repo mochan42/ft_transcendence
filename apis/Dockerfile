@@ -7,7 +7,7 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 
 # Upgrade application dependencies
-RUN npm update
+#RUN npm update
 
 # Clean cache and install app dependencies
 RUN npm cache clean --force
