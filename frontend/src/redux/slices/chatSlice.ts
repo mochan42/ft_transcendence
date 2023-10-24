@@ -20,6 +20,7 @@ const initialState: IChatState = {
     chatRoomId: null,
     chatActiveUser: null,
     chatSocket: null,
+    chatUserFriendDialogState: false,
     //chatACtiveGroup: null,
 }
 
@@ -63,6 +64,9 @@ const chatSlice = createSlice({
         },
         updateChatSocket:( state, action: PayloadAction<any>) => {
             state.chatSocket = action.payload
+        },
+        updateStateUserFriendDialog: (state, action: PayloadAction<boolean>) => {
+            state.chatUserFriendDialogState = action.payload
         }
     }
 })                                                                                                                                      
@@ -76,7 +80,8 @@ export const {
     updateChatUserFriendRequests,
     selectConversation,
     updateChatActiveUser,
-    updateChatSocket
+    updateChatSocket,
+    updateStateUserFriendDialog,
 } = chatSlice.actions;
 export default chatSlice;
 

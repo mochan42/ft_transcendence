@@ -79,17 +79,12 @@ npm cache clean --force                 : clear the cache
 
 
 ----
-+ handle send msg button in friends dialogue
-+ add state for group in redux.
-+ update group data in ChatConversation head panel for group
-+ Make all group to have 42 logo image
-+ chatElement for group should be different from user by interface type
-+ update contact profile on toggle for both user and group pages
++ update contact profile on toggle foPlayer
+r both user and group pages
   - handle button actions
   - change the name from ChatContact.tsx to ChatUserProfile.tsx
   - update information with real data.
   - create ChatChannelProfile
-+ add all users in channel creation form.
 + Handle deny button for receiver
 + Handle accept button for receiver
 + Add dialog page to view profile from user list (friend dialog)
@@ -98,6 +93,16 @@ npm cache clean --force                 : clear the cache
   - tab 2 : show all invites received and sent
   - listing all invite in dialog with join or cancel button.
   - Note: ChatGroupPage will only list groups which user is a member of.
+
++ Fix channel creation form problem - selection of privacy state
+  - update the users with proper data 
+  - adjust the minimum number of users to 1.
+  - add all users in channel creation form.
+
++ if friendlist is not empty activate the conversation panel
++ if grouplist is not empty activate the conversation panel
++ toggle off profile sidebar on other button press 
+  - determine the buttons.
 
 
 ----- PUSH TODO ------------------
@@ -112,4 +117,7 @@ video 27 - handle friend request with socket.io 27:00
 
 [ Activities ]
 --------------
-+ Fix dynamic resizing of chatUserList and reformatted ChatUserPage
++ add state for group in redux.
++ update group data in ChatConversation head panel for group
++ Make all group to have 42 logo image
++ chatElement for group should be different from user by interface type

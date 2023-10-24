@@ -23,6 +23,7 @@ export interface IChatState {
     chatRoomId: String | null,
     chatActiveUser: TChatUserData | null,
     chatSocket: any,
+    chatUserFriendDialogState: boolean,
 }
 
 interface IActionPayload {

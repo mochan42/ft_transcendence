@@ -208,5 +208,45 @@ const ChatUserFriendRequestList : TUserFriendRequest[] = [
 
 ]
 
+const chatGroupList = [
+    {
+        channelId: 3,
+        password: "42wolfs",
+        title: "Trans_proj",
+        privacy: "public",
+        ownerId: 7
+    },
+    {
+        channelId: 2,
+        password: "42wolfs",
+        title: "Trans_proj",
+        privacy: "public",
+        ownerId: 5
+    }
+
+]
+
+const chatGroupMemberList = [
+    {
+        usrId: 0,
+        channelId: 3,
+        rank: "admin", // member
+        state: "priviledge" // kicked, banned
+    },
+    {
+        usrId: 7,
+        channelId: 3,
+        rank: "member", // member
+        state: "priviledged" // kicked, banned, mute, priviledge
+    },
+    {
+        usrId: 5,
+        channelId: 3,
+        rank: "member", // member
+        state: "priviledged" // kicked, banned, mute, priviledge
+    }
+]
+
+
 export  { ChatUserList, Chat_History,
      ChatUserFriendsList, ChatUserFriendRequestList };
