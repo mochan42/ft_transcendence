@@ -25,6 +25,9 @@ const Navbar: React.FC<Props> = ({ setIsAuth, isAuth, setCode, setUserId, socket
 	const handleLogout = () => {
             // contact server to delete access token
 		if (isAuth) {
+			if (socket != null) {
+				socket.disconnect();
+			}
 			setIsAuth(false);
 			setCode(null);
 			Cookies.remove('isAuth');

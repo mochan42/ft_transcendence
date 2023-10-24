@@ -179,8 +179,8 @@ Content-Type: application/json
 
 {
 	"receiver": 3,
-	"sender": 4,
-	"relation": "pending",
+	"sender": 1,
+	"relation": "PENDING",
 	"createdAt": "27/07/2023"
 }
 

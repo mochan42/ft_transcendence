@@ -42,7 +42,7 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   async handleDisconnect(socket: Socket) {
     const user = await this.chatsService.getUserFromSocket(socket);
-    socket.emit('message', `${user.userNameLoc} is deconnected`);
+    return await this.userService.updateLoginState(+user.id, false);
   }
 
   @SubscribeMessage('invite_friend')
@@ -120,12 +120,5 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
 
     socket.emit('channel_created', newChannel);
-  }
-
-  @SubscribeMessage('logout')
-  async disconnect(@ConnectedSocket() socket: Socket) {
-    const user = await this.chatsService.getUserFromSocket(socket);
-    const logoutUser = await this.userService.updateLoginState(+user.id);
-    this.server.emit('disconnected', logoutUser);
   }
 }

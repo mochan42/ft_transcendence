@@ -25,7 +25,7 @@ export class AuthService {
     var logTimes = true;
 
     if (matchedUser) {
-      signedUser = await this.usersService.updateLoginState(matchedUser.id);
+      signedUser = await this.usersService.updateLoginState(matchedUser.id, true);
       logTimes = false;
     } else {
       signedUser = await this.usersService.create(pongUser);
