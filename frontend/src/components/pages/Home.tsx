@@ -10,13 +10,10 @@ import ChatBoard from '../HomeBoard';
 import { Friend, User } from "../../types";
 import ChatPageUsers from '../ChatPageUsers';
 import ChatPageGroups from '../ChatPageGroups';
-import ChatConversation from '../ChatConversation';
 import About from './About';
 import Cookies from 'js-cookie';
 import { io } from 'socket.io-client';
-import Login2fa from '../../components/pages/Login2fa';
-import ChatContact from '../ChatContact';
-import chatSideBar, { toggleSidebar, updateSidebarType } from "../../redux/slices/chatSlice";
+import { updateChatSocket } from "../../redux/slices/chatSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { selectChatStore } from "../../redux/store";
 import { Stack } from "@mui/material";
@@ -71,7 +68,7 @@ const Home = ({
 	const [friends, setFriends] = useState<Friend[] | null>(null);
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
-    const chatSideBar = useSelector(selectChatStore);
+    const chatStore = useSelector(selectChatStore);
 	const [section, setSection] = useState<Number>(0);
 	const [firstLogin, setFirstLogin] = useState<boolean>(false);
 	const [showScreen, setShowScreen] = useState< 'default' | 'achievements' | 'friends' | 'stats' | 'userProfile' >('default');
@@ -184,7 +181,9 @@ const Home = ({
 				extraHeaders: {
 					'X-Custom-Data': userId
 				}
+			
 			});
+			dispatch(updateChatSocket(newSocket))
 			setSocket(newSocket);
 			//---connexion established
 			newSocket.on('message', (message: string) => {
