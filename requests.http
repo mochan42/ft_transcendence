@@ -185,13 +185,13 @@ Content-Type: application/json
 }
 
 ### update friend relation
-PATCH   http://localhost:5000/pong/friends/5
+PATCH   http://localhost:5000/pong/friends/9
 Content-Type: application/json
 
 {
-	"receiver": 3,
-	"sender": 4,
-	"relation": "accepted",
+	"receiver": 2,
+	"sender": 9,
+	"relation": "ACCEPTED",
 	"createdAt": "27/07/2023"
 }
 

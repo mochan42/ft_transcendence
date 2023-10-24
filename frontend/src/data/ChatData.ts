@@ -7,6 +7,7 @@ import {
   Friend,
 } from "../types";
 import axios from "axios";
+import { ACCEPTED, PENDING } from '../APP_CONSTS';
 
 
 const fetchAllUsers = async () => {
@@ -268,9 +269,9 @@ const fetchAllUsersFriends = (relation: string): User[] => {
     });
   return userFriends;
 };
-const ChatUserFriendsList: User[] = fetchAllUsersFriends("ACCEPTED");
+const ChatUserFriendsList: User[] = fetchAllUsersFriends(ACCEPTED);
 
-const ChatUserFriendRequestList = fetchAllUsersFriends("PENDING");
+const ChatUserFriendRequestList = fetchAllUsersFriends(PENDING);
 
 export {
   ChatUserList,

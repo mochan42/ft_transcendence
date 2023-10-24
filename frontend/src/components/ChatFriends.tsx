@@ -7,14 +7,13 @@ import { selectChatStore } from "../redux/store";
 import { ChatUserComp, ChatUserFriendComp, ChatUserFriendRequestComp } from './ChatUserComp';
 import Cookies from 'js-cookie';
 import { User } from "../types";
+import { ACCEPTED, PENDING } from '../APP_CONSTS';
 
 const ChatUsersList = ()=> {
     const dispatch = useDispatch();
     const userId = Cookies.get('userId') ? Cookies.get('userId') : '';
-    // useEffect(()=>{
-    //     dispatch({type: FetchUsers()});
-    // }, []);
     const chatStore = useSelector(selectChatStore)
+
     return (
         <>
             {chatStore.allUsers
@@ -29,17 +28,22 @@ const ChatUsersList = ()=> {
 
 const ChatUserFriendsList = ()=> {
     const dispatch = useDispatch();
-    
-    // useEffect(()=>{
-    //     dispatch({type: FetchUsers()});
-    // }, []);
-
+    const userId = Cookies.get('userId') ? Cookies.get('userId') : '';
     const chatStore = useSelector(selectChatStore)
+
     return (
         <>
-            { chatStore.chatUserFriends.map((el: any) => {
-                return <ChatUserFriendComp key={el.id} {...el}/>
-            })};
+            {chatStore.allFriends
+                .filter((req: any) => req.relation == ACCEPTED)
+                .map((el: any) => {
+                    const friend: User | undefined = chatStore.allUsers
+                        .filter((tmpUser) => tmpUser.id != userId)
+                        .find((user: any) => el.sender == user.id || el.receiver == user.id);
+                    if (friend) {
+                        return <ChatUserFriendComp key={friend.id} {...friend} />
+                    }
+                })
+            };
         </>
     );
 }
@@ -47,15 +51,12 @@ const ChatUserFriendsList = ()=> {
 const ChatUserFriendRequestsList = ()=> {
     const dispatch = useDispatch();
      const userId = Cookies.get('userId') ? Cookies.get('userId') : '';
-    // useEffect(()=>{
-    //     dispatch({type: FetchUsers()});
-    // }, []);
-
+    
     const chatStore = useSelector(selectChatStore)
     return (
         <>
             {chatStore.allFriends
-                .filter((req) => req.receiver == userId && req.relation === 'PENDING')
+                .filter((req) => req.receiver == userId && req.relation === PENDING)
                 .map((el) => {
                     const friendReq: User | undefined = chatStore.allUsers.find((user: any) => el.sender == user.id);
                     if (friendReq) {
