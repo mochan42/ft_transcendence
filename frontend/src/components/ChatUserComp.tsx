@@ -1,7 +1,7 @@
 import React from 'react'
 import { styled, useTheme } from '@mui/material/styles'
 import { Stack, Avatar, Typography, Button, Box, Badge } from '@mui/material'
-import { TChatUserData, TUserFriendRequest } from '../types';
+import { TChatUserData, TUserFriendRequest, User } from '../types';
 import { useSelector, useDispatch } from 'react-redux';
 import { selectChatStore } from '../redux/store';
 import { updateChatUserFriendRequests } from '../redux/slices/chatSlice';
@@ -37,12 +37,7 @@ const ChatUserComp = (usrData : TChatUserData) => {
         // of the receiver. (receiver id has been provided) 
 
 
-        const newReq : TUserFriendRequest= {
-            userId: usrData.id,
-            userImg: usrData.img,
-            userName: usrData.name,
-            reqType: "outgoing",
-        }
+        const newReq = chatStore.allUsers[0];
         // Add new friend request to friend request list
         const newFriendRequestList = [...chatStore.chatUserFriendRequests, newReq]
         // update the friend request list with new one
@@ -57,8 +52,8 @@ const ChatUserComp = (usrData : TChatUserData) => {
         // });
     }
     const isUserKnown = () => {
-        const srcFriendList = chatStore.chatUserFriends.filter(el=> el.id === usrData.id)
-        const srcFriendReqSentList = chatStore.chatUserFriendRequests.filter(el=> el.userId === usrData.id)
+        const srcFriendList = chatStore.chatUserFriends.filter(el=> +el.id === usrData.id)
+        const srcFriendReqSentList = chatStore.chatUserFriendRequests.filter(el=> +el.id === usrData.id)
 
         const result : boolean = (srcFriendList.length || srcFriendReqSentList.length) ? true : false
         return result
@@ -112,7 +107,7 @@ const ChatUserComp = (usrData : TChatUserData) => {
     )
 }
 
-const ChatUserFriendComp = (usrData : TChatUserData) => {
+const ChatUserFriendComp = (usrData : User) => {
     const theme = useTheme()
     return (
         <StyledChatBox sx={{
@@ -129,7 +124,7 @@ const ChatUserFriendComp = (usrData : TChatUserData) => {
             >
                 <Stack direction={"row"} alignItems={"center"} spacing={2}>
                     {" "}
-                    {usrData.online ? 
+                    {usrData.isLogged ? 
                         (
                             <Badge
                                 variant='dot'
@@ -137,14 +132,14 @@ const ChatUserFriendComp = (usrData : TChatUserData) => {
                                 // overlap='cirular'
                             >
                                 {/* <Avatar alt={usrData.userName} src={usrData.img} /> */}
-                                <Avatar alt="image" src={usrData.img} />
+                                <Avatar alt="image" src={usrData.avatar} />
                             </Badge>
                          )
-                         : (<Avatar alt={usrData.name} src={usrData.img} />)
+                         : (<Avatar alt={usrData.userNameLoc} src={usrData.avatar} />)
                         //  : (<Avatar alt={usrData.userName} src={usrData.img} />)
                     }
                     <Stack>
-                        <Typography variant="subtitle2"> { usrData.name }</Typography>
+                        <Typography variant="subtitle2"> { usrData.userNameLoc   }</Typography>
                     </Stack>
                 </Stack>
                 <Stack direction={"row"} alignItems={"center"} spacing={2}>
@@ -165,16 +160,16 @@ const ChatUserFriendComp = (usrData : TChatUserData) => {
     )
 }
 
-const ChatUserFriendRequestComp = (reqData : TUserFriendRequest) => {
+const ChatUserFriendRequestComp = (reqData : User) => {
     const theme = useTheme()
     const chatStore = useSelector(selectChatStore);
     const dispatch = useDispatch();
 
     const onAccept = ()=>{
         // fetch user from user list
-        const stranger = chatStore.chatUsers.filter(el => el.id===reqData.userId)[0]
+        const stranger = chatStore.allUsers.filter(el => el.id === reqData.id)[0]
         // create new list of friend request for user
-        const newFriendRequestList = chatStore.chatUserFriendRequests.filter(el => el.userId !== stranger.id)
+        const newFriendRequestList = chatStore.chatUserFriendRequests.filter(el => el.id !== stranger.id)
         // create new friend list for user
         const newFriendList = [...chatStore.chatUserFriends, stranger]
         // update the friend request list with new one
@@ -196,9 +191,13 @@ const ChatUserFriendRequestComp = (reqData : TUserFriendRequest) => {
     }
     const onDeny = ()=>{
         // fetch user from user list
-        const stranger = chatStore.chatUsers.filter(el => el.id===reqData.userId)[0]
+        const stranger = chatStore.allUsers.find(el => el.id === reqData.id);
         // create new list of friend request for user
-        const newFriendRequestList = chatStore.chatUserFriendRequests.filter(el => el.userId !== stranger.id)
+        const newFriendRequestList = chatStore.chatUserFriendRequests.filter((el) => {
+            if (stranger) {
+                return el.id !== stranger.id;
+            }
+        });
         // update the friend request list with new one
         dispatch(updateChatUserFriendRequests(newFriendRequestList));
         // API CALLS
@@ -226,26 +225,26 @@ const ChatUserFriendRequestComp = (reqData : TUserFriendRequest) => {
             >
                 <Stack direction={"row"} alignItems={"center"} spacing={2}>
                     {" "}
-                    <Avatar alt={reqData.userName} src={reqData.userImg} />
+                    <Avatar alt={reqData.userNameLoc} src={reqData.avatar} />
                     <Stack>
-                        <Typography variant="subtitle2"> { reqData.userName }</Typography>
+                        <Typography variant="subtitle2"> { reqData.userNameLoc }</Typography>
                     </Stack>
                 </Stack>
                 <Stack direction={"row"} alignItems={"center"} spacing={2}>
                     {
-                        (reqData.reqType === "incoming") &&
+                        (+reqData.id !== 1) &&
                         <Button onClick={() => onAccept()} sx={{backgroundColor: "#af9"}}
                         > Accept
                         </Button>
                     }
                     {
-                        (reqData.reqType === "incoming") &&
+                        (+reqData.id != 1) &&
                         <Button onClick={() => onDeny()} sx={{backgroundColor: "#fa9"}}
                         > Deny
                         </Button>
                     }
                     {
-                        (reqData.reqType === "outgoing") &&
+                        (+reqData.id === 2 ) &&
                         <Button disabled sx={{backgroundColor: "#eee"}}
                         > Pending
                         </Button>

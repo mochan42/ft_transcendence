@@ -120,7 +120,7 @@ const  ChatPageUsers = (chatProp : ChatProps) => {
                         sx={{flexGrow:1, overflowY:"scroll", height:"100%"}}
                         spacing={0.5} 
                     >
-                        {chatStore.chatUserFriends.map((el) => { return (<ChatElement {...el} />) })}
+                        {chatStore.chatUsers.map((el) => { return (<ChatElement {...el} />) })}
                     </Stack>
                 </Stack>
 

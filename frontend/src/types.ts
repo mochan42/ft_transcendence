@@ -66,8 +66,8 @@ type TChatUserData = {
 }
 
 type Message = {
-  user: string;
   id: number;
+  user: string;
   type: string,
   subtype: string,
   message: string,
@@ -100,6 +100,14 @@ type TUserFriendRequest = {
   reqType: string | undefined
 }
 
+type Chat = {
+  id: number;
+  author: number;
+  message: string;
+  type: string;
+  receiver: number;
+}
+
 export  type { User, UserStats, UserAchievements, ProfileProps, 
   Goal, TUserAuth, Friend, TChatUserData, Message, 
-  ChatMessageProps, ChatProps, TUserFriendRequest};
+  ChatMessageProps, ChatProps, TUserFriendRequest, Chat};

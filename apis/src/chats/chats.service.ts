@@ -25,10 +25,15 @@ export class ChatsService {
   }
 
   async saveMessage(message: MessageDto) {
-    return this.MessageRepository.save(message);
+    const newMessage = {
+      ...message,
+      author: +message.author,
+      receiver: +message.receiver,
+    };
+    return this.MessageRepository.save(newMessage);
   }
 
-  async getAllMessagesInChannel(channelId: number) {
-    return this.MessageRepository.find({ where: { channelId } });
+  async findAllMessages() {
+    return this.MessageRepository.find();
   }
 }

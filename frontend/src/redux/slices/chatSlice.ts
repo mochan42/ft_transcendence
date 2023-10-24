@@ -4,7 +4,7 @@ import { ThunkAction } from "redux-thunk"
 import { CHAT_ACTION_TYPE, IChatState, TAction } from "..";
 import { TChatUserData, TUserFriendRequest, User } from "../../types";
 import axios from 'axios'
-import { ChatUserFriendRequestList, ChatUserFriendsList, ChatUserList } from "../../data/ChatData";
+import { ChatUserFriendRequestList, ChatUserFriendsList, ChatUserList, AllUsers} from "../../data/ChatData";
 
 
 
@@ -15,6 +15,7 @@ const initialState: IChatState = {
     },
     chatUsers: ChatUserList,
     chatUserFriends: ChatUserFriendsList,
+    allUsers: AllUsers,
     chatUserFriendRequests: ChatUserFriendRequestList,
     chatType: null,
     chatRoomId: null,
@@ -43,11 +44,11 @@ const chatSlice = createSlice({
             state.chatUsers = action.payload
         },
         // update list of user friends
-        updateChatUserFriends: (state, action:PayloadAction<TChatUserData[]>) => {
+        updateChatUserFriends: (state, action:PayloadAction<User[]>) => {
             state.chatUserFriends = action.payload
         },
         // update list of user friend request
-        updateChatUserFriendRequests: (state, action: PayloadAction<TUserFriendRequest[]>) => {
+        updateChatUserFriendRequests: (state, action: PayloadAction<User[]>) => {
             state.chatUserFriendRequests = action.payload
         },
         // selection conversion : group or one on one chat

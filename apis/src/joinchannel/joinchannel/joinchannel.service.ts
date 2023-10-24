@@ -18,5 +18,4 @@ export class JoinchannelService {
   async findAll() {
     return await this.JoinchannelRepo.find();
   }
-
 }

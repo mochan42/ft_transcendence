@@ -108,7 +108,7 @@ const  ChatPageGroups = (chatProp : ChatProps) => {
                         direction={"column"} 
                         spacing={0.5} 
                     >
-                        { ChatUserList.map((el) => { return (<ChatElement {...el} />) })}
+                        { ChatUserList.map((el: any) => { return (<ChatElement {...el} />) })}
                     </Stack>
                 </Stack>
             </Box>

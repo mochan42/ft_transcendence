@@ -1,5 +1,15 @@
+import { IsString } from 'class-validator';
+
 export class MessageDto {
-  authorId: number;
+  @IsString()
+  author: string;
+
+  @IsString()
   message: string;
-  channelId: number;
+
+  @IsString()
+  type: string;
+
+  @IsString()
+  receiver: string;
 }

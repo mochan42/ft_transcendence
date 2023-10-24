@@ -22,7 +22,6 @@ import { UsersService } from './users/users.service';
     origin: 'http://localhost:3000',
   },
 })
-
 export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server: Server;
@@ -34,7 +33,7 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
     private readonly channelsService: ChannelsService,
     private readonly joinchannelService: JoinchannelService,
   ) {}
-  
+
   async handleConnection(@ConnectedSocket() socket: Socket, ...args: any[]) {
     const user = await this.chatsService.getUserFromSocket(socket);
 
@@ -113,7 +112,7 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
           user: +member,
           channel: newChannel.id,
           status: null,
-          createdAt: createdAt
+          createdAt: createdAt,
         };
 
         await this.joinchannelService.create(joinchannelDTo);

@@ -220,3 +220,18 @@ Content-Type: application/json
 
 ### avatar
 GET http://localhost:5000/pong/users/avatar/faci30682023382.jpg
+
+
+### get all messages
+GET http://localhost:5000/pong/chats
+
+### send a message
+POST http://localhost:5000/pong/chats
+Content-Type: application/json
+
+{
+	"author": "1",
+	"message": "Bonjour",
+	"type": "PRIVATE",
+	"receiver": "3"
+}
