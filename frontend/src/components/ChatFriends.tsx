@@ -5,21 +5,24 @@ import { FetchUsers } from '../redux/slices/chatSlice';
 import { useSelector } from 'react-redux';
 import { selectChatStore } from "../redux/store";
 import { ChatUserComp, ChatUserFriendComp, ChatUserFriendRequestComp } from './ChatUserComp';
-
+import Cookies from 'js-cookie';
+import { User } from "../types";
 
 const ChatUsersList = ()=> {
     const dispatch = useDispatch();
-    
+    const userId = Cookies.get('userId') ? Cookies.get('userId') : '';
     // useEffect(()=>{
     //     dispatch({type: FetchUsers()});
     // }, []);
-
     const chatStore = useSelector(selectChatStore)
     return (
         <>
-            { chatStore.chatUsers.map((el) => {
-                return <ChatUserComp key={el.id} {...el}/>
-            })};
+            {chatStore.allUsers
+                .filter((user) => user.id != userId)
+                .map((el) => {
+                    return <ChatUserComp key={el.id} {...el} />
+                })
+            };
         </>
     );
 }
@@ -34,7 +37,7 @@ const ChatUserFriendsList = ()=> {
     const chatStore = useSelector(selectChatStore)
     return (
         <>
-            { chatStore.chatUserFriends.map((el) => {
+            { chatStore.chatUserFriends.map((el: any) => {
                 return <ChatUserFriendComp key={el.id} {...el}/>
             })};
         </>
@@ -43,7 +46,7 @@ const ChatUserFriendsList = ()=> {
 
 const ChatUserFriendRequestsList = ()=> {
     const dispatch = useDispatch();
-    
+     const userId = Cookies.get('userId') ? Cookies.get('userId') : '';
     // useEffect(()=>{
     //     dispatch({type: FetchUsers()});
     // }, []);
@@ -51,15 +54,21 @@ const ChatUserFriendRequestsList = ()=> {
     const chatStore = useSelector(selectChatStore)
     return (
         <>
-            { chatStore.chatUserFriendRequests.map((el) => {
-                return <ChatUserFriendRequestComp key={el.id} {...el}/>
-            })};
+            {chatStore.allFriends
+                .filter((req) => req.receiver == userId && req.relation === 'PENDING')
+                .map((el) => {
+                    const friendReq: User | undefined = chatStore.allUsers.find((user: any) => el.sender == user.id);
+                    if (friendReq) {
+                        return <ChatUserFriendRequestComp key={friendReq.id} {...friendReq}/>
+                    }
+                 })
+            };
         </>
     );
 }
 
 
-const ChatFriends = ({ open, handleClose } : any )=>{
+const ChatFriends = ({ open, handleClose} : any )=>{
 
     const [value, setValue] = useState<Number>(0);
 

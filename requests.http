@@ -6,13 +6,13 @@ POST http://localhost:5000/pong/users
 Content-Type: application/json
 
 {
-	"userName": "chiemezie",
-	"userNameLoc": "chiemezie",
+	"userName": "Monine",
+	"userNameLoc": "Mochan",
 	"firstName": "Peter",
 	"lastName": "Parker",
 	"is2Fa": false,
 	"authToken": "ddddddss",
-	"email": "billbissllisssnghhhhhton@rich.com",
+	"email": "billbissllisssnddddghhhhhton@rich.com",
 	"secret2Fa" : "",
 	"avatar" : "https://www.svgrepo.com/show/303599/spider-man-4-logo.svg",
 	"xp": 123456,
@@ -171,15 +171,15 @@ Content-Type: application/json
 DELETE http://localhost:5000/pong/goals/3
 
 ### display all user's friends
-GET http://localhost:5000/pong/users/1/friends
+GET http://localhost:5000/pong/users/9/friends
 
 ### add a friend request to a user
 POST  http://localhost:5000/pong/friends
 Content-Type: application/json
 
 {
-	"receiver": 3,
-	"sender": 1,
+	"receiver": 9,
+	"sender": 4,
 	"relation": "PENDING",
 	"createdAt": "27/07/2023"
 }

@@ -12,6 +12,8 @@ import ChatContact from "./ChatContact";
 import { useDispatch } from "react-redux";
 import { selectConversation, updateChatActiveUser } from "../redux/slices/chatSlice";
 import { enChatType } from "../enums";
+import Cookies from "js-cookie";
+
 
 
 const ChatElement = (user : TChatUserData) => {
@@ -120,7 +122,9 @@ const  ChatPageUsers = (chatProp : ChatProps) => {
                         sx={{flexGrow:1, overflowY:"scroll", height:"100%"}}
                         spacing={0.5} 
                     >
-                        {chatStore.chatUsers.map((el) => { return (<ChatElement {...el} />) })}
+                            {chatStore.chatUsers
+                                .filter((user) => user.id.toString() != chatProp.userId)
+                                .map((el) => { return (<ChatElement {...el} />) })}
                     </Stack>
                 </Stack>
 

@@ -18,7 +18,7 @@ const StyledChatBox = styled(Box)(({ theme }) => ({
 }));
 
 
-const ChatUserComp = (usrData : TChatUserData) => {
+const ChatUserComp = (usrData : User) => {
     const theme = useTheme()
     const chatStore = useSelector(selectChatStore)
     const dispatch = useDispatch()
@@ -52,10 +52,10 @@ const ChatUserComp = (usrData : TChatUserData) => {
         // });
     }
     const isUserKnown = () => {
-        const srcFriendList = chatStore.chatUserFriends.filter(el=> +el.id === usrData.id)
-        const srcFriendReqSentList = chatStore.chatUserFriendRequests.filter(el=> +el.id === usrData.id)
+        const srcFriendList = chatStore.chatUserFriends.find(el => el.id === usrData.id)
+        const srcFriendReqSentList = chatStore.chatUserFriendRequests.find(el => el.id === usrData.id)
 
-        const result : boolean = (srcFriendList.length || srcFriendReqSentList.length) ? true : false
+        const result : boolean = (srcFriendList || srcFriendReqSentList) ? true : false
         return result
     }
 
@@ -75,7 +75,7 @@ const ChatUserComp = (usrData : TChatUserData) => {
             >
                 <Stack direction={"row"} alignItems={"center"} spacing={2}>
                     {" "}
-                    {usrData.online ? 
+                    {usrData.isLogged ? 
                         (
                             <Badge
                                 variant='dot'
@@ -83,14 +83,14 @@ const ChatUserComp = (usrData : TChatUserData) => {
                                 // overlap='cirular'
                             >
                                 {/* <Avatar alt={usrData.userName} src={usrData.img} /> */}
-                                <Avatar alt="image" src={usrData.img} />
+                                <Avatar alt="image" src={usrData.avatar} />
                             </Badge>
                          )
-                         : (<Avatar alt={usrData.name} src={usrData.img} />)
+                         : (<Avatar alt={usrData.userNameLoc} src={usrData.avatar} />)
                         //  : (<Avatar alt={usrData.userName} src={usrData.img} />)
                     }
                     <Stack>
-                        <Typography variant="subtitle2"> { usrData.name }</Typography>
+                        <Typography variant="subtitle2"> { usrData.userNameLoc }</Typography>
                     </Stack>
                 </Stack>
                 <Stack direction={"row"} alignItems={"center"} spacing={2}>

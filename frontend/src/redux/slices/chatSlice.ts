@@ -4,9 +4,7 @@ import { ThunkAction } from "redux-thunk"
 import { CHAT_ACTION_TYPE, IChatState, TAction } from "..";
 import { TChatUserData, TUserFriendRequest, User } from "../../types";
 import axios from 'axios'
-import { ChatUserFriendRequestList, ChatUserFriendsList, ChatUserList, AllUsers} from "../../data/ChatData";
-
-
+import { ChatUserFriendRequestList, ChatUserFriendsList, ChatUserList, AllUsers, AllFriends} from "../../data/ChatData";
 
 const initialState: IChatState = {
     chatSideBar:{
@@ -16,6 +14,7 @@ const initialState: IChatState = {
     chatUsers: ChatUserList,
     chatUserFriends: ChatUserFriendsList,
     allUsers: AllUsers,
+    allFriends: AllFriends,
     chatUserFriendRequests: ChatUserFriendRequestList,
     chatType: null,
     chatRoomId: null,

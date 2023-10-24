@@ -15,6 +15,10 @@ import { UpdateFriendDto } from './dto/update-friend.dto';
 export class FriendsController {
   constructor(private readonly friendsService: FriendsService) {}
 
+  @Get('friends')
+  findAll() {
+    return this.friendsService.findAll();
+  }
   @Post('friends')
   //!!TODO : Make sure sender and receiver exist;
   create(@Body() createFriendDto: CreateFriendDto) {

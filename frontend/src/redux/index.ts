@@ -1,6 +1,6 @@
 //  chat action type and interface definition
 
-import { TChatUserData, TUserFriendRequest, User } from "../types"
+import { TChatUserData, TUserFriendRequest, User, Friend } from "../types"
 
 export const enum CHAT_ACTION_TYPE
 {
@@ -18,6 +18,7 @@ export interface IChatState {
     chatSideBar: IChatSidebar,
     chatUsers: TChatUserData[],
     allUsers: User[],
+    allFriends: Friend[],
     chatUserFriends: User[],
     chatUserFriendRequests: User[],
     chatType: String | null,

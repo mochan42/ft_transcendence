@@ -16,6 +16,10 @@ export class FriendsService {
     return await this.FriendRepo.save(createFriendDto);
   }
 
+  async findAll() {
+    return await this.FriendRepo.find();
+  }
+
   async find(userId: string) {
     const id = parseInt(userId);
     if (isNaN(id)) {

@@ -1,56 +1,71 @@
 import { faker } from "@faker-js/faker";
-import { TUserFriendRequest, Chat, TChatUserData, User } from "../types";
+import {
+  TUserFriendRequest,
+  Chat,
+  TChatUserData,
+  User,
+  Friend,
+} from "../types";
 import axios from "axios";
-// import Cookies from "js-cookie";
+
 
 const fetchAllUsers = async () => {
-    const resp = await axios<User[]>("http://localhost:5000/pong/users");
-    let users;
-    if (resp.status === 200) {
-        users = resp.data;
-    }
-    return users;
-}
+  const resp = await axios<User[]>("http://localhost:5000/pong/users");
+  let users;
+  if (resp.status === 200) {
+    users = resp.data;
+  }
+  return users;
+};
+
+const fetchAllFriends = async () => {
+  const urlFriend = 'http://localhost:5000/pong/friends';
+  const resp = await axios<Friend[]>(urlFriend);
+  let friends;
+  if (resp.status === 200) {
+    friends = resp.data;
+  }
+  return friends;
+};
 
 const users = await fetchAllUsers();
 const AllUsers = users ? users : [];
+const friends = await fetchAllFriends();
+const AllFriends = friends ? friends : [];
 
-const getUserName = (id: number) : string => {
-    if (AllUsers) {
-        const user = AllUsers.find(el => +el.id === id);
-        if (user) {
-            return user.userNameLoc;
-        }
+const getUserName = (id: number): string => {
+  if (AllUsers) {
+    const user = AllUsers.find((el) => +el.id === id);
+    if (user) {
+      return user.userNameLoc;
     }
-    return '';
-}
+  }
+  return "";
+};
 
 const formatMessagesToChatData = (messages: Chat[]) => {
-    const chatUserData = messages.map((el) => {
-        const formatMsg: TChatUserData = {
-          id: el.id,
-          img: faker.image.avatar(),
-          name: getUserName(el.receiver),
-          msg: el.message,
-          time: "1:26",
-          unread: 0,
-          online: false
-        };
-        return formatMsg;
-    });
-    return chatUserData;
-}
+  const chatUserData = messages.map((el) => {
+    const formatMsg: TChatUserData = {
+      id: el.id,
+      img: faker.image.avatar(),
+      name: getUserName(el.receiver),
+      msg: el.message,
+      time: "1:26",
+      unread: 0,
+      online: false,
+    };
+    return formatMsg;
+  });
+  return chatUserData;
+};
 
 const fectchAllMessages = async (): Promise<any[]> => {
   const resp = await axios.get<Chat[]>("http://localhost:5000/pong/chats");
-    let messages: Chat[] = [];
-    if (resp.status === 200) {
-        messages = resp.data;
-    }
-    console.log('---------MESSAGE BEFORE FORMAT-----------------------\n');
-    console.log(messages);
-    console.log('--------------------------------\n');
-    return formatMessagesToChatData(messages);
+  let messages: Chat[] = [];
+  if (resp.status === 200) {
+    messages = resp.data;
+  }
+  return formatMessagesToChatData(messages);
 };
 
 // const ChatUserList = [
@@ -239,27 +254,29 @@ const Chat_History = [
 ];
 
 // will filters all pending users;
-const ChatUserFriendsList = AllUsers ? AllUsers : [];
+const fetchAllUsersFriends = (relation: string): User[] => {
+  let userFriends: User[] = [];
+  if (!AllFriends || !AllUsers) return userFriends;
+  AllFriends
+    .filter((el) => el.relation == relation)
+    .forEach((friend) => {
+      AllUsers.find((user) => {
+        if (user.id === friend.receiver || user.id === friend.sender) {
+          userFriends.push(user);
+        }
+      });
+    });
+  return userFriends;
+};
+const ChatUserFriendsList: User[] = fetchAllUsersFriends("ACCEPTED");
 
-const ChatUserFriendRequestList: User[] = [
-//   {
-//     userId: ChatUserList[5].id,
-//     userImg: ChatUserList[5].img,
-//     userName: ChatUserList[5].name,
-//     reqType: "incoming",
-//   },
-//   {
-//     userId: ChatUserList[6].id,
-//     userImg: ChatUserList[6].img,
-//     userName: ChatUserList[6].name,
-//     reqType: "incoming",
-//   },
-];
+const ChatUserFriendRequestList = fetchAllUsersFriends("PENDING");
 
 export {
   ChatUserList,
   Chat_History,
   ChatUserFriendsList,
   ChatUserFriendRequestList,
-  AllUsers
+  AllUsers,
+  AllFriends
 };
