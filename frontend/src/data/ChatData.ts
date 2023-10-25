@@ -7,8 +7,7 @@ import {
   Friend,
 } from "../types";
 import axios from "axios";
-import { ACCEPTED, PENDING } from '../APP_CONSTS';
-
+import { ACCEPTED, PENDING } from "../APP_CONSTS";
 
 const fetchAllUsers = async () => {
   const resp = await axios<User[]>("http://localhost:5000/pong/users");
@@ -20,7 +19,7 @@ const fetchAllUsers = async () => {
 };
 
 const fetchAllFriends = async () => {
-  const urlFriend = 'http://localhost:5000/pong/friends';
+  const urlFriend = "http://localhost:5000/pong/friends";
   const resp = await axios<Friend[]>(urlFriend);
   let friends;
   if (resp.status === 200) {
@@ -258,20 +257,56 @@ const Chat_History = [
 const fetchAllUsersFriends = (relation: string): User[] => {
   let userFriends: User[] = [];
   if (!AllFriends || !AllUsers) return userFriends;
-  AllFriends
-    .filter((el) => el.relation == relation)
-    .forEach((friend) => {
-      AllUsers.find((user) => {
-        if (user.id === friend.receiver || user.id === friend.sender) {
-          userFriends.push(user);
-        }
-      });
+  AllFriends.filter((el) => el.relation == relation).forEach((friend) => {
+    AllUsers.find((user) => {
+      if (user.id === friend.receiver || user.id === friend.sender) {
+        userFriends.push(user);
+      }
     });
+  });
   return userFriends;
 };
 const ChatUserFriendsList: User[] = fetchAllUsersFriends(ACCEPTED);
 
 const ChatUserFriendRequestList = fetchAllUsersFriends(PENDING);
+
+const chatGroupList = [
+  {
+    channelId: 3,
+    password: "42wolfs",
+    title: "Trans_proj",
+    privacy: "public",
+    ownerId: 7,
+  },
+  {
+    channelId: 2,
+    password: "42wolfs",
+    title: "Trans_proj",
+    privacy: "public",
+    ownerId: 5,
+  },
+];
+
+const chatGroupMemberList = [
+  {
+    usrId: 0,
+    channelId: 3,
+    rank: "admin", // member
+    state: "priviledge", // kicked, banned
+  },
+  {
+    usrId: 7,
+    channelId: 3,
+    rank: "member", // member
+    state: "priviledged", // kicked, banned, mute, priviledge
+  },
+  {
+    usrId: 5,
+    channelId: 3,
+    rank: "member", // member
+    state: "priviledged", // kicked, banned, mute, priviledge
+  },
+];
 
 export {
   ChatUserList,
@@ -279,5 +314,5 @@ export {
   ChatUserFriendsList,
   ChatUserFriendRequestList,
   AllUsers,
-  AllFriends
+  AllFriends,
 };

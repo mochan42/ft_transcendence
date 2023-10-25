@@ -1,7 +1,7 @@
 import { Tabs, Dialog, Stack, Tab } from '@mui/material';
 import { useState, useEffect} from 'react'
 import { useDispatch } from 'react-redux';
-import { FetchUsers } from '../redux/slices/chatSlice';
+import { FetchUsers, updateStateUserFriendDialog } from '../redux/slices/chatSlice';
 import { useSelector } from 'react-redux';
 import { selectChatStore } from "../redux/store";
 import { ChatUserComp, ChatUserFriendComp, ChatUserFriendRequestComp } from './ChatUserComp';
@@ -69,7 +69,7 @@ const ChatUserFriendRequestsList = ()=> {
 }
 
 
-const ChatFriends = ({ open, handleClose} : any )=>{
+const ChatFriends = ()=>{
 
     const [value, setValue] = useState<Number>(0);
 
@@ -78,6 +78,12 @@ const ChatFriends = ({ open, handleClose} : any )=>{
                          ) =>{
         setValue(newValue);
 
+    }
+    const chatStore = useSelector(selectChatStore)
+    const dispatch = useDispatch()
+    const open = chatStore.chatUserFriendDialogState;
+    const handleClose = ()=>{
+        dispatch(updateStateUserFriendDialog(false));
     }
 
 

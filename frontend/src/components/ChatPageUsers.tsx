@@ -10,7 +10,7 @@ import { useSelector } from "react-redux";
 import { selectChatStore } from "../redux/store";
 import ChatContact from "./ChatContact";
 import { useDispatch } from "react-redux";
-import { selectConversation, updateChatActiveUser } from "../redux/slices/chatSlice";
+import { selectConversation, updateChatActiveUser, updateStateUserFriendDialog } from "../redux/slices/chatSlice";
 import { enChatType } from "../enums";
 import Cookies from "js-cookie";
 
@@ -67,13 +67,16 @@ const ChatElement = (user : TChatUserData) => {
 const  ChatPageUsers = (chatProp : ChatProps) => {
     const [dialogState, setDialogState] = useState<boolean>(false);
     const chatStore = useSelector(selectChatStore)
+    const dispatch = useDispatch()
 
     const handleOpenDialog = ()=>{
-        setDialogState(true)
+        dispatch(updateStateUserFriendDialog(true));
+        // setDialogState(true)
     }
-    const handleCloseDialog = ()=>{
-        setDialogState(false)
-    }
+    // const handleCloseDialog = ()=>{
+    //     dispatch(updateStateUserFriendDialog(false)); 
+    //     // setDialogState(false)
+    // }
     return (
     <>
         <Stack direction={"row"} sx={{ width: "95vw"}}>
@@ -126,7 +129,7 @@ const  ChatPageUsers = (chatProp : ChatProps) => {
                 </Stack>
         </Stack>
         {/* handle friend request dialog panel */}
-        { dialogState && <ChatFriends open={dialogState} handleClose={handleCloseDialog}/>}
+        { chatStore.chatUserFriendDialogState && <ChatFriends />}
     </>
       );
 }

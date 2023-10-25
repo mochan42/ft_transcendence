@@ -4,7 +4,7 @@ import { Stack, Avatar, Typography, Button, Box, Badge } from '@mui/material'
 import { TChatUserData, TUserFriendRequest, User } from '../types';
 import { useSelector, useDispatch } from 'react-redux';
 import { selectChatStore } from '../redux/store';
-import { updateChatUserFriendRequests } from '../redux/slices/chatSlice';
+import { toggleSidebar, updateStateUserFriendDialog, updateChatUserFriendRequests } from '../redux/slices/chatSlice';
 import { updateChatUserFriends, updateChatActiveUser } from '../redux/slices/chatSlice';
 
 
@@ -111,24 +111,16 @@ const ChatUserFriendComp = (usrData : User) => {
     const chatStore = useSelector(selectChatStore);
     const dispatch = useDispatch()
     const onSendMsg = ()=> {
-        alert("message_sent");
         const user = chatStore.chatUserFriends.filter(el => el.id === usrData.id)[0]
         // Create new list which excludes found user
         const newFriendListExc = chatStore.chatUserFriends.filter(el=> el.id !== user.id)
         // Add user to the top of the new friend list
         const newFriendListInc = [user, ...newFriendListExc]
         // update the store data for user friend list
-        const newMessage: TChatUserData = {
-            id: 0,
-            img: '',
-            name: '',
-            msg: '',
-            time: '',
-            unread: 0,
-            online: false
-        }
-        //dispatch(updateChatUserFriends(newFriendListInc));
-        //dispatch(updateChatActiveUser(newMessage));
+        dispatch(updateChatUserFriends(newFriendListInc));
+        dispatch(updateChatActiveUser(user));
+        // close the dialog
+        dispatch(updateStateUserFriendDialog(false)); 
 
         // API CALL - update to backend may be ignore
         // because we only change user position to top positon on list
