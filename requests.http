@@ -235,3 +235,9 @@ Content-Type: application/json
 	"type": "PRIVATE",
 	"receiver": "3"
 }
+
+### get games
+GET http://localhost:5000/pong/games
+
+### game making
+GET http://localhost:5000/gamequeue/12

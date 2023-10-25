@@ -118,8 +118,17 @@ const ChatUserFriendComp = (usrData : User) => {
         // Add user to the top of the new friend list
         const newFriendListInc = [user, ...newFriendListExc]
         // update the store data for user friend list
-        dispatch(updateChatUserFriends(newFriendListInc));
-        dispatch(updateChatActiveUser(user));
+        const newMessage: TChatUserData = {
+            id: 0,
+            img: '',
+            name: '',
+            msg: '',
+            time: '',
+            unread: 0,
+            online: false
+        }
+        //dispatch(updateChatUserFriends(newFriendListInc));
+        //dispatch(updateChatActiveUser(newMessage));
 
         // API CALL - update to backend may be ignore
         // because we only change user position to top positon on list

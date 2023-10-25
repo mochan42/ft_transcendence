@@ -54,6 +54,8 @@ services:
 
 volumes:
   postgres-data:
+  apis:
+  frontend:
 
 networks:
   app-network:

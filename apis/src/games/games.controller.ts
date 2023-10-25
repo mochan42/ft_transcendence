@@ -11,7 +11,7 @@ import { GamesService } from './games.service';
 import { CreateGameDto } from './dto/create-game.dto';
 import { UpdateGameDto } from './dto/update-game.dto';
 
-@Controller('games')
+@Controller('pong/games')
 export class GamesController {
   constructor(private readonly gamesService: GamesService) {}
 

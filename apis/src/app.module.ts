@@ -14,6 +14,7 @@ import { ChatsModule } from './chats/chats.module';
 import { EventGateway } from './event.gateway';
 import { ChannelsModule } from './channels/channels.module';
 import { JoinchannelModule } from './joinchannel/joinchannel.module';
+import { GamequeueModule } from './gamequeue/gamequeue.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { JoinchannelModule } from './joinchannel/joinchannel.module';
     ChatsModule,
     ChannelsModule,
     JoinchannelModule,
+    GamequeueModule,
   ],
   controllers: [AppController],
   providers: [AppService, EventGateway],
