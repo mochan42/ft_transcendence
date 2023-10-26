@@ -4,7 +4,7 @@ import { CaretDown } from "phosphor-react";
 import { Socket } from "socket.io-client";
 import { ChatMessageProps, User } from "../types";
 import ChatMessage from "./ChatMessage";
-//import { Chat_History } from "../data/ChatData";
+import { friendToUserType } from "../data/ChatData";
 import { toggleSidebar, updateSidebarType } from "../redux/slices/chatSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { selectChatStore } from "../redux/store";
@@ -116,7 +116,7 @@ const ChatConversation: React.FC<ChatProps> = ({ userId, socket }) => {
                             <Typography variant="subtitle1"
                             > {
                                 chatStore.chatActiveUser
-                                ? chatStore.chatActiveUser.name
+                                ? friendToUserType(userId, chatStore.chatActiveUser).userNameLoc
                                 : null
                               }
                             </Typography>

@@ -1,11 +1,13 @@
 import React from 'react'
 import { styled, useTheme } from '@mui/material/styles'
 import { Stack, Avatar, Typography, Button, Box, Badge } from '@mui/material'
-import { TChatUserData, TUserFriendRequest, User } from '../types';
+import { Friend, User } from '../types';
 import { useSelector, useDispatch } from 'react-redux';
 import { selectChatStore } from '../redux/store';
 import { toggleSidebar, updateStateUserFriendDialog, updateChatUserFriendRequests } from '../redux/slices/chatSlice';
 import { updateChatUserFriends, updateChatActiveUser } from '../redux/slices/chatSlice';
+import { ACCEPTED, PENDING } from '../APP_CONSTS';
+import Cookies from 'js-cookie';
 
 
 
@@ -17,30 +19,31 @@ const StyledChatBox = styled(Box)(({ theme }) => ({
 }));
 
 
-const ChatUserComp = (usrData : User) => {
-    const theme = useTheme()
-    const chatStore = useSelector(selectChatStore)
-    const dispatch = useDispatch()
+const ChatUserComp = (userData : User) => {
+    const theme = useTheme();
+    const chatStore = useSelector(selectChatStore);
+    const dispatch = useDispatch();
+    const userId = Cookies.get('userId') ? Cookies.get('userId') : '';
 
     const onSendRequest = ()=>{
          // Create a new friend request object
          // Note!!! This object must be populated with data of active user.
-        const newOutgoingReq : TUserFriendRequest= {
-            userId: chatStore.chatUsers[0].id,
-            userImg: chatStore.chatUsers[0].img,
-            userName: chatStore.chatUsers[0].name,
-            reqType: "incoming",
+        const newOutgoingReq : Friend = {
+            sender: typeof userId == 'string' ? userId : null,
+            receiver: userData.id,
+            relation: PENDING,
+            createdAt: new Date().toLocaleDateString()
         }
         // API CALL
         // post the above object (newOutgoingReq) to be added to the friendrequestlist
         // of the receiver. (receiver id has been provided) 
-
-
-        const newReq = chatStore.allUsers[0];
         // Add new friend request to friend request list
-        const newFriendRequestList = [...chatStore.chatUserFriendRequests, newReq]
+        const newFriendRequestList = [...chatStore.chatUserFriendRequests, newOutgoingReq]
         // update the friend request list with new one
         dispatch(updateChatUserFriendRequests(newFriendRequestList));
+        if (chatStore.chatSocket != null) {
+            alert("COOL SOCKET");
+        }
         alert("request_sent");
         // API CALL
         // post the updated friendrequestlist to backend.
@@ -51,11 +54,16 @@ const ChatUserComp = (usrData : User) => {
         // });
     }
     const isUserKnown = () => {
-        const srcFriendList = chatStore.chatUserFriends.find(el => el.id === usrData.id)
-        const srcFriendReqSentList = chatStore.chatUserFriendRequests.find(el => el.id === usrData.id)
-
-        const result : boolean = (srcFriendList || srcFriendReqSentList) ? true : false
-        return result
+        const srcFriendList = chatStore.chatUserFriends.find((el) => {
+            if (el.sender == userId && el.receiver == userData.id) {
+                return el;
+            }
+            if (el.sender == userData.id && el.receiver == userId) {
+                return el;
+            }
+        });
+        const result: boolean = (srcFriendList) ? true : false;
+        return result;
     }
 
     return (
@@ -74,22 +82,22 @@ const ChatUserComp = (usrData : User) => {
             >
                 <Stack direction={"row"} alignItems={"center"} spacing={2}>
                     {" "}
-                    {usrData.isLogged ? 
+                    {userData.isLogged ? 
                         (
                             <Badge
                                 variant='dot'
                                 anchorOrigin={{ vertical:"bottom", horizontal:"right"}}
                                 // overlap='cirular'
                             >
-                                {/* <Avatar alt={usrData.userName} src={usrData.img} /> */}
-                                <Avatar alt="image" src={usrData.avatar} />
+                                {/* <Avatar alt={userData.userName} src={userData.img} /> */}
+                                <Avatar alt="image" src={userData.avatar} />
                             </Badge>
                          )
-                         : (<Avatar alt={usrData.userNameLoc} src={usrData.avatar} />)
-                        //  : (<Avatar alt={usrData.userName} src={usrData.img} />)
+                         : (<Avatar alt={userData.userNameLoc} src={userData.avatar} />)
+                        //  : (<Avatar alt={userData.userName} src={userData.img} />)
                     }
                     <Stack>
-                        <Typography variant="subtitle2"> { usrData.userNameLoc }</Typography>
+                        <Typography variant="subtitle2"> { userData.userNameLoc }</Typography>
                     </Stack>
                 </Stack>
                 <Stack direction={"row"} alignItems={"center"} spacing={2}>
@@ -106,14 +114,24 @@ const ChatUserComp = (usrData : User) => {
     )
 }
 
-const ChatUserFriendComp = (usrData : User) => {
+const ChatUserFriendComp = (userData : User) => {
     const theme = useTheme()
     const chatStore = useSelector(selectChatStore);
     const dispatch = useDispatch()
+    const userId = Cookies.get('userId') ? Cookies.get('userId') : '';
+
     const onSendMsg = ()=> {
-        const user = chatStore.chatUserFriends.filter(el => el.id === usrData.id)[0]
+        const user = chatStore.chatUserFriends.filter((el) => {
+            if (el.sender == userData.id && el.receiver == userId) {
+                return el;
+            }
+            if (el.receiver == userData.id && el.sender == userId) {
+                return el;
+            }
+        })[0]
         // Create new list which excludes found user
-        const newFriendListExc = chatStore.chatUserFriends.filter(el=> el.id !== user.id)
+        const newFriendListExc = chatStore.chatUserFriends
+            .filter(el => el.sender != user.sender && el.receiver != user.receiver)
         // Add user to the top of the new friend list
         const newFriendListInc = [user, ...newFriendListExc]
         // update the store data for user friend list
@@ -141,22 +159,22 @@ const ChatUserFriendComp = (usrData : User) => {
             >
                 <Stack direction={"row"} alignItems={"center"} spacing={2}>
                     {" "}
-                    {usrData.isLogged ? 
+                    {userData.isLogged ? 
                         (
                             <Badge
                                 variant='dot'
                                 anchorOrigin={{ vertical:"bottom", horizontal:"right"}}
                                 // overlap='cirular'
                             >
-                                {/* <Avatar alt={usrData.userName} src={usrData.img} /> */}
-                                <Avatar alt="image" src={usrData.avatar} />
+                                {/* <Avatar alt={userData.userName} src={userData.img} /> */}
+                                <Avatar alt="image" src={userData.avatar} />
                             </Badge>
                          )
-                         : (<Avatar alt={usrData.userNameLoc} src={usrData.avatar} />)
-                        //  : (<Avatar alt={usrData.userName} src={usrData.img} />)
+                         : (<Avatar alt={userData.userNameLoc} src={userData.avatar} />)
+                        //  : (<Avatar alt={userData.userName} src={userData.img} />)
                     }
                     <Stack>
-                        <Typography variant="subtitle2"> { usrData.userNameLoc   }</Typography>
+                        <Typography variant="subtitle2"> { userData.userNameLoc   }</Typography>
                     </Stack>
                 </Stack>
                 <Stack direction={"row"} alignItems={"center"} spacing={2}>
@@ -178,9 +196,9 @@ const ChatUserFriendRequestComp = (reqData : User) => {
 
     const onAccept = ()=>{
         // fetch user from user list
-        const stranger = chatStore.allUsers.filter(el => el.id === reqData.id)[0]
+        const stranger = chatStore.chatUserFriends.filter((el: any) => el.sender === reqData.id)[0]
         // create new list of friend request for user
-        const newFriendRequestList = chatStore.chatUserFriendRequests.filter(el => el.id !== stranger.id)
+        const newFriendRequestList = chatStore.chatUserFriendRequests.filter(el => el.sender !== stranger.sender)
         // create new friend list for user
         const newFriendList = [...chatStore.chatUserFriends, stranger]
         // update the friend request list with new one
@@ -202,24 +220,11 @@ const ChatUserFriendRequestComp = (reqData : User) => {
     }
     const onDeny = ()=>{
         // fetch user from user list
-        const stranger = chatStore.allUsers.find(el => el.id === reqData.id);
-        // create new list of friend request for user
-        const newFriendRequestList = chatStore.chatUserFriendRequests.filter((el) => {
-            if (stranger) {
-                return el.id !== stranger.id;
-            }
-        });
+         const stranger = chatStore.chatUserFriends.filter((el: any) => el.sender === reqData.id)[0]
+        const newFriendRequestList = chatStore.chatUserFriendRequests.filter(el => el.sender !== stranger.sender)
         // update the friend request list with new one
         dispatch(updateChatUserFriendRequests(newFriendRequestList));
-        // API CALLS
-        // - Update user friend request list in backend.
-        // - Update receiver user friend request list in backend - remove from request list.
-                            // API CALL
-                            // update user friend request list in backend
-                            // EMIT SOCKET EVENT : DENY_FRIEND
-                            // socket.emit("friend_request ", {data}, ()=> {
-                            //     alert("request_sent");
-                            // });
+        // chatStore.chatSocket.emit('deny_friend_request', stranger);
     }
     return (
         <StyledChatBox sx={{

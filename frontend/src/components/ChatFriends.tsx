@@ -1,7 +1,7 @@
 import { Tabs, Dialog, Stack, Tab } from '@mui/material';
 import { useState, useEffect} from 'react'
 import { useDispatch } from 'react-redux';
-import { FetchUsers, updateStateUserFriendDialog } from '../redux/slices/chatSlice';
+import { updateStateUserFriendDialog } from '../redux/slices/chatSlice';
 import { useSelector } from 'react-redux';
 import { selectChatStore } from "../redux/store";
 import { ChatUserComp, ChatUserFriendComp, ChatUserFriendRequestComp } from './ChatUserComp';
@@ -16,7 +16,7 @@ const ChatUsersList = ()=> {
 
     return (
         <>
-            {chatStore.allUsers
+            {chatStore.chatUsers
                 .filter((user) => user.id != userId)
                 .map((el) => {
                     return <ChatUserComp key={el.id} {...el} />
@@ -33,10 +33,10 @@ const ChatUserFriendsList = ()=> {
 
     return (
         <>
-            {chatStore.allFriends
+            {chatStore.chatUserFriends
                 .filter((req: any) => req.relation == ACCEPTED)
                 .map((el: any) => {
-                    const friend: User | undefined = chatStore.allUsers
+                    const friend: User | undefined = chatStore.chatUsers
                         .filter((tmpUser) => tmpUser.id != userId)
                         .find((user: any) => el.sender == user.id || el.receiver == user.id);
                     if (friend) {
@@ -55,10 +55,10 @@ const ChatUserFriendRequestsList = ()=> {
     const chatStore = useSelector(selectChatStore)
     return (
         <>
-            {chatStore.allFriends
+            {chatStore.chatUserFriends
                 .filter((req) => req.receiver == userId && req.relation === PENDING)
                 .map((el) => {
-                    const friendReq: User | undefined = chatStore.allUsers.find((user: any) => el.sender == user.id);
+                    const friendReq: User = chatStore.chatUsers.filter((user: any) => el.sender == user.id)[0];
                     if (friendReq) {
                         return <ChatUserFriendRequestComp key={friendReq.id} {...friendReq}/>
                     }

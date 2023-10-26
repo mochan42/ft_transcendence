@@ -42,10 +42,10 @@ type Goal = {
 };
 
 type Friend = {
-	'receiver': string | null;
-	'sender': string | null;
-	'relation': string;
-	'createdAt': string;
+	receiver: string | null;
+	sender: string | null;
+	relation: string;
+	createdAt: string;
 }
 
 type TUserAuth= {
@@ -55,15 +55,21 @@ type TUserAuth= {
     code: (string | null),
 }
 
-type TChatUserData = {
-   id: number,
-   img: string,
-   name: string,
-   msg:  string,
-   time: string,
-   unread: number,
-   online: boolean,
-}
+type Group = {
+  channelId: number;
+  password: string;
+  title: string;
+  privacy: string;
+  ownerId: number;
+};
+
+type JoinGroup = {
+  id: number,
+  usrId: number,
+  channelId: number,
+  rank: string,
+  state: string
+};
 
 type Message = {
   id: number;
@@ -109,5 +115,5 @@ type Chat = {
 }
 
 export  type { User, UserStats, UserAchievements, ProfileProps, 
-  Goal, TUserAuth, Friend, TChatUserData, Message, 
-  ChatMessageProps, ChatProps, TUserFriendRequest, Chat};
+  Goal, TUserAuth, Friend, Group, JoinGroup, Message, 
+  ChatMessageProps, ChatProps, Chat};

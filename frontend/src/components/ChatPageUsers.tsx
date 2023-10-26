@@ -1,10 +1,9 @@
 import { useState, useEffect } from "react";
-import { TChatUserData } from "../types";
 import { ChatUserList } from '../data/ChatData';
 import { Box, Stack, IconButton, Typography, Divider, Avatar, Badge } from "@mui/material";
 import { CircleDashed, Handshake } from "phosphor-react";
 import ChatConversation from "./ChatConversation";
-import { ChatProps } from "../types";
+import { ChatProps, User } from "../types";
 import ChatFriends from "./ChatFriends";
 import { useSelector } from "react-redux";
 import { selectChatStore } from "../redux/store";
@@ -12,18 +11,27 @@ import ChatContact from "./ChatContact";
 import { useDispatch } from "react-redux";
 import { selectConversation, updateChatActiveUser, updateStateUserFriendDialog } from "../redux/slices/chatSlice";
 import { enChatType } from "../enums";
-import Cookies from "js-cookie";
+import Cookies from 'js-cookie';
 
 
 
 
-const ChatElement = (user : TChatUserData) => {
+const ChatElement = (user: User) => {
+    const userId = Cookies.get('userId') ? Cookies.get('userId') : '';
+    const chatStore = useSelector(selectChatStore);
     const dispatch = useDispatch();
     return (
         <Box 
             onClick={()=>{
                 dispatch(selectConversation({chatRoomId: user.id, chatType: enChatType.OneOnOne}))
-                dispatch(updateChatActiveUser(user));
+                dispatch(updateChatActiveUser(chatStore.chatUserFriends.filter((el) => {
+                    if (el.sender == user.id && el.receiver == userId) {
+                        return el;
+                    }
+                    if (el.receiver == user.id && el.sender == userId) {
+                        return el;
+                    }
+                })[0]));
             }}
             sx={{
                 width: "100%",
@@ -38,25 +46,25 @@ const ChatElement = (user : TChatUserData) => {
                 justifyContent={"space-between"}
             >
                 <Stack direction="row" spacing={2}>
-                    {user.online ? 
+                    {user.isLogged ? 
                     <Badge 
                         color="success" 
                         variant="dot" 
                         anchorOrigin={{vertical:"bottom", horizontal:"left"}}
                         overlap="circular"
                     >
-                        <Avatar src={ user.img }/>
+                        <Avatar src={ user.avatar }/>
                     </Badge>
-                    : <Avatar alt={ user.name }/>
+                    : <Avatar alt={ user.userNameLoc }/>
                     }
                     <Stack spacing={0.2}>
-                        <Typography variant="subtitle2">{ user.name }</Typography>
-                        <Typography variant="caption">{ user.msg } </Typography>
+                        <Typography variant="subtitle2">{ user.userNameLoc }</Typography>
+                        <Typography variant="caption">{ 'Last Message' } </Typography>
                     </Stack>
                 </Stack>
                 <Stack spacing={2} alignItems={"center"}>
-                    <Typography variant="caption">{ user.time }</Typography>
-                    <Badge color="primary" badgeContent={ user.unread }></Badge>
+                    <Typography variant="caption">{ 'TIME' }</Typography>
+                    <Badge color="primary" badgeContent={ 'UNSREAD' }></Badge>
                 </Stack>
 
             </Stack>
