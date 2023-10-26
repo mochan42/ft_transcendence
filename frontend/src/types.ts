@@ -42,6 +42,7 @@ type Goal = {
 };
 
 type Friend = {
+  id: number;
   receiver: string | null;
   sender: string | null;
   relation: string;

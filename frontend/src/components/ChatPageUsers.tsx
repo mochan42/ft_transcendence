@@ -73,7 +73,7 @@ const ChatElement = (user: User) => {
 }
 
 const  ChatPageUsers = (chatProp : ChatProps) => {
-    const [dialogState, setDialogState] = useState<boolean>(false);
+    // const [dialogState, setDialogState] = useState<boolean>(false);
     const chatStore = useSelector(selectChatStore)
     const dispatch = useDispatch()
 

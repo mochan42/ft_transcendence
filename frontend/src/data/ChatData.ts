@@ -26,21 +26,21 @@ const fetchAllFriends = async (): Promise<Friend[]> => {
   return friends;
 };
 
+const friends: Friend[] = await fetchAllFriends();
 const ChatUserList = await fetchAllUsers();
-const friends = await fetchAllFriends();
-
 // will filters all pending|accepted users;
-const fetchAllUsersFriends = (relation: string): Friend[] => {
-  return friends.filter((el) => el.relation == relation);
+const fetchAllUsersFriends = async (relation: string, friendList: Friend[]): Promise<Friend[]> => {
+  return friendList.filter((el: any) => el.relation == relation);
 };
-const ChatUserFriendsList: Friend[] = fetchAllUsersFriends(ACCEPTED);
-const ChatUserFriendRequestList: Friend[] = fetchAllUsersFriends(PENDING);
 
-const friendToUserType = (user: string | null, friend: Friend) => {
+const ChatUserFriendsList: Friend[] = await fetchAllUsersFriends(ACCEPTED, friends);
+const ChatUserFriendRequestList: Friend[] = await fetchAllUsersFriends(PENDING, friends);
+
+const friendToUserType = (user: string | null, friend: Friend, userList: User[]) => {
   if (user != friend.sender) {
-    return ChatUserList.filter(el => friend.sender == el.id)[0];
+    return userList.filter(el => friend.sender == el.id)[0];
   }
-  return ChatUserList.filter((el) => friend.receiver == el.id)[0];
+  return userList.filter((el) => friend.receiver == el.id)[0];
 } 
 
 const ChatGroupList = [
@@ -91,4 +91,7 @@ export {
   ChatGroupList,
   ChatGroupMemberList,
   friendToUserType,
+  fetchAllUsersFriends,
+  fetchAllUsers,
+  fetchAllFriends
 };

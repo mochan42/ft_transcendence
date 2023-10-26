@@ -20,6 +20,7 @@ import { ACCEPTED, PENDING } from './APIS_CONSTS';
 import { GamequeueService } from './gamequeue/gamequeue.service';
 import { GamesService } from './games/games.service';
 import { CreateGameDto } from './games/dto/create-game.dto';
+import { Friend } from './friends/entities/friend.entity';
 
 @WebSocketGateway({
   cors: {
@@ -66,30 +67,19 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     const friendShip = await this.friendsService.create(friendDto);
 
-    this.server.emit('invite_friend_success', friendShip);
+    this.server.emit('invitation_success', friendShip);
   }
 
-  @SubscribeMessage('accept_friend_request')
+  @SubscribeMessage('accept_friend')
   async updateFriendship(
     @ConnectedSocket() socket: Socket,
-    @MessageBody() friendship: CreateFriendDto,
+    @MessageBody() friendship: number,
   ) {
-    var updatedFriendship;
-    const user = await this.chatsService.getUserFromSocket(socket);
+      const reqToAccept  = await this.friendsService.findBYId(friendship);
+      const updatedFriend : Friend = { ...reqToAccept, relation: ACCEPTED };
+      const friend = await this.friendsService.update(updatedFriend);
 
-    if (friendship.receiver === user.id) {
-      const reqToAccept: CreateFriendDto = {
-        ...friendship,
-        relation: ACCEPTED,
-      };
-
-      updatedFriendship = await this.friendsService.update(
-        user.id,
-        reqToAccept,
-      );
-    }
-
-    this.server.emit('accepted_friend_request', updatedFriendship);
+      this.server.emit('friend', friend);
   }
 
   @SubscribeMessage('create_channel')
@@ -125,7 +115,7 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
       });
     }
 
-    socket.emit('channel_created', newChannel);
+    socket.emit('channel', newChannel);
   }
 
   /***********************GAME*********************** */

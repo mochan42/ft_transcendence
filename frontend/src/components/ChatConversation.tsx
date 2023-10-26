@@ -108,7 +108,7 @@ const ChatConversation: React.FC<ChatProps> = ({ userId }) => {
                             <Typography variant="subtitle1"
                             > {
                                 chatStore.chatActiveUser
-                                ? friendToUserType(userId, chatStore.chatActiveUser).userNameLoc
+                                ? friendToUserType(userId, chatStore.chatActiveUser, chatStore.chatUsers).userNameLoc
                                 : null
                               }
                             </Typography>

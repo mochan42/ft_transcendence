@@ -31,8 +31,10 @@ export class FriendsController {
   }
 
   @Patch('friends/:id')
-  update(@Param('id') id: string, @Body() updateFriendDto: UpdateFriendDto) {
-    return this.friendsService.update(+id, updateFriendDto);
+  async update(@Param('id') id: string, @Body() updateFriendDto: UpdateFriendDto) {
+    const friend = await this.friendsService.findBYId(+id);
+    const updatedFriend = {...friend, updateFriendDto }
+    return this.friendsService.update(updatedFriend);
   }
 
   @Delete('friends/:id')
