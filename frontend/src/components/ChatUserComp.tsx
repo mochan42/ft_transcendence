@@ -25,34 +25,20 @@ const ChatUserComp = (userData : User) => {
     const dispatch = useDispatch();
     const userId = Cookies.get('userId') ? Cookies.get('userId') : '';
 
-    const onSendRequest = ()=>{
-         // Create a new friend request object
-         // Note!!! This object must be populated with data of active user.
+    const onSendRequest = () => {
+        
         const newOutgoingReq : Friend = {
             sender: typeof userId == 'string' ? userId : null,
             receiver: userData.id,
             relation: PENDING,
             createdAt: new Date().toLocaleDateString()
         }
-        // API CALL
-        // post the above object (newOutgoingReq) to be added to the friendrequestlist
-        // of the receiver. (receiver id has been provided) 
-        // Add new friend request to friend request list
+
+        chatStore.chatSocket.emit('invite_friend', newOutgoingReq);
         const newFriendRequestList = [...chatStore.chatUserFriendRequests, newOutgoingReq]
-        // update the friend request list with new one
         dispatch(updateChatUserFriendRequests(newFriendRequestList));
-        if (chatStore.chatSocket != null) {
-            alert("COOL SOCKET");
-        }
-        alert("request_sent");
-        // API CALL
-        // post the updated friendrequestlist to backend.
-        
-        // EMIT SOCKET EVENT : FRIEND_REQUEST
-        // socket.emit("friend_request ", {data}, ()=> {
-        //     alert("request_sent");
-        // });
     }
+
     const isUserKnown = () => {
         const srcFriendList = chatStore.chatUserFriends.find((el) => {
             if (el.sender == userId && el.receiver == userData.id) {
@@ -193,10 +179,20 @@ const ChatUserFriendRequestComp = (reqData : User) => {
     const theme = useTheme()
     const chatStore = useSelector(selectChatStore);
     const dispatch = useDispatch();
+    const userId = Cookies.get('userId') ? Cookies.get('userId') : '';
+
+    const isSender = (reqData: User): boolean => {
+        const friend = chatStore.chatUserFriendRequests.find((el) => {
+           if (reqData.id == el.sender && el.receiver == userId) {
+              return el;
+           }
+        });
+        return (friend) ? true : false;
+    }
 
     const onAccept = ()=>{
         // fetch user from user list
-        const stranger = chatStore.chatUserFriends.filter((el: any) => el.sender === reqData.id)[0]
+        const stranger = chatStore.chatUserFriendRequests.filter((el: any) => el.sender === reqData.id)[0];
         // create new list of friend request for user
         const newFriendRequestList = chatStore.chatUserFriendRequests.filter(el => el.sender !== stranger.sender)
         // create new friend list for user
@@ -220,7 +216,7 @@ const ChatUserFriendRequestComp = (reqData : User) => {
     }
     const onDeny = ()=>{
         // fetch user from user list
-         const stranger = chatStore.chatUserFriends.filter((el: any) => el.sender === reqData.id)[0]
+        const stranger = chatStore.chatUserFriends.filter((el: any) => el.sender === reqData.id)[0]
         const newFriendRequestList = chatStore.chatUserFriendRequests.filter(el => el.sender !== stranger.sender)
         // update the friend request list with new one
         dispatch(updateChatUserFriendRequests(newFriendRequestList));
@@ -248,19 +244,19 @@ const ChatUserFriendRequestComp = (reqData : User) => {
                 </Stack>
                 <Stack direction={"row"} alignItems={"center"} spacing={2}>
                     {
-                        (+reqData.id !== 1) &&
+                        (isSender(reqData)) &&
                         <Button onClick={() => onAccept()} sx={{backgroundColor: "#af9"}}
                         > Accept
                         </Button>
                     }
                     {
-                        (+reqData.id != 1) &&
+                        (isSender(reqData)) &&
                         <Button onClick={() => onDeny()} sx={{backgroundColor: "#fa9"}}
                         > Deny
                         </Button>
                     }
                     {
-                        (+reqData.id === 2 ) &&
+                        (!isSender(reqData)) &&
                         <Button disabled sx={{backgroundColor: "#eee"}}
                         > Pending
                         </Button>

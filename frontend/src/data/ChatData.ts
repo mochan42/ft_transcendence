@@ -28,7 +28,6 @@ const fetchAllFriends = async (): Promise<Friend[]> => {
 
 const ChatUserList = await fetchAllUsers();
 const friends = await fetchAllFriends();
-const AllFriends = friends ? friends : [];
 
 // will filters all pending|accepted users;
 const fetchAllUsersFriends = (relation: string): Friend[] => {
@@ -89,7 +88,6 @@ export {
   ChatUserList,
   ChatUserFriendsList,
   ChatUserFriendRequestList,
-  AllFriends,
   ChatGroupList,
   ChatGroupMemberList,
   friendToUserType,

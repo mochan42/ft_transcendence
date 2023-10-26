@@ -56,7 +56,6 @@ const App: React.FC = () => {
 						userCode={{ code: code, setCode: setCode }}
 						loginState={{ isLogin: isAuth, setIsLogin: setIsAuth }} setUserId={setUserId}
 						userId={userId} state={state}
-						socket={socket} setSocket={setSocket}
 						token2fa={token2fa}
 						setToken2fa={setToken2fa}
 					/>} />

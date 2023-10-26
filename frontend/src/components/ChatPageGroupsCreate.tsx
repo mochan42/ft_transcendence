@@ -11,6 +11,8 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import RHF_TextField from './ui/RHF_TextField';
 import RHF_AutoCompDropDown from './ui/RHF_AutoCompDropDown';
 import Cookies from 'js-cookie';
+import { useDispatch, useSelector } from "react-redux";
+import { selectChatStore } from "../redux/store";
 
 
 /**
@@ -28,12 +30,10 @@ const Transition = React.forwardRef(function Transition (
 type TGroupDialog = {
     openState: boolean,
     handleClose: React.Dispatch<React.SetStateAction<boolean>>,
-    socket: any
 }
 
 type THandler = {
     close: React.Dispatch<React.SetStateAction<boolean>>
-    socket: any
 }
 
 const MEMBERS = [
@@ -77,6 +77,7 @@ const CreateGroupForm = ( handleFormClose: THandler ) => {
     } = methods;
 
     const [statePasswd, setStatePasswd] = useState<boolean>(true);
+    const chatStore = useSelector(selectChatStore);
 
     const handleRadioBtn = (e : React.ChangeEvent<HTMLInputElement>) =>{
         const state = e.target.value;
@@ -96,7 +97,7 @@ const CreateGroupForm = ( handleFormClose: THandler ) => {
                 ...data,
                 members: newMembers
             };
-            handleFormClose.socket.emit('create_channel', formatedData);
+            chatStore.chatSocket.emit('create_channel', formatedData);
             handleFormClose.close(false);
         }
         catch (error)
@@ -165,7 +166,7 @@ const ChatPageGroupsCreate = (state: TGroupDialog) => {
             <DialogContent>
 
                 {/* Create form */}
-                <CreateGroupForm close={state.handleClose} socket={state.socket} />
+                <CreateGroupForm close={state.handleClose} />
             </DialogContent>
          
         </Dialog>

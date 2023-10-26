@@ -31,8 +31,8 @@ type UserAchievements = {
 
 interface ProfileProps {
   userId: string | null;
-  isAuth: boolean,
-};
+  isAuth: boolean;
+}
 
 type Goal = {
   id: string;
@@ -42,18 +42,18 @@ type Goal = {
 };
 
 type Friend = {
-	receiver: string | null;
-	sender: string | null;
-	relation: string;
-	createdAt: string;
-}
+  receiver: string | null;
+  sender: string | null;
+  relation: string;
+  createdAt: string;
+};
 
-type TUserAuth= {
-    setIsAuth: React.Dispatch<React.SetStateAction<boolean>>,
-    isAuth: boolean,
-    setCode: React.Dispatch<React.SetStateAction<string | null>>,
-    code: (string | null),
-}
+type TUserAuth = {
+  setIsAuth: React.Dispatch<React.SetStateAction<boolean>>;
+  isAuth: boolean;
+  setCode: React.Dispatch<React.SetStateAction<string | null>>;
+  code: string | null;
+};
 
 type Group = {
   channelId: number;
@@ -64,47 +64,45 @@ type Group = {
 };
 
 type JoinGroup = {
-  id: number,
-  usrId: number,
-  channelId: number,
-  rank: string,
-  state: string
+  id: number;
+  usrId: number;
+  channelId: number;
+  rank: string;
+  state: string;
 };
 
 type Message = {
   id: number;
   user: string;
-  type: string,
-  subtype: string,
-  message: string,
-  img: string,
-  incoming: boolean,
-  outgoing: boolean,
-}
+  type: string;
+  subtype: string;
+  message: string;
+  img: string;
+  incoming: boolean;
+  outgoing: boolean;
+};
 
 interface ChatMessageProps {
-	incoming: boolean,
-	message: string,
-	user: string,
-	chatID?: number,
-	timeOfSend: Date,
-	id: number,
+  incoming: boolean;
+  message: string;
+  user: string;
+  chatID?: number;
+  timeOfSend: Date;
+  id: number;
 }
 
 interface ChatProps {
   userId: string | null;
-  socket: any;
 }
 
 type TUserFriendRequest = {
-  
-  userId: number | null,
-  // the two attributes below can be fetched by API 
+  userId: number | null;
+  // the two attributes below can be fetched by API
   // using the user id
-  userImg: string | undefined,
-  userName: string | undefined,
-  reqType: string | undefined
-}
+  userImg: string | undefined;
+  userName: string | undefined;
+  reqType: string | undefined;
+};
 
 type Chat = {
   id: number;
@@ -112,8 +110,20 @@ type Chat = {
   message: string;
   type: string;
   receiver: number;
-}
+};
 
-export  type { User, UserStats, UserAchievements, ProfileProps, 
-  Goal, TUserAuth, Friend, Group, JoinGroup, Message, 
-  ChatMessageProps, ChatProps, Chat};
+export type {
+  User,
+  UserStats,
+  UserAchievements,
+  ProfileProps,
+  Goal,
+  TUserAuth,
+  Friend,
+  Group,
+  JoinGroup,
+  Message,
+  ChatMessageProps,
+  ChatProps,
+  Chat,
+};

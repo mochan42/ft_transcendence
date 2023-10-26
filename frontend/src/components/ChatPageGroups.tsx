@@ -129,7 +129,7 @@ const  ChatPageGroups = (chatProp : ChatProps) => {
             {/* Right side : conversation panel */}
             <Stack sx={{ width: "100%" }} alignItems={"center"} justifyContent={"center"}>
                 {chatStore.chatRoomId !== null && chatStore.chatType === enChatType.Group 
-                    ? <ChatConversation userId={chatProp.userId} socket={chatProp.socket} />
+                    ? <ChatConversation userId={ chatProp.userId }/>
                     : <Typography variant="subtitle2">Select channel chat or create new</Typography>
                 }
             </Stack>
@@ -141,7 +141,7 @@ const  ChatPageGroups = (chatProp : ChatProps) => {
         </Stack>
 
         {/* create group channel form */}
-        {openDialog && <ChatPageGroupsCreate openState={openDialog} handleClose={handleCloseDialog} socket={chatProp.socket} />}
+        {openDialog && <ChatPageGroupsCreate openState={openDialog} handleClose={handleCloseDialog}/>}
         </>
       );
 }

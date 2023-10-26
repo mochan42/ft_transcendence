@@ -35,8 +35,6 @@ type TUserState = {
 	setUserId: React.Dispatch<React.SetStateAction<string | null>>,
 	// is2faEnabled: boolean,
     state: string,
-    socket: any,
-    setSocket: React.Dispatch<React.SetStateAction<any>>,
     token2fa: string,
     setToken2fa: React.Dispatch<React.SetStateAction<string>>,
 }
@@ -48,8 +46,6 @@ const Home = ({
 	loginState,
 	userId, setUserId,
 	state,
-	socket,
-	setSocket,
 	token2fa,
 	setToken2fa,
 }: TUserState) => {
@@ -79,9 +75,6 @@ const Home = ({
 				const resp = await axios.post('http://localhost:5000/pong/users/auth', { token, state });
 				if (resp.status === 200) {
 					const userData = resp.data;
-					console.log('------------------------------\n');
-					console.log(userData);
-					console.log('------------------------------\n');
 					if (userData.is2Fa === true) {
 						loginState.setIsLogin(false);
 						setToken2fa(userData.token2fa);
@@ -175,7 +168,7 @@ const Home = ({
 	}, [userId, loginState.isLogin]);
 	
 	useEffect(() => {
-		if (userId !== null && !socket) {
+		if (userId !== null && !chatStore.chatSocket) {
 			/************** Creating socket */
 			const newSocket = io('http://localhost:5000', {
 				extraHeaders: {
@@ -184,7 +177,6 @@ const Home = ({
 			
 			});
 			dispatch(updateChatSocket(newSocket))
-			setSocket(newSocket);
 			//---connexion established
 			newSocket.on('message', (message: string) => {
 				console.log(message);
@@ -259,15 +251,15 @@ const Home = ({
 													</div>
 												</Stack>
 												<Stack width={1440} paddingLeft={1} >
-													{(socket !== null) ? (<Leaderboard userId={userId} socket={socket} />) : (<></>)}
+													{(chatStore.chatSocket !== null) ? (<Leaderboard userId={userId}/>) : (<></>)}
 												</Stack>
 											</Stack>
 										)
 										: null
 							
 								}
-								{section === HOME_SECTION.CHAT_USER ? <ChatPageUsers userId={userId} socket={socket} /> : null}
-								{section === HOME_SECTION.CHAT_GROUP ? <ChatPageGroups userId={userId} socket={socket}  /> : null}
+								{section === HOME_SECTION.CHAT_USER ? <ChatPageUsers userId={userId} /> : null}
+								{section === HOME_SECTION.CHAT_GROUP ? <ChatPageGroups userId={userId}  /> : null}
 							</Stack>
 						</Stack>
 					</div>

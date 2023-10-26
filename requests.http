@@ -178,8 +178,8 @@ POST  http://localhost:5000/pong/friends
 Content-Type: application/json
 
 {
-	"receiver": 9,
-	"sender": 4,
+	"receiver": 12,
+	"sender": 9,
 	"relation": "PENDING",
 	"createdAt": "27/07/2023"
 }

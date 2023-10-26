@@ -2,20 +2,23 @@ import React, { useEffect, useState } from "react";
 import { Friend, User } from "../types";
 import axios from "axios";
 import { Button } from "./ui/Button";
+import { useSelector } from "react-redux";
+import { selectChatStore } from "../redux/store";
 
 
 interface LeaderboardProps {
 	userId: string | null;
-	socket: any;
 }
 
-const Leaderboard:React.FC<LeaderboardProps> =({ userId, socket }) => {
-
+const Leaderboard:React.FC<LeaderboardProps> =({ userId }) => {
+	
+	const chatStore = useSelector(selectChatStore);
 	const [usersInfo, setUsersInfo] = useState<User[]>([]);
 	const [showScreen, setShowScreen] = useState< 'default' | 'FriendView'>('default');
 	const [topUsers, setTopUsers] = useState< User[] >([]);
 	const [friends, setFriends] = useState< Friend [] | null>(null)
 	const urlFriends = 'http://localhost:5000/pong/users/' + userId + '/friends';
+
 	
 	const getUsersInfo = async () => { 
 		try {
@@ -45,7 +48,7 @@ const Leaderboard:React.FC<LeaderboardProps> =({ userId, socket }) => {
 
 	const addFriend = async (receiver: string) => {
 		try {
-			socket.emit('invite_friend', receiver);
+			chatStore.chatSocket.emit('invite_friend', receiver);
 		}
 		catch (error) {
 			console.log('Error requesting friendship with user: ', receiver, error);

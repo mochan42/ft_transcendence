@@ -36,9 +36,9 @@ const ChatUserFriendsList = ()=> {
             {chatStore.chatUserFriends
                 .filter((req: any) => req.relation == ACCEPTED)
                 .map((el: any) => {
-                    const friend: User | undefined = chatStore.chatUsers
+                    const friend: User = chatStore.chatUsers
                         .filter((tmpUser) => tmpUser.id != userId)
-                        .find((user: any) => el.sender == user.id || el.receiver == user.id);
+                        .filter((user: any) => el.sender == user.id || el.receiver == user.id)[0];
                     if (friend) {
                         return <ChatUserFriendComp key={friend.id} {...friend} />
                     }
@@ -55,10 +55,15 @@ const ChatUserFriendRequestsList = ()=> {
     const chatStore = useSelector(selectChatStore)
     return (
         <>
-            {chatStore.chatUserFriends
-                .filter((req) => req.receiver == userId && req.relation === PENDING)
+            {chatStore.chatUserFriendRequests
+                .filter((req) => (req.receiver == userId || req.sender == userId))
                 .map((el) => {
-                    const friendReq: User = chatStore.chatUsers.filter((user: any) => el.sender == user.id)[0];
+                    const friendReq: User = chatStore.chatUsers.
+                        filter((user: any) => {
+                            if (user.id != userId && (el.sender == user.id || el.receiver == user.id)) {
+                                return user;
+                            }
+                        })[0];
                     if (friendReq) {
                         return <ChatUserFriendRequestComp key={friendReq.id} {...friendReq}/>
                     }

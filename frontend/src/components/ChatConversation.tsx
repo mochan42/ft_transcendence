@@ -11,7 +11,7 @@ import { selectChatStore } from "../redux/store";
 import { ChatProps } from "../types";
 
 
-const ChatConversation: React.FC<ChatProps> = ({ userId, socket }) => {
+const ChatConversation: React.FC<ChatProps> = ({ userId }) => {
 
     const dispatch = useDispatch();
     const chatStore = useSelector(selectChatStore);
@@ -44,14 +44,6 @@ const ChatConversation: React.FC<ChatProps> = ({ userId, socket }) => {
         const trimmedMessage = userMessage.trim();
     
         if (trimmedMessage !== '') {
-            if (socket) {
-                socket.emit('message', {
-                    username,
-                    message: userMessage,
-                });
-                id++;
-            }
-    
             const newMessage: ChatMessageProps = {
                 user: username,
                 id: id,

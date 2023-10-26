@@ -126,7 +126,7 @@ const  ChatPageUsers = (chatProp : ChatProps) => {
                 {/* conversation panel */}
                 <Stack sx={{ width: "100%" }} alignItems={"center"} justifyContent={"center"}>
                     {chatStore.chatRoomId !== null && chatStore.chatType === enChatType.OneOnOne 
-                        ? <ChatConversation userId={chatProp.userId} socket={chatProp.socket} />
+                        ? <ChatConversation userId={chatProp.userId} />
                         : <Typography variant="subtitle2">Select chat or create new</Typography>
                     }
                 </Stack>
