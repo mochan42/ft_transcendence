@@ -19,13 +19,15 @@ export interface IChatState {
     chatUsers: User[],
     chatUserFriends: Friend[],
     chatUserFriendRequests: Friend[],
-    chatGroupList: Group[],
-    chatGroupMembers: JoinGroup[],
+    chatGroups: Group[],
+    chatActiveGroupMembers: JoinGroup[],
     chatType: String | null,
     chatRoomId: String | null,
-    chatActiveUser: Friend | null,
+    chatActiveUser: Friend | undefined,
     chatSocket: any,
     chatUserFriendDialogState: boolean,
+    chatActiveGroup: Group | null,
+    chatGroupDialogState: boolean,
 }
 
 interface IActionPayload {

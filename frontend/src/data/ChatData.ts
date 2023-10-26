@@ -46,15 +46,15 @@ const friendToUserType = (user: string | null, friend: Friend) => {
 const ChatGroupList = [
   {
     channelId: 3,
-    password: "42wolfs",
-    title: "Trans_proj",
+    password: "",
+    title: "Revolution crew",
     privacy: "public",
     ownerId: 7,
   },
   {
     channelId: 2,
-    password: "42wolfs",
-    title: "Trans_proj",
+    password: "",
+    title: "Trans_project_team",
     privacy: "public",
     ownerId: 5,
   },

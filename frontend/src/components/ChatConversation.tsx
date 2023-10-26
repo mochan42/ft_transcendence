@@ -9,6 +9,8 @@ import { toggleSidebar, updateSidebarType } from "../redux/slices/chatSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { selectChatStore } from "../redux/store";
 import { ChatProps } from "../types";
+import { enChatType } from "../enums";
+import img42 from '../img/icon_42.png'
 
 
 const ChatConversation: React.FC<ChatProps> = ({ userId }) => {
@@ -31,7 +33,6 @@ const ChatConversation: React.FC<ChatProps> = ({ userId }) => {
 
 	var id = 0;
 
-    const url_info = 'http://localhost:5000/pong/users/' + userId;
 	
 	const scrollToBottom = () => {
 		if (messageContainerRef.current) {
@@ -94,22 +95,23 @@ const ChatConversation: React.FC<ChatProps> = ({ userId }) => {
                     >
                         <Box p={1}>
                             <Badge 
-                                color="success" 
-                                variant="dot" 
-                                anchorOrigin={{vertical:"bottom", horizontal:"left"}}
-                                overlap="circular"
                             >
-                                <Avatar alt="image"/>
+                                {/* update with user image or channel group image */}
+                                <Avatar alt={"image"} src={
+                                        chatStore.chatType === enChatType.OneOnOne
+                                        ? (chatStore.chatActiveUser ? friendToUserType(userId, chatStore.chatActiveUser).avatar : "")
+                                        : img42
+                                    }
+                                />
                             </Badge>
                         </Box>
                         <Stack spacing={1.2}>
-                            {/* update with username */}
-                            {/* API call to fetch user info using user_id */}
+                            {/* update with username or channel group title */}
                             <Typography variant="subtitle1"
                             > {
-                                chatStore.chatActiveUser
-                                ? friendToUserType(userId, chatStore.chatActiveUser).userNameLoc
-                                : null
+                                chatStore.chatType === enChatType.OneOnOne
+                                ? (chatStore.chatActiveUser ? friendToUserType(userId, chatStore.chatActiveUser).userNameLoc: "nog")
+                                : (chatStore.chatActiveGroup ? chatStore.chatActiveGroup.title: null)
                               }
                             </Typography>
 

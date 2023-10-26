@@ -19,8 +19,4 @@ enum enChatType {
   Group ="group"
 }
 
-enum enReqType {
-  outgoing,
-  incoming,
-}
-export { HOME_SECTION, logStatus, enChatType, enReqType};
+export { HOME_SECTION, logStatus, enChatType};

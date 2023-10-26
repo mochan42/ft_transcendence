@@ -3,23 +3,22 @@ import { Box, Stack, IconButton, Typography, Divider, Avatar, Badge, Link, Icon}
 import { useTheme } from "@mui/material/styles";
 import { Users, ChatCircleDots, Phone, Plus} from "phosphor-react";
 import { useState } from "react";
-import { faker } from "@faker-js/faker";
-
+import img42 from "../img/icon_42.png"
 import { ChatUserList } from "../data/ChatData";
 import ChatPageGroupsCreate from "./ChatPageGroupsCreate";
 
-import { ChatProps, User } from "../types";
+import { ChatProps, Group, User } from "../types";
 import ChatConversation from "./ChatConversation";
 import ChatContact from "./ChatContact";
 import { selectChatStore } from "../redux/store";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
-import { selectConversation, updateChatActiveUser } from "../redux/slices/chatSlice";
+import { selectConversation, updateChatActiveGroup } from "../redux/slices/chatSlice";
 import { enChatType } from "../enums";
 import Cookies from 'js-cookie';
 
 
-const ChatElement = (user : User) => {
+const ChatGroupElement = (group : Group) => {
     const dispatch = useDispatch();
     const userId = Cookies.get('userId') ? Cookies.get('userId') : '';
     const chatStore = useSelector(selectChatStore);
@@ -27,15 +26,14 @@ const ChatElement = (user : User) => {
     return (
         <Box 
             onClick={()=>{
-                dispatch(selectConversation({chatRoomId: user.id, chatType: enChatType.Group}))
-                dispatch(updateChatActiveUser(chatStore.chatUserFriends.filter((el) => {
-                    if (el.sender == user.id && el.receiver == userId) {
-                        return el;
-                    }
-                    if (el.receiver == user.id && el.sender == userId) {
+                dispatch(selectConversation({chatRoomId: group.channelId, chatType: enChatType.Group}))
+                dispatch(updateChatActiveGroup(chatStore.chatGroups.filter((el) => {
+                    if (el.channelId === group.channelId) {
                         return el;
                     }
                 })[0]));
+                //  ! TODO : update the active group memberlist here using store reducer
+
             }}
             sx={{
                 width: "100%",
@@ -50,19 +48,13 @@ const ChatElement = (user : User) => {
                 justifyContent={"space-between"}
             >
                 <Stack direction="row" spacing={2}>
-                    {user.isLogged ? 
                     <Badge 
-                        color="success" 
-                        variant="dot" 
-                        anchorOrigin={{vertical:"bottom", horizontal:"left"}}
                         overlap="circular"
                     >
-                        <Avatar src={ user.avatar }/>
+                        <Avatar alt={ group.title } src={ img42 }/>
                     </Badge>
-                    : <Avatar alt={ user.userNameLoc }/>
-                    }
                     <Stack spacing={0.2}>
-                        <Typography variant="subtitle2">{ user.userNameLoc }</Typography>
+                        <Typography variant="subtitle2">{ group.title }</Typography>
                         <Typography variant="caption">{ 'Last Message' } </Typography>
                     </Stack>
                 </Stack>
@@ -121,7 +113,7 @@ const  ChatPageGroups = (chatProp : ChatProps) => {
                         sx={{flexGrow:1, overflowY:"scroll", height:"100%"}}
                         spacing={0.5} 
                     >
-                        { ChatUserList.map((el: any) => { return (<ChatElement {...el} />) })}
+                        { chatStore.chatGroups.map((el: any) => { return (<ChatGroupElement {...el} />) })}
                     </Stack>
                 </Stack>
             </Box>
