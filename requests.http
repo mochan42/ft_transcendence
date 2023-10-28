@@ -1,5 +1,5 @@
 ### get all users
-GET http://localhost:5000/pong/users/4
+GET http://localhost:5000/pong/users/
 
 #### add user
 POST http://localhost:5000/pong/users
@@ -178,8 +178,8 @@ POST  http://localhost:5000/pong/friends
 Content-Type: application/json
 
 {
-	"receiver": 12,
-	"sender": 9,
+	"receiver": 9,
+	"sender": 12,
 	"relation": "PENDING",
 	"createdAt": "27/07/2023"
 }
@@ -196,7 +196,7 @@ Content-Type: application/json
 }
 
 ### delete friendship
-DELETE http://localhost:5000/pong/friends/23
+DELETE http://localhost:5000/pong/friends/28
 
 ### aut
 POST http://localhost:5000/pong/users/auth

@@ -196,9 +196,9 @@ const ChatUserFriendRequestComp = (reqData : User) => {
         return (friend) ? true : false;
     }
 
-    const onAccept = async () => {
+    const onAccept = () => {
         const stranger = chatStore.chatUserFriendRequests.filter((el: any) => {
-            if (el.sender === reqData.id && el.receiver == userId) {
+            if (el.sender == reqData.id && el.receiver == userId) {
                 return el;
             }
         })[0];
@@ -212,10 +212,10 @@ const ChatUserFriendRequestComp = (reqData : User) => {
         });
     }
 
-    const onDeny = async () => {
+    const onDeny = () => {
         // fetch user from user list
         const stranger = chatStore.chatUserFriendRequests.filter((el: any) => {
-            if (el.sender === reqData.id && el.reciever == userId) {
+            if (el.sender == reqData.id && el.receiver == userId) {
                 return el;
             }
         })[0];
