@@ -82,6 +82,15 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
       this.server.emit('friend', friend);
   }
 
+  @SubscribeMessage('deny_friend')
+  async deleteFriend(
+    @ConnectedSocket() socket: Socket,
+    @MessageBody() friendShip: number
+  ) {
+    const isDelete = await this.friendsService.remove(friendShip);
+    socket.emit('deniedFriend', isDelete);
+  }
+  
   @SubscribeMessage('create_channel')
   async createChannel(
     @ConnectedSocket() socket: Socket,

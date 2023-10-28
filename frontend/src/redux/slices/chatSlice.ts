@@ -4,6 +4,8 @@ import { ThunkAction } from "redux-thunk";
 import { CHAT_ACTION_TYPE, IChatState, TAction } from "..";
 import { User, Friend, Group, JoinGroup } from "../../types";
 import axios from "axios";
+import { io } from "socket.io-client";
+
 import {
   ChatUserFriendRequestList,
   ChatUserFriendsList,
@@ -68,7 +70,13 @@ const chatSlice = createSlice({
       state.chatActiveUser = action.payload;
     },
     updateChatSocket: (state, action: PayloadAction<any>) => {
-      state.chatSocket = action.payload;
+      if (!state.chatSocket) {
+        state.chatSocket = io("http://localhost:5000", {
+          extraHeaders: {
+            "X-Custom-Data": action.payload,
+          },
+        });
+      }
     },
     updateStateUserFriendDialog: (state, action: PayloadAction<boolean>) => {
       state.chatUserFriendDialogState = action.payload;

@@ -20,6 +20,7 @@ import { Stack } from "@mui/material";
 import { HOME_SECTION, logStatus } from "../../enums";
 import HomeBoard from '../HomeBoard';
 import EditProfile from '../EditProfile';
+import { getSocket } from '../../utils/socketService';
 
 
 type TUserState = {
@@ -64,10 +65,10 @@ const Home = ({
 	const [friends, setFriends] = useState<Friend[] | null>(null);
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
-    const chatStore = useSelector(selectChatStore);
 	const [section, setSection] = useState<Number>(0);
 	const [firstLogin, setFirstLogin] = useState<boolean>(false);
-	const [showScreen, setShowScreen] = useState< 'default' | 'achievements' | 'friends' | 'stats' | 'userProfile' >('default');
+	const [showScreen, setShowScreen] = useState<'default' | 'achievements' | 'friends' | 'stats' | 'userProfile'>('default');
+	const socket = getSocket(userId);
 
 	const authenticateToAPI = async (token: string, state: string): Promise<any> => {
 		if (token.length != 0 && state.length !== 0) {
@@ -167,39 +168,26 @@ const Home = ({
 		})();
 	}, [userId, loginState.isLogin]);
 	
-	useEffect(() => {
-		if (userId !== null && !chatStore.chatSocket) {
-			/************** Creating socket */
-			const newSocket = io('http://localhost:5000', {
-				extraHeaders: {
-					'X-Custom-Data': userId
-				}
-			
-			});
-			dispatch(updateChatSocket(newSocket))
-			//---connexion established
-			newSocket.on('message', (message: string) => {
-				console.log(message);
-			});
-			// ---new channel created---------------
-			newSocket.on('channel_created', (channel: any) => {
-				console.log('channel created successfully');
-				console.log(channel);
-			});
+	if (socket) {
+		socket.on('message', (message: string) => {
+			console.log(message);
+		});
+		// ---new channel created---------------
+		socket.on('channel_created', (channel: any) => {
+			console.log('channel created successfully');
+			console.log(channel);
+		});
+		// --friend invitation sent ------
+		socket.on('invite_friend_success', (friend: any) => {
+			console.log('friend invited successfully', friend);
+		});
 
-			// --friend invitation sent ------
-			newSocket.on('invite_friend_success', (friend: any) => {
-				console.log('friend invited successfully', friend);
-			});
-
-			// ------------disconnexion-----------------------------
-			newSocket.on('disconnected', (user: any) => {
-					console.log(user.userNameLoc, 'is disconnected\n');
-				});
-			/******************************* */
-			
-		}
-	});
+		// ------------disconnexion-----------------------------
+		socket.on('disconnected', (user: any) => {
+			console.log(user.userNameLoc, 'is disconnected\n');
+		});
+		/******************************* */
+	}
 	// // hack for access
 	// // to be removed later
 	// loginState.setIsLogin(true);
@@ -251,7 +239,7 @@ const Home = ({
 													</div>
 												</Stack>
 												<Stack width={1440} paddingLeft={1} >
-													{(chatStore.chatSocket !== null) ? (<Leaderboard userId={userId}/>) : (<></>)}
+													{(socket !== null) ? (<Leaderboard userId={userId}/>) : (<></>)}
 												</Stack>
 											</Stack>
 										)

@@ -10,6 +10,7 @@ import {
 import { FriendsService } from './friends.service';
 import { CreateFriendDto } from './dto/create-friend.dto';
 import { UpdateFriendDto } from './dto/update-friend.dto';
+import { ACCEPTED } from 'src/APIS_CONSTS';
 
 @Controller('pong')
 export class FriendsController {
@@ -33,7 +34,7 @@ export class FriendsController {
   @Patch('friends/:id')
   async update(@Param('id') id: string, @Body() updateFriendDto: UpdateFriendDto) {
     const friend = await this.friendsService.findBYId(+id);
-    const updatedFriend = {...friend, updateFriendDto }
+    const updatedFriend = {...friend, relation: ACCEPTED }
     return this.friendsService.update(updatedFriend);
   }
 

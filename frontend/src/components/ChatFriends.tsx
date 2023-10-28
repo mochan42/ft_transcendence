@@ -34,11 +34,14 @@ const ChatUserFriendsList = ()=> {
     return (
         <>
             {chatStore.chatUserFriends
-                .filter((req: any) => req.relation == ACCEPTED)
+                .filter((req: any) => req.sender == userId || req.receiver == userId)
                 .map((el: any) => {
                     const friend: User = chatStore.chatUsers
-                        .filter((tmpUser) => tmpUser.id != userId)
-                        .filter((user: any) => el.sender == user.id || el.receiver == user.id)[0];
+                        .filter((user: any) => {
+                            if (user.id != userId && (el.sender == user.id || el.receiver == user.id)) {
+                                return user;
+                            }
+                        })[0];
                     if (friend) {
                         return <ChatUserFriendComp key={friend.id} {...friend} />
                     }

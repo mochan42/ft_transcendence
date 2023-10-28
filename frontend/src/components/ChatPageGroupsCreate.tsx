@@ -13,6 +13,7 @@ import RHF_AutoCompDropDown from './ui/RHF_AutoCompDropDown';
 import Cookies from 'js-cookie';
 import { useDispatch, useSelector } from "react-redux";
 import { selectChatStore } from "../redux/store";
+import { getSocket } from '../utils/socketService';
 
 
 /**
@@ -78,6 +79,7 @@ const CreateGroupForm = ( handleFormClose: THandler ) => {
 
     const [statePasswd, setStatePasswd] = useState<boolean>(true);
     const chatStore = useSelector(selectChatStore);
+    const socket = getSocket(Cookies.get('userId'));
 
     const handleRadioBtn = (e : React.ChangeEvent<HTMLInputElement>) =>{
         const state = e.target.value;
@@ -97,7 +99,7 @@ const CreateGroupForm = ( handleFormClose: THandler ) => {
                 ...data,
                 members: newMembers
             };
-            chatStore.chatSocket.emit('create_channel', formatedData);
+            socket.emit('create_channel', formatedData);
             handleFormClose.close(false);
         }
         catch (error)

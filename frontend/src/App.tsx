@@ -38,7 +38,6 @@ const App: React.FC = () => {
 	const [userId, setUserId] = useState<string | null>(idSession);
 	const [code, setCode] = useState<string | null>(null);
 	const [state, setState] = useState<string>(generateStrState());
-	const [socket, setSocket] = useState<any>(null);
 	const [token2fa, setToken2fa] = useState<string>('');
 
     // check if code available for backend to exchange for token
@@ -48,7 +47,7 @@ const App: React.FC = () => {
 		<div className='flex-cols font-mono dark:bg-white/75 bg-slate-900 bg-opacity-80 h-screen'>
 			<Router>
 				<div className='h-20 flex backdrop-blur-sm bg-white/75 dark:bg-slate-900 border-b-4 border-white/75 dark:border-slate-600 item-center justify-between'>
-					<Navbar setIsAuth={setIsAuth} isAuth={isAuth} setCode={setCode} setUserId={setUserId} socket={socket} />
+					<Navbar setIsAuth={setIsAuth} isAuth={isAuth} setCode={setCode} setUserId={setUserId}/>
 				</div>
 				<Routes>
 					<Route path='about' element={<About isAuth={isAuth} />} />

@@ -9,6 +9,7 @@ import { updateChatUserFriends, updateChatActiveUser } from '../redux/slices/cha
 import { ACCEPTED, PENDING } from '../APP_CONSTS';
 import { fetchAllUsers, fetchAllFriends, fetchAllUsersFriends } from '../data/ChatData';
 import Cookies from 'js-cookie';
+import { getSocket } from '../utils/socketService';
 
 
 
@@ -25,11 +26,12 @@ const ChatUserComp = (userData : User) => {
     const chatStore = useSelector(selectChatStore);
     const dispatch = useDispatch();
     const userId = Cookies.get('userId') ? Cookies.get('userId') : '';
+    const socket = getSocket(userId);
 
     const onSendRequest = () => {
 
-        chatStore.chatSocket.emit('invite_friend', userData.id);
-        chatStore.chatSocket.on('invitation_success', async (newFriend: any) => {
+        socket.emit('invite_friend', userData.id);
+        socket.on('invitation_success', async (newFriend: any) => {
             const friends = await fetchAllFriends();
             const newFriendRequestList = await fetchAllUsersFriends(PENDING, friends);
             dispatch(updateChatUserFriendRequests(newFriendRequestList));
@@ -120,7 +122,7 @@ const ChatUserFriendComp = (userData : User) => {
             if (el.receiver == userData.id && el.sender == userId) {
                 return el;
             }
-        })[0]
+        })[0];
 
         // Create new list which excludes found user
         const newFriendListExc = chatStore.chatUserFriends
@@ -132,10 +134,6 @@ const ChatUserFriendComp = (userData : User) => {
         dispatch(updateChatActiveUser(user));
         // close the dialog
         dispatch(updateStateUserFriendDialog(false)); 
-
-        // API CALL - update to backend may be ignore
-        // because we only change user position to top positon on list
-        // the content of the list remains same.
     }
     return (
         <StyledChatBox sx={{
@@ -187,9 +185,10 @@ const ChatUserFriendRequestComp = (reqData : User) => {
     const chatStore = useSelector(selectChatStore);
     const dispatch = useDispatch();
     const userId = Cookies.get('userId') ? Cookies.get('userId') : '';
+    const socket = getSocket(userId);
 
     const isSender = (reqData: User): boolean => {
-        const friend = chatStore.chatUserFriendRequests.find((el) => {
+        const friend = chatStore.chatUserFriendRequests.find((el: any) => {
            if (reqData.id == el.sender && el.receiver == userId) {
               return el;
            }
@@ -197,10 +196,14 @@ const ChatUserFriendRequestComp = (reqData : User) => {
         return (friend) ? true : false;
     }
 
-    const onAccept = ()=>{
-        const stranger = chatStore.chatUserFriendRequests.filter((el: any) => el.sender === reqData.id)[0];
-        chatStore.chatSocket.emit('accept_friend', stranger.id);
-        chatStore.chatSocket.on('friend', async (newFriend: any) => {
+    const onAccept = async () => {
+        const stranger = chatStore.chatUserFriendRequests.filter((el: any) => {
+            if (el.sender === reqData.id && el.receiver == userId) {
+                return el;
+            }
+        })[0];
+        socket.emit('accept_friend', stranger.id);
+        socket.on('friend', async (newFriend: any) => {
             const friends = await fetchAllFriends();
             const newFriendRequestList = await fetchAllUsersFriends(PENDING, friends);
             const newFriendList = await fetchAllUsersFriends(ACCEPTED, friends);
@@ -209,13 +212,19 @@ const ChatUserFriendRequestComp = (reqData : User) => {
         });
     }
 
-    const onDeny = ()=>{
+    const onDeny = async () => {
         // fetch user from user list
-        const stranger = chatStore.chatUserFriendRequests.filter((el: any) => el.sender === reqData.id)[0]
-        const newFriendRequestList = chatStore.chatUserFriendRequests.filter(el => el.sender !== stranger.sender)
-        // update the friend request list with new one
-        dispatch(updateChatUserFriendRequests(newFriendRequestList));
-        // chatStore.chatSocket.emit('deny_friend_request', stranger);
+        const stranger = chatStore.chatUserFriendRequests.filter((el: any) => {
+            if (el.sender === reqData.id && el.reciever == userId) {
+                return el;
+            }
+        })[0];
+        socket.emit('deny_friend', stranger.id);
+        socket.on('deniedFriend', async (data: any) => {
+            const friends = await fetchAllFriends();
+            const newFriendRequestList = await fetchAllUsersFriends(PENDING, friends);
+            dispatch(updateChatUserFriendRequests(newFriendRequestList));
+        });
     }
     return (
         <StyledChatBox sx={{

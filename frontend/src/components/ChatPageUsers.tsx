@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { ChatUserList } from '../data/ChatData';
+import { ChatUserList, friendToUserType } from '../data/ChatData';
 import { Box, Stack, IconButton, Typography, Divider, Avatar, Badge } from "@mui/material";
 import { CircleDashed, Handshake } from "phosphor-react";
 import ChatConversation from "./ChatConversation";
@@ -12,6 +12,7 @@ import { useDispatch } from "react-redux";
 import { selectConversation, updateChatActiveUser, updateStateUserFriendDialog } from "../redux/slices/chatSlice";
 import { enChatType } from "../enums";
 import Cookies from 'js-cookie';
+import { fr } from "@faker-js/faker";
 
 
 
@@ -116,9 +117,14 @@ const  ChatPageUsers = (chatProp : ChatProps) => {
                         sx={{flexGrow:1, overflowY:"scroll", height:"100%"}}
                         spacing={0.5} 
                     >
-                            {chatStore.chatUsers
-                                .filter((user) => user.id.toString() != chatProp.userId)
-                                .map((el) => { return (<ChatElement {...el} />) })}
+                            {chatStore.chatUserFriends
+                                .filter((user) => {
+                                    if (user.sender == chatProp.userId || user.receiver == chatProp.userId) {
+                                        return user;
+                                    }
+                                })
+                                .map((friend) => friendToUserType(chatProp.userId, friend, chatStore.chatUsers))
+                                .map((el) => { return (<ChatElement {...el} key={el.id} />) })}
                     </Stack>
                 </Stack>
         </Box>

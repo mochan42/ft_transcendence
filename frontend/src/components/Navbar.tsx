@@ -4,23 +4,26 @@ import React from 'react';
 import { useEffect, useState } from 'react';
 import { Box } from '@mui/material';
 import Cookies from 'js-cookie';
-
+import { useSelector } from "react-redux";
+import { selectChatStore } from "../redux/store";
+import { getSocket } from '../utils/socketService';
 // Icons from https://heroicons.com/
 
 interface Props {
 	setIsAuth: React.Dispatch<React.SetStateAction<boolean>>,
 	isAuth: boolean,
 	setCode: React.Dispatch<React.SetStateAction<string | null>>,
-	setUserId: React.Dispatch<React.SetStateAction<string | null>>,
-	socket: any
+	setUserId: React.Dispatch<React.SetStateAction<string | null>>
 }
 
 
-const Navbar: React.FC<Props> = ({ setIsAuth, isAuth, setCode, setUserId, socket }) => {
+const Navbar: React.FC<Props> = ({ setIsAuth, isAuth, setCode, setUserId }) => {
 	const navigate = useNavigate();
 	const msg = (isAuth == true) ? 'Logout' : 'Log in';
 	const [theme, setTheme] = useState('dark'); 
 	const [logBtnMsg, setLogBtnMsg] = useState(msg);
+	const socket = getSocket(Cookies.get('userId'));
+
 
 	const handleLogout = () => {
             // contact server to delete access token

@@ -1,5 +1,5 @@
 ### get all users
-GET http://localhost:5000/pong/users/
+GET http://localhost:5000/pong/users/4
 
 #### add user
 POST http://localhost:5000/pong/users
@@ -185,7 +185,7 @@ Content-Type: application/json
 }
 
 ### update friend relation
-PATCH   http://localhost:5000/pong/friends/9
+PATCH   http://localhost:5000/pong/friends/24
 Content-Type: application/json
 
 {
