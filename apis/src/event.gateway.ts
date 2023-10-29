@@ -158,15 +158,23 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
   }
 
-  @SubscribeMessage('difficulty')
-  async handleDifficulty(
-    @ConnectedSocket() socket: Socket,
-    @MessageBody() data: any,
-  ) {
-    const gameToUpdate = await this.gamesService.findOne(data.gameId);
-    const game = { ...gameToUpdate, difficulty: data.difficulty };
-    const updatedGame = await this.gamesService.update(game);
+  //  x = 50, y= 50
+  
+  // @SubscribeMessage('difficulty')
+  // async handleDifficulty(
+  //   @ConnectedSocket() socket: Socket,
+  //   @MessageBody() data: any,
+  // ) {
+  //   const gameToUpdate = await this.gamesService.findOne(data.gameId);
+  //   const game = { ...gameToUpdate, difficulty: data.difficulty };
+  //   const updatedGame = await this.gamesService.update(game);
 
-    this.server.emit('difficuly_changed', updatedGame);
-  }
+  //   this.server.emit('difficuly_changed', updatedGame);
+  // }
 }
+
+//{ userId, difficulty, booster}
+
+// 1 0, no
+// 2 1, yes
+// 3 1, yes

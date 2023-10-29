@@ -196,7 +196,7 @@ Content-Type: application/json
 }
 
 ### delete friendship
-DELETE http://localhost:5000/pong/friends/28
+DELETE http://localhost:5000/pong/friends/31
 
 ### aut
 POST http://localhost:5000/pong/users/auth

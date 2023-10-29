@@ -139,7 +139,9 @@ const  ChatPageUsers = (chatProp : ChatProps) => {
                                     }
                                 })
                                 .map((friend) => friendToUserType(chatProp.userId, friend, chatStore.chatUsers))
-                                .map((el) => { return (<ChatElement {...el} key={el.id} />) })}
+                                .map((el) => {
+                                    return (<ChatElement {...el} key={el.id} />)
+                                })}
                     </Stack>
                 </Stack>
         </Box>
