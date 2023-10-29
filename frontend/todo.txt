@@ -114,13 +114,17 @@ video 27 - handle friend request with socket.io 27:00
 
 [ Activities ]
 --------------
-+ remove extra 2fa button
-+ update contact profile on toggle for both user and group pages
-  - change the name from ChatContact.tsx to ChatUserProfile.tsx
-  - create ChatGroupProfile
-  - update the chatUserProfile page to show more data.
-  - create ChatGroupMemberComp for member entity
-  
++ update group profile on toggle click
+  - add action buttons based on member rank
+
++ update user profile on toggle click
+  - modify action buttons
+
+
+
+
   - update information with real data.
   - add dialog for button actions. based on priviledge mode.
-  - handle button actions - exit, kick, ban, delete
+  - add dialog display for each member to admin and owner action
+  - handle button actions - exit, action
+  - display status on group profile page for each user

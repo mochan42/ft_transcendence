@@ -6,6 +6,7 @@ import {
 } from "../types";
 import axios from "axios";
 import { ACCEPTED, PENDING } from "../APP_CONSTS";
+import { enChatMemberRank } from "../enums";
 
 const fetchAllUsers = async (): Promise<User[]> => {
   const resp = await axios<User[]>("http://localhost:5000/pong/users");
@@ -62,7 +63,7 @@ const ChatGroupList = [
 
 const dummyUsers = [
   {
-    id: "7",
+    id: "0",
     userName: "Facinet",
     userNameLoc: "",
     firstName: "",
@@ -104,7 +105,21 @@ const dummyUsers = [
     isLogged: true,
   },
   {
-    id: "0",
+    id: "8",
+    userName: "felix",
+    userNameLoc: "",
+    firstName: "",
+    lastName: "",
+    is2Fa: true,
+    authToken: "access",
+    email: "gmial.com",
+    secret2Fa: "",
+    avatar: faker.image.avatar(),
+    xp: 4,
+    isLogged: true,
+  },
+  {
+    id: "7",
     userName: "cudoh",
     userNameLoc: "",
     firstName: "",
@@ -131,7 +146,7 @@ const ChatGroupMemberList = [
     id: 2,
     usrId: 7,
     channelId: 3,
-    rank: "member", // member
+    rank: enChatMemberRank.MEMBER, // member
     state: "priviledged", // kicked, banned, mute, priviledge
   },
   {
@@ -145,7 +160,14 @@ const ChatGroupMemberList = [
     id: 5,
     usrId: 3,
     channelId: 3,
-    rank: "Owner", // member
+    rank: enChatMemberRank.OWNER, // member
+    state: "priviledged", // kicked, banned, mute, priviledge
+  },
+  {
+    id: 6,
+    usrId: 8,
+    channelId: 3,
+    rank: enChatMemberRank.OWNER, // member
     state: "priviledged", // kicked, banned, mute, priviledge
   },
 ];

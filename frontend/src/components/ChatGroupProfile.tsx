@@ -1,6 +1,6 @@
 import { Avatar, Box, Button, Divider, IconButton, Stack, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import { Prohibit, Trash, X } from "phosphor-react";
+import { Prohibit, Gear, X, SignOut } from "phosphor-react";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleSidebar } from "../redux/slices/chatSlice";
 import { selectChatStore } from "../redux/store";
@@ -9,21 +9,30 @@ import img42 from '../img/icon_42.png'
 import { User } from "../types";
 import { dummyUsers } from "../data/ChatData";
 import ChatGroupMemberComp  from "./ChatGroupComp";
+import { ChatBtnChangePasswd } from "./ChatGroupProfileComp";
+import Cookies from 'js-cookie';
+import { enChatMemberRank } from "../enums";
 
 /* component to show contact profile */
 const ChatGroupProfile = () => {
 
     const theme = useTheme()
+    // const userId = Cookies.get('userId') ? Cookies.get('userId') : ''; // not working
+    const userId = '0' // for testing only
     const dispatch = useDispatch();
     const chatStore = useSelector(selectChatStore);
     const activeGroupTitle = (chatStore.chatActiveGroup ? chatStore.chatActiveGroup.title : "")
     const groupMemberNo = (chatStore.chatActiveGroup ? chatStore.chatActiveGroupMembers.length: 0)
+    const loggedUser = chatStore.chatActiveGroupMembers.filter(el => (el.usrId.toString()) === userId)
+    console.log(loggedUser, 'id- ', userId)
+    let actionBtnState = (loggedUser[0].rank === enChatMemberRank.MEMBER) ? false : true
+
 
     return ( 
         <Box sx={{
                 width:"550px", backgroundColor: "white",
                 boxShadow: "0px 0px 2px rgba(0, 0, 0, 0.25)",
-                height: "100%"
+                height: "75vh"
             }}
         >
             <Stack sx={{ height: "100%"}}>
@@ -49,7 +58,7 @@ const ChatGroupProfile = () => {
                 {/* body */}
                 <Stack  justifyContent={"space-between"}>
 
-                <Stack sx={{ height:"100%", position:"relative", flexGrow:1, overflowY:"scroll", }}
+                <Stack sx={{ height:"100%", position:"relative", flexGrow:1, overflowY:"scroll"}}
                         p={3} spacing={3}
                 >
                     <Stack alignItems={"center"} direction={"row"} spacing={2}>
@@ -66,14 +75,19 @@ const ChatGroupProfile = () => {
                     {/* divider  */}
                     <Divider />
                     <Stack alignItems={"center"} direction={"row"} spacing={2}>
-                        <Button startIcon={ <Prohibit/>} fullWidth variant="outlined"> Exit </Button>
-                        <Button startIcon={ <Trash/>} fullWidth variant="outlined"> Delete </Button>
+                        <Button startIcon={ <SignOut/>} fullWidth variant="outlined"> Exit </Button>
+                        {/* render action button if logged user is owner or admin */}
+                        { actionBtnState && 
+                            <Button startIcon={ <Gear size={25} />} fullWidth variant="outlined" > Actions </Button>
+                        }
                     </Stack>
 
                     {/* divider  */}
                     <Divider />
                     {/* map to list to show group members */}
-                    <Stack>
+                    <Stack sx={{ height:"35vh", flexGrow:1, overflowY:"scroll"}}
+                        spacing={0.5}
+                    >
                         {
                             chatStore.chatActiveGroupMembers.map( (member) => {
                                 //const memberUser = (chatStore.chatUsers.filter(el => parseInt(el.id) === member.usrId)[0])
@@ -85,12 +99,9 @@ const ChatGroupProfile = () => {
                             })
                         }
 
-                    </Stack>
-
                     {/* divider  */}
                     <Divider />
-
-
+                    </Stack>
                 </Stack>
                 </Stack>
 
