@@ -1,9 +1,4 @@
 
---- AUTHENTICATION ---
-01. backend interface : fetch 2fa active state on profile
-02. backend interface : post 2fa state on button click
-03. backend interface : generate the qr code
-04. backend interface : validate code received.
 
 --- CHAT ROOM  ---
 01. watch video how to create chat on react.
@@ -79,12 +74,7 @@ npm cache clean --force                 : clear the cache
 
 
 ----
-+ update contact profile on toggle foPlayer
-r both user and group pages
-  - handle button actions
-  - change the name from ChatContact.tsx to ChatUserProfile.tsx
-  - update information with real data.
-  - create ChatChannelProfile
++ add authslice
 + Handle deny button for receiver
 + Handle accept button for receiver
 + Add dialog page to view profile from user list (friend dialog)
@@ -104,6 +94,13 @@ r both user and group pages
 + toggle off profile sidebar on other button press 
   - determine the buttons.
 
++ Ensure that no user can join a group twice.
++ Check that user is priviledge before display as group member
++ Handle warnings -  unused variables
++ add chatlist to store.
++ - make all users messagable without being friend.
++ ensure that user can send message only when in priviledge mode (group) or not blocked (oneonone)
+
 
 ----- PUSH TODO ------------------
 + remove access hacker before push
@@ -117,7 +114,17 @@ video 27 - handle friend request with socket.io 27:00
 
 [ Activities ]
 --------------
-+ add state for group in redux.
-+ update group data in ChatConversation head panel for group
-+ Make all group to have 42 logo image
-+ chatElement for group should be different from user by interface type
++ update group profile on toggle click
+  - add action buttons based on member rank
+
++ update user profile on toggle click
+  - modify action buttons
+
+
+
+
+  - update information with real data.
+  - add dialog for button actions. based on priviledge mode.
+  - add dialog display for each member to admin and owner action
+  - handle button actions - exit, action
+  - display status on group profile page for each user

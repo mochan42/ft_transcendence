@@ -13,6 +13,7 @@ import { enChatType } from "../enums";
 import { getSocket } from '../utils/socketService';
 import { PRIVATE, GROUP } from '../APP_CONSTS';
 import { fetchAllDirectMessages } from "./ChatPageUsers";
+import img42 from '../img/icon_42.png'
 
 export const getUserById = (users: User[], id: any) => {
     return users.filter((user: User) => id == user.id)[0];
@@ -114,22 +115,23 @@ const ChatConversation: React.FC<ChatProps> = ({ userId }) => {
                     >
                         <Box p={1}>
                             <Badge 
-                                color="success" 
-                                variant="dot" 
-                                anchorOrigin={{vertical:"bottom", horizontal:"left"}}
-                                overlap="circular"
                             >
-                                <Avatar alt="image"/>
+                                {/* update with user image or channel group image */}
+                                <Avatar alt={"image"} src={
+                                        chatStore.chatType === enChatType.OneOnOne
+                                        ? (chatStore.chatActiveUser ? friendToUserType(userId, chatStore.chatActiveUser, chatStore.chatUsers).avatar : "")
+                                        : img42
+                                    }
+                                />
                             </Badge>
                         </Box>
                         <Stack spacing={1.2}>
-                            {/* update with username */}
-                            {/* API call to fetch user info using user_id */}
+                            {/* update with username or channel group title */}
                             <Typography variant="subtitle1"
                             > {
-                                chatStore.chatActiveUser
-                                ? friendToUserType(userId, chatStore.chatActiveUser, chatStore.chatUsers).userNameLoc
-                                : null
+                                chatStore.chatType === enChatType.OneOnOne
+                                ? (chatStore.chatActiveUser ? friendToUserType(userId, chatStore.chatActiveUser, chatStore.chatUsers).userNameLoc: "nog")
+                                : (chatStore.chatActiveGroup ? chatStore.chatActiveGroup.title: null)
                               }
                             </Typography>
 

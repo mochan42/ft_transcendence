@@ -1,17 +1,16 @@
 //  chat action type and interface definition
 
-import { User, Friend, Group, JoinGroup, Chat } from "../types"
+import { User, Friend, Group, JoinGroup, Chat } from "../types";
 
-export const enum CHAT_ACTION_TYPE
-{
-    CHAT_CONTACT = 'CHAT_CONTACT',
-    CHAT_STARRED = 'CHAT_STARRED',
-    CHAT_SHARED = 'CHAT_SHARED',
+export const enum CHAT_ACTION_TYPE {
+  CHAT_CONTACT = "CHAT_CONTACT",
+  CHAT_STARRED = "CHAT_STARRED",
+  CHAT_SHARED = "CHAT_SHARED",
 }
 
 export interface IChatSidebar {
-    open: boolean,
-    type: string
+  open: boolean;
+  type: string;
 }
 
 export interface IChatState {
@@ -24,20 +23,20 @@ export interface IChatState {
   chatType: String | null;
   chatRoomId: String | null;
   chatActiveUser: Friend | null;
-  chatSocket: any;
   chatUserFriendDialogState: boolean;
   chatUserMessages: Chat[];
   chatDirectMessages: Chat[];
+  chatActiveGroup: Group | null;
+  chatGroupDialogState: boolean;
 }
 
 interface IActionPayload {
-    type: string,
-    payload: IChatState
+  type: string;
+  payload: IChatState;
 }
 
 interface IActionState {
-    type: string,
+  type: string;
 }
 
-
-export type TAction = IActionPayload | IActionState
+export type TAction = IActionPayload | IActionState;

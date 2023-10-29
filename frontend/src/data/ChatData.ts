@@ -6,6 +6,7 @@ import {
 } from "../types";
 import axios from "axios";
 import { ACCEPTED, PENDING } from "../APP_CONSTS";
+import { enChatMemberRank } from "../enums";
 
 const fetchAllUsers = async (): Promise<User[]> => {
   const resp = await axios.get<User[]>("http://localhost:5000/pong/users");
@@ -56,21 +57,131 @@ const friendToUserType = (user: string | null, friend: Friend, userList: User[])
 const ChatGroupList = [
   {
     channelId: 3,
-    password: "42wolfs",
-    title: "Trans_proj",
+    password: "",
+    title: "Revolution crew",
     privacy: "public",
     ownerId: 7,
   },
   {
     channelId: 2,
-    password: "42wolfs",
-    title: "Trans_proj",
+    password: "",
+    title: "Trans_project_team",
     privacy: "public",
     ownerId: 5,
   },
 ];
 
+const dummyUsers = [
+  {
+    id: "0",
+    userName: "Facinet",
+    userNameLoc: "",
+    firstName: "",
+    lastName: "",
+    is2Fa: true,
+    authToken: "access",
+    email: "gmial.com",
+    secret2Fa: "",
+    avatar: faker.image.avatar(),
+    xp: 4,
+    isLogged: true,
+  },
+  {
+    id: "3",
+    userName: "Monine",
+    userNameLoc: "",
+    firstName: "",
+    lastName: "",
+    is2Fa: true,
+    authToken: "access",
+    email: "gmial.com",
+    secret2Fa: "",
+    avatar: faker.image.avatar(),
+    xp: 4,
+    isLogged: true,
+  },
+  {
+    id: "5",
+    userName: "Pmeising",
+    userNameLoc: "",
+    firstName: "",
+    lastName: "",
+    is2Fa: true,
+    authToken: "access",
+    email: "gmial.com",
+    secret2Fa: "",
+    avatar: faker.image.avatar(),
+    xp: 4,
+    isLogged: true,
+  },
+  {
+    id: "8",
+    userName: "felix",
+    userNameLoc: "",
+    firstName: "",
+    lastName: "",
+    is2Fa: true,
+    authToken: "access",
+    email: "gmial.com",
+    secret2Fa: "",
+    avatar: faker.image.avatar(),
+    xp: 4,
+    isLogged: true,
+  },
+  {
+    id: "7",
+    userName: "cudoh",
+    userNameLoc: "",
+    firstName: "",
+    lastName: "",
+    is2Fa: true,
+    authToken: "access",
+    email: "gmial.com",
+    secret2Fa: "",
+    avatar: faker.image.avatar(),
+    xp: 4,
+    isLogged: true,
+  }
+]
+
 const ChatGroupMemberList = [
+  {
+    id: 1,
+    usrId: 0,
+    channelId: 3,
+    rank: "admin", // member
+    state: "priviledge", // kicked, banned
+  },
+  {
+    id: 2,
+    usrId: 7,
+    channelId: 3,
+    rank: enChatMemberRank.MEMBER, // member
+    state: "priviledged", // kicked, banned, mute, priviledge
+  },
+  {
+    id: 4,
+    usrId: 5,
+    channelId: 3,
+    rank: "member", // member
+    state: "priviledged", // kicked, banned, mute, priviledge
+  },
+  {
+    id: 5,
+    usrId: 3,
+    channelId: 3,
+    rank: enChatMemberRank.OWNER, // member
+    state: "priviledged", // kicked, banned, mute, priviledge
+  },
+  {
+    id: 6,
+    usrId: 8,
+    channelId: 3,
+    rank: enChatMemberRank.OWNER, // member
+    state: "priviledged", // kicked, banned, mute, priviledge
+  },
+];
+const ChatGroupMemberList2 = [
   {
     id: 1,
     usrId: 0,
@@ -85,13 +196,6 @@ const ChatGroupMemberList = [
     rank: "member", // member
     state: "priviledged", // kicked, banned, mute, priviledge
   },
-  {
-    id: 4,
-    usrId: 5,
-    channelId: 3,
-    rank: "member", // member
-    state: "priviledged", // kicked, banned, mute, priviledge
-  },
 ];
 
 export {
@@ -101,6 +205,8 @@ export {
   ChatGroupList,
   ChatGroupMemberList,
   ChatUserMessages,
+  ChatGroupMemberList2,
+  dummyUsers,
   friendToUserType,
   fetchAllUsersFriends,
   fetchAllUsers,

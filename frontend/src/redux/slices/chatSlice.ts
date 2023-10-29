@@ -28,11 +28,11 @@ const initialState: IChatState = {
   chatType: null,
   chatRoomId: null,
   chatActiveUser: null,
-  chatSocket: null,
   chatUserFriendDialogState: false,
   chatUserMessages: ChatUserMessages,
   chatDirectMessages: [],
-  //chatACtiveGroup: null,
+  chatActiveGroup: null,
+  chatGroupDialogState: false,
 };
 
 //export default (state: ISidebarData, action: TAction) : ISidebarData => {}
@@ -81,6 +81,19 @@ const chatSlice = createSlice({
     updateChatDirectMessages: (state, action: PayloadAction<Chat[]>) => {
       state.chatDirectMessages = action.payload;
     },
+    updateChatGroups: (state, action: PayloadAction<Group[]>) => {
+      state.chatGroupList = action.payload;
+    },
+    updateChatGroupMembers: (state, action: PayloadAction<JoinGroup[]>) => {
+      state.chatGroupMembers = action.payload;
+    },
+    updateStateGroupDialog: (state, action: PayloadAction<boolean>) => {
+      state.chatGroupDialogState = action.payload;
+    },
+    // onclick of chat group element, update chatActiveGroup
+    updateChatActiveGroup: (state, action: PayloadAction<Group>) => {
+      state.chatActiveGroup = action.payload;
+    },
   },
 });
 
@@ -94,7 +107,11 @@ export const {
   updateChatActiveUser,
   updateStateUserFriendDialog,
   updateChatDirectMessages,
-  updateChatUserMessages
+  updateChatUserMessages,
+  updateChatGroups,
+  updateChatGroupMembers,
+  updateStateGroupDialog,
+  updateChatActiveGroup,
 } = chatSlice.actions;
 export default chatSlice;
 

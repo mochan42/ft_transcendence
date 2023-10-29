@@ -19,8 +19,14 @@ enum enChatType {
   Group ="group"
 }
 
-enum enReqType {
-  outgoing,
-  incoming,
+enum enChatMemberRank {
+  OWNER = "owner",
+  ADMIN = "admin",
+  MEMBER = "member",
 }
-export { HOME_SECTION, logStatus, enChatType, enReqType};
+
+enum enChatMemberState {
+  PRIVILEDGED = "priviledged",
+  BANNED = "banned",
+}
+export { HOME_SECTION, logStatus, enChatType, enChatMemberRank, enChatMemberState};
