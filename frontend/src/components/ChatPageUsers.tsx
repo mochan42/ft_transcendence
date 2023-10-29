@@ -3,27 +3,41 @@ import { ChatUserList, friendToUserType } from '../data/ChatData';
 import { Box, Stack, IconButton, Typography, Divider, Avatar, Badge } from "@mui/material";
 import { CircleDashed, Handshake } from "phosphor-react";
 import ChatConversation from "./ChatConversation";
-import { ChatProps, User } from "../types";
+import { ChatProps, User, Chat } from "../types";
 import ChatFriends from "./ChatFriends";
 import { useSelector } from "react-redux";
 import { selectChatStore } from "../redux/store";
 import ChatContact from "./ChatContact";
 import { useDispatch } from "react-redux";
-import { selectConversation, updateChatActiveUser, updateStateUserFriendDialog } from "../redux/slices/chatSlice";
+import { selectConversation, updateChatActiveUser, updateStateUserFriendDialog, updateChatDirectMessages } from "../redux/slices/chatSlice";
 import { enChatType } from "../enums";
 import Cookies from 'js-cookie';
 import { fr } from "@faker-js/faker";
+import axios from 'axios';
+import { PRIVATE } from '../APP_CONSTS';
 
-
-
+export const fetchAllDirectMessages = (allMessages: Chat[], userId: any, friend: any): Chat[] => {
+    const chats = allMessages.filter((el) => {
+        if (el.type == PRIVATE) {
+            if (el.author == userId && el.receiver == friend) {
+                return el;
+            }
+            if (el.receiver == userId && el.author == friend) {
+                return el;
+            }
+        }
+    });
+    return chats;
+}
 
 const ChatElement = (user: User) => {
     const userId = Cookies.get('userId') ? Cookies.get('userId') : '';
     const chatStore = useSelector(selectChatStore);
     const dispatch = useDispatch();
+    //let lastMessage = chatStore.chatDirectMessages[chatStore.chatDirectMessages.length - 1].message;
     return (
         <Box 
-            onClick={()=>{
+            onClick={ () => {
                 dispatch(selectConversation({chatRoomId: user.id, chatType: enChatType.OneOnOne}))
                 dispatch(updateChatActiveUser(chatStore.chatUserFriends.filter((el) => {
                     if (el.sender == user.id && el.receiver == userId) {
@@ -33,6 +47,8 @@ const ChatElement = (user: User) => {
                         return el;
                     }
                 })[0]));
+                const newDirectMessages = fetchAllDirectMessages(chatStore.chatUserMessages, userId, user.id);
+                dispatch(updateChatDirectMessages(newDirectMessages))
             }}
             sx={{
                 width: "100%",
@@ -60,12 +76,12 @@ const ChatElement = (user: User) => {
                     }
                     <Stack spacing={0.2}>
                         <Typography variant="subtitle2">{ user.userNameLoc }</Typography>
-                        <Typography variant="caption">{ 'Last Message' } </Typography>
+                        <Typography variant="caption">{ 'last Message' } </Typography>
                     </Stack>
                 </Stack>
                 <Stack spacing={2} alignItems={"center"}>
                     <Typography variant="caption">{ 'TIME' }</Typography>
-                    <Badge color="primary" badgeContent={ 'UNSREAD' }></Badge>
+                    <Badge color="primary" badgeContent={ 'UNREAD' }></Badge>
                 </Stack>
 
             </Stack>

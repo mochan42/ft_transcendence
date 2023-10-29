@@ -13,7 +13,6 @@ import ChatPageGroups from '../ChatPageGroups';
 import About from './About';
 import Cookies from 'js-cookie';
 import { io } from 'socket.io-client';
-import { updateChatSocket } from "../../redux/slices/chatSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { selectChatStore } from "../../redux/store";
 import { Stack } from "@mui/material";

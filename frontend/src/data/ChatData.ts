@@ -8,7 +8,7 @@ import axios from "axios";
 import { ACCEPTED, PENDING } from "../APP_CONSTS";
 
 const fetchAllUsers = async (): Promise<User[]> => {
-  const resp = await axios<User[]>("http://localhost:5000/pong/users");
+  const resp = await axios.get<User[]>("http://localhost:5000/pong/users");
   let users: User[] = [];
   if (resp.status === 200) {
     users = resp.data;
@@ -18,13 +18,22 @@ const fetchAllUsers = async (): Promise<User[]> => {
 
 const fetchAllFriends = async (): Promise<Friend[]> => {
   const urlFriend = "http://localhost:5000/pong/friends";
-  const resp = await axios<Friend[]>(urlFriend);
+  const resp = await axios.get<Friend[]>(urlFriend);
   let friends: Friend[] = [];
   if (resp.status === 200) {
     friends = resp.data;
   }
   return friends;
 };
+
+const fetchAllMessages = async (): Promise<Chat[]> => {
+  let messages: Chat[] = [];
+  const resp = await axios.get<Chat[]>("http://localhost:5000/pong/chats");
+  if (resp.status === 200) {
+    messages = resp.data;
+  }
+  return messages;
+}
 
 const friends: Friend[] = await fetchAllFriends();
 const ChatUserList = await fetchAllUsers();
@@ -35,6 +44,7 @@ const fetchAllUsersFriends = async (relation: string, friendList: Friend[]): Pro
 
 const ChatUserFriendsList: Friend[] = await fetchAllUsersFriends(ACCEPTED, friends);
 const ChatUserFriendRequestList: Friend[] = await fetchAllUsersFriends(PENDING, friends);
+const ChatUserMessages: Chat[] = await fetchAllMessages();
 
 const friendToUserType = (user: string | null, friend: Friend, userList: User[]) => {
   if (user != friend.sender) {
@@ -90,8 +100,10 @@ export {
   ChatUserFriendRequestList,
   ChatGroupList,
   ChatGroupMemberList,
+  ChatUserMessages,
   friendToUserType,
   fetchAllUsersFriends,
   fetchAllUsers,
-  fetchAllFriends
+  fetchAllFriends,
+  fetchAllMessages,
 };

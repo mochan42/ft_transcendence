@@ -230,12 +230,15 @@ POST http://localhost:5000/pong/chats
 Content-Type: application/json
 
 {
-	"author": "1",
-	"message": "Bonjour",
+	"author": "4",
+	"message": "Hi Facinet",
 	"type": "PRIVATE",
-	"receiver": "3"
+	"receiver": "9"
 }
 
+### Delete a message
+
+DELETE  http://localhost:5000/pong/chats/4
 ### get games
 GET http://localhost:5000/pong/games
 

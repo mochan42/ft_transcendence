@@ -2,7 +2,7 @@ import { AnyAction, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { useDispatch } from "react-redux";
 import { ThunkAction } from "redux-thunk";
 import { CHAT_ACTION_TYPE, IChatState, TAction } from "..";
-import { User, Friend, Group, JoinGroup } from "../../types";
+import { User, Friend, Group, JoinGroup, Chat } from "../../types";
 import axios from "axios";
 import { io } from "socket.io-client";
 
@@ -12,6 +12,7 @@ import {
   ChatUserList,
   ChatGroupList,
   ChatGroupMemberList,
+  ChatUserMessages,
 } from "../../data/ChatData";
 
 const initialState: IChatState = {
@@ -29,6 +30,8 @@ const initialState: IChatState = {
   chatActiveUser: null,
   chatSocket: null,
   chatUserFriendDialogState: false,
+  chatUserMessages: ChatUserMessages,
+  chatDirectMessages: [],
   //chatACtiveGroup: null,
 };
 
@@ -69,17 +72,14 @@ const chatSlice = createSlice({
     updateChatActiveUser: (state, action: PayloadAction<Friend>) => {
       state.chatActiveUser = action.payload;
     },
-    updateChatSocket: (state, action: PayloadAction<any>) => {
-      if (!state.chatSocket) {
-        state.chatSocket = io("http://localhost:5000", {
-          extraHeaders: {
-            "X-Custom-Data": action.payload,
-          },
-        });
-      }
-    },
     updateStateUserFriendDialog: (state, action: PayloadAction<boolean>) => {
       state.chatUserFriendDialogState = action.payload;
+    },
+    updateChatUserMessages: (state, action: PayloadAction<Chat[]>) => {
+      state.chatUserMessages = action.payload;
+    },
+    updateChatDirectMessages: (state, action: PayloadAction<Chat[]>) => {
+      state.chatDirectMessages = action.payload;
     },
   },
 });
@@ -92,8 +92,9 @@ export const {
   updateChatUserFriendRequests,
   selectConversation,
   updateChatActiveUser,
-  updateChatSocket,
   updateStateUserFriendDialog,
+  updateChatDirectMessages,
+  updateChatUserMessages
 } = chatSlice.actions;
 export default chatSlice;
 

@@ -21,6 +21,7 @@ import { GamequeueService } from './gamequeue/gamequeue.service';
 import { GamesService } from './games/games.service';
 import { CreateGameDto } from './games/dto/create-game.dto';
 import { Friend } from './friends/entities/friend.entity';
+import { MessageDto } from './chats/dto/message.dto';
 
 @WebSocketGateway({
   cors: {
@@ -75,22 +76,22 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @ConnectedSocket() socket: Socket,
     @MessageBody() friendship: number,
   ) {
-      const reqToAccept  = await this.friendsService.findBYId(friendship);
-      const updatedFriend : Friend = { ...reqToAccept, relation: ACCEPTED };
-      const friend = await this.friendsService.update(updatedFriend);
+    const reqToAccept = await this.friendsService.findBYId(friendship);
+    const updatedFriend: Friend = { ...reqToAccept, relation: ACCEPTED };
+    const friend = await this.friendsService.update(updatedFriend);
 
-      this.server.emit('friend', friend);
+    this.server.emit('friend', friend);
   }
 
   @SubscribeMessage('deny_friend')
   async deleteFriend(
     @ConnectedSocket() socket: Socket,
-    @MessageBody() friendShip: number
+    @MessageBody() friendShip: number,
   ) {
     const isDelete = await this.friendsService.remove(friendShip);
     socket.emit('deniedFriend', isDelete);
   }
-  
+
   @SubscribeMessage('create_channel')
   async createChannel(
     @ConnectedSocket() socket: Socket,
@@ -125,6 +126,16 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
 
     socket.emit('channel', newChannel);
+  }
+
+  @SubscribeMessage('send_message')
+  async sendMessage(
+    @ConnectedSocket() socket: Socket,
+    @MessageBody() message: any,
+  ) {
+    const newMessage: MessageDto = { ...message };
+    const savedMessage = await this.chatsService.saveMessage(newMessage);
+    this.server.emit('message_sent', savedMessage);
   }
 
   /***********************GAME*********************** */

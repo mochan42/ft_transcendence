@@ -2,14 +2,36 @@ import { useRef, useState, useEffect } from "react";
 import { Box, Stack, IconButton, Typography, Divider, Avatar, Badge } from "@mui/material";
 import { CaretDown } from "phosphor-react";
 import { Socket } from "socket.io-client";
-import { ChatMessageProps, User } from "../types";
+import { ChatMessageProps, User, Chat } from "../types";
 import ChatMessage from "./ChatMessage";
-import { friendToUserType } from "../data/ChatData";
-import { toggleSidebar, updateSidebarType } from "../redux/slices/chatSlice";
+import { friendToUserType, fetchAllMessages  } from "../data/ChatData";
+import { toggleSidebar, updateChatUserMessages, updateSidebarType, updateChatDirectMessages } from "../redux/slices/chatSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { selectChatStore } from "../redux/store";
 import { ChatProps } from "../types";
+import { enChatType } from "../enums";
+import { getSocket } from '../utils/socketService';
+import { PRIVATE, GROUP } from '../APP_CONSTS';
+import { fetchAllDirectMessages } from "./ChatPageUsers";
 
+export const getUserById = (users: User[], id: any) => {
+    return users.filter((user: User) => id == user.id)[0];
+} 
+
+export const formatMessages = (users: User[], messages: Chat[], userId: any): ChatMessageProps[] => {
+    let chats: ChatMessageProps[] = [];
+    messages.map((el) => {
+        const message : ChatMessageProps = {
+            user: (el.author == userId) ? getUserById(users, userId).userNameLoc : getUserById(users, el.author).userNameLoc,
+            id: el.id,
+            message: el.message,
+            incoming: (el.author == userId) ? false : true,
+            timeOfSend: new Date,
+        };
+        chats.push(message);
+    });
+    return chats;
+}
 
 const ChatConversation: React.FC<ChatProps> = ({ userId }) => {
 
@@ -18,19 +40,10 @@ const ChatConversation: React.FC<ChatProps> = ({ userId }) => {
 	const [channels, setChannels] = useState<string[]>([]);
     const [userInfo, setUserInfo] = useState<User | null>(null);
     const [userMessage, setUserMessage] = useState<string>('');
-    // API CALL
-    // Load message for each user or chat group from server.
-    // information about conversation type is store in chatStore
-    // example:
-    // const chatType = chatStore.chatType
-    // you can now decide with it to fetch info for group or one_on_one
-    //
-    const [messages, setMessages] = useState< ChatMessageProps [] >([]);
+    const socket = getSocket(userId);
+    const [messages, setMessages] = useState<ChatMessageProps[]>([]);
     const [username, setUserName] = useState<string>('');
     const messageContainerRef = useRef<HTMLDivElement | null>(null);
-
-	var id = 0;
-
     const url_info = 'http://localhost:5000/pong/users/' + userId;
 	
 	const scrollToBottom = () => {
@@ -38,21 +51,25 @@ const ChatConversation: React.FC<ChatProps> = ({ userId }) => {
             messageContainerRef.current.scrollIntoView()
 		}
 	};
-
     const onMessageSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         const trimmedMessage = userMessage.trim();
     
         if (trimmedMessage !== '') {
-            const newMessage: ChatMessageProps = {
-                user: username,
-                id: id,
+            const newMessage = {
+                author: userId,
                 message: userMessage,
-                incoming: false,
-				timeOfSend: new Date,
+                type: (chatStore.chatType == enChatType.OneOnOne) ? PRIVATE : GROUP,
+				receiver: chatStore.chatRoomId
             };
-    
-            setMessages((prevMessages) => [...prevMessages, newMessage]);
+            socket.emit('send_message', newMessage);
+            socket.on("message_sent", async (data: any) => {
+                const allMessages: Chat[] = await fetchAllMessages();
+                dispatch(updateChatUserMessages(allMessages));
+                const newDirectMessages = fetchAllDirectMessages(allMessages, userId, chatStore.chatRoomId);
+                dispatch(updateChatDirectMessages(newDirectMessages))
+
+            });
             scrollToBottom();
             setUserMessage('');
         }
@@ -67,8 +84,11 @@ const ChatConversation: React.FC<ChatProps> = ({ userId }) => {
     };
 
     useEffect(() => {
-        scrollToBottom();
+        setMessages(formatMessages(chatStore.chatUsers, chatStore.chatDirectMessages, userId));
+    }, [chatStore.chatUserMessages, chatStore.chatDirectMessages]);
 
+    useEffect(() => {
+        scrollToBottom();
     }, [messages]);
 
     return ( 
@@ -135,7 +155,7 @@ const ChatConversation: React.FC<ChatProps> = ({ userId }) => {
                                 <p>{message.user}: {message.message}</p>
                             </div>
                         ))} */}
-                        <ChatMessage incoming={true} user="facinet" message="Hello there" timeOfSend={new Date} id={1}/>
+                        {/* <ChatMessage incoming={false} user="facinet" message="What ?" timeOfSend={new Date} id={1}/> */}
 					    {messages.map((message) => (
 						    <div key={message.id} className="mb-2">
 							    <ChatMessage incoming={message.incoming} user={message.user} message={message.message} timeOfSend={message.timeOfSend} id={message.id} />
