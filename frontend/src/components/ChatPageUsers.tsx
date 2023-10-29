@@ -34,7 +34,7 @@ const ChatElement = (user: User) => {
     const userId = Cookies.get('userId') ? Cookies.get('userId') : '';
     const chatStore = useSelector(selectChatStore);
     const dispatch = useDispatch();
-    //let lastMessage = chatStore.chatDirectMessages[chatStore.chatDirectMessages.length - 1].message;
+
     return (
         <Box 
             onClick={ () => {
@@ -76,12 +76,12 @@ const ChatElement = (user: User) => {
                     }
                     <Stack spacing={0.2}>
                         <Typography variant="subtitle2">{ user.userNameLoc }</Typography>
-                        <Typography variant="caption">{ 'last Message' } </Typography>
+                        {/* <Typography variant="caption">{  } </Typography> */}
                     </Stack>
                 </Stack>
                 <Stack spacing={2} alignItems={"center"}>
-                    <Typography variant="caption">{ 'TIME' }</Typography>
-                    <Badge color="primary" badgeContent={ 'UNREAD' }></Badge>
+                    {/* <Typography variant="caption">{ 'TIME' }</Typography> */}
+                    {/* <Badge color="primary" badgeContent={ 'UNREAD' }></Badge> */}
                 </Stack>
 
             </Stack>
