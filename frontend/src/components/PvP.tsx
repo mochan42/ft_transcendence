@@ -39,7 +39,7 @@ const PvP: React.FC<PvPProps> = ({ userId, difficulty, isGameOver, playerScore, 
 	const [playerScore2, setPlayerScore2] = useState(0); // dynamic
 	const [ballX, setBallX] = useState(400); // dynamic
 	const [ballY, setBallY] = useState(400); // dynamic
-	const [leftPaddleY, setLeftPaddleY] = useState(0); // dynamic
+	const [leftPaddleY, setLeftPaddleY] = useState(10); // dynamic
 	const [rightPaddleY, setRightPaddleY] = useState(0); // dynamic
 	const [boostX, setBoostX] = useState(200); // dynamic
 	const [boostY, setBoostY] = useState(200); // dynamic
@@ -90,75 +90,32 @@ const PvP: React.FC<PvPProps> = ({ userId, difficulty, isGameOver, playerScore, 
 		});
 	}
 	
+	
 
-	// useEffect(() => {
-		// const gameLoop = setInterval(() => {
-		// 	if (!isGameOver) {
-		// 		movePaddles();
-		// 		// moveBall();
-		// 		// checkCollision();
-		// 	}
-			// if (playerScore >= 10 || opponentScore >= 10) {
-			// 	setIsGameOver(true);
-			// }
-			// if (isReset && !isGameOver) {
-			// 	setBallX(startX);
-			// 	setBallY(startY);
-			// 	setSpeedX(Math.sign(speedX) * itsdifficult);
-			// 	setSpeedY(Math.sign(speedY) * itsdifficult);
-			// 	setReset(false);
-			// }
-			// if (isBoost && includeBoost) {
-			// 	const minX = startX / 2;
-			// 	const maxX = startX + minX;
-			// 	const minY = startY / 2;
-			// 	const maxY = startY + minY;
-
-			// 	// Calculate the random coordinates for the Boost region
-			// 	const newBoostX = minX + Math.random() * (maxX - minX);
-			// 	const newBoostY = minY + Math.random() * (maxY - minY);
-
-			// 	setBoostStartX(newBoostX);
-			// 	setBoostStartY(newBoostY);
-			// }
-
-		// }, 1000 / 60);
-
-		// return () => clearInterval(gameLoop);
-	// }, [isGameOver, isReset, includeBoost, startX, startY, isBoost, boostStartX, boostStartY, difficulty, playerScore2, ballX, ballY, speedX, speedY, leftPaddleY, rightPaddleY, checkCollision, moveBall, movePaddles]);
-
-	// Track player key input
 	useEffect(() => {
 		const handleKeyDown = (event: KeyboardEvent) => {
 			if (event.key === 'w' || event.key === 'ArrowUp') {
 				event.preventDefault();
 				if (socket !== null) {
-					socket.emit("paddleMove", 1); // Move paddle up
+					socket.emit("paddleMove", -1); // Move paddle up
 				}
+				console.log("going up\n");
 			} else if (event.key === 's' || event.key === 'ArrowDown') {
 				event.preventDefault();
 				if (socket !== null) {
-					socket.emit("paddleMove", -1); // Move paddle down
+					socket.emit("paddleMove", 1); // Move paddle down
 				}
+				console.log("going down\n");
 			}
 		};
-	  
-		const handleKeyUp = (event: KeyboardEvent) => {
-			if (event.key === 'w' || event.key === 'ArrowUp' || event.key === 's' || event.key === 'ArrowDown') {
-				if (socket !== null) {
-					socket.emit("PlayerPaddleDirection", 0); // Stop paddle movement
-				}
-			}
-		};
-	  
+		
 		document.addEventListener('keydown', handleKeyDown);
-		document.addEventListener('keyup', handleKeyUp);
 	  
 		return () => {
 			document.removeEventListener('keydown', handleKeyDown);
-			document.removeEventListener('keyup', handleKeyUp);
 		};
-	}, []);
+	},);
+
 
 	return (
 		<div className="relative w-full h-full" ref={PvPRef}>
