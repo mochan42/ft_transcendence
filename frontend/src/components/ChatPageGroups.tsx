@@ -4,16 +4,16 @@ import { useTheme } from "@mui/material/styles";
 import { Users, ChatCircleDots, Phone, Plus} from "phosphor-react";
 import { useState } from "react";
 import img42 from "../img/icon_42.png"
-import { ChatUserList } from "../data/ChatData";
+import { ChatGroupMemberList2, ChatUserList } from "../data/ChatData";
 import ChatPageGroupsCreate from "./ChatPageGroupsCreate";
 
 import { ChatProps, Group, User } from "../types";
 import ChatConversation from "./ChatConversation";
-import ChatContact from "./ChatContact";
+import ChatGroupProfile from "./ChatGroupProfile";
 import { selectChatStore } from "../redux/store";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
-import { selectConversation, updateChatActiveGroup } from "../redux/slices/chatSlice";
+import { selectConversation, updateChatActiveGroup, updateChatGroupMembers } from "../redux/slices/chatSlice";
 import { enChatType } from "../enums";
 import Cookies from 'js-cookie';
 
@@ -33,6 +33,9 @@ const ChatGroupElement = (group : Group) => {
                     }
                 })[0]));
                 //  ! TODO : update the active group memberlist here using store reducer
+                // use data from backend
+                // this is to be done with the chatActiveGroupMembers in Store
+                //dispatch(updateChatGroupMembers(ChatGroupMemberList2));
 
             }}
             sx={{
@@ -128,7 +131,7 @@ const  ChatPageGroups = (chatProp : ChatProps) => {
                 
             {/* show the contact profile on toggle */}
             <Stack>
-			{ chatStore.chatSideBar.open && <ChatContact/> }
+			{ chatStore.chatSideBar.open && <ChatGroupProfile/> }
             </Stack>
         </Stack>
 

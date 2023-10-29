@@ -60,6 +60,65 @@ const ChatGroupList = [
   },
 ];
 
+const dummyUsers = [
+  {
+    id: "7",
+    userName: "Facinet",
+    userNameLoc: "",
+    firstName: "",
+    lastName: "",
+    is2Fa: true,
+    authToken: "access",
+    email: "gmial.com",
+    secret2Fa: "",
+    avatar: faker.image.avatar(),
+    xp: 4,
+    isLogged: true,
+  },
+  {
+    id: "3",
+    userName: "Monine",
+    userNameLoc: "",
+    firstName: "",
+    lastName: "",
+    is2Fa: true,
+    authToken: "access",
+    email: "gmial.com",
+    secret2Fa: "",
+    avatar: faker.image.avatar(),
+    xp: 4,
+    isLogged: true,
+  },
+  {
+    id: "5",
+    userName: "Pmeising",
+    userNameLoc: "",
+    firstName: "",
+    lastName: "",
+    is2Fa: true,
+    authToken: "access",
+    email: "gmial.com",
+    secret2Fa: "",
+    avatar: faker.image.avatar(),
+    xp: 4,
+    isLogged: true,
+  },
+  {
+    id: "0",
+    userName: "cudoh",
+    userNameLoc: "",
+    firstName: "",
+    lastName: "",
+    is2Fa: true,
+    authToken: "access",
+    email: "gmial.com",
+    secret2Fa: "",
+    avatar: faker.image.avatar(),
+    xp: 4,
+    isLogged: true,
+  }
+]
+
 const ChatGroupMemberList = [
   {
     id: 1,
@@ -82,6 +141,29 @@ const ChatGroupMemberList = [
     rank: "member", // member
     state: "priviledged", // kicked, banned, mute, priviledge
   },
+  {
+    id: 5,
+    usrId: 3,
+    channelId: 3,
+    rank: "Owner", // member
+    state: "priviledged", // kicked, banned, mute, priviledge
+  },
+];
+const ChatGroupMemberList2 = [
+  {
+    id: 1,
+    usrId: 0,
+    channelId: 3,
+    rank: "admin", // member
+    state: "priviledge", // kicked, banned
+  },
+  {
+    id: 2,
+    usrId: 7,
+    channelId: 3,
+    rank: "member", // member
+    state: "priviledged", // kicked, banned, mute, priviledge
+  },
 ];
 
 export {
@@ -90,5 +172,7 @@ export {
   ChatUserFriendRequestList,
   ChatGroupList,
   ChatGroupMemberList,
+  ChatGroupMemberList2,
+  dummyUsers,
   friendToUserType,
 };

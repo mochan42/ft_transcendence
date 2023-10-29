@@ -174,12 +174,9 @@ import '../../css/profile.css';
 						<h1 className='text-2xl text-slate-900 font-extrabold dark:text-amber-300 drop-shadow-lg'>
 							{userInfo?.userNameLoc ?? 'unknown'}
 						</h1>
-						<div className='flex gap-4'>
+						<div>
 							<Button onClick={() => setShowScreen('userProfile')}>
 								Info
-							</Button>
-							<Button>
-								2FA
 							</Button>
 						</div>
                         <div>

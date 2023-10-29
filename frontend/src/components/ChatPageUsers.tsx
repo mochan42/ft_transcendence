@@ -7,7 +7,7 @@ import { ChatProps, User } from "../types";
 import ChatFriends from "./ChatFriends";
 import { useSelector } from "react-redux";
 import { selectChatStore } from "../redux/store";
-import ChatContact from "./ChatContact";
+import ChatUserProfile from "./ChatUserProfile";
 import { useDispatch } from "react-redux";
 import { selectConversation, updateChatActiveUser, updateStateUserFriendDialog } from "../redux/slices/chatSlice";
 import { enChatType } from "../enums";
@@ -131,9 +131,9 @@ const  ChatPageUsers = (chatProp : ChatProps) => {
                     }
                 </Stack>
 
-                {/* show the contact profile on toggle */}
+                {/* show profile for user or group on toggle. it depends on which chat is selected */}
                 <Stack>
-    			{ chatStore.chatSideBar.open && <ChatContact/> }
+    			{ chatStore.chatSideBar.open && <ChatUserProfile/> }
                 </Stack>
         </Stack>
         {/* handle friend request dialog panel */}

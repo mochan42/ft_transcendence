@@ -24,7 +24,7 @@ const initialState: IChatState = {
   chatActiveGroupMembers: ChatGroupMemberList,
   chatType: null,
   chatRoomId: null,
-  chatActiveUser: undefined,
+  chatActiveUser: null,
   chatSocket: null,
   chatUserFriendDialogState: false,
   chatActiveGroup: null,
