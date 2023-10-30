@@ -46,7 +46,7 @@ PATCH   http://localhost:5000/pong/users/2fa/30
 DELETE  http://localhost:5000/pong/users/7
 
 ### get user stat
-GET http://localhost:5000/pong/users/2/stats
+GET http://localhost:5000/pong/users/1/stats
 
 ### creat user stat
 POST http://localhost:5000/pong/users/1/stats
