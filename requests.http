@@ -1,6 +1,9 @@
 ### get all users
 GET http://localhost:5000/pong/users/
 
+### test
+GET http://localhost:5000/pong/friends
+
 #### add user
 POST http://localhost:5000/pong/users
 Content-Type: application/json
