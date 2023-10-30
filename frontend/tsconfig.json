@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "es2017",
     "jsx": "preserve",
-    "module": "esnext",
+    "module": "es2022",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
@@ -10,7 +10,7 @@
     "lib": [
       "dom",
       "dom.iterable",
-      "esnext"
+      "es2022"
     ],
     "allowJs": true,
     "allowSyntheticDefaultImports": true,

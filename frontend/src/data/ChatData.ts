@@ -19,7 +19,7 @@ const fetchAllUsers = async (): Promise<User[]> => {
 
 const fetchAllFriends = async (): Promise<Friend[]> => {
   const urlFriend = "http://localhost:5000/pong/friends";
-  const resp = await axios.get<Friend[]>(urlFriend);
+  const resp = await axios<Friend[]>(urlFriend);
   let friends: Friend[] = [];
   if (resp.status === 200) {
     friends = resp.data;
