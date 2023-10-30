@@ -14,4 +14,19 @@ enum logStatus {
   ISNOT2FA
 }
 
-export { HOME_SECTION, logStatus };
+enum enChatType {
+  OneOnOne = "individual",
+  Group ="group"
+}
+
+enum enChatMemberRank {
+  OWNER = "owner",
+  ADMIN = "admin",
+  MEMBER = "member",
+}
+
+enum enChatMemberState {
+  PRIVILEDGED = "priviledged",
+  BANNED = "banned",
+}
+export { HOME_SECTION, logStatus, enChatType, enChatMemberRank, enChatMemberState};

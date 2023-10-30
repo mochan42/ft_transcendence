@@ -7,19 +7,16 @@ import ChatBoard from '../HomeBoard';
 import { Friend, User } from "../../types";
 import ChatPageUsers from '../ChatPageUsers';
 import ChatPageGroups from '../ChatPageGroups';
-import ChatConversation from '../ChatConversation';
 import About from './About';
 import Cookies from 'js-cookie';
 import { io } from 'socket.io-client';
-import Login2fa from '../../components/pages/Login2fa';
-import ChatContact from '../ChatContact';
-import chatSideBar, { toggleSidebar, updateSidebarType } from "../../redux/slices/chatSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { selectChatStore } from "../../redux/store";
 import { Stack } from "@mui/material";
 import { HOME_SECTION, logStatus } from "../../enums";
 import HomeBoard from '../HomeBoard';
 import EditProfile from '../EditProfile';
+import { getSocket } from '../../utils/socketService';
 
 
 type TUserState = {
@@ -35,8 +32,6 @@ type TUserState = {
 	setUserId: React.Dispatch<React.SetStateAction<string | null>>,
 	// is2faEnabled: boolean,
     state: string,
-    socket: any,
-    setSocket: React.Dispatch<React.SetStateAction<any>>,
     token2fa: string,
     setToken2fa: React.Dispatch<React.SetStateAction<string>>,
 }
@@ -48,8 +43,6 @@ const Home = ({
 	loginState,
 	userId, setUserId,
 	state,
-	socket,
-	setSocket,
 	token2fa,
 	setToken2fa,
 }: TUserState) => {
@@ -68,10 +61,10 @@ const Home = ({
 	const [friends, setFriends] = useState<Friend[] | null>(null);
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
-    const chatSideBar = useSelector(selectChatStore);
 	const [section, setSection] = useState<Number>(0);
 	const [firstLogin, setFirstLogin] = useState<boolean>(false);
-	const [showScreen, setShowScreen] = useState< 'default' | 'achievements' | 'friends' | 'stats' | 'userProfile' >('default');
+	const [showScreen, setShowScreen] = useState<'default' | 'achievements' | 'friends' | 'stats' | 'userProfile'>('default');
+	const socket = getSocket(userId);
 
 	const authenticateToAPI = async (token: string, state: string): Promise<any> => {
 		if (token.length != 0 && state.length !== 0) {
@@ -79,9 +72,6 @@ const Home = ({
 				const resp = await axios.post('http://localhost:5000/pong/users/auth', { token, state });
 				if (resp.status === 200) {
 					const userData = resp.data;
-					console.log('------------------------------\n');
-					console.log(userData);
-					console.log('------------------------------\n');
 					if (userData.is2Fa === true) {
 						loginState.setIsLogin(false);
 						setToken2fa(userData.token2fa);
@@ -174,33 +164,28 @@ const Home = ({
 		})();
 	}, [userId, loginState.isLogin]);
 	
-	useEffect(() => {
-		if (userId !== null && !socket) {
-			/************** Creating socket */
-			const newSocket = io('http://localhost:5000', {
-				extraHeaders: {
-					'X-Custom-Data': userId
-				}
-			});
-			setSocket(newSocket);
-			//---connexion established
-			newSocket.on('message', (message: string) => {
-				console.log(message);
-			});
-			// ---new channel created---------------
-			newSocket.on('channel_created', (channel: any) => {
-				console.log('channel created successfully');
-				console.log(channel);
-			});
+	if (socket) {
+		socket.on('message', (message: string) => {
+			console.log(message);
+		});
+		// ---new channel created---------------
+		socket.on('channel_created', (channel: any) => {
+			console.log('channel created successfully');
+			console.log(channel);
+		});
+		// --friend invitation sent ------
+		socket.on('invite_friend_success', (friend: any) => {
+			console.log('friend invited successfully', friend);
+		});
 
-			// --friend invitation sent ------
-			newSocket.on('invite_friend_success', (friend: any) => {
-				console.log('friend invited successfully', friend);
-			});
-			/******************************* */
-			
-		}
-	});
+		// ------------disconnexion-----------------------------
+		socket.on('disconnected', (user: any) => {
+			console.log(user.userNameLoc, 'is disconnected\n');
+		});
+		/******************************* */
+	}
+	// // hack for access
+	// // to be removed later
 	if (!userId && !loginState.isLogin) {
 		return (
 			<>
@@ -247,16 +232,15 @@ const Home = ({
 													</div>
 												</Stack>
 												<Stack width={1440} paddingLeft={1} >
-													{(socket !== null) ? (<Leaderboard userId={userId} socket={socket} />) : (<></>)}
+													{(socket !== null) ? (<Leaderboard userId={userId}/>) : (<></>)}
 												</Stack>
 											</Stack>
 										)
 										: null
 							
 								}
-								{section === HOME_SECTION.CHAT_USER ? <ChatPageUsers userId={userId} socket={socket} /> : null}
-								{section === HOME_SECTION.CHAT_GROUP ? <ChatPageGroups userId={userId} socket={socket}  /> : null}
-								{chatSideBar.chatSideBar.open && <ChatContact />}
+								{section === HOME_SECTION.CHAT_USER ? <ChatPageUsers userId={userId} /> : null}
+								{section === HOME_SECTION.CHAT_GROUP ? <ChatPageGroups userId={userId}  /> : null}
 							</Stack>
 						</Stack>
 					</div>

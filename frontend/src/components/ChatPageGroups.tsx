@@ -3,19 +3,41 @@ import { Box, Stack, IconButton, Typography, Divider, Avatar, Badge, Link, Icon}
 import { useTheme } from "@mui/material/styles";
 import { Users, ChatCircleDots, Phone, Plus} from "phosphor-react";
 import { useState } from "react";
-import { faker } from "@faker-js/faker";
-
-import { TChatUserData } from "../types";
-import { ChatUserList } from "../data/ChatData";
+import img42 from "../img/icon_42.png"
+import { ChatGroupMemberList2, ChatUserList } from "../data/ChatData";
 import ChatPageGroupsCreate from "./ChatPageGroupsCreate";
 
-import { ChatProps } from "../types";
+import { ChatProps, Group, User } from "../types";
 import ChatConversation from "./ChatConversation";
+import ChatGroupProfile from "./ChatGroupProfile";
+import { selectChatStore } from "../redux/store";
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { selectConversation, updateChatActiveGroup, updateChatGroupMembers } from "../redux/slices/chatSlice";
+import { enChatType } from "../enums";
+import Cookies from 'js-cookie';
 
 
-const ChatElement = (user : TChatUserData) => {
+const ChatGroupElement = (group : Group) => {
+    const dispatch = useDispatch();
+    const userId = Cookies.get('userId') ? Cookies.get('userId') : '';
+    const chatStore = useSelector(selectChatStore);
+
     return (
         <Box 
+            onClick={()=>{
+                dispatch(selectConversation({chatRoomId: group.channelId, chatType: enChatType.Group}))
+                dispatch(updateChatActiveGroup(chatStore.chatGroupList.filter((el) => {
+                    if (el.channelId === group.channelId) {
+                        return el;
+                    }
+                })[0]));
+                //  ! TODO : update the active group memberlist here using store reducer
+                // use data from backend
+                // this is to be done with the chatActiveGroupMembers in Store
+                //dispatch(updateChatGroupMembers(ChatGroupMemberList2));
+
+            }}
             sx={{
                 width: "100%",
                 backgroundColor: "#ddd",
@@ -29,25 +51,19 @@ const ChatElement = (user : TChatUserData) => {
                 justifyContent={"space-between"}
             >
                 <Stack direction="row" spacing={2}>
-                    {user.online ? 
                     <Badge 
-                        color="success" 
-                        variant="dot" 
-                        anchorOrigin={{vertical:"bottom", horizontal:"left"}}
                         overlap="circular"
                     >
-                        <Avatar src={ user.img }/>
+                        <Avatar alt={ group.title } src={ img42 }/>
                     </Badge>
-                    : <Avatar alt={ user.name }/>
-                    }
                     <Stack spacing={0.2}>
-                        <Typography variant="subtitle2">{ user.name }</Typography>
-                        <Typography variant="caption">{ user.msg } </Typography>
+                        <Typography variant="subtitle2">{ group.title }</Typography>
+                        <Typography variant="caption">{ 'Last Message' } </Typography>
                     </Stack>
                 </Stack>
                 <Stack spacing={2} alignItems={"center"}>
-                    <Typography variant="caption">{ user.time }</Typography>
-                    <Badge color="primary" badgeContent={ user.unread }></Badge>
+                    <Typography variant="caption">{ 'Time' }</Typography>
+                    <Badge color="primary" badgeContent={ 'Unread' }></Badge>
                 </Stack>
 
             </Stack>
@@ -59,52 +75,68 @@ const ChatElement = (user : TChatUserData) => {
 const  ChatPageGroups = (chatProp : ChatProps) => {
     const theme = useTheme();
     const [openDialog, setOpenDialog] = useState<boolean>(false);
+    const chatStore = useSelector(selectChatStore)
 
     const handleCloseDialog = () => {
         setOpenDialog(false);
     }
     return (
         <>
-        <Stack direction={"row"}>
+        <Stack direction={"row"} sx={{ width: "95vw"}}>
 
-        <Box 
-          sx={{
-            position:"relative",
-            height: "100%",
-            minWidth: "350px",
-            backgroundColor: "white",
-            boxShadow: "0px 0px 2px rgba(0, 0, 0, 0.25)"
-          }}>
-            <Stack p={3} spacing={1} sx={{height:"100%"}}>
-                <Stack alignItems={"centered"} >
-                    <Typography variant='h5'>Groups</Typography>
+            <Box 
+              sx={{
+                position:"relative",
+                height: "100%",
+                minWidth: "350px",
+                backgroundColor: "white",
+                boxShadow: "0px 0px 2px rgba(0, 0, 0, 0.25)"
+              }}>
+                <Stack p={3} spacing={1} sx={{height:"75vh"}} >
+                    <Stack alignItems={"centered"} >
+                        <Typography variant='h5'>Channels</Typography>
+                    </Stack>
+                    <Divider/>
+
+                    {/* Chatgrouplist */}
+                    <Stack 
+                        direction={"row"} 
+                        justifyContent={"space-between"} 
+                        alignItems={"center"} 
+                    >
+                        <Typography variant="h5" component={Link}>
+                            Create New Channel
+                        </Typography>
+                        <IconButton onClick={() => { setOpenDialog(true) }} >
+                            <Plus style={{ color: theme.palette.primary.main }}/>
+                        </IconButton>
+                    </Stack>
+                    <Divider/>
+                    <Stack 
+                        sx={{flexGrow:1, overflowY:"scroll", height:"100%"}}
+                        spacing={0.5} 
+                    >
+                        { chatStore.chatGroupList.map((el: any) => { return (<ChatGroupElement {...el} />) })}
+                    </Stack>
                 </Stack>
-                <Divider/>
-                <Stack direction={"row"} justifyContent={"space-between"} alignContent={"center"} >
-                    <Typography variant="subtitle2" component={Link}>
-                        Create New Group
-                    </Typography>
-                    <IconButton onClick={() => { setOpenDialog(true) }} >
-                        <Plus style={{ color: theme.palette.primary.main }}/>
-                    </IconButton>
-                </Stack>
-                <Divider/>
-                <Stack 
-                    sx={{flexGrow:1, overflowY:"scroll", height:"100%"}}
-                    direction={"column"} 
-                    spacing={0.5} 
-                >
-                    { ChatUserList.map((el) => { return (<ChatElement {...el} />) })}
-                </Stack>
+            </Box>
+
+            {/* Right side : conversation panel */}
+            <Stack sx={{ width: "100%" }} alignItems={"center"} justifyContent={"center"}>
+                {chatStore.chatRoomId !== null && chatStore.chatType === enChatType.Group 
+                    ? <ChatConversation userId={ chatProp.userId }/>
+                    : <Typography variant="subtitle2">Select channel chat or create new</Typography>
+                }
             </Stack>
-
-        </Box>
-        {/* Right side : conversation panel */}
-        {/* // TODO */}
-                <ChatConversation userId={chatProp.userId} socket={chatProp.socket} />
-
+                
+            {/* show the contact profile on toggle */}
+            <Stack>
+			{ chatStore.chatSideBar.open && <ChatGroupProfile/> }
+            </Stack>
         </Stack>
-            {openDialog && <ChatPageGroupsCreate openState={openDialog} handleClose={handleCloseDialog} socket={chatProp.socket} />}
+
+        {/* create group channel form */}
+        {openDialog && <ChatPageGroupsCreate openState={openDialog} handleClose={handleCloseDialog}/>}
         </>
       );
 }

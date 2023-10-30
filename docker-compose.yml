@@ -51,11 +51,11 @@ services:
       - app-network
     depends_on:
       - apis
-    stdin_open: true
 
 volumes:
   postgres-data:
+  apis:
+  frontend:
 
-# Define network
 networks:
   app-network:

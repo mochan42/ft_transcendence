@@ -1,83 +1,140 @@
-import { AnyAction, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { useDispatch } from "react-redux";
-import { ThunkAction } from "redux-thunk"
+// import { AnyAction, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+// import { useDispatch } from "react-redux";
+// import { ThunkAction } from "redux-thunk";
+// import { CHAT_ACTION_TYPE, IChatState } from "..";
 import { CHAT_ACTION_TYPE, IChatState, TAction } from "..";
-import { User } from "../../types";
-import axios from 'axios'
-import { ChatUserList } from "../../data/ChatData";
+import { User, Friend, Group, JoinGroup, Chat } from "../../types";
+// import axios from "axios";
+// import { io } from "socket.io-client";
 
-
+import {
+  ChatUserFriendRequestList,
+  ChatUserFriendsList,
+  ChatUserList,
+  ChatGroupList,
+  ChatGroupMemberList,
+  ChatUserMessages,
+} from "../../data/ChatData";
 
 const initialState: IChatState = {
-    chatSideBar:{
-        open: false,
-        type: CHAT_ACTION_TYPE.CHAT_CONTACT // options: 'CONTACT' 'STARRED' 'SHARED'
-    },
-    chatUsers: ChatUserList,
-    chatUserFriends: ChatUserList,
-    chatUserFriendRequests: [],
-}
+  chatSideBar: {
+    open: false,
+    type: CHAT_ACTION_TYPE.CHAT_CONTACT, // options: 'CONTACT' 'STARRED' 'SHARED'
+  },
+  chatUsers: ChatUserList,
+  chatUserFriends: ChatUserFriendsList,
+  chatUserFriendRequests: ChatUserFriendRequestList,
+  chatGroupList: ChatGroupList,
+  chatGroupMembers: ChatGroupMemberList,
+  chatType: null,
+  chatRoomId: null,
+  chatActiveUser: null,
+  chatUserFriendDialogState: false,
+  chatUserMessages: ChatUserMessages,
+  chatDirectMessages: [],
+  chatActiveGroup: null,
+  chatGroupDialogState: false,
+};
 
 //export default (state: ISidebarData, action: TAction) : ISidebarData => {}
 
-
 const chatSlice = createSlice({
-    name: 'chatStoreSlice',
-    initialState,
-    reducers: {
-        // toggle side bar
-        toggleSidebar: (state) => { 
-            state.chatSideBar.open = !state.chatSideBar.open;
-            //console.log(state.chatSideBar.open);
-        },
-        // update side bar type
-        updateSidebarType: (state, action) => {
-            state.chatSideBar.type = action.type;
-            return action.payload
-        },
-        // update list of users
-        updateChatUsers: (state, action) => {
-            state.chatUsers = action.payload.chatUsers
-        },
-        // update list of user friends
-        updateChatUserFriends: (state, action) => {
-            state.chatUserFriends = action.payload.chatUserFriends
-        },
-        // update list of user friends
-        updateChatUserFriendRequests: (state, action) => {
-            state.chatUserFriendRequests = action.payload.chatUserFriendRequests
-        }
-    }
-})                                                                                                                                      
+  name: "chatStoreSlice",
+  initialState,
+  reducers: {
+    // toggle side bar
+    toggleSidebar: (state) => {
+      state.chatSideBar.open = !state.chatSideBar.open;
+      //console.log(state.chatSideBar.open);
+    },
+    // update side bar type
+    updateSidebarType: (state, action) => {
+      state.chatSideBar.type = action.type;
+      return action.payload;
+    },
+    // update list of users
+    updateChatUsers: (state, action: PayloadAction<User[]>) => {
+      state.chatUsers = action.payload;
+    },
+    // update list of user friends
+    updateChatUserFriends: (state, action: PayloadAction<Friend[]>) => {
+      state.chatUserFriends = action.payload;
+    },
+    // update list of user friend request
+    updateChatUserFriendRequests: (state, action: PayloadAction<Friend[]>) => {
+      state.chatUserFriendRequests = action.payload;
+    },
+    // selection conversion : group or one on one chat
+    selectConversation: (state, action) => {
+      state.chatType = action.payload.chatType;
+      state.chatRoomId = action.payload.chatRoomId;
+    },
+    // onclick of chat item, update chatActiveUser
+    updateChatActiveUser: (state, action: PayloadAction<Friend>) => {
+      state.chatActiveUser = action.payload;
+    },
+    updateStateUserFriendDialog: (state, action: PayloadAction<boolean>) => {
+      state.chatUserFriendDialogState = action.payload;
+    },
+    updateChatUserMessages: (state, action: PayloadAction<Chat[]>) => {
+      state.chatUserMessages = action.payload;
+    },
+    updateChatDirectMessages: (state, action: PayloadAction<Chat[]>) => {
+      state.chatDirectMessages = action.payload;
+    },
+    updateChatGroups: (state, action: PayloadAction<Group[]>) => {
+      state.chatGroupList = action.payload;
+    },
+    updateChatGroupMembers: (state, action: PayloadAction<JoinGroup[]>) => {
+      state.chatGroupMembers = action.payload;
+    },
+    updateStateGroupDialog: (state, action: PayloadAction<boolean>) => {
+      state.chatGroupDialogState = action.payload;
+    },
+    // onclick of chat group element, update chatActiveGroup
+    updateChatActiveGroup: (state, action: PayloadAction<Group>) => {
+      state.chatActiveGroup = action.payload;
+    },
+  },
+});
 
-
-export const { 
-    toggleSidebar,
-    updateSidebarType,
-    updateChatUsers,
-    updateChatUserFriends,
-    updateChatUserFriendRequests
+export const {
+  toggleSidebar,
+  updateSidebarType,
+  updateChatUsers,
+  updateChatUserFriends,
+  updateChatUserFriendRequests,
+  selectConversation,
+  updateChatActiveUser,
+  updateStateUserFriendDialog,
+  updateChatDirectMessages,
+  updateChatUserMessages,
+  updateChatGroups,
+  updateChatGroupMembers,
+  updateStateGroupDialog,
+  updateChatActiveGroup,
 } = chatSlice.actions;
 export default chatSlice;
 
-
 // implement fetch routine for userFriends and userFriendRequests
-export const FetchUsers = () =>{
-    const dispatch =  useDispatch()
+//export const FetchUsers = () => {
+//   const dispatch = useDispatch();
 
-    return async(): Promise<void> => {
-        try {
-            const response = await axios.get<User[]>('http://localhost:5000/pong/users/');
-            if (response.status === 200) {
-                dispatch(chatSlice.actions.updateChatUsers({ChatUsers: response.data}));
-                console.log('Received Users Info: ', response.data)
-            }
-        }
-        catch (error) {
-            console.log('Error fetching users infos', error);
-        }
-    }
-}
+//   return async (): Promise<void> => {
+//     try {
+//       const response = await axios.get<TChatUserData[]>(
+//         "http://localhost:5000/pong/users/"
+//       );
+//       if (response.status === 200) {
+//         dispatch(chatSlice.actions.updateChatUsers(response.data));
+//         console.log("Received Users Info: ", response.data);
+//       }
+//     } catch (error) {
+//       console.log("Error fetching users infos", error);
+//     }
+//   };
+// };
 
 //
 /*

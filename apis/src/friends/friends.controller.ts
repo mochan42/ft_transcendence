@@ -10,11 +10,16 @@ import {
 import { FriendsService } from './friends.service';
 import { CreateFriendDto } from './dto/create-friend.dto';
 import { UpdateFriendDto } from './dto/update-friend.dto';
+import { ACCEPTED } from 'src/APIS_CONSTS';
 
 @Controller('pong')
 export class FriendsController {
   constructor(private readonly friendsService: FriendsService) {}
 
+  @Get('friends')
+  findAll() {
+    return this.friendsService.findAll();
+  }
   @Post('friends')
   //!!TODO : Make sure sender and receiver exist;
   create(@Body() createFriendDto: CreateFriendDto) {
@@ -27,8 +32,10 @@ export class FriendsController {
   }
 
   @Patch('friends/:id')
-  update(@Param('id') id: string, @Body() updateFriendDto: UpdateFriendDto) {
-    return this.friendsService.update(+id, updateFriendDto);
+  async update(@Param('id') id: string, @Body() updateFriendDto: UpdateFriendDto) {
+    const friend = await this.friendsService.findBYId(+id);
+    const updatedFriend = {...friend, relation: ACCEPTED }
+    return this.friendsService.update(updatedFriend);
   }
 
   @Delete('friends/:id')

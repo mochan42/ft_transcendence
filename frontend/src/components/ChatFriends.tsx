@@ -1,68 +1,83 @@
 import { Tabs, Dialog, Stack, Tab } from '@mui/material';
 import { useState, useEffect} from 'react'
 import { useDispatch } from 'react-redux';
-import { FetchUsers } from '../redux/slices/chatSlice';
+import { updateStateUserFriendDialog } from '../redux/slices/chatSlice';
 import { useSelector } from 'react-redux';
 import { selectChatStore } from "../redux/store";
-import { ChatUserComp } from './ChatUserComp';
-
+import { ChatUserComp, ChatUserFriendComp, ChatUserFriendRequestComp } from './ChatUserComp';
+import Cookies from 'js-cookie';
+import { User } from "../types";
+import { ACCEPTED, PENDING } from '../APP_CONSTS';
 
 const ChatUsersList = ()=> {
     const dispatch = useDispatch();
-    
-    // useEffect(()=>{
-    //     dispatch({type: FetchUsers()});
-    // }, []);
-
+    const userId = Cookies.get('userId') ? Cookies.get('userId') : '';
     const chatStore = useSelector(selectChatStore)
+
     return (
         <>
-            { chatStore.chatUsers.map((el) => {
-                // TODO : CREATE USER COMPONENT
-                return <ChatUserComp key={el.id} {...el}/>
-            })};
+            {chatStore.chatUsers
+                .filter((user) => user.id != userId)
+                .map((el) => {
+                    return <ChatUserComp key={el.id} {...el} />
+                })
+            };
         </>
     );
 }
 
 const ChatUserFriendsList = ()=> {
     const dispatch = useDispatch();
-    
-    // useEffect(()=>{
-    //     dispatch({type: FetchUsers()});
-    // }, []);
-
+    const userId = Cookies.get('userId') ? Cookies.get('userId') : '';
     const chatStore = useSelector(selectChatStore)
+
     return (
         <>
-            { chatStore.chatUserFriends.map((el) => {
-                // TODO : CREATE USER COMPONENT
-                return <ChatUserComp key={el.id} {...el}/>
-            })};
+            {chatStore.chatUserFriends
+                .filter((req: any) => req.sender == userId || req.receiver == userId)
+                .map((el: any) => {
+                    const friend: User = chatStore.chatUsers
+                        .filter((user: any) => {
+                            if (user.id != userId && (el.sender == user.id || el.receiver == user.id)) {
+                                return user;
+                            }
+                        })[0];
+                    if (friend) {
+                        return <ChatUserFriendComp key={friend.id} {...friend} />
+                    }
+                })
+            };
         </>
     );
 }
 
-const ChatUserFriendRequestList = ()=> {
+const ChatUserFriendRequestsList = ()=> {
     const dispatch = useDispatch();
+     const userId = Cookies.get('userId') ? Cookies.get('userId') : '';
     
-    useEffect(()=>{
-        dispatch({type: FetchUsers()});
-    }, []);
-
     const chatStore = useSelector(selectChatStore)
     return (
         <>
-            { chatStore.chatUserFriendRequests.map((el, idx) => {
-                // TODO : CREATE USER COMPONENT
-                return <></>
-            })};
+            {chatStore.chatUserFriendRequests
+                .filter((req) => (req.receiver == userId || req.sender == userId))
+                .map((el) => {
+                    const friendReq: User = chatStore.chatUsers.
+                        filter((user: any) => {
+                            if (user.id != userId && (el.sender == user.id || el.receiver == user.id)) {
+                                return user;
+                            }
+                        })[0];
+                    if (friendReq) {
+                        return <ChatUserFriendRequestComp key={friendReq.id} {...friendReq}/>
+                    }
+                 })
+            };
         </>
     );
 }
 
 
-const ChatFriends = ({ open, handleClose } : any )=>{
+const ChatFriends = ()=>{
 
     const [value, setValue] = useState<Number>(0);
 
@@ -71,6 +86,12 @@ const ChatFriends = ({ open, handleClose } : any )=>{
                          ) =>{
         setValue(newValue);
 
+    }
+    const chatStore = useSelector(selectChatStore)
+    const dispatch = useDispatch()
+    const open = chatStore.chatUserFriendDialogState;
+    const handleClose = ()=>{
+        dispatch(updateStateUserFriendDialog(false));
     }
 
 
@@ -102,7 +123,7 @@ const ChatFriends = ({ open, handleClose } : any )=>{
                                 </>);
                             case 2:
                                 return (<>
-                                {/* <ChatUserFriendRequestsList /> */}
+                                <ChatUserFriendRequestsList />
                                 </>);
                             default: break
                         }

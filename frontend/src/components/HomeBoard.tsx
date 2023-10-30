@@ -21,14 +21,14 @@ const ChatBoardBtns = [
         index: HOME_SECTION.CHAT_GROUP,
         icon: <Users/>,
     },
-    {
-        index: HOME_SECTION.GAME_REQUEST,
-        icon: <GameController/>,
-    },
-    {
-        index: HOME_SECTION.GROUP_REQUEST,
-        icon: <Handshake/>,
-    }
+    // {
+    //     index: HOME_SECTION.GAME_REQUEST,
+    //     icon: <GameController/>,
+    // },
+    // {
+    //     index: HOME_SECTION.GROUP_REQUEST,
+    //     icon: <Handshake/>,
+    // }
 ]
 
 interface ISelectSection {

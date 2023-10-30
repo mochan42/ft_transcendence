@@ -6,11 +6,14 @@ export class Message {
   id: number;
 
   @Column()
-  authorId: number;
+  author: number;
 
   @Column()
   message: string;
 
   @Column()
-  channelId: number;
+  type: string;
+
+  @Column()
+  receiver: number;
 }

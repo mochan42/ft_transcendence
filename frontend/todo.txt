@@ -1,9 +1,4 @@
 
---- AUTHENTICATION ---
-01. backend interface : fetch 2fa active state on profile
-02. backend interface : post 2fa state on button click
-03. backend interface : generate the qr code
-04. backend interface : validate code received.
 
 --- CHAT ROOM  ---
 01. watch video how to create chat on react.
@@ -79,15 +74,57 @@ npm cache clean --force                 : clear the cache
 
 
 ----
-+ update channel form schema
-  + Handle protect and password connection for user
-+ integrate conversation to chatgroup and chatuser
++ add authslice
++ Handle deny button for receiver
++ Handle accept button for receiver
++ Add dialog page to view profile from user list (friend dialog)
++ Create dialog for group just like one_on_one chat.
+  - tab 1 : list all groups in one tab - show their type (public, protected, private)
+  - tab 2 : show all invites received and sent
+  - listing all invite in dialog with join or cancel button.
+  - Note: ChatGroupPage will only list groups which user is a member of.
+
++ Fix channel creation form problem - selection of privacy state
+  - update the users with proper data 
+  - adjust the minimum number of users to 1.
+  - add all users in channel creation form.
+
++ if friendlist is not empty activate the conversation panel
++ if grouplist is not empty activate the conversation panel
++ toggle off profile sidebar on other button press 
+  - determine the buttons.
+
++ Ensure that no user can join a group twice.
++ Check that user is priviledge before display as group member
++ Handle warnings -  unused variables
++ add chatlist to store.
++ - make all users messagable without being friend.
++ ensure that user can send message only when in priviledge mode (group) or not blocked (oneonone)
+
 
 ----- PUSH TODO ------------------
 + remove access hacker before push
 + remove .env
++ remove todo.txt
 
 
 
 
 video 27 - handle friend request with socket.io 27:00
+
+[ Activities ]
+--------------
++ update group profile on toggle click
+  - add action buttons based on member rank
+
++ update user profile on toggle click
+  - modify action buttons
+
+
+
+
+  - update information with real data.
+  - add dialog for button actions. based on priviledge mode.
+  - add dialog display for each member to admin and owner action
+  - handle button actions - exit, action
+  - display status on group profile page for each user

@@ -13,5 +13,5 @@ db/*
 # others
 /apis/avatars/
 frontend/todo.txt
-frontend/todo.txt
-node_modules
+/apis/node_modules
+/frontend/node_modules

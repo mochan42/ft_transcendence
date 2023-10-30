@@ -15,24 +15,33 @@ import { CreateFriendDto } from './friends/dto/create-friend.dto';
 import { CreateChannelDto } from './channels/dto/create-channel.dto';
 import { ChannelsService } from './channels/channels.service';
 import { JoinchannelService } from './joinchannel/joinchannel/joinchannel.service';
+import { UsersService } from './users/users.service';
+import { ACCEPTED, PENDING } from './APIS_CONSTS';
+import { GamequeueService } from './gamequeue/gamequeue.service';
+import { GamesService } from './games/games.service';
+import { CreateGameDto } from './games/dto/create-game.dto';
+import { Friend } from './friends/entities/friend.entity';
+import { MessageDto } from './chats/dto/message.dto';
 
 @WebSocketGateway({
   cors: {
     origin: 'http://localhost:3000',
   },
 })
-
 export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server: Server;
 
   constructor(
+    private readonly userService: UsersService,
     private readonly chatsService: ChatsService,
     private readonly friendsService: FriendsService,
     private readonly channelsService: ChannelsService,
-    private readonly joinchannelService: JoinchannelService
+    private readonly joinchannelService: JoinchannelService,
+    private readonly gameQueueService: GamequeueService,
+    private readonly gamesService: GamesService,
   ) {}
-  
+
   async handleConnection(@ConnectedSocket() socket: Socket, ...args: any[]) {
     const user = await this.chatsService.getUserFromSocket(socket);
 
@@ -41,7 +50,7 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   async handleDisconnect(socket: Socket) {
     const user = await this.chatsService.getUserFromSocket(socket);
-    socket.emit('message', `${user.userNameLoc} is deconnected`);
+    return await this.userService.updateLoginState(+user.id, false);
   }
 
   @SubscribeMessage('invite_friend')
@@ -53,36 +62,34 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const friendDto: CreateFriendDto = {
       receiver: +payload,
       sender: user.id,
-      relation: 'PENDING',
+      relation: PENDING,
       createdAt: new Date().toISOString(),
     };
 
     const friendShip = await this.friendsService.create(friendDto);
 
-    this.server.emit('invite_friend_success', friendShip);
+    this.server.emit('invitation_success', friendShip);
   }
 
-  @SubscribeMessage('accept_friend_request')
+  @SubscribeMessage('accept_friend')
   async updateFriendship(
     @ConnectedSocket() socket: Socket,
-    @MessageBody() friendship: CreateFriendDto,
+    @MessageBody() friendship: number,
   ) {
-    var updatedFriendship;
-    const user = await this.chatsService.getUserFromSocket(socket);
+    const reqToAccept = await this.friendsService.findBYId(friendship);
+    const updatedFriend: Friend = { ...reqToAccept, relation: ACCEPTED };
+    const friend = await this.friendsService.update(updatedFriend);
 
-    if (friendship.receiver === user.id) {
-      const reqToAccept: CreateFriendDto = {
-        ...friendship,
-        relation: 'ACCEPTED', // should define enum values for relation !!!!
-      };
+    this.server.emit('friend', friend);
+  }
 
-      updatedFriendship = await this.friendsService.update(
-        user.id,
-        reqToAccept,
-      );
-    }
-
-    this.server.emit('accepted_friend_request', updatedFriendship);
+  @SubscribeMessage('deny_friend')
+  async deleteFriend(
+    @ConnectedSocket() socket: Socket,
+    @MessageBody() friendShip: number,
+  ) {
+    const isDelete = await this.friendsService.remove(friendShip);
+    socket.emit('deniedFriend', isDelete);
   }
 
   @SubscribeMessage('create_channel')
@@ -111,13 +118,63 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
           user: +member,
           channel: newChannel.id,
           status: null,
-          createdAt: createdAt
+          createdAt: createdAt,
         };
 
         await this.joinchannelService.create(joinchannelDTo);
       });
     }
 
-    socket.emit('channel_created', newChannel);
+    socket.emit('channel', newChannel);
   }
+
+  @SubscribeMessage('send_message')
+  async sendMessage(
+    @ConnectedSocket() socket: Socket,
+    @MessageBody() message: any,
+  ) {
+    const newMessage: MessageDto = { ...message };
+    const savedMessage = await this.chatsService.saveMessage(newMessage);
+    this.server.emit('message_sent', savedMessage);
+  }
+
+  /***********************GAME*********************** */
+  @SubscribeMessage('requestMacht')
+  async handleRequestMatch(
+    @ConnectedSocket() socket: Socket,
+    @MessageBody() userId: string,
+  ) {
+    const opponent = this.gameQueueService.findOpponent(socket);
+    if (opponent) {
+      const player1 = await this.chatsService.getUserFromSocket(opponent);
+      const player2 = await this.chatsService.getUserFromSocket(socket);
+
+      const makeGame = await this.gamesService.makeMatch(+player1, +player2);
+
+      if (makeGame) {
+        socket.emit('matchFound', makeGame);
+        opponent.emit('matchFound', makeGame);
+      }
+    }
+  }
+
+  //  x = 50, y= 50
+  
+  // @SubscribeMessage('difficulty')
+  // async handleDifficulty(
+  //   @ConnectedSocket() socket: Socket,
+  //   @MessageBody() data: any,
+  // ) {
+  //   const gameToUpdate = await this.gamesService.findOne(data.gameId);
+  //   const game = { ...gameToUpdate, difficulty: data.difficulty };
+  //   const updatedGame = await this.gamesService.update(game);
+
+  //   this.server.emit('difficuly_changed', updatedGame);
+  // }
 }
+
+//{ userId, difficulty, booster}
+
+// 1 0, no
+// 2 1, yes
+// 3 1, yes

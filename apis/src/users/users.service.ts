@@ -56,6 +56,12 @@ export class UsersService {
     const user = await this.findOne(+id);
     const is2Fa = user.is2Fa ? false : true;
     const updateUser = { ...user, is2Fa };
-    return this.UserRepository.save(updateUser);
+    return await this.UserRepository.save(updateUser);
+  }
+
+  async updateLoginState(id: number, isLogged: boolean) {
+    const user = await this.findOne(id);
+    const updatedUser = { ...user, isLogged: isLogged };
+    return await this.UserRepository.save(updatedUser);
   }
 }

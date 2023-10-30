@@ -31,8 +31,8 @@ type UserAchievements = {
 
 interface ProfileProps {
   userId: string | null;
-  isAuth: boolean,
-};
+  isAuth: boolean;
+}
 
 type Goal = {
   id: string;
@@ -42,53 +42,89 @@ type Goal = {
 };
 
 type Friend = {
-	'receiver': string | null;
-	'sender': string | null;
-	'relation': string;
-	'createdAt': string;
-}
+  id: number;
+  receiver: string | null;
+  sender: string | null;
+  relation: string;
+  createdAt: string;
+};
 
-type TUserAuth= {
-    setIsAuth: React.Dispatch<React.SetStateAction<boolean>>,
-    isAuth: boolean,
-    setCode: React.Dispatch<React.SetStateAction<string | null>>,
-    code: (string | null),
-}
+type TUserAuth = {
+  setIsAuth: React.Dispatch<React.SetStateAction<boolean>>;
+  isAuth: boolean;
+  setCode: React.Dispatch<React.SetStateAction<string | null>>;
+  code: string | null;
+};
 
-type TChatUserData = {
-   id: number,
-   img: string,
-   name: string,
-   msg:  string,
-   time: string,
-   unread: number,
-   online: boolean,
-}
+type Group = {
+  channelId: number;
+  password: string;
+  title: string;
+  privacy: string;
+  ownerId: number;
+};
+
+type JoinGroup = {
+  id: number;
+  usrId: number;
+  channelId: number;
+  rank: string;
+  state: string;
+};
 
 type Message = {
-  user: string;
   id: number;
-  type: string,
-  subtype: string,
-  message: string,
-  img: string,
-  incoming: boolean,
-  outgoing: boolean,
-}
+  user: string;
+  type: string;
+  subtype: string;
+  message: string;
+  img: string;
+  incoming: boolean;
+  outgoing: boolean;
+};
 
 interface ChatMessageProps {
-	incoming: boolean,
-	message: string,
-	user: string,
-	chatID?: number,
-	timeOfSend: Date,
-	id: number,
+  incoming: boolean;
+  message: string;
+  user: string;
+  chatID?: number;
+  timeOfSend: Date;
+  id: number;
 }
 
 interface ChatProps {
   userId: string | null;
-  socket: any;
 }
-export  type { User, UserStats, UserAchievements, ProfileProps, 
-  Goal, TUserAuth, Friend, TChatUserData, Message, 
-  ChatMessageProps, ChatProps};
+
+type TUserFriendRequest = {
+  userId: number | null;
+  // the two attributes below can be fetched by API
+  // using the user id
+  userImg: string | undefined;
+  userName: string | undefined;
+  reqType: string | undefined;
+};
+
+type Chat = {
+  id: number;
+  author: number;
+  message: string;
+  type: string;
+  receiver: number;
+};
+
+export type {
+  User,
+  UserStats,
+  UserAchievements,
+  ProfileProps,
+  Goal,
+  TUserAuth,
+  Friend,
+  Group,
+  JoinGroup,
+  Message,
+  ChatMessageProps,
+  ChatProps,
+  Chat,
+};
