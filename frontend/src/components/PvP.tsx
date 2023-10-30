@@ -5,6 +5,7 @@ import Ball from './Ball';
 import Paddle from './Paddle';
 import { User } from '../types';
 import MatchMaking from './MatchMaking';
+import { getSocket } from '../utils/socketService';
 
 
 interface PvPProps {
@@ -16,7 +17,6 @@ interface PvPProps {
 	opponentScore: number;
 	isGameOver: boolean;
 	includeBoost: boolean;
-	socket: any;
 	setIsGameOver: (boolean: boolean) => void;
 	playerPoint: () => void;
 	opponentPoint: () => void;
@@ -24,7 +24,7 @@ interface PvPProps {
 	setState: React.Dispatch<React.SetStateAction<'select' | 'bot' | 'player'>>;
   }
 
-const PvP: React.FC<PvPProps> = ({ userId, difficulty, isGameOver, playerScore, isReset, opponentScore, includeBoost, socket, playerPoint, opponentPoint, setIsGameOver, setReset, setState }) => {
+const PvP: React.FC<PvPProps> = ({ userId, difficulty, isGameOver, playerScore, isReset, opponentScore, includeBoost, playerPoint, opponentPoint, setIsGameOver, setReset, setState }) => {
 
 	// const [player1PaddleDirection, setPlayer1PaddleDirection] = useState<number>(0); // dynamic
 	// const [player2PaddleDirection, setPlayer2PaddleDirection] = useState<number>(0); // dynamic
@@ -34,7 +34,7 @@ const PvP: React.FC<PvPProps> = ({ userId, difficulty, isGameOver, playerScore, 
 	// const [player2PaddleSpeed, setopponentPaddleSpeed] = useState(0.5 + (difficulty)); // dynamic
 	
 	
-	
+	const socket = getSocket(userId);
 	const [playerScore1, setPlayerScore1] = useState(0); // dynamic
 	const [playerScore2, setPlayerScore2] = useState(0); // dynamic
 	const [ballX, setBallX] = useState(400); // dynamic

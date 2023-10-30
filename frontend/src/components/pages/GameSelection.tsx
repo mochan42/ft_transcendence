@@ -5,10 +5,9 @@ import { cn } from "../../lib/utils";
 
 interface GameSelectionProps {
 	userId: string | null;
-	socket: any;
 }
 
-const GameSelection:React.FC<GameSelectionProps> =({ userId, socket }) => {
+const GameSelection:React.FC<GameSelectionProps> =({ userId }) => {
 
 	const [state, setState] = useState<'select' | 'bot' | 'player'>('select');
 	const [difficulty, setDifficulty] = useState(0);
@@ -101,7 +100,7 @@ const GameSelection:React.FC<GameSelectionProps> =({ userId, socket }) => {
 						</button>
 					</div>
 				</div>
-			: <Game difficulty={difficulty} userId={userId} opponent={state} setState={setState} includeBoost={includeBoost} socket={socket}/> }
+			: <Game difficulty={difficulty} userId={userId} opponent={state} setState={setState} includeBoost={includeBoost}/> }
 		</div>
 	)
 }

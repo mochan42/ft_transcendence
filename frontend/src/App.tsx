@@ -15,6 +15,7 @@ import Layout from './components/pages/Layout';
 import GameSelection from './components/pages/GameSelection';
 import Cookies from 'js-cookie';
 import { Utils__isAPICodeAvailable } from './utils/utils__isAPICodeAvailable';
+import { getSocket } from './utils/socketService';
 
 
 
@@ -66,7 +67,7 @@ const App: React.FC = () => {
 							token2fa={token2fa}
 							setToken2fa={setToken2fa}
 					/>} />
-					<Route path='/game' element={<ProtectedRoute isAuth={isAuth} path='/game' element={<GameSelection userId={userId} socket={socket} />} />} />
+					<Route path='/game' element={<ProtectedRoute isAuth={isAuth} path='/game' element={<GameSelection userId={userId} />} />} />
 					<Route path='/profile' element={<ProtectedRoute isAuth={isAuth} path='/profile' element={<Profile userId={userId} isAuth={isAuth} />} />} />
 					{/* <Route path='/layout' element={<Layout />} /> */}
 					<Route path='/*' element={<PageNotFound />} />

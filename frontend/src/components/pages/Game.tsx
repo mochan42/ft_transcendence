@@ -12,11 +12,10 @@ interface GameProps {
 	userId: string | null;
 	includeBoost: boolean;
 	opponent: string;
-	socket: any;
 	setState: React.Dispatch<React.SetStateAction<'select' | 'bot' | 'player'>>;
 }
 
-const Game:React.FC<GameProps> = ({ difficulty, userId, includeBoost, opponent, socket, setState }) => {
+const Game:React.FC<GameProps> = ({ difficulty, userId, includeBoost, opponent, setState }) => {
 	const [playerScore, setPlayerScore] = useState(0)
 	const [opponentScore, setOpponentScore] = useState(0)
 	const [gameActive, setGameActive] = useState(false)
@@ -129,7 +128,7 @@ const Game:React.FC<GameProps> = ({ difficulty, userId, includeBoost, opponent, 
 			</div>
 			<div className='w-full h-5/6 border-t-2 border-l-2 border-r-2 border-slate-700 black:border-slate-200 bg-slate-400 dark:text-slate-200 text-center'>
 				{opponent === 'bot' ? <Pong userId={userId} difficulty={difficulty} isGameActive={gameActive} isReset={reset} isGameOver={isGameOver} playerScore={playerScore} opponentScore={opponentScore} includeBoost={includeBoost} setIsGameOver={setIsGameOver} playerPoint={playerPoint} opponentPoint={opponentPoint} setReset={setReset}/> : null }
-				{(opponent === 'player') ? <PvP userId={userId} difficulty={difficulty} isGameActive={gameActive} isReset={reset} isGameOver={isGameOver} playerScore={playerScore} opponentScore={opponentScore} includeBoost={includeBoost} setIsGameOver={setIsGameOver} playerPoint={playerPoint} opponentPoint={opponentPoint} setReset={setReset} setState={setState} socket={socket} /> : null}
+				{(opponent === 'player') ? <PvP userId={userId} difficulty={difficulty} isGameActive={gameActive} isReset={reset} isGameOver={isGameOver} playerScore={playerScore} opponentScore={opponentScore} includeBoost={includeBoost} setIsGameOver={setIsGameOver} playerPoint={playerPoint} opponentPoint={opponentPoint} setReset={setReset} setState={setState} /> : null}
 			</div>
 		</div>
 	)
