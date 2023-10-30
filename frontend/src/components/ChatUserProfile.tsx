@@ -15,13 +15,10 @@ const ChatUserProfile = () => {
     const theme = useTheme()
     const dispatch = useDispatch();
     const chatStore = useSelector(selectChatStore);
-    let userSelectId : string | null = ''
+    
     let userSelect =  null
-    if (chatStore.chatActiveUser)
-    {
-        userSelectId = (chatStore.chatActiveUser.sender === userId) ? chatStore.chatActiveUser.receiver :
-            chatStore.chatActiveUser.sender;
-        userSelect = friendToUserType(userSelectId, chatStore.chatActiveUser, chatStore.chatUsers)
+    if (chatStore.chatActiveUser && userId != null) {
+        userSelect = friendToUserType(userId, chatStore.chatActiveUser, chatStore.chatUsers)
     }
 
     return ( 
