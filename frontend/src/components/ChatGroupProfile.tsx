@@ -12,13 +12,14 @@ import ChatGroupMemberComp  from "./ChatGroupComp";
 import { ChatBtnChangePasswd } from "./ChatGroupProfileComp";
 import Cookies from 'js-cookie';
 import { enChatMemberRank } from "../enums";
+import BasicMenu from "./ChatGroupMemberMenu";
 
 /* component to show contact profile */
 const ChatGroupProfile = () => {
 
     const theme = useTheme()
     // const userId = Cookies.get('userId') ? Cookies.get('userId') : ''; // not working
-    const userId = '0' // for testing only
+    const userId = '7' // for testing only
     const dispatch = useDispatch();
     const chatStore = useSelector(selectChatStore);
     const activeGroupTitle = (chatStore.chatActiveGroup ? chatStore.chatActiveGroup.title : "")
@@ -98,7 +99,6 @@ const ChatGroupProfile = () => {
                                 }
                             })
                         }
-
                     {/* divider  */}
                     <Divider />
                     </Stack>

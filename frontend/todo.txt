@@ -115,16 +115,14 @@ video 27 - handle friend request with socket.io 27:00
 [ Activities ]
 --------------
 + update group profile on toggle click
-  - add action buttons based on member rank
+  - add dialog for button actions. based on priviledge mode.
+  - display status on group profile page for each user
 
 + update user profile on toggle click
-  - modify action buttons
 
 
 
 
   - update information with real data.
-  - add dialog for button actions. based on priviledge mode.
   - add dialog display for each member to admin and owner action
   - handle button actions - exit, action
-  - display status on group profile page for each user
