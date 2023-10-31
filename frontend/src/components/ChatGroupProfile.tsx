@@ -12,14 +12,14 @@ import ChatGroupMemberComp  from "./ChatGroupComp";
 import { ChatBtnChangePasswd } from "./ChatGroupProfileComp";
 import Cookies from 'js-cookie';
 import { enChatMemberRank } from "../enums";
-import BasicMenu from "./ChatGroupMemberMenu";
+import ChatGroupActionBtn from "./ChatGroupActionBtn";
 
 /* component to show contact profile */
 const ChatGroupProfile = () => {
 
     const theme = useTheme()
     // const userId = Cookies.get('userId') ? Cookies.get('userId') : ''; // not working
-    const userId = '7' // for testing only
+    const userId = '0' // for testing only member (7) admin (0)
     const dispatch = useDispatch();
     const chatStore = useSelector(selectChatStore);
     const activeGroupTitle = (chatStore.chatActiveGroup ? chatStore.chatActiveGroup.title : "")
@@ -78,8 +78,8 @@ const ChatGroupProfile = () => {
                     <Stack alignItems={"center"} direction={"row"} spacing={2}>
                         <Button startIcon={ <SignOut/>} fullWidth variant="outlined"> Exit </Button>
                         {/* render action button if logged user is owner or admin */}
-                        { actionBtnState && 
-                            <Button startIcon={ <Gear size={25} />} fullWidth variant="outlined" > Actions </Button>
+                        { actionBtnState && <ChatGroupActionBtn /> 
+                            // <Button startIcon={ <Gear size={25} />} fullWidth variant="outlined" > Actions </Button>
                         }
                     </Stack>
 
@@ -95,7 +95,7 @@ const ChatGroupProfile = () => {
                                 const memberUser: User = (dummyUsers.filter(el => parseInt(el.id) === member.usrId)[0])
                                 if (memberUser)
                                 {
-                                    return <ChatGroupMemberComp key={memberUser.id} user={memberUser} rank={member.rank} />
+                                    return <ChatGroupMemberComp key={memberUser.id} memberUser={memberUser} memberJoin={member} />
                                 }
                             })
                         }

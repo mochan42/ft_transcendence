@@ -1,7 +1,7 @@
 import React from 'react'
 import { styled, useTheme } from '@mui/material/styles'
 import { Stack, Avatar, Typography, Button, Box, Badge, Divider } from '@mui/material'
-import { Friend, User } from '../types';
+import { Friend, JoinGroup, User } from '../types';
 import { useSelector, useDispatch } from 'react-redux';
 import { selectChatStore } from '../redux/store';
 import { toggleSidebar, updateStateUserFriendDialog, updateChatUserFriendRequests } from '../redux/slices/chatSlice';
@@ -10,7 +10,7 @@ import { ACCEPTED, PENDING } from '../APP_CONSTS';
 import Cookies from 'js-cookie';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import { enChatMemberRank } from '../enums';
+import { enChatMemberRank, enChatMemberRights } from '../enums';
 
 
 
@@ -22,10 +22,10 @@ const StyledChatBox = styled(Box)(({ theme }) => ({
 }));
 
 interface IUserData {
-    user: User,
-    rank: string
+    memberUser: User,
+    memberJoin: JoinGroup
 }
-const ChatGroupMemberComp = (member: IUserData) => {
+const ChatGroupMemberComp = (user: IUserData) => {
     const theme = useTheme();
     const chatStore = useSelector(selectChatStore);
     const dispatch = useDispatch();
@@ -66,7 +66,7 @@ const ChatGroupMemberComp = (member: IUserData) => {
                 >
                     {" "}
                     <Stack direction="row" spacing={2}>
-                        {member.user.isLogged ? 
+                        {user.memberUser.isLogged ? 
                             (
                                 <Badge
                                     variant='dot'
@@ -74,19 +74,21 @@ const ChatGroupMemberComp = (member: IUserData) => {
                                     // overlap='cirular'
                                 >
                                     {/* <Avatar alt={member.user.userName} src={member.user.img} /> */}
-                                    <Avatar alt="image" src={member.user.avatar} />
+                                    <Avatar alt="image" src={user.memberUser.avatar} />
                                 </Badge>
                              )
-                             : (<Avatar alt={member.user.userNameLoc} src={member.user.avatar} />)
+                             : (<Avatar alt={user.memberUser.userNameLoc} src={user.memberUser.avatar} />)
                             //  : (<Avatar alt={member.user.userName} src={member.user.img} />)
                         }
                         <Stack direction={"row"} alignItems={"center"} spacing={2}>
-                            <Typography variant="subtitle2"> { member.user.userName }</Typography>
+                            <Typography variant="subtitle2"> { user.memberUser.userName }</Typography>
                         </Stack>
                     </Stack>
                 </Stack>
                 <Stack direction={"row"} alignItems={"center"} spacing={2}>
-                    <Typography variant="subtitle2"> { member.rank }</Typography>
+                    <Typography variant="subtitle2"> 
+                        { user.memberJoin.rank } | { user.memberJoin.rights}
+                    </Typography>
                 </Stack>
 
             </Stack>
@@ -102,11 +104,27 @@ const ChatGroupMemberComp = (member: IUserData) => {
         >
             <MenuItem onClick={handleClose}>View profile</MenuItem>
             <MenuItem onClick={handleClose}>Play game</MenuItem>
-            { loggedUser.rank != enChatMemberRank.MEMBER &&  <Divider/> }
-            { loggedUser.rank != enChatMemberRank.MEMBER &&  <MenuItem onClick={handleClose}>Mute</MenuItem> }
-            { loggedUser.rank != enChatMemberRank.MEMBER &&   <MenuItem onClick={handleClose}>Kick</MenuItem> }
-            { loggedUser.rank != enChatMemberRank.MEMBER &&   <MenuItem onClick={handleClose}>Demote</MenuItem> }
-            { loggedUser.rank != enChatMemberRank.MEMBER &&   <MenuItem onClick={handleClose}>Promote</MenuItem> }
+            { loggedUser.rank != enChatMemberRank.MEMBER &&
+              user.memberJoin.rank != enChatMemberRank.OWNER &&  <Divider/> }
+
+            { loggedUser.rank != enChatMemberRank.MEMBER && 
+              user.memberJoin.rank != enChatMemberRank.OWNER &&  
+              user.memberJoin.rights != enChatMemberRights.BANNED && <MenuItem onClick={handleClose}>Mute</MenuItem> }
+
+            { loggedUser.rank != enChatMemberRank.MEMBER && 
+              user.memberJoin.rank != enChatMemberRank.OWNER && 
+              user.memberJoin.rights != enChatMemberRights.PRIVILEDGED && <MenuItem onClick={handleClose}>Unmute</MenuItem> }
+
+            { loggedUser.rank != enChatMemberRank.MEMBER && 
+              user.memberJoin.rank != enChatMemberRank.OWNER &&   <MenuItem onClick={handleClose}>Kick</MenuItem> }
+
+            { loggedUser.rank != enChatMemberRank.MEMBER && 
+              user.memberJoin.rank != enChatMemberRank.OWNER &&   
+              user.memberJoin.rank == enChatMemberRank.ADMIN && <MenuItem onClick={handleClose}>Demote</MenuItem> }
+
+            { loggedUser.rank != enChatMemberRank.MEMBER && 
+              user.memberJoin.rank != enChatMemberRank.OWNER && 
+              user.memberJoin.rank == enChatMemberRank.MEMBER && <MenuItem onClick={handleClose}>Promote</MenuItem> }
         </Menu>
         </>
     )

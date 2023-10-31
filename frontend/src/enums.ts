@@ -25,8 +25,8 @@ enum enChatMemberRank {
   MEMBER = "member",
 }
 
-enum enChatMemberState {
+enum enChatMemberRights {
   PRIVILEDGED = "priviledged",
-  BANNED = "banned",
+  BANNED = "banned", // same with muted
 }
-export { HOME_SECTION, logStatus, enChatType, enChatMemberRank, enChatMemberState};
+export { HOME_SECTION, logStatus, enChatType, enChatMemberRank, enChatMemberRights};

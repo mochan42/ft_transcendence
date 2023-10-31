@@ -6,7 +6,7 @@ import {
 } from "../types";
 import axios from "axios";
 import { ACCEPTED, PENDING } from "../APP_CONSTS";
-import { enChatMemberRank } from "../enums";
+import { enChatMemberRank, enChatMemberRights } from "../enums";
 
 const fetchAllUsers = async (): Promise<User[]> => {
   const resp = await axios.get<User[]>("http://localhost:5000/pong/users");
@@ -149,36 +149,36 @@ const ChatGroupMemberList = [
     id: 1,
     usrId: 0,
     channelId: 3,
-    rank: "admin", // member
-    state: "priviledge", // kicked, banned
+    rank: enChatMemberRank.ADMIN, // member
+    rights: enChatMemberRights.PRIVILEDGED, // kicked, banned
   },
   {
     id: 2,
     usrId: 7,
     channelId: 3,
     rank: enChatMemberRank.MEMBER, // member
-    state: "priviledged", // kicked, banned, mute, priviledge
+    rights: enChatMemberRights.PRIVILEDGED, // kicked, banned
   },
   {
     id: 4,
     usrId: 5,
     channelId: 3,
-    rank: "member", // member
-    state: "priviledged", // kicked, banned, mute, priviledge
+    rank: enChatMemberRank.MEMBER, // member
+    rights: enChatMemberRights.BANNED, // kicked, banned
   },
   {
     id: 5,
     usrId: 3,
     channelId: 3,
-    rank: enChatMemberRank.OWNER, // member
-    state: "priviledged", // kicked, banned, mute, priviledge
+    rank: enChatMemberRank.MEMBER, // member
+    rights: enChatMemberRights.PRIVILEDGED, // kicked, banned
   },
   {
     id: 6,
     usrId: 8,
     channelId: 3,
     rank: enChatMemberRank.OWNER, // member
-    state: "priviledged", // kicked, banned, mute, priviledge
+    rights: enChatMemberRights.PRIVILEDGED, // kicked, banned
   },
 ];
 const ChatGroupMemberList2 = [
@@ -187,14 +187,14 @@ const ChatGroupMemberList2 = [
     usrId: 0,
     channelId: 3,
     rank: "admin", // member
-    state: "priviledge", // kicked, banned
+    rights: enChatMemberRights.PRIVILEDGED, // kicked, banned
   },
   {
     id: 2,
     usrId: 7,
     channelId: 3,
     rank: "member", // member
-    state: "priviledged", // kicked, banned, mute, priviledge
+    rights: enChatMemberRights.PRIVILEDGED, // kicked, banned
   },
 ];
 

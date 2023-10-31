@@ -69,7 +69,7 @@ type JoinGroup = {
   usrId: number;
   channelId: number;
   rank: string;
-  state: string;
+  rights: string;
 };
 
 type Message = {

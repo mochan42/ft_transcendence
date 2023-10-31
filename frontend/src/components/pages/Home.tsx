@@ -245,6 +245,8 @@ const Home = ({
 								}
 								{section === HOME_SECTION.CHAT_USER ? <ChatPageUsers userId={userId} /> : null}
 								{section === HOME_SECTION.CHAT_GROUP ? <ChatPageGroups userId={userId}  /> : null}
+								{section === HOME_SECTION.GAME_REQUEST ? <ChatPageUsers userId={userId}  /> : null}
+
 							</Stack>
 						</Stack>
 					</div>

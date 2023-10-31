@@ -75,8 +75,7 @@ npm cache clean --force                 : clear the cache
 
 ----
 + add authslice
-+ Handle deny button for receiver
-+ Handle accept button for receiver
++ create and update the game request page
 + Add dialog page to view profile from user list (friend dialog)
 + Create dialog for group just like one_on_one chat.
   - tab 1 : list all groups in one tab - show their type (public, protected, private)
@@ -114,15 +113,38 @@ video 27 - handle friend request with socket.io 27:00
 
 [ Activities ]
 --------------
-+ update group profile on toggle click
++ update chat group profile on toggle click
   - add dialog for button actions. based on priviledge mode.
+  - ensure admin cannot use admin rights on owner
   - display status on group profile page for each user
 
-+ update user profile on toggle click
++ update chat user profile on toggle click
+  - Add play game button in ChatUserProfile 
+
++ add game request in HomeBoard navigation bar
 
 
++ update information with real data. (chatuser and chatgroup page)
++ handle button actions for group profile 
+  - exit, 
+  - action
+    - change password
+    - unset password
+    - show password
+    - rename group title
+    - delete group
+    - add user
 
++ handle group member action
+  - view profile
+  - play game
+  - mute/ban
+  - unmute/unban
+  - kick
+  - promote
+  - demote
 
-  - update information with real data.
-  - add dialog display for each member to admin and owner action
-  - handle button actions - exit, action
+  + handle one on one chat profile buttons
+    - delete friend
+    - block user
+    - play game
