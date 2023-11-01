@@ -1,12 +1,13 @@
 import { Avatar, Box, Button, Divider, IconButton, Stack, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import { Prohibit, Trash, X } from "phosphor-react";
+import { Prohibit, GameController, X } from "phosphor-react";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleSidebar } from "../redux/slices/chatSlice";
 import { faker } from "@faker-js/faker"
 import { selectChatStore } from "../redux/store";
 import { friendToUserType } from "../data/ChatData";
 import Cookies from 'js-cookie';
+import Game from "./pages/Game";
 
 /* component to show contact profile */
 const ChatUserProfile = () => {
@@ -72,7 +73,7 @@ const ChatUserProfile = () => {
                         </Stack>
                     </Stack>
                     <Divider />
-                    {/* a new stack to store all data about the user */}
+                    {/* a new stack to store all game data about the user */}
                     {/* information : total number of wins, loses*/}
                     <Stack alignItems={"center"} spacing={2}>
                         <Typography variant="subtitle2" fontWeight={600}>
@@ -87,8 +88,8 @@ const ChatUserProfile = () => {
                     </Stack>
                     <Divider />
                     <Stack alignItems={"center"} direction={"row"} spacing={2}>
-                        <Button startIcon={ <Prohibit/>} fullWidth variant="outlined"> Block </Button>
-                        {/* <Button startIcon={ <Trash/>} fullWidth variant="outlined"> Delete </Button> */}
+                        <Button startIcon={ <Prohibit/>} fullWidth variant="outlined"> Mute </Button>
+                        <Button startIcon={ <GameController/>} fullWidth variant="outlined"> Play game </Button>
                     </Stack>
 
                 </Stack>

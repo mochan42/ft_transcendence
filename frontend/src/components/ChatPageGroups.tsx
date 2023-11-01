@@ -116,7 +116,7 @@ const  ChatPageGroups = (chatProp : ChatProps) => {
                         sx={{flexGrow:1, overflowY:"scroll", height:"100%"}}
                         spacing={0.5} 
                     >
-                        { chatStore.chatGroupList.map((el: any) => { return (<ChatGroupElement {...el} />) })}
+                        { chatStore.chatGroupList.map((el: Group) => { return (<ChatGroupElement key={el.channelId} {...el} />) })}
                     </Stack>
                 </Stack>
             </Box>

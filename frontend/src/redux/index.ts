@@ -28,6 +28,7 @@ export interface IChatState {
   chatDirectMessages: Chat[];
   chatActiveGroup: Group | null;
   chatGroupDialogState: boolean;
+  chatGroupCreateFormPasswdState: boolean;
 }
 
 interface IActionPayload {
