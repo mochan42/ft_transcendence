@@ -69,7 +69,7 @@ const Game:React.FC<GameProps> = ({ difficulty, userId, includeBoost, opponent, 
 
 	const getUserInfo = async (id: string) => {
 		try {
-			const url = 'http://localhost:5000/pong/users/' + id;
+			const url = 'https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/' + id;
 			const response = await axios.get<User>(url);
 			if (response.status === 200) {
 				setUserInfo(response.data);

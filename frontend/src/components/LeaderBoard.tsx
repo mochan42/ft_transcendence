@@ -18,12 +18,12 @@ const Leaderboard:React.FC<LeaderboardProps> =({ userId }) => {
 	const [showScreen, setShowScreen] = useState< 'default' | 'FriendView'>('default');
 	const [topUsers, setTopUsers] = useState< User[] >([]);
 	const [friends, setFriends] = useState< Friend [] | null>(null)
-	const urlFriends = 'http://localhost:5000/pong/users/' + userId + '/friends';
+	const urlFriends = 'https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/' + userId + '/friends';
 	const socket = getSocket(userId);
 	
 	const getUsersInfo = async () => { 
 		try {
-			const response = await axios.get< User[] >('http://localhost:5000/pong/users/');
+			const response = await axios.get< User[] >('https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/');
 			if (response.status === 200) {
 				setUsersInfo(response.data);
 				console.log('Received Users Info: ', response.data)

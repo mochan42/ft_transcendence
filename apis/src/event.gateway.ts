@@ -25,7 +25,7 @@ import { MessageDto } from './chats/dto/message.dto';
 
 @WebSocketGateway({
   cors: {
-    origin: 'http://localhost:3000',
+    origin: true,
   },
 })
 export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {

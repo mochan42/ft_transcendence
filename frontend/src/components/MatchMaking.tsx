@@ -16,7 +16,7 @@ interface MatchMakingProps {
 const MatchMaking:React.FC<MatchMakingProps> =({ setMatchFound, socket, userId, setState, difficulty, includeBoost}) => {
 	const [foundMatch, setFoundMatch] = useState< boolean | undefined >(undefined);
 	const [opponentInfo, setOpponentInfo] = useState< User | null >(null);
-	const url_info = 'http://localhost:5000/pong/users/';
+	const url_info = 'https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/';
 	const MatchMaking = 'MatchMaking';
 
 	async function fetchOpponentInfo(id: number) {

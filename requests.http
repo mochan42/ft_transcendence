@@ -1,11 +1,11 @@
 ### get all users
-GET http://localhost:5000/pong/users/
+GET https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/
 
 ### test
-GET http://localhost:5000/pong/friends
+GET https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/friends
 
 #### add user
-POST http://localhost:5000/pong/users
+POST https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users
 Content-Type: application/json
 
 {
@@ -24,7 +24,7 @@ Content-Type: application/json
 }
 
 ###  Edit user info
-PATCH  http://localhost:5000/pong/users/2
+PATCH  https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/2
 Content-Type: application/json
 
 {
@@ -43,16 +43,16 @@ Content-Type: application/json
 }
 
 ### udpate 2FA option
-PATCH   http://localhost:5000/pong/users/2fa/30
+PATCH   https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/2fa/30
 
 ###  delete user
-DELETE  http://localhost:5000/pong/users/7
+DELETE  https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/7
 
 ### get user stat
-GET http://localhost:5000/pong/users/1/stats
+GET https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/1/stats
 
 ### creat user stat
-POST http://localhost:5000/pong/users/1/stats
+POST https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/1/stats
 Content-Type: application/json
 
 {
@@ -63,7 +63,7 @@ Content-Type: application/json
 }
 
 ### update user stat
-PATCH http://localhost:5000/pong/users/2/stats
+PATCH https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/2/stats
 Content-Type: application/json
 
 {
@@ -73,13 +73,13 @@ Content-Type: application/json
 }
 
 ### delete user stat
-DELETE  http://localhost:5000/pong/users/1/stats
+DELETE  https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/1/stats
 
 ### get user achievement
-GET http://localhost:5000/pong/users/2/achievements/
+GET https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/2/achievements/
 
 ### add user achievement
-POST http://localhost:5000/pong/users/2/achievements/
+POST https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/2/achievements/
 Content-Type: application/json
 
 {
@@ -88,13 +88,13 @@ Content-Type: application/json
 }
 
 ### delete achievement
-DELETE http://localhost:5000/pong/users/1/achievements/
+DELETE https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/1/achievements/
 
 ### Get all goals 
-GET  http://localhost:5000/pong/goals/
+GET  https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/goals/
 
 ### add the first goal
-POST  http://localhost:5000/pong/goals/1
+POST  https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/goals/1
 Content-Type: application/json
 
 {
@@ -103,7 +103,7 @@ Content-Type: application/json
 	"description": "Welcome on board!"
 }
 ### add a new goal
-POST  http://localhost:5000/pong/goals/
+POST  https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/goals/
 Content-Type: application/json
 
 {
@@ -113,7 +113,7 @@ Content-Type: application/json
 }
 
 ### 2nd. goal
-POST  http://localhost:5000/pong/goals/
+POST  https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/goals/
 Content-Type: application/json
 
 {
@@ -123,7 +123,7 @@ Content-Type: application/json
 }
 
 ### 3rd goal
-POST  http://localhost:5000/pong/goals/
+POST  https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/goals/
 Content-Type: application/json
 
 {
@@ -133,7 +133,7 @@ Content-Type: application/json
 }
 
 ### 4th. goal
-POST  http://localhost:5000/pong/goals/
+POST  https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/goals/
 Content-Type: application/json
 
 {
@@ -143,7 +143,7 @@ Content-Type: application/json
 }
 
 ### 5th. goal
-POST  http://localhost:5000/pong/goals/
+POST  https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/goals/
 Content-Type: application/json
 
 {
@@ -160,7 +160,7 @@ Content-Type: application/json
 # const image = ['https://www.svgrepo.com/show/470680/robot-face.svg', 'https://www.svgrepo.com/show/235195/robot-ai.svg', 'https://www.svgrepo.com/show/134/robot.svg', 'https://www.svgrepo.com/show/402624/robot-face.svg', 'https://www.svgrepo.com/show/145418/robot.svg'];
 
 ### patch a goal
-PATCH  http://localhost:5000/pong/goals/2
+PATCH  https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/goals/2
 Content-Type: application/json
 
 {
@@ -171,13 +171,13 @@ Content-Type: application/json
 	
 
 ### Delete a goal
-DELETE http://localhost:5000/pong/goals/1
+DELETE https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/goals/1
 
 ### display all user's friends
-GET http://localhost:5000/pong/users/9/friends
+GET https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/friends
 
 ### add a friend request to a user
-POST  http://localhost:5000/pong/friends
+POST  https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/friends
 Content-Type: application/json
 
 {
@@ -188,7 +188,7 @@ Content-Type: application/json
 }
 
 ### update friend relation
-PATCH   http://localhost:5000/pong/friends/24
+PATCH   https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/friends/24
 Content-Type: application/json
 
 {
@@ -199,10 +199,10 @@ Content-Type: application/json
 }
 
 ### delete friendship
-DELETE http://localhost:5000/pong/friends/31
+DELETE https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/friends/31
 
 ### aut
-POST http://localhost:5000/pong/users/auth
+POST https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/auth
 Content-Type: application/json
 
 {
@@ -210,10 +210,10 @@ Content-Type: application/json
 }
 
 ### Generate secrete for 2FA
-GET http://localhost:5000/pong/users/auth/2fa/30
+GET https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/auth/2fa/30
 
 ### Validate the secrete
-POST http://localhost:5000/pong/users/auth/2fa
+POST https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/auth/2fa
 Content-Type: application/json
 
 {
@@ -222,14 +222,14 @@ Content-Type: application/json
 }
 
 ### avatar
-GET http://localhost:5000/pong/users/avatar/faci30682023382.jpg
+GET https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/avatar/faci30682023382.jpg
 
 
 ### get all messages
-GET http://localhost:5000/pong/chats
+GET https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/chats
 
 ### send a message
-POST http://localhost:5000/pong/chats
+POST https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/chats
 Content-Type: application/json
 
 {
@@ -241,9 +241,9 @@ Content-Type: application/json
 
 ### Delete a message
 
-DELETE  http://localhost:5000/pong/chats/4
+DELETE  https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/chats/4
 ### get games
-GET http://localhost:5000/pong/games
+GET https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/games
 
 ### game making
-GET http://localhost:5000/gamequeue/12
+GET https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/gamequeue/12

@@ -18,6 +18,7 @@ export class FriendsController {
 
   @Get('friends')
   findAll() {
+    console.log('WHAT ?');
     return this.friendsService.findAll();
   }
   @Post('friends')
