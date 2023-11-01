@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import { User } from "../types";
+import { User, Game, GameMap } from "../types";
 import { Button } from './ui/Button';
 import UserCard from './UserCard';
 import axios from 'axios';
 
 interface MatchMakingProps {
-	userId: string | undefined| null;
+	userId: string | undefined | null;
 	socket: any;
 	difficulty: number;
 	includeBoost: boolean;
@@ -19,17 +19,26 @@ const MatchMaking:React.FC<MatchMakingProps> =({ setMatchFound, socket, userId, 
 	const url_info = 'https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/';
 	const MatchMaking = 'MatchMaking';
 
-	async function fetchOpponentInfo(id: number) {
-		try {
-		  const response = await axios.get<User>(url_info + id);
-		  if (response.status === 200) {
-			setOpponentInfo(response.data);
-			console.log('Received Opponent Info: ', response.data);
-		  }
-		} catch (error) {
-		  console.log('Error fetching opponent infos', error);
+	if (userId) {
+		let game: Game = {
+			player1: +userId,
+			player2: -1;
+			difficulty: difficulty;
+			isBoost: includeBoost;
+			status: 'request';
 		}
-	  }
+	}
+	// async function fetchOpponentInfo(id: number) {
+	// 	try {
+	// 	  const response = await axios.get<User>(url_info + id);
+	// 	  if (response.status === 200) {
+	// 		setOpponentInfo(response.data);
+	// 		console.log('Received Opponent Info: ', response.data);
+	// 	  }
+	// 	} catch (error) {
+	// 	  console.log('Error fetching opponent infos', error);
+	// 	}
+	//   }
 
 	useEffect(() => {
 		if (socket !== null) {
@@ -65,9 +74,7 @@ const MatchMaking:React.FC<MatchMakingProps> =({ setMatchFound, socket, userId, 
 						if (foundMatch === undefined) {
 							setFoundMatch(false);
 							if (socket !== null) {
-								socket.emit('requestMatch', userId);
-								socket.emit('difficulty', difficulty);
-								socket.emit('includeBoost', includeBoost);
+								socket.emit('requestMatch', game);
 							}
 						} else if (foundMatch === false) {
 							setState('select');

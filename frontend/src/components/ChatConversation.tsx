@@ -41,7 +41,7 @@ const ChatConversation: React.FC<ChatProps> = ({ userId }) => {
 	const [channels, setChannels] = useState<string[]>([]);
     const [userInfo, setUserInfo] = useState<User | null>(null);
     const [userMessage, setUserMessage] = useState<string>('');
-    const socket = getSocket(userId);
+    // const socket = getSocket(userId);
     const [messages, setMessages] = useState<ChatMessageProps[]>([]);
     const [username, setUserName] = useState<string>('');
     const messageContainerRef = useRef<HTMLDivElement | null>(null);

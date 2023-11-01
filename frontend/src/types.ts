@@ -113,6 +113,26 @@ type Chat = {
   receiver: number;
 };
 
+type Game = {
+  player1: number;
+  player2: number;
+  difficulty: number;
+  isBoost: boolean;
+  status: string<'request' | 'found' | 'playing' | 'finished' | 'aborted'>;
+}
+
+type GameMap = {
+  gameId: number;
+  score1: number;
+  score2: number;
+  paddle1Y: number;
+  paddle2Y: number;
+  boostX: number;
+  boostY: number;
+  ballx: number;
+  ballY: number;
+}
+
 export type {
   User,
   UserStats,
@@ -127,4 +147,6 @@ export type {
   ChatMessageProps,
   ChatProps,
   Chat,
+  Game,
+  GameMap,
 };

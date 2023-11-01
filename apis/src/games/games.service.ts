@@ -41,21 +41,20 @@ export class GamesService {
     return `This action removes a #${id} game`;
   }
 
-  async makeMatch(player1: number, player2: number) {
+  async makeMatch(player1: number, player2: number, difficulty: number, isBoost: boolean) {
     const game: CreateGameDto = {
       player1: player1,
       player2: player2,
       score1: 0,
       score2: 0,
-      difficulty: null,
-      isGameOver: false,
-      ballX: BALL_X_ZERO,
-      ballY: BALL_Y_ZERO,
-      leftPaddleY: LEFT_PADDLE_Y_ZERO,
-      rightPaddleY: RIGHT_PADDLE_Y_ZERO,
-      boostX: BOOST_X_ZERO,
-      boostY: BOOST_Y_ZERO,
-      state: GAME_STATE.NOT_STARTED
+      difficulty: difficulty,
+      ballX: null,
+      ballY: null,
+      leftPaddleY: null,
+      rightPaddleY: null,
+      boostX: null,
+      boostY: null,
+      status: 'request'
     };
     return await this.gameRepo.save(game);
   }

@@ -13,11 +13,8 @@ export class CreateGameDto {
   @IsNumber()
   score2: number;
 
-  @IsString()
-  difficulty: string;
-
-  @IsBoolean()
-  isGameOver: boolean;
+  @IsNumber()
+  difficulty: number;
 
   @IsNumber()
   ballX: number;
@@ -38,5 +35,5 @@ export class CreateGameDto {
   boostY: number;
 
   @IsString()
-  state: string;
+  status: string;
 }

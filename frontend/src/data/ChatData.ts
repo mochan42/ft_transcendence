@@ -10,29 +10,29 @@ import { enChatMemberRank, enChatMemberRights } from "../enums";
 
 const fetchAllUsers = async (): Promise<User[]> => {
   let users: User[] = [];
-  // const resp = await axios.get<User[]>("https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users");
-  // if (resp.status === 200) {
-  //   users = resp.data;
-  // }
+  const resp = await axios.get<User[]>("https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users");
+  if (resp.status === 200) {
+    users = resp.data;
+  }
   return users;
 };
 
 const fetchAllFriends = async (): Promise<Friend[]> => {
   let friends: Friend[] = [];
-  // const urlFriend = "https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/friends";
-  // const resp = await axios<Friend[]>(urlFriend);
-  // if (resp.status === 200) {
-  //   friends = resp.data;
-  // }
+  const urlFriend = "https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/friends";
+  const resp = await axios<Friend[]>(urlFriend);
+  if (resp.status === 200) {
+    friends = resp.data;
+  }
   return friends;
 };
 
 const fetchAllMessages = async (): Promise<Chat[]> => {
   let messages: Chat[] = [];
-  // const resp = await axios.get<Chat[]>("https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/chats");
-  // if (resp.status === 200) {
-  //   messages = resp.data;
-  // }
+  const resp = await axios.get<Chat[]>("https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/chats");
+  if (resp.status === 200) {
+    messages = resp.data;
+  }
   return messages;
 }
 

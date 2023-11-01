@@ -9,7 +9,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   app.enableCors({
-    origin: true,
+    origin: 'https://special-dollop-r6jj956gq9xf5r9-3000.app.github.dev',
     methods: 'GET,HEAD,PUT,PATCH,POST',
     credentials: true,
   });

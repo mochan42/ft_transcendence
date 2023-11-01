@@ -25,7 +25,8 @@ import { MessageDto } from './chats/dto/message.dto';
 
 @WebSocketGateway({
   cors: {
-    origin: true,
+    origin: 'https://special-dollop-r6jj956gq9xf5r9-3000.app.github.dev',
+    credentials: true
   },
 })
 export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
@@ -45,7 +46,7 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
   async handleConnection(@ConnectedSocket() socket: Socket, ...args: any[]) {
     const user = await this.chatsService.getUserFromSocket(socket);
 
-    this.server.emit('message', `Welcome ${user.userName}, you're connected`);
+    socket.emit('message', `Welcome ${user.userName}, you're connected`);
   }
 
   async handleDisconnect(socket: Socket) {
@@ -139,17 +140,24 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   /***********************GAME*********************** */
-  @SubscribeMessage('requestMacht')
+  @SubscribeMessage('requestMatch')
   async handleRequestMatch(
     @ConnectedSocket() socket: Socket,
-    @MessageBody() userId: string,
+    @MessageBody() data: any,
   ) {
+    const player1 = data.player1;
+    if (data.player2 > 0) {
+      const player2 = data.player2;
+      const makeGame = await this.gamesService.makeMatch(+player1, +player2, data.difficulty, data.isBoost);
+      if (makeGame) {
+        this.server.emit('invitedToMatch', makeGame);
+      }
+
+    }
     const opponent = this.gameQueueService.findOpponent(socket);
     if (opponent) {
-      const player1 = await this.chatsService.getUserFromSocket(opponent);
       const player2 = await this.chatsService.getUserFromSocket(socket);
-
-      const makeGame = await this.gamesService.makeMatch(+player1, +player2);
+      const makeGame = await this.gamesService.makeMatch(+player1, +player2, data.difficulty, data.isBoost);
 
       if (makeGame) {
         socket.emit('matchFound', makeGame);
@@ -158,23 +166,4 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
   }
 
-  //  x = 50, y= 50
-  
-  // @SubscribeMessage('difficulty')
-  // async handleDifficulty(
-  //   @ConnectedSocket() socket: Socket,
-  //   @MessageBody() data: any,
-  // ) {
-  //   const gameToUpdate = await this.gamesService.findOne(data.gameId);
-  //   const game = { ...gameToUpdate, difficulty: data.difficulty };
-  //   const updatedGame = await this.gamesService.update(game);
-
-  //   this.server.emit('difficuly_changed', updatedGame);
-  // }
 }
-
-//{ userId, difficulty, booster}
-
-// 1 0, no
-// 2 1, yes
-// 3 1, yes
