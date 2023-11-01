@@ -3,8 +3,10 @@ import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import { Gear } from 'phosphor-react';
+import { Group } from '../types';
+import { enChatPrivacy } from '../enums';
 
-export default function ChatGroupActionBtn() {
+export default function ChatGroupActionBtn(privacy: string) {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -40,9 +42,10 @@ export default function ChatGroupActionBtn() {
         <MenuItem onClick={handleClose}>Add User</MenuItem>
         <MenuItem onClick={handleClose}>Rename Group Title</MenuItem>
         <MenuItem onClick={handleClose}>Delete Group</MenuItem>
-        <MenuItem onClick={handleClose}>Show Password</MenuItem>
-        <MenuItem onClick={handleClose}>Unset Password</MenuItem>
-        <MenuItem onClick={handleClose}>Change Password</MenuItem>
+        { privacy == enChatPrivacy.PROTECTED && <MenuItem onClick={handleClose}>Show Password</MenuItem>}
+        { privacy != enChatPrivacy.PROTECTED && <MenuItem onClick={handleClose}>Set Password</MenuItem>}
+        { privacy == enChatPrivacy.PROTECTED && <MenuItem onClick={handleClose}>Unset Password</MenuItem>}
+        { privacy == enChatPrivacy.PROTECTED && <MenuItem onClick={handleClose}>Change Password</MenuItem>}
       </Menu>
     </div>
   );

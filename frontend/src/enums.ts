@@ -19,6 +19,12 @@ enum enChatType {
   Group ="group"
 }
 
+enum enChatPrivacy {
+  PUBLIC = "public",
+  PRIVATE = "private",
+  PROTECTED = "protected"
+}
+
 enum enChatMemberRank {
   OWNER = "owner",
   ADMIN = "admin",
@@ -29,4 +35,5 @@ enum enChatMemberRights {
   PRIVILEDGED = "priviledged",
   BANNED = "banned", // same with muted
 }
-export { HOME_SECTION, logStatus, enChatType, enChatMemberRank, enChatMemberRights};
+export { HOME_SECTION, logStatus, enChatType, enChatMemberRank,
+enChatMemberRights, enChatPrivacy };

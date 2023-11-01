@@ -33,6 +33,7 @@ const initialState: IChatState = {
   chatDirectMessages: [],
   chatActiveGroup: null,
   chatGroupDialogState: false,
+  chatGroupCreateFormPasswdState: true,
 };
 
 //export default (state: ISidebarData, action: TAction) : ISidebarData => {}
@@ -94,6 +95,10 @@ const chatSlice = createSlice({
     updateChatActiveGroup: (state, action: PayloadAction<Group>) => {
       state.chatActiveGroup = action.payload;
     },
+    // Disables and enables the password component on create group form
+    updateChatGroupCreateFormPasswdState: (state, action: PayloadAction<boolean>) => {
+      state.chatGroupCreateFormPasswdState = action.payload;
+    },
   },
 });
 
@@ -112,6 +117,7 @@ export const {
   updateChatGroupMembers,
   updateStateGroupDialog,
   updateChatActiveGroup,
+  updateChatGroupCreateFormPasswdState,
 } = chatSlice.actions;
 export default chatSlice;
 

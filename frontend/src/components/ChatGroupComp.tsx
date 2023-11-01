@@ -29,8 +29,8 @@ const ChatGroupMemberComp = (user: IUserData) => {
     const theme = useTheme();
     const chatStore = useSelector(selectChatStore);
     const dispatch = useDispatch();
-    //const userId = Cookies.get('userId') ? Cookies.get('userId') : '';
-    const userId = '0' // for testing only
+    const userId = Cookies.get('userId') ? Cookies.get('userId') : '';
+    // const userId = '0' // for testing only
     const loggedUser = chatStore.chatGroupMembers.filter(el => (el.usrId.toString()) === userId)[0]
     console.log(loggedUser, 'id- ', userId)
 

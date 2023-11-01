@@ -147,7 +147,7 @@ const dummyUsers = [
 const ChatGroupMemberList = [
   {
     id: 1,
-    usrId: 0,
+    usrId: 1,
     channelId: 3,
     rank: enChatMemberRank.ADMIN, // member
     rights: enChatMemberRights.PRIVILEDGED, // kicked, banned

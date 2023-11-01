@@ -83,10 +83,6 @@ npm cache clean --force                 : clear the cache
   - listing all invite in dialog with join or cancel button.
   - Note: ChatGroupPage will only list groups which user is a member of.
 
-+ Fix channel creation form problem - selection of privacy state
-  - update the users with proper data 
-  - adjust the minimum number of users to 1.
-  - add all users in channel creation form.
 
 + if friendlist is not empty activate the conversation panel
 + if grouplist is not empty activate the conversation panel
@@ -113,15 +109,9 @@ video 27 - handle friend request with socket.io 27:00
 
 [ Activities ]
 --------------
-+ update chat group profile on toggle click
-  - add dialog for button actions. based on priviledge mode.
-  - ensure admin cannot use admin rights on owner
-  - display status on group profile page for each user
-
-+ update chat user profile on toggle click
-  - Add play game button in ChatUserProfile 
-
-+ add game request in HomeBoard navigation bar
++ Channel creation form
+  - update the users with proper data 
+  - add all users in channel creation form.
 
 
 + update information with real data. (chatuser and chatgroup page)
@@ -148,3 +138,4 @@ video 27 - handle friend request with socket.io 27:00
     - delete friend
     - block user
     - play game
+

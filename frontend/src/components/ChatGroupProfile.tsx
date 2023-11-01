@@ -18,15 +18,18 @@ import ChatGroupActionBtn from "./ChatGroupActionBtn";
 const ChatGroupProfile = () => {
 
     const theme = useTheme()
-    // const userId = Cookies.get('userId') ? Cookies.get('userId') : ''; // not working
-    const userId = '0' // for testing only member (7) admin (0)
+     const userId = Cookies.get('userId') ? Cookies.get('userId') : ''; // not working
+    //const userId = '1' // for testing only member (7) admin (1)
     const dispatch = useDispatch();
     const chatStore = useSelector(selectChatStore);
     const activeGroupTitle = (chatStore.chatActiveGroup ? chatStore.chatActiveGroup.title : "")
+    const activeGroupPrivacy = (chatStore.chatActiveGroup ? chatStore.chatActiveGroup.privacy: "")
     const groupMemberNo = (chatStore.chatActiveGroup ? chatStore.chatGroupMembers.length: 0)
     const loggedUser = chatStore.chatGroupMembers.filter(el => (el.usrId.toString()) === userId)
-    console.log(loggedUser, 'id- ', userId)
+    // console.log(loggedUser, 'id- ', userId, loggedUser[0].rank)
+    // console.log("Show userId", userId)
     let actionBtnState = (loggedUser[0].rank === enChatMemberRank.MEMBER) ? false : true
+    // const actionBtnState = true
 
 
     return ( 
@@ -78,7 +81,7 @@ const ChatGroupProfile = () => {
                     <Stack alignItems={"center"} direction={"row"} spacing={2}>
                         <Button startIcon={ <SignOut/>} fullWidth variant="outlined"> Exit </Button>
                         {/* render action button if logged user is owner or admin */}
-                        { actionBtnState && <ChatGroupActionBtn /> 
+                        { actionBtnState && ChatGroupActionBtn(activeGroupPrivacy)
                             // <Button startIcon={ <Gear size={25} />} fullWidth variant="outlined" > Actions </Button>
                         }
                     </Stack>

@@ -31,7 +31,8 @@ export const fetchAllDirectMessages = (allMessages: Chat[], userId: any, friend:
 }
 
 const ChatElement = (user: User) => {
-    const userId = Cookies.get('userId') ? Cookies.get('userId') : '0';
+    const userId = Cookies.get('userId') ? Cookies.get('userId') : '';
+    console.log("Show userId", userId)
     const chatStore = useSelector(selectChatStore);
     const dispatch = useDispatch();
 

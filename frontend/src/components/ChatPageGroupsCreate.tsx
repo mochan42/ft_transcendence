@@ -14,6 +14,8 @@ import Cookies from 'js-cookie';
 import { useDispatch, useSelector } from "react-redux";
 import { selectChatStore } from "../redux/store";
 import { getSocket } from '../utils/socketService';
+import { enChatPrivacy } from '../enums';
+import { updateChatGroupCreateFormPasswdState } from '../redux/slices/chatSlice';
 
 
 /**
@@ -47,19 +49,15 @@ const CreateGroupForm = ( handleFormClose: THandler ) => {
     const groupSchema = Yup.object().shape(
         {
             title: Yup.string().required("Title is required"),
-            members: Yup.array().min(2, "Must at least 2 members"),
-            state_private: Yup.string(),
-            state_protected: Yup.string(),
-            privacy_state: Yup.string().required("Privacy level is required")
+            members: Yup.array().min(1, "Must at least 1 member"),
+            privacy_state: Yup.string(),
         }
     )
 
     const defaultValues = { 
         title: "" ,
         members: [], // to be replace with list of all users
-        state_private: 'private',
-        state_protected: 'protected',
-        privacy_state: 'public'
+        privacy_state: enChatPrivacy.PUBLIC,
     }
 
     const methods = useForm({
@@ -77,21 +75,26 @@ const CreateGroupForm = ( handleFormClose: THandler ) => {
         formState: { errors, isSubmitting, isSubmitSuccessful, isValid },
     } = methods;
 
-    const [statePasswd, setStatePasswd] = useState<boolean>(true);
+    // const [statePasswd, setStatePasswd] = useState<boolean>(true);
     const chatStore = useSelector(selectChatStore);
+    const dispatch = useDispatch()
     const socket = getSocket(Cookies.get('userId'));
 
     const handleRadioBtn = (e : React.ChangeEvent<HTMLInputElement>) =>{
         const state = e.target.value;
         // setPrivacy(e.target.value);
-        setValue('privacy_state', state)
+        setValue("privacy_state", state)
         console.log(state);
-        setStatePasswd(prevStatePasswd => !prevStatePasswd);
+        (state == enChatPrivacy.PROTECTED) ?
+            dispatch(updateChatGroupCreateFormPasswdState(false)) 
+            : dispatch(updateChatGroupCreateFormPasswdState(true)) 
+            // setStatePasswd(prevStatePasswd => !prevStatePasswd);
     }
 
     //const onSubmit:SubmitHandler<TFormInputs> = async (data: TFormInputs) => {
     // would be easier if data has the same names with channels colums in apis side
     const onSubmit = async (data: any) => {
+        dispatch(updateChatGroupCreateFormPasswdState(true)) 
         try{
             //API CALL
             const newMembers = data.members.map((elt: {id: any, name: any }) => elt.id);
@@ -116,27 +119,37 @@ const CreateGroupForm = ( handleFormClose: THandler ) => {
                     <RHF_TextField name="title" label="Title" type="text"/>
                     {/* Privacy */}
                     <FormLabel>Privacy</FormLabel>
-                        {/* channel private */}
-                        <RadioGroup name='privacy_state' onChange={handleRadioBtn}>
+                        <RadioGroup name='privacy_state' 
+                            onChange={handleRadioBtn}
+                            defaultValue={defaultValues.privacy_state}
+                        >
+                            {/* channel public */}
+                            <FormControlLabel
+                                name='state_public'
+                                label="Public"
+                                control={<Radio />}
+                                value={enChatPrivacy.PUBLIC}
+                            />
+                            {/* channel private */}
                             <FormControlLabel
                                 name='state_private'
                                 label="Private"
                                 control={<Radio />}
-                                value={defaultValues.state_private}
+                                value={enChatPrivacy.PRIVATE}
                             />
                             {/* channel protection */}
                             <FormControlLabel
                                 name='state_protected'
                                 label="Protected"
                                 control={<Radio />}
-                                value={defaultValues.state_protected}
+                                value={enChatPrivacy.PROTECTED}
                             />
                         </RadioGroup>
                     {/* channel password */}
                     <RHF_TextField name="passwd" 
                         label="Password" 
                         type="password" 
-                        disabled={statePasswd}
+                        disabled={chatStore.chatGroupCreateFormPasswdState}
                     />
                     {/* channel members */}
                     <RHF_AutoCompDropDown name="members" label="Members" options={MEMBERS}/>
