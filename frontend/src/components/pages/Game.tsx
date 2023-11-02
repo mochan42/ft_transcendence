@@ -66,21 +66,19 @@ const Game:React.FC<GameProps> = ({ difficulty, userId, includeBoost, opponent, 
 
 	useEffect(() => {
 			console.log("\n\n !!! \n ", player1Info);
-			if (player1Id && player2Id) {
-				(async() => {
+			(async() => {
+				if (player1Id && player2Id) {
+					console.log(player1Id, player2Id, "In if\n");
 					const ply1 = await fetchUser(player1Id);
 					const ply2 = await fetchUser(player2Id);
 					setPlayer1Info(ply1);
 					setPlayer2Info(ply2);
-				})();
-			}
-			if (userId) {
-				(async() => {
+				}
+				else if (userId) {
 					const tmp = await fetchUser(userId)
 					setPlayer1Info(tmp);
-				});
-			}
-			
+				}
+			})();
 			window.addEventListener('keypress', handleKeyPress);
 			return () => {
 				window.removeEventListener('keypress', handleKeyPress); // Clean up the event listener when the component is unmounted

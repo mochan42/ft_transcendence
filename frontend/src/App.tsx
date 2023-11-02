@@ -56,19 +56,22 @@ const App: React.FC = () => {
 
 	//----------------------------CHAT---------------------------
 	useEffect(() => {
-		socket.on("receiveMessage", async (data: any) => {
-            if (data.sender == userId || data.receiver == chatStore.chatRoomId) {
-                const allMessages: Chat[] = await fetchAllMessages();
-                dispatch(updateChatUserMessages(allMessages));
-                const newDirectMessages = fetchAllDirectMessages(allMessages, userId, chatStore.chatRoomId);
-                dispatch(updateChatDirectMessages(newDirectMessages));
-            }
-        });
+		if (socket != null) {
+			socket.on("receiveMessage", async (data: any) => {
+				if (data.sender == userId || data.receiver == chatStore.chatRoomId) {
+					const allMessages: Chat[] = await fetchAllMessages();
+					dispatch(updateChatUserMessages(allMessages));
+					const newDirectMessages = fetchAllDirectMessages(allMessages, userId, chatStore.chatRoomId);
+					dispatch(updateChatDirectMessages(newDirectMessages));
+				}
+			});
+		}
 	});
 
 	//---------------------------GAME-----------------------------------------------
 	useEffect(() => {
-		socket.on('invitedToMatch', (data: any) => {
+		if (socket != null) {
+			socket.on('invitedToMatch', (data: any) => {
 			console.log(userId, "   ", data.player2, "\n\n");
 			if (data.player2 == userId) {
 				const newGame: Game = {
@@ -79,7 +82,9 @@ const App: React.FC = () => {
 				socket.emit('acceptMatch', newGame);
 			}
 			console.log("Match invitation received! \n\n", data);
-		});
+			});
+		}
+		console.log("Missing socket\n");
 	});
     
 	return (
