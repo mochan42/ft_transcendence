@@ -16,7 +16,12 @@ import GameSelection from './components/pages/GameSelection';
 import Cookies from 'js-cookie';
 import { Utils__isAPICodeAvailable } from './utils/utils__isAPICodeAvailable';
 import { getSocket } from './utils/socketService';
-import { Game } from './types';
+import { Game, Chat } from './types';
+import { updateChatUserMessages, updateChatDirectMessages } from "./redux/slices/chatSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { selectChatStore } from "./redux/store";
+import { fetchAllMessages} from './data/ChatData';
+import { fetchAllDirectMessages } from './components/ChatPageUsers';
 
 
 
@@ -41,13 +46,27 @@ const App: React.FC = () => {
 	const [code, setCode] = useState<string | null>(null);
 	const [state, setState] = useState<string>(generateStrState());
 	const [token2fa, setToken2fa] = useState<string>('');
+	const socket = getSocket(userId);
+	const dispatch = useDispatch();
+    const chatStore = useSelector(selectChatStore);
 
     // check if code available for backend to exchange for token
 	Utils__isAPICodeAvailable({ setIsAuth, isAuth, setCode, code })
 
-	const socket = getSocket(userId);
 
+	//----------------------------CHAT---------------------------
+	useEffect(() => {
+		socket.on("receiveMessage", async (data: any) => {
+            if (data.sender == userId || data.receiver == chatStore.chatRoomId) {
+                const allMessages: Chat[] = await fetchAllMessages();
+                dispatch(updateChatUserMessages(allMessages));
+                const newDirectMessages = fetchAllDirectMessages(allMessages, userId, chatStore.chatRoomId);
+                dispatch(updateChatDirectMessages(newDirectMessages));
+            }
+        });
+	});
 
+	//---------------------------GAME-----------------------------------------------
 	useEffect(() => {
 		socket.on('invitedToMatch', (data: any) => {
 			console.log(userId, "   ", data.player2, "\n\n");

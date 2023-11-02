@@ -36,8 +36,8 @@ const Game:React.FC<GameProps> = ({ difficulty, userId, includeBoost, opponent, 
 	}
 
 	const opponentPoint = () => {
-		setPlayer2Score(Player2Score + 1);
-		if (Player2Score === 10) {
+		setPlayer2Score(player2Score + 1);
+		if (player2Score === 10) {
 			setIsGameOver(true);
 		}
 	}
@@ -67,14 +67,18 @@ const Game:React.FC<GameProps> = ({ difficulty, userId, includeBoost, opponent, 
 	useEffect(() => {
 			console.log("\n\n !!! \n ", player1Info);
 			if (player1Id && player2Id) {
-				const ply1 = await fetchUser(player1Id);
-				const ply2 = await fetchUser(player2Id);
-				setPlayer1Info(ply1);
-				setPlayer2Info(ply2);
+				(async() => {
+					const ply1 = await fetchUser(player1Id);
+					const ply2 = await fetchUser(player2Id);
+					setPlayer1Info(ply1);
+					setPlayer2Info(ply2);
+				})();
 			}
 			if (userId) {
-				const tmp = await fetchUser(userId)
-				setPlayer1Info(tmp);
+				(async() => {
+					const tmp = await fetchUser(userId)
+					setPlayer1Info(tmp);
+				});
 			}
 			
 			window.addEventListener('keypress', handleKeyPress);

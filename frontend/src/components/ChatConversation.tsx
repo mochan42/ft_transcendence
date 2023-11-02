@@ -77,14 +77,6 @@ const ChatConversation: React.FC<ChatProps> = ({ userId }) => {
     }
     
     useEffect(() => {
-        socket.on("receiveMessage", async (data: any) => {
-            if (data.sender == userId || data.receiver == chatStore.chatRoomId) {
-                const allMessages: Chat[] = await fetchAllMessages();
-                dispatch(updateChatUserMessages(allMessages));
-                const newDirectMessages = fetchAllDirectMessages(allMessages, userId, chatStore.chatRoomId);
-                dispatch(updateChatDirectMessages(newDirectMessages));
-            }
-        });
         setMessages(formatMessages(chatStore.chatUsers, chatStore.chatDirectMessages, userId));
     }, [chatStore.chatUserMessages, chatStore.chatDirectMessages, messages]);
 
