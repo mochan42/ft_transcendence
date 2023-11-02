@@ -3,6 +3,7 @@ import {
   Chat,
   User,
   Friend,
+  UserStats,
 } from "../types";
 import axios from "axios";
 import { ACCEPTED, PENDING } from "../APP_CONSTS";
@@ -34,6 +35,22 @@ const fetchAllMessages = async (): Promise<Chat[]> => {
     messages = resp.data;
   }
   return messages;
+}
+
+const fetchAllStats = async (userId: any) => {
+  let stats: UserStats = {
+    id: '',
+    userId: userId,
+    wins: 0,
+    losses: 0,
+    draws: 0
+  }
+  const userStatUrl = `https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/${userId}/stats`;
+  const resp = await axios.get<UserStats>(userStatUrl);
+  if (resp.status === 200) {
+    stats = {...resp.data, userId: resp.data.userId }
+  } 
+  return stats;
 }
 
 const friends: Friend[] = await fetchAllFriends();
@@ -212,4 +229,5 @@ export {
   fetchAllUsers,
   fetchAllFriends,
   fetchAllMessages,
+  fetchAllStats
 };

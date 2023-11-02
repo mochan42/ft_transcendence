@@ -5,14 +5,16 @@ import { useDispatch, useSelector } from "react-redux";
 import { toggleSidebar } from "../redux/slices/chatSlice";
 import { faker } from "@faker-js/faker"
 import { selectChatStore } from "../redux/store";
-import { friendToUserType } from "../data/ChatData";
+import { fetchAllStats, friendToUserType } from "../data/ChatData";
 import Cookies from 'js-cookie';
 import Game from "./pages/Game";
+import { useEffect, useState } from "react";
+import { UserStats } from "../types";
 
 /* component to show contact profile */
 const ChatUserProfile = () => {
     const userId = Cookies.get('userId') ? Cookies.get('userId') : '';
-
+    const [userStats, setUserStats] = useState<UserStats | null >(null);
     const theme = useTheme()
     const dispatch = useDispatch();
     const chatStore = useSelector(selectChatStore);
@@ -21,6 +23,13 @@ const ChatUserProfile = () => {
     if (chatStore.chatActiveUser && userId != null) {
         userSelect = friendToUserType(userId, chatStore.chatActiveUser, chatStore.chatUsers)
     }
+
+    useEffect(() => {
+        (async() => {
+            const updatedUserStats = await fetchAllStats(userId);
+            setUserStats(updatedUserStats);
+        })();
+    });
 
     return ( 
         <Box sx={{
@@ -56,7 +65,7 @@ const ChatUserProfile = () => {
                     <Stack alignItems={"center"} direction={"row"} spacing={2}>
                         <Avatar 
                             src={ userSelect ? userSelect.avatar : faker.image.avatar()} 
-                            alt={ userSelect ? userSelect.userName : faker.name.firstName()}
+                            alt={ userSelect ? userSelect.userNameLoc : faker.name.firstName()}
                             sx={{ height:80, width:80 }}
                         /> 
                         <Stack spacing={2}
@@ -77,13 +86,16 @@ const ChatUserProfile = () => {
                     {/* information : total number of wins, loses*/}
                     <Stack alignItems={"center"} spacing={2}>
                         <Typography variant="subtitle2" fontWeight={600}>
-                            { `Total Played :  100  `} {/** update with real value from backend */}
+                            { `XP :  ${ userSelect?.xp }  `}
                         </Typography>
                         <Typography variant="subtitle2" fontWeight={600}>
-                            { `Wins :  100  `} {/** update with real value from backend */}
+                            { `Total Played :  ${(userStats != null) ? userStats.wins + userStats.losses + userStats.draws : 0 } `}
                         </Typography>
                         <Typography variant="subtitle2" fontWeight={600}>
-                            { `Losts :  100  `} {/** update with real value from backend */}
+                            { `Victories :  ${(userStats != null) ? userStats.wins : 0 }  `}
+                        </Typography>
+                        <Typography variant="subtitle2" fontWeight={600}>
+                            { `Defeats :  ${(userStats != null) ? userStats.losses : 0 } `}
                         </Typography>
                     </Stack>
                     <Divider />

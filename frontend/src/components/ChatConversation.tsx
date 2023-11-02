@@ -41,7 +41,7 @@ const ChatConversation: React.FC<ChatProps> = ({ userId }) => {
 	const [channels, setChannels] = useState<string[]>([]);
     const [userInfo, setUserInfo] = useState<User | null>(null);
     const [userMessage, setUserMessage] = useState<string>('');
-    // const socket = getSocket(userId);
+    const socket = getSocket(userId);
     const [messages, setMessages] = useState<ChatMessageProps[]>([]);
     const [username, setUserName] = useState<string>('');
     const messageContainerRef = useRef<HTMLDivElement | null>(null);
@@ -64,18 +64,10 @@ const ChatConversation: React.FC<ChatProps> = ({ userId }) => {
 				receiver: chatStore.chatRoomId
             };
             socket.emit('send_message', newMessage);
-            socket.on("message_sent", async (data: any) => {
-                const allMessages: Chat[] = await fetchAllMessages();
-                dispatch(updateChatUserMessages(allMessages));
-                const newDirectMessages = fetchAllDirectMessages(allMessages, userId, chatStore.chatRoomId);
-                dispatch(updateChatDirectMessages(newDirectMessages))
-
-            });
             scrollToBottom();
             setUserMessage('');
         }
     };
-
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter') {
@@ -91,6 +83,15 @@ const ChatConversation: React.FC<ChatProps> = ({ userId }) => {
     useEffect(() => {
         scrollToBottom();
     }, [messages]);
+
+    //----------------------Incoming events handler -----------------------------------/
+    socket.on("message_sent", async (data: any) => {
+        const allMessages: Chat[] = await fetchAllMessages();
+        dispatch(updateChatUserMessages(allMessages));
+        const newDirectMessages = fetchAllDirectMessages(allMessages, userId, chatStore.chatRoomId);
+        dispatch(updateChatDirectMessages(newDirectMessages))
+
+    });
 
     return ( 
         <Stack sx={{ height: "75vh", width: "100%", }} 

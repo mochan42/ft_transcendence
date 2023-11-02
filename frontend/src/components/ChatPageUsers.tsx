@@ -71,9 +71,9 @@ const ChatElement = (user: User) => {
                         anchorOrigin={{vertical:"bottom", horizontal:"left"}}
                         overlap="circular"
                     >
-                        <Avatar src={ user.avatar }/>
+                    <Avatar src={ user.avatar }/>
                     </Badge>
-                    : <Avatar alt={ user.userNameLoc }/>
+                    : <Avatar alt={ user.avatar }/>
                     }
                     <Stack spacing={0.2}>
                         <Typography variant="subtitle2">{ user.userNameLoc }</Typography>

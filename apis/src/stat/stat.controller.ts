@@ -11,24 +11,30 @@ import { StatService } from './stat.service';
 import { CreateStatDto } from './dto/create-stat.dto';
 import { UpdateStatDto } from './dto/update-stat.dto';
 
-@Controller('pong/users')
+@Controller('pong')
 export class StatController {
   constructor(private readonly statService: StatService) {}
+  
+  @Get('stats')
+  findAll() {
+    return this.statService.findAll();
+  }
 
-  @Post(':userId/stats')
+  @Post('users/:userId/stats')
   create(
     @Param('userId') userId: string,
     @Body() createStatDto: CreateStatDto,
   ) {
     return this.statService.create(userId, createStatDto);
   }
-
-  @Get(':userId/stats')
+  
+  @Get('users/:userId/stats')
   findOne(@Param('userId') userId: string) {
     return this.statService.findOne(+userId);
   }
 
-  @Patch(':userId/stats')
+
+  @Patch('users/:userId/stats')
   update(
     @Param('userId') userId: string,
     @Body() updateStatDto: UpdateStatDto,
@@ -37,7 +43,7 @@ export class StatController {
   }
 
   // !!! NOT SURE ABOUT THIS ENDPOINT NECESSITY.
-  @Delete(':userId/stats')
+  @Delete('users/:userId/stats')
   remove(@Param('userId') userId: string) {
     return this.statService.remove(userId);
   }
