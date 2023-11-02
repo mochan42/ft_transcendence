@@ -89,8 +89,6 @@ const PvP: React.FC<PvPProps> = ({ userId, difficulty, isGameOver, playerScore, 
 			setBoostY(data);
 		});
 	}
-	
-	
 
 	useEffect(() => {
 		const handleKeyDown = (event: KeyboardEvent) => {

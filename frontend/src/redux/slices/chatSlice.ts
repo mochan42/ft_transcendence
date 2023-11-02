@@ -139,7 +139,7 @@ export default chatSlice;
 //   return async (): Promise<void> => {
 //     try {
 //       const response = await axios.get<TChatUserData[]>(
-//         "http://localhost:5000/pong/users/"
+//         "https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/"
 //       );
 //       if (response.status === 200) {
 //         dispatch(chatSlice.actions.updateChatUsers(response.data));

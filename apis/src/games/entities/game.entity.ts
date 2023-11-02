@@ -17,8 +17,7 @@ export class Game {
   @Column()
   score2: number;
 
-  @Column({ nullable: true })
-  difficulty: string;
+  difficulty: number;
 
   @Column()
   isGameOver: boolean;

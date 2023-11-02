@@ -10,6 +10,9 @@ import { CreateUserDto } from 'src/users/dto/create-user.dto';
 export class AuthService {
   constructor(private usersService: UsersService) {}
   async signin(authUserDto: AuthUserDto) {
+    console.log('---------------------\n');
+    console.log('CODE: ', authUserDto.token);
+    console.log('---------------------\n');
     const accessToken = await this.getFortyTwoAccessToken(authUserDto);
     if (!accessToken) {
       console.log('----FAILLED ACCESS TOKEN--------\n');
@@ -116,7 +119,7 @@ export class AuthService {
       client_id: process.env.UID,
       client_secret: process.env.SECRET,
       code: authUserDto.token,
-      redirect_uri: 'http://localhost:3000',
+      redirect_uri: 'https://special-dollop-r6jj956gq9xf5r9-3000.app.github.dev/',
       state: authUserDto.state,
     };
     try {
