@@ -167,7 +167,7 @@ const Home = ({
 	}, [userId, loginState.isLogin]);
 	
 	if (socket) {
-		socket.on('message', (message: string) => {
+		socket.on('connected', (message: string) => {
 			console.log(message);
 		});
 		// ---new channel created---------------
@@ -177,6 +177,7 @@ const Home = ({
 		});
 		// --friend invitation sent ------
 		socket.on('invite_friend_success', (friend: any) => {
+			
 			console.log('friend invited successfully', friend);
 		});
 

@@ -98,8 +98,6 @@ interface ChatProps {
 
 type TUserFriendRequest = {
   userId: number | null;
-  // the two attributes below can be fetched by API
-  // using the user id
   userImg: string | undefined;
   userName: string | undefined;
   reqType: string | undefined;
@@ -118,7 +116,7 @@ type Game = {
   player2: number;
   difficulty: number;
   isBoost: boolean;
-  status: string<'request' | 'found' | 'playing' | 'finished' | 'aborted'>;
+  status: 'request' | 'found' | 'playing' | 'finished' | 'aborted';
 }
 
 type GameMap = {

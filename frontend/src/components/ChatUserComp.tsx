@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { styled, useTheme } from '@mui/material/styles'
 import { Stack, Avatar, Typography, Button, Box, Badge } from '@mui/material'
 import { Friend, User } from '../types';
@@ -28,8 +28,8 @@ const ChatUserComp = (userData : User) => {
 
     const onSendRequest = () => {
 
-        socket.emit('invite_friend', userData.id);
-        socket.on('invitation_success', async (newFriend: any) => {
+        socket.emit('inviteFriend', userData.id);
+        socket.on('inviteFriendSucces', async (emptyObject: any) => {
             const friends = await fetchAllFriends();
             const newFriendRequestList = await fetchAllUsersFriends(PENDING, friends);
             dispatch(updateChatUserFriendRequests(newFriendRequestList));
@@ -58,6 +58,17 @@ const ChatUserComp = (userData : User) => {
         return result;
     }
 
+    useEffect(() => {
+        socket.on('invitedByFriend', async (receiver: any) => {
+            if (receiver != userId) {
+                return ;
+            }
+            const friends = await fetchAllFriends();
+            const newFriendRequestList = await fetchAllUsersFriends(PENDING, friends);
+            dispatch(updateChatUserFriendRequests(newFriendRequestList));
+        });
+    });
+    
     return (
         <StyledChatBox sx={{
             width : "100%",

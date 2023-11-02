@@ -74,7 +74,7 @@ const MatchMaking:React.FC<MatchMakingProps> =({ setMatchFound, socket, userId, 
 						if (foundMatch === undefined) {
 							setFoundMatch(false);
 							if (socket !== null) {
-								socket.emit('requestMatch', game);
+								// socket.emit('requestMatch', game);
 							}
 						} else if (foundMatch === false) {
 							setState('select');

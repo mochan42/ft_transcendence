@@ -45,8 +45,7 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   async handleConnection(@ConnectedSocket() socket: Socket, ...args: any[]) {
     const user = await this.chatsService.getUserFromSocket(socket);
-
-    socket.emit('message', `Welcome ${user.userName}, you're connected`);
+    socket.emit('connected', `Welcome ${user.userName}, you're connected`);
   }
 
   async handleDisconnect(socket: Socket) {
@@ -54,7 +53,7 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
     return await this.userService.updateLoginState(+user.id, false);
   }
 
-  @SubscribeMessage('invite_friend')
+  @SubscribeMessage('inviteFriend')
   async createFriendship(
     @ConnectedSocket() socket: Socket,
     @MessageBody() payload: string,
@@ -69,7 +68,8 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     const friendShip = await this.friendsService.create(friendDto);
 
-    this.server.emit('invitation_success', friendShip);
+    socket.emit('inviteFriendSucces', {});
+    this.server.emit('invitedByFriend', friendShip.receiver);
   }
 
   @SubscribeMessage('accept_friend')
