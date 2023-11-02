@@ -22,6 +22,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { selectChatStore } from "./redux/store";
 import { fetchAllMessages} from './data/ChatData';
 import { fetchAllDirectMessages } from './components/ChatPageUsers';
+import GameChallenge from './components/GameChallenge';
 
 
 
@@ -46,6 +47,8 @@ const App: React.FC = () => {
 	const [code, setCode] = useState<string | null>(null);
 	const [state, setState] = useState<string>(generateStrState());
 	const [token2fa, setToken2fa] = useState<string>('');
+	const [challenge, setChallenge] = useState<boolean>(true);
+	const [game, setGame] = useState< Game | null >(null);
 	const socket = getSocket(userId);
 	const dispatch = useDispatch();
     const chatStore = useSelector(selectChatStore);
@@ -74,17 +77,20 @@ const App: React.FC = () => {
 			socket.on('invitedToMatch', (data: any) => {
 			console.log(userId, "   ", data.player2, "\n\n");
 			if (data.player2 == userId) {
-				const newGame: Game = {
-					... data,
-					status: 'found',
-				}
+				setChallenge(true);
 				console.log("I got invited to a game! \n\n");
-				socket.emit('acceptMatch', newGame);
+				setGame(data);
+				// const newGame: Game = {
+				// 	... data,
+				// 	status: 'found',
+				// }
+				// socket.emit('acceptMatch', newGame);
 			}
 			console.log("Match invitation received! \n\n", data);
 			});
+		} else {
+			console.log("Missing socket\n");
 		}
-		console.log("Missing socket\n");
 	});
     
 	return (
@@ -112,9 +118,8 @@ const App: React.FC = () => {
 					/>} />
 					<Route path='/game' element={<ProtectedRoute isAuth={isAuth} path='/game' element={<GameSelection userId={userId} />} />} />
 					<Route path='/profile' element={<ProtectedRoute isAuth={isAuth} path='/profile' element={<Profile userId={userId} isAuth={isAuth} />} />} />
-					{/* <Route path='/layout' element={<Layout />} /> */}
 					<Route path='/*' element={<PageNotFound />} />
-					{/* <Route path='/chat' element={<Layout />} /> */}
+					<Route path='/challenge' {challenge ? <GameChallenge game={game}/> : null }
 				</Routes>
 				<div className='shadow-xl flex backdrop-blur-sm bg-white/75 dark:bg-slate-900 h-11 border-t-4 border-slate-300 dark:border-slate-700 items-center justify-evenly'>
 					<Footer />
