@@ -63,7 +63,7 @@ const ChatConversation: React.FC<ChatProps> = ({ userId }) => {
                 type: (chatStore.chatType == enChatType.OneOnOne) ? PRIVATE : GROUP,
 				receiver: chatStore.chatRoomId
             };
-            socket.emit('send_message', newMessage);
+            socket.emit('sendMessage', newMessage);
             scrollToBottom();
             setUserMessage('');
         }
@@ -74,25 +74,25 @@ const ChatConversation: React.FC<ChatProps> = ({ userId }) => {
             e.preventDefault();
             onMessageSubmit(e);
         }
-    };
-
+    }
+    
     useEffect(() => {
+        socket.on("receiveMessage", async (data: any) => {
+            if (data.sender == userId || data.receiver == chatStore.chatRoomId) {
+                const allMessages: Chat[] = await fetchAllMessages();
+                dispatch(updateChatUserMessages(allMessages));
+                const newDirectMessages = fetchAllDirectMessages(allMessages, userId, chatStore.chatRoomId);
+                dispatch(updateChatDirectMessages(newDirectMessages));
+            }
+        });
         setMessages(formatMessages(chatStore.chatUsers, chatStore.chatDirectMessages, userId));
-    }, [chatStore.chatUserMessages, chatStore.chatDirectMessages]);
+    }, [chatStore.chatUserMessages, chatStore.chatDirectMessages, messages]);
 
     useEffect(() => {
         scrollToBottom();
     }, [messages]);
 
     //----------------------Incoming events handler -----------------------------------/
-    socket.on("message_sent", async (data: any) => {
-        const allMessages: Chat[] = await fetchAllMessages();
-        dispatch(updateChatUserMessages(allMessages));
-        const newDirectMessages = fetchAllDirectMessages(allMessages, userId, chatStore.chatRoomId);
-        dispatch(updateChatDirectMessages(newDirectMessages))
-
-    });
-
     return ( 
         <Stack sx={{ height: "75vh", width: "100%", }} 
             justifyContent={"space-between"}

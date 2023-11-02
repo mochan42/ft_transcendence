@@ -112,23 +112,27 @@ type Chat = {
 };
 
 type Game = {
+  id: number;
   player1: number;
   player2: number;
   difficulty: number;
   isBoost: boolean;
   status: 'request' | 'found' | 'playing' | 'finished' | 'aborted';
+  score1?: number;
+  score2?: number;
+  paddle1Y?: number;
+  paddle2Y?: number;
+  boostX?: number;
+  boostY?: number;
+  ballX?: number;
+  ballY?: number;
 }
 
-type GameMap = {
-  gameId: number;
-  score1: number;
-  score2: number;
-  paddle1Y: number;
-  paddle2Y: number;
-  boostX: number;
-  boostY: number;
-  ballx: number;
-  ballY: number;
+type TGameReq = {
+  id: number;
+  receiver: string;
+  sender: string;
+  difficulty: string;
 }
 
 export type {
@@ -146,5 +150,5 @@ export type {
   ChatProps,
   Chat,
   Game,
-  GameMap,
+  TGameReq
 };

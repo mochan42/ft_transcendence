@@ -1,3 +1,6 @@
+### channels 
+GET https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/channels
+
 ### get all users
 GET https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/
 
@@ -93,7 +96,7 @@ DELETE https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/1/a
 GET  https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/goals/
 
 ### add the first goal
-POST  https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/goals/1
+POST  https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/goals/
 Content-Type: application/json
 
 {
@@ -170,7 +173,7 @@ Content-Type: application/json
 	
 
 ### Delete a goal
-DELETE https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/goals/1
+DELETE https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/goals/2
 
 ### display all user's friends
 GET https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/friends

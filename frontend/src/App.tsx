@@ -16,6 +16,7 @@ import GameSelection from './components/pages/GameSelection';
 import Cookies from 'js-cookie';
 import { Utils__isAPICodeAvailable } from './utils/utils__isAPICodeAvailable';
 import { getSocket } from './utils/socketService';
+import { Game } from './types';
 
 
 
@@ -43,6 +44,24 @@ const App: React.FC = () => {
 
     // check if code available for backend to exchange for token
 	Utils__isAPICodeAvailable({ setIsAuth, isAuth, setCode, code })
+
+	const socket = getSocket(userId);
+
+
+	useEffect(() => {
+		socket.on('invitedToMatch', (data: any) => {
+			console.log(userId, "   ", data.player2, "\n\n");
+			if (data.player2 == userId) {
+				const newGame: Game = {
+					... data,
+					status: 'found',
+				}
+				console.log("I got invited to a game! \n\n");
+				socket.emit('acceptMatch', newGame);
+			}
+			console.log("Match invitation received! \n\n", data);
+		});
+	});
     
 	return (
 		<div className='flex-cols font-mono dark:bg-white/75 bg-slate-900 bg-opacity-80 h-screen'>

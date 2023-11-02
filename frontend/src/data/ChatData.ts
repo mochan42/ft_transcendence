@@ -18,6 +18,15 @@ const fetchAllUsers = async (): Promise<User[]> => {
   return users;
 };
 
+const fetchUser = async (userId: string): Promise<User | undefined> => {
+  const resp = await axios.get<User>("https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/" + userId);
+  if (resp.status === 200) {
+    return resp.data;
+  }
+  console.log("Fetching user ", userId, " failed with exit code ", resp.status);
+};
+
+
 const fetchAllFriends = async (): Promise<Friend[]> => {
   let friends: Friend[] = [];
   const urlFriend = "https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/friends";
@@ -256,6 +265,7 @@ export {
   friendToUserType,
   fetchAllUsersFriends,
   fetchAllUsers,
+  fetchUser,
   fetchAllFriends,
   fetchAllMessages,
   fetchAllStats

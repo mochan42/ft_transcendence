@@ -1,4 +1,12 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
+import { ChannelsService } from '../channels.service';
 
-@Controller('channels')
-export class ChannelsController {}
+@Controller('pong/channels')
+export class ChannelsController {
+    constructor(private channelsService: ChannelsService) { }
+
+    @Get()
+    async findAll() {
+        return this.channelsService.findAll();
+    }
+}

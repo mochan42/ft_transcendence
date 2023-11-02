@@ -102,7 +102,7 @@ const CreateGroupForm = ( handleFormClose: THandler ) => {
                 ...data,
                 members: newMembers
             };
-            socket.emit('create_channel', formatedData);
+            socket.emit('createChannel', formatedData);
             handleFormClose.close(false);
         }
         catch (error)

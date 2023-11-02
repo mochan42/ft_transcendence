@@ -3,7 +3,7 @@ import VictoryLoss from './VictoryLoss';
 import Boost from './Boost';
 import Ball from './Ball';
 import Paddle from './Paddle';
-import { User } from '../types';
+import { Game, User } from '../types';
 import MatchMaking from './MatchMaking';
 import { getSocket } from '../utils/socketService';
 
@@ -18,13 +18,15 @@ interface PvPProps {
 	isGameOver: boolean;
 	includeBoost: boolean;
 	setIsGameOver: (boolean: boolean) => void;
+	setPlayer1Id: (string: string) => void;
+	setPlayer2Id: (sstring: string) => void;
 	playerPoint: () => void;
 	opponentPoint: () => void;
 	setReset: (boolean: boolean) => void;
 	setState: React.Dispatch<React.SetStateAction<'select' | 'bot' | 'player'>>;
   }
 
-const PvP: React.FC<PvPProps> = ({ userId, difficulty, isGameOver, playerScore, isReset, opponentScore, includeBoost, playerPoint, opponentPoint, setIsGameOver, setReset, setState }) => {
+const PvP: React.FC<PvPProps> = ({ userId, difficulty, isGameOver, playerScore, isReset, opponentScore, includeBoost, playerPoint, opponentPoint, setIsGameOver, setReset, setState, setPlayer1Id, setPlayer2Id }) => {
 
 	// const [player1PaddleDirection, setPlayer1PaddleDirection] = useState<number>(0); // dynamic
 	// const [player2PaddleDirection, setPlayer2PaddleDirection] = useState<number>(0); // dynamic
@@ -33,8 +35,8 @@ const PvP: React.FC<PvPProps> = ({ userId, difficulty, isGameOver, playerScore, 
 	// const [player1PaddleSpeed, setPlayerPaddleSpeed] = useState(18 - (difficulty * 2)); // dynamic
 	// const [player2PaddleSpeed, setopponentPaddleSpeed] = useState(0.5 + (difficulty)); // dynamic
 	
-	
 	const socket = getSocket(userId);
+	const [opponentId, setOpponentId] = useState(-1);
 	const [playerScore1, setPlayerScore1] = useState(0); // dynamic
 	const [playerScore2, setPlayerScore2] = useState(0); // dynamic
 	const [ballX, setBallX] = useState(400); // dynamic
@@ -56,39 +58,43 @@ const PvP: React.FC<PvPProps> = ({ userId, difficulty, isGameOver, playerScore, 
 		startY = (PvPRef.current?.clientHeight - 30) / 2
 	}
 	
-
-	if (socket !== null) {
-		socket.on('isGameOver', (data: boolean) => {
-			setIsGameOver(data);
-		});
-		socket.on('matchFound', (data: boolean) => {
-			setMatchFound(data);
-		});
-		socket.on('playerScore1', (data: number) => {
-			setPlayerScore1(data);
-		});
-		socket.on('playerScore2', (data: number) => {
-			setPlayerScore2(data);
-		});
-		socket.on('ballX', (data: number) => {
-			setBallX(data);
-		});
-		socket.on('ballY', (data: number) => {
-			setBallY(data);
-		});
-		socket.on('leftPaddleY', (data: number) => {
-			setLeftPaddleY(data);
-		});
-		socket.on('rightPaddleY', (data: number) => {
-			setRightPaddleY(data);
-		});
-		socket.on('boostX', (data: number) => {
-			setBoostX(data);
-		});
-		socket.on('boostY', (data: number) => {
-			setBoostY(data);
-		});
-	}
+	useEffect(() => {
+		if (socket !== null) {
+			socket.on('matchFound', (data: Game) => {
+				console.log("The game may start\n\n\n\n");
+				if (userId && (+userId == data.player1 || +userId == data.player2)) {
+					setPlayer2Id(data.player2.toString());
+					setPlayer1Id(data.player1.toString());
+					setMatchFound(true);
+				}
+			})
+		}
+	},[matchFound]);
+	// 	socket.on('playerScore1', (data: number) => {
+	// 		setPlayerScore1(data);
+	// 	});
+	// 	socket.on('playerScore2', (data: number) => {
+	// 		setPlayerScore2(data);
+	// 	});
+	// 	socket.on('ballX', (data: number) => {
+	// 		setBallX(data);
+	// 	});
+	// 	socket.on('ballY', (data: number) => {
+	// 		setBallY(data);
+	// 	});
+	// 	socket.on('leftPaddleY', (data: number) => {
+	// 		setLeftPaddleY(data);
+	// 	});
+	// 	socket.on('rightPaddleY', (data: number) => {
+	// 		setRightPaddleY(data);
+	// 	});
+	// 	socket.on('boostX', (data: number) => {
+	// 		setBoostX(data);
+	// 	});
+	// 	socket.on('boostY', (data: number) => {
+	// 		setBoostY(data);
+	// 	});
+	// }
 
 	useEffect(() => {
 		const handleKeyDown = (event: KeyboardEvent) => {
@@ -129,7 +135,7 @@ const PvP: React.FC<PvPProps> = ({ userId, difficulty, isGameOver, playerScore, 
 					</div>
 				) : null
 			}
-			{!matchFound ? <MatchMaking difficulty={difficulty} includeBoost={includeBoost} socket={socket} setMatchFound={setMatchFound} userId={userId} setState={setState} /> : null }
+			{!matchFound ? <MatchMaking difficulty={difficulty} includeBoost={includeBoost} socket={socket} setMatchFound={setMatchFound} userId={userId} setState={setState} setOpponentId={setOpponentId} /> : null }
 		</div>
 	)
 }

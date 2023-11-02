@@ -211,8 +211,8 @@ const ChatUserFriendRequestComp = (reqData : User) => {
                 return el;
             }
         })[0];
-        socket.emit('accept_friend', stranger.id);
-        socket.on('friend', async (newFriend: any) => {
+        socket.emit('acceptFriend', stranger.id);
+        socket.on('newFriend', async (newFriend: any) => {
             const friends = await fetchAllFriends();
             const newFriendRequestList = await fetchAllUsersFriends(PENDING, friends);
             const newFriendList = await fetchAllUsersFriends(ACCEPTED, friends);
@@ -228,7 +228,7 @@ const ChatUserFriendRequestComp = (reqData : User) => {
                 return el;
             }
         })[0];
-        socket.emit('deny_friend', stranger.id);
+        socket.emit('denyFriend', stranger.id);
         socket.on('deniedFriend', async (data: any) => {
             const friends = await fetchAllFriends();
             const newFriendRequestList = await fetchAllUsersFriends(PENDING, friends);
