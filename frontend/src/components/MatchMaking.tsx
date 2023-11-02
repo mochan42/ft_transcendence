@@ -22,10 +22,10 @@ const MatchMaking:React.FC<MatchMakingProps> =({ setMatchFound, socket, userId, 
 	if (userId) {
 		let game: Game = {
 			player1: +userId,
-			player2: -1;
-			difficulty: difficulty;
-			isBoost: includeBoost;
-			status: 'request';
+			player2: -1,
+			difficulty: difficulty,
+			isBoost: includeBoost,
+			status: 'request'
 		}
 	}
 	// async function fetchOpponentInfo(id: number) {
@@ -46,7 +46,7 @@ const MatchMaking:React.FC<MatchMakingProps> =({ setMatchFound, socket, userId, 
 				setFoundMatch(data);
 			});
 			socket.on('foundOpponent', (data: number) => {
-				fetchOpponentInfo(data);
+				//fetchOpponentInfo(data);
 			});
 		}
 	});
