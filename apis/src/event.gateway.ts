@@ -22,6 +22,7 @@ import { GamesService } from './games/games.service';
 import { CreateGameDto } from './games/dto/create-game.dto';
 import { Friend } from './friends/entities/friend.entity';
 import { MessageDto } from './chats/dto/message.dto';
+import { Game } from './games/entities/game.entity';
 
 @WebSocketGateway({
   cors: {
@@ -45,8 +46,7 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   async handleConnection(@ConnectedSocket() socket: Socket, ...args: any[]) {
     const user = await this.chatsService.getUserFromSocket(socket);
-
-    socket.emit('message', `Welcome ${user.userName}, you're connected`);
+    socket.emit('connected', `Welcome ${user.userName}, you're connected`);
   }
 
   async handleDisconnect(socket: Socket) {
@@ -54,7 +54,7 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
     return await this.userService.updateLoginState(+user.id, false);
   }
 
-  @SubscribeMessage('invite_friend')
+  @SubscribeMessage('inviteFriend')
   async createFriendship(
     @ConnectedSocket() socket: Socket,
     @MessageBody() payload: string,
@@ -69,10 +69,11 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     const friendShip = await this.friendsService.create(friendDto);
 
-    this.server.emit('invitation_success', friendShip);
+    socket.emit('inviteFriendSucces', {});
+    this.server.emit('invitedByFriend', friendShip.receiver);
   }
 
-  @SubscribeMessage('accept_friend')
+  @SubscribeMessage('acceptFriend')
   async updateFriendship(
     @ConnectedSocket() socket: Socket,
     @MessageBody() friendship: number,
@@ -81,10 +82,10 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const updatedFriend: Friend = { ...reqToAccept, relation: ACCEPTED };
     const friend = await this.friendsService.update(updatedFriend);
 
-    this.server.emit('friend', friend);
+    this.server.emit('newFriend', friend);
   }
 
-  @SubscribeMessage('deny_friend')
+  @SubscribeMessage('denyFriend')
   async deleteFriend(
     @ConnectedSocket() socket: Socket,
     @MessageBody() friendShip: number,
@@ -93,7 +94,7 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
     socket.emit('deniedFriend', isDelete);
   }
 
-  @SubscribeMessage('create_channel')
+  @SubscribeMessage('createChannel')
   async createChannel(
     @ConnectedSocket() socket: Socket,
     @MessageBody() payload: any,
@@ -126,31 +127,44 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
       });
     }
 
-    socket.emit('channel', newChannel);
+    socket.emit('newChannel', newChannel);
   }
 
-  @SubscribeMessage('send_message')
+  @SubscribeMessage('sendMessage')
   async sendMessage(
     @ConnectedSocket() socket: Socket,
     @MessageBody() message: any,
   ) {
     const newMessage: MessageDto = { ...message };
     const savedMessage = await this.chatsService.saveMessage(newMessage);
-    this.server.emit('message_sent', savedMessage);
+    this.server.emit('receiveMessage', savedMessage);
   }
 
   /***********************GAME*********************** */
+  @SubscribeMessage('acceptMatch')
+  async handleAcceptMatch(
+    @ConnectedSocket() socket: Socket,
+    @MessageBody() data: Game,
+  ) {
+    console.log("Game was accepted\n");
+    const game = await this.gamesService.acceptMatch(data);
+    this.server.emit('matchFound', game);
+  }
+
+
   @SubscribeMessage('requestMatch')
   async handleRequestMatch(
     @ConnectedSocket() socket: Socket,
     @MessageBody() data: any,
   ) {
+    console.log("requestMatch was received.\n")
     const player1 = data.player1;
     if (data.player2 > 0) {
       const player2 = data.player2;
       const makeGame = await this.gamesService.makeMatch(+player1, +player2, data.difficulty, data.isBoost);
       if (makeGame) {
         this.server.emit('invitedToMatch', makeGame);
+        console.log("Broadcasting invitedToMatch\n\n")
       }
 
     }

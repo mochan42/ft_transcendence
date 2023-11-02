@@ -5,6 +5,7 @@ import Pong from '../Pong'
 import axios from 'axios';
 import { User } from '../../types';
 import PvP from '../PvP';
+import { fetchUser } from '../../data/ChatData';
 
 
 interface GameProps {
@@ -16,23 +17,27 @@ interface GameProps {
 }
 
 const Game:React.FC<GameProps> = ({ difficulty, userId, includeBoost, opponent, setState }) => {
-	const [playerScore, setPlayerScore] = useState(0)
-	const [opponentScore, setOpponentScore] = useState(0)
+	
 	const [gameActive, setGameActive] = useState(false)
 	const [reset, setReset] = useState(false)
 	const [isGameOver, setIsGameOver] = useState(false)
-	const [userInfo, setUserInfo] = useState<User | null>(null);
+	const [player1Id, setPlayer1Id] = useState(null)
+	const [player2Id, setPlayer2Id] = useState(null)
+	const [player1Info, setPlayer1Info] = useState< User | null | undefined >(null);
+	const [player2Info, setPlayer2Info] = useState< User | null | undefined >(null);
+	const [player1Score, setPlayer1Score] = useState(0)
+	const [player2Score, setPlayer2Score] = useState(0)
 
 	const playerPoint = () => {
-		setPlayerScore(playerScore + 1);
-		if (playerScore === 10) {
+		setPlayer1Score(player1Score + 1);
+		if (player1Score === 10) {
 			setIsGameOver(true);
 		}
 	}
 
 	const opponentPoint = () => {
-		setOpponentScore(opponentScore + 1);
-		if (opponentScore === 10) {
+		setPlayer2Score(player2Score + 1);
+		if (player2Score === 10) {
 			setIsGameOver(true);
 		}
 	}
@@ -45,8 +50,8 @@ const Game:React.FC<GameProps> = ({ difficulty, userId, includeBoost, opponent, 
 	}
 
 	const handleReset = () => {
-		setPlayerScore(0);
-		setOpponentScore(0);
+		setPlayer1Score(0);
+		setPlayer2Score(0);
 		handlePause();
 		setIsGameOver(false);
 		setReset(true)
@@ -60,25 +65,25 @@ const Game:React.FC<GameProps> = ({ difficulty, userId, includeBoost, opponent, 
 	};
 
 	useEffect(() => {
-		userId && getUserInfo(userId);
-		window.addEventListener('keypress', handleKeyPress);
-		return () => {
-			window.removeEventListener('keypress', handleKeyPress); // Clean up the event listener when the component is unmounted
-		};
-	}, [userId, gameActive]);
-
-	const getUserInfo = async (id: string) => {
-		try {
-			const url = 'https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/' + id;
-			const response = await axios.get<User>(url);
-			if (response.status === 200) {
-				setUserInfo(response.data);
-			}
-		}
-		catch (error) {
-			console.log('Error fetching user infos', error);
-		}
-	}
+			console.log("\n\n !!! \n ", player1Info);
+			(async() => {
+				if (player1Id && player2Id) {
+					console.log(player1Id, player2Id, "In if\n");
+					const ply1 = await fetchUser(player1Id);
+					const ply2 = await fetchUser(player2Id);
+					setPlayer1Info(ply1);
+					setPlayer2Info(ply2);
+				}
+				else if (userId) {
+					const tmp = await fetchUser(userId)
+					setPlayer1Info(tmp);
+				}
+			})();
+			window.addEventListener('keypress', handleKeyPress);
+			return () => {
+				window.removeEventListener('keypress', handleKeyPress); // Clean up the event listener when the component is unmounted
+			};
+	}, [userId, player1Id, player2Id, gameActive]);
 
 	return (
 		<div className='h-full w-full flex flex-col items-center justify-between bg-gray-200 dark:bg-slate-900 border-t-8 dark:border-slate-900'>
@@ -91,14 +96,14 @@ const Game:React.FC<GameProps> = ({ difficulty, userId, includeBoost, opponent, 
 					</Button>
 				</div>
 				<div className='border-8 dark:border-slate-900 flex justify-between gap-8 items-center'>
-					<img className='min-w-[24px] h-12 w-12 rounded-full overflow-hidden' src={(userInfo && userInfo.avatar) ? userInfo.avatar : 'https://fastly.picsum.photos/id/294/200/200.jpg?hmac=tSuqBbGGNYqgxQ-6KO7-wxq8B4m3GbZqQAbr7tNApz8'}></img>
+					<img className='min-w-[24px] h-12 w-12 rounded-full overflow-hidden' src={(player1Info && player1Info.avatar) ? player1Info.avatar : 'https://fastly.picsum.photos/id/294/200/200.jpg?hmac=tSuqBbGGNYqgxQ-6KO7-wxq8B4m3GbZqQAbr7tNApz8'}></img>
 					<SmallHeading className='text-lg dark:text-amber-400'>
-						{userInfo ? userInfo.userNameLoc : 'Player' }
+						{ player1Info ? player1Info.userNameLoc : 'Player 1' }
 					</SmallHeading>
 				</div>
 				<div className='border-8 dark:border-slate-900'>
 					<Button>
-						{playerScore}
+						{player1Score}
 					</Button>
 				</div>
 				<div>
@@ -115,20 +120,19 @@ const Game:React.FC<GameProps> = ({ difficulty, userId, includeBoost, opponent, 
 				</div>
 				<div className='border-8 dark:border-slate-900'>
 					<Button>
-						{opponentScore}
+						{player2Score}
 					</Button>
 				</div>
 				<div className='border-8 dark:border-slate-900 flex justify-between gap-8 items-center'>
-					<img className='min-w-[24px] w-12 h-12 rounded-full overflow-hidden' src='https://www.svgrepo.com/show/384679/account-avatar-profile-user-3.svg'></img>
+					<img className='min-w-[24px] h-12 w-12 rounded-full overflow-hidden' src={(player2Info && player2Info.avatar) ? player2Info.avatar : 'https://fastly.picsum.photos/id/294/200/200.jpg?hmac=tSuqBbGGNYqgxQ-6KO7-wxq8B4m3GbZqQAbr7tNApz8'}></img>
 					<SmallHeading className='text-lg dark:text-amber-400'>
-						{(opponent === 'bot') ? 'Bot' : null}
-						{(opponent === 'player') ? 'player' : null}
+						{ player2Info ? player2Info.userNameLoc : 'Player 2' }
 					</SmallHeading>
 				</div>
 			</div>
 			<div className='w-full h-5/6 border-t-2 border-l-2 border-r-2 border-slate-700 black:border-slate-200 bg-slate-400 dark:text-slate-200 text-center'>
-				{opponent === 'bot' ? <Pong userId={userId} difficulty={difficulty} isGameActive={gameActive} isReset={reset} isGameOver={isGameOver} playerScore={playerScore} opponentScore={opponentScore} includeBoost={includeBoost} setIsGameOver={setIsGameOver} playerPoint={playerPoint} opponentPoint={opponentPoint} setReset={setReset}/> : null }
-				{(opponent === 'player') ? <PvP userId={userId} difficulty={difficulty} isGameActive={gameActive} isReset={reset} isGameOver={isGameOver} playerScore={playerScore} opponentScore={opponentScore} includeBoost={includeBoost} setIsGameOver={setIsGameOver} playerPoint={playerPoint} opponentPoint={opponentPoint} setReset={setReset} setState={setState} /> : null}
+				{(opponent === 'bot') ? <Pong userId={userId} difficulty={difficulty} isGameActive={gameActive} isReset={reset} isGameOver={isGameOver} player1Score={player1Score} opponentScore={player2Score} includeBoost={includeBoost} setIsGameOver={setIsGameOver} playerPoint={playerPoint} opponentPoint={opponentPoint} setReset={setReset}/> : null }
+				{(opponent === 'player') ? <PvP userId={userId} difficulty={difficulty} isGameActive={gameActive} isReset={reset} isGameOver={isGameOver} player1Score={player1Score} opponentScore={player2Score} includeBoost={includeBoost} setIsGameOver={setIsGameOver} playerPoint={playerPoint} opponentPoint={opponentPoint} setReset={setReset} setState={setState} setPlayer1Id={setPlayer1Id} setPlayer2Id={setPlayer2Id}/> : null}
 			</div>
 		</div>
 	)

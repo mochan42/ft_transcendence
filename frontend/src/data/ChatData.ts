@@ -3,6 +3,7 @@ import {
   Chat,
   User,
   Friend,
+  UserStats,
 } from "../types";
 import axios from "axios";
 import { ACCEPTED, PENDING } from "../APP_CONSTS";
@@ -16,6 +17,15 @@ const fetchAllUsers = async (): Promise<User[]> => {
   }
   return users;
 };
+
+const fetchUser = async (userId: string): Promise<User | undefined> => {
+  const resp = await axios.get<User>("https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/" + userId);
+  if (resp.status === 200) {
+    return resp.data;
+  }
+  console.log("Fetching user ", userId, " failed with exit code ", resp.status);
+};
+
 
 const fetchAllFriends = async (): Promise<Friend[]> => {
   let friends: Friend[] = [];
@@ -34,6 +44,22 @@ const fetchAllMessages = async (): Promise<Chat[]> => {
     messages = resp.data;
   }
   return messages;
+}
+
+const fetchAllStats = async (userId: any) => {
+  let stats: UserStats = {
+    id: '',
+    userId: userId,
+    wins: 0,
+    losses: 0,
+    draws: 0
+  }
+  const userStatUrl = `https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/${userId}/stats`;
+  const resp = await axios.get<UserStats>(userStatUrl);
+  if (resp.status === 200) {
+    stats = {...resp.data, userId: resp.data.userId }
+  } 
+  return stats;
 }
 
 const friends: Friend[] = await fetchAllFriends();
@@ -239,6 +265,8 @@ export {
   friendToUserType,
   fetchAllUsersFriends,
   fetchAllUsers,
+  fetchUser,
   fetchAllFriends,
   fetchAllMessages,
+  fetchAllStats
 };

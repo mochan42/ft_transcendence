@@ -96,6 +96,12 @@ interface ChatProps {
   userId: string | null;
 }
 
+type TUserFriendRequest = {
+  userId: number | null;
+  userImg: string | undefined;
+  userName: string | undefined;
+  reqType: string | undefined;
+};
 
 type Chat = {
   id: number;
@@ -106,13 +112,23 @@ type Chat = {
 };
 
 type Game = {
+  id: number;
   player1: number;
   player2: number;
   difficulty: number;
   isBoost: boolean;
-  status: string<'request' | 'found' | 'playing' | 'finished' | 'aborted'>;
+  status: 'request' | 'found' | 'playing' | 'finished' | 'aborted';
+  score1?: number;
+  score2?: number;
+  paddle1Y?: number;
+  paddle2Y?: number;
+  boostX?: number;
+  boostY?: number;
+  ballX?: number;
+  ballY?: number;
 }
 
+<<<<<<< HEAD
 type GameMap = {
   gameId: number;
   score1: number;
@@ -123,6 +139,13 @@ type GameMap = {
   boostY: number;
   ballx: number;
   ballY: number;
+=======
+type TGameReq = {
+  id: number;
+  receiver: string;
+  sender: string;
+  difficulty: string;
+>>>>>>> dev
 }
 
 export type {
@@ -140,5 +163,9 @@ export type {
   ChatProps,
   Chat,
   Game,
+<<<<<<< HEAD
   GameMap,
+=======
+  TGameReq
+>>>>>>> dev
 };

@@ -49,7 +49,7 @@ const Leaderboard:React.FC<LeaderboardProps> =({ userId }) => {
 
 	const addFriend = async (receiver: string) => {
 		try {
-			socket.emit('invite_friend', receiver);
+			socket.emit('inviteFriend', receiver);
 		}
 		catch (error) {
 			console.log('Error requesting friendship with user: ', receiver, error);

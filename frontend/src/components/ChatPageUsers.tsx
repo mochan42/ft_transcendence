@@ -71,9 +71,9 @@ const ChatElement = (user: User) => {
                         anchorOrigin={{vertical:"bottom", horizontal:"left"}}
                         overlap="circular"
                     >
-                        <Avatar src={ user.avatar }/>
+                    <Avatar src={ user.avatar }/>
                     </Badge>
-                    : <Avatar alt={ user.userNameLoc }/>
+                    : <Avatar alt={ user.avatar }/>
                     }
                     <Stack spacing={0.2}>
                         <Typography variant="subtitle2">{ user.userNameLoc }</Typography>
@@ -133,7 +133,8 @@ const  ChatPageUsers = (chatProp : ChatProps) => {
                         sx={{flexGrow:1, overflowY:"scroll", height:"100%"}}
                         spacing={0.5} 
                     >
-                            {chatStore.chatUserFriends
+                            {
+                                chatStore.chatUserFriends
                                 .filter((user) => {
                                     if (user.sender == chatProp.userId || user.receiver == chatProp.userId) {
                                         return user;
@@ -142,7 +143,8 @@ const  ChatPageUsers = (chatProp : ChatProps) => {
                                 .map((friend) => friendToUserType(chatProp.userId, friend, chatStore.chatUsers))
                                 .map((el) => {
                                     return (<ChatElement {...el} key={el.id} />)
-                                })}
+                                })
+                            }
                     </Stack>
                 </Stack>
         </Box>

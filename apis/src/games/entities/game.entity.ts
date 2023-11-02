@@ -17,29 +17,27 @@ export class Game {
   @Column()
   score2: number;
 
+  @Column()
   difficulty: number;
 
-  @Column()
-  isGameOver: boolean;
-
-  @Column()
+  @Column({nullable: true})
   ballX: number;
 
-  @Column()
+  @Column({nullable: true})
   ballY: number;
 
-  @Column()
+  @Column({nullable: true})
   leftPaddleY: number;
 
-  @Column()
+  @Column({nullable: true})
   rightPaddleY: number;
 
-  @Column()
+  @Column({nullable: true})
   boostX: number;
 
-  @Column()
+  @Column({nullable: true})
   boostY: number;
 
   @Column()
-  state: string;
+  status: string;
 }

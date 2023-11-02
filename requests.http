@@ -1,3 +1,6 @@
+### channels 
+GET https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/channels
+
 ### get all users
 GET https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/
 
@@ -46,17 +49,16 @@ Content-Type: application/json
 PATCH   https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/2fa/30
 
 ###  delete user
-DELETE  https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/7
+DELETE  https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/1
 
 ### get user stat
-GET https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/1/stats
+GET https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/2/stats
 
 ### creat user stat
-POST https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/1/stats
+POST https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/2/stats
 Content-Type: application/json
 
 {
-  "userId": 0,
   "wins": 0,
   "losses": 0,
   "draws": 0
@@ -94,7 +96,7 @@ DELETE https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/1/a
 GET  https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/goals/
 
 ### add the first goal
-POST  https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/goals/1
+POST  https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/goals/
 Content-Type: application/json
 
 {
@@ -171,7 +173,7 @@ Content-Type: application/json
 	
 
 ### Delete a goal
-DELETE https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/goals/1
+DELETE https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/goals/2
 
 ### display all user's friends
 GET https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/friends
@@ -188,18 +190,18 @@ Content-Type: application/json
 }
 
 ### update friend relation
-PATCH   https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/friends/24
+PATCH   https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/friends/3
 Content-Type: application/json
 
 {
-	"receiver": 2,
-	"sender": 9,
-	"relation": "ACCEPTED",
-	"createdAt": "27/07/2023"
+    "sender": 34,
+    "receiver": 2,
+    "relation": "ACCEPTED",
+    "createdAt": "2023-11-02T11:45:51.329Z"
 }
 
 ### delete friendship
-DELETE https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/friends/31
+DELETE https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/friends/2
 
 ### aut
 POST https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/auth

@@ -168,17 +168,18 @@ const Home = ({
 	}, [userId, loginState.isLogin]);
 	
 	if (socket) {
-		socket.on('message', (message: string) => {
+		socket.on('connected', (message: string) => {
 			console.log(message);
 		});
 		// ---new channel created---------------
-		socket.on('channel_created', (channel: any) => {
+		socket.on('newChannel', (channel: any) => {
 			console.log('channel created successfully');
 			console.log(channel);
 		});
 		// --friend invitation sent ------
-		socket.on('invite_friend_success', (friend: any) => {
-			console.log('friend invited successfully', friend);
+		socket.on('invitedByFriend', (receiver: any) => {
+			
+			console.log('friend invited successfully', receiver);
 		});
 
 		// ------------disconnexion-----------------------------

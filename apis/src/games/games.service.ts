@@ -58,4 +58,8 @@ export class GamesService {
     };
     return await this.gameRepo.save(game);
   }
+
+  async acceptMatch(game: Game) {
+    return await this.gameRepo.save(game);
+  }
 }
