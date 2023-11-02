@@ -35,5 +35,14 @@ enum enChatMemberRights {
   PRIVILEDGED = "priviledged",
   BANNED = "banned", // same with muted
 }
+
+enum enGameDifficulty {
+  EASY = 'easy',
+  MEDIUM = 'medium',
+  HARD = 'hard',
+  VERY_HARD = 'very hard',
+  EXTREME = 'extreme',
+
+}
 export { HOME_SECTION, logStatus, enChatType, enChatMemberRank,
-enChatMemberRights, enChatPrivacy };
+enChatMemberRights, enChatPrivacy, enGameDifficulty};

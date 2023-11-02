@@ -96,14 +96,6 @@ interface ChatProps {
   userId: string | null;
 }
 
-type TUserFriendRequest = {
-  userId: number | null;
-  // the two attributes below can be fetched by API
-  // using the user id
-  userImg: string | undefined;
-  userName: string | undefined;
-  reqType: string | undefined;
-};
 
 type Chat = {
   id: number;
@@ -112,6 +104,13 @@ type Chat = {
   type: string;
   receiver: number;
 };
+
+type TGameReq = {
+  id: number;
+  receiver: string;
+  sender: string;
+  difficulty: string;
+}
 
 export type {
   User,
@@ -127,4 +126,5 @@ export type {
   ChatMessageProps,
   ChatProps,
   Chat,
+  TGameReq,
 };

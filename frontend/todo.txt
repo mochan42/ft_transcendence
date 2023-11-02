@@ -95,6 +95,7 @@ npm cache clean --force                 : clear the cache
 + add chatlist to store.
 + - make all users messagable without being friend.
 + ensure that user can send message only when in priviledge mode (group) or not blocked (oneonone)
++ all store data to be populated on successful user login
 
 
 ----- PUSH TODO ------------------
@@ -109,6 +110,18 @@ video 27 - handle friend request with socket.io 27:00
 
 [ Activities ]
 --------------
++ ChatUserProfile
+  - add Score and rank to profile
++ udpate chatSlice with chatGameRequest
++ create dummy data for chatGameRequest
++ add game request count as indicator on HomeBoard (game icon)
++ create ChatPageGameRequest.tsx page
+
+
++ Facinet: function to fetch and post all game request.
+-          Emit event on post to update count indicator
+
+
 + Channel creation form
   - update the users with proper data 
   - add all users in channel creation form.

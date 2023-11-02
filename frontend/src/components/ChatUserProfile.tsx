@@ -85,6 +85,12 @@ const ChatUserProfile = () => {
                         <Typography variant="subtitle2" fontWeight={600}>
                             { `Losts :  100  `} {/** update with real value from backend */}
                         </Typography>
+                        <Typography variant="subtitle2" fontWeight={600}>
+                            { `Score :  100  `} {/** update with real value from backend */}
+                        </Typography>
+                        <Typography variant="subtitle2" fontWeight={600}>
+                            { `Rank :  100  `} {/** update with real value from backend */}
+                        </Typography>
                     </Stack>
                     <Divider />
                     <Stack alignItems={"center"} direction={"row"} spacing={2}>
