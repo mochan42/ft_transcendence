@@ -17,6 +17,7 @@ import { HOME_SECTION, logStatus } from "../../enums";
 import HomeBoard from '../HomeBoard';
 import EditProfile from '../EditProfile';
 import { getSocket } from '../../utils/socketService';
+import ChatPageGameRequests from '../ChatPageGameRequests';
 
 
 type TUserState = {
@@ -244,7 +245,7 @@ const Home = ({
 								}
 								{section === HOME_SECTION.CHAT_USER ? <ChatPageUsers userId={userId} /> : null}
 								{section === HOME_SECTION.CHAT_GROUP ? <ChatPageGroups userId={userId}  /> : null}
-								{section === HOME_SECTION.GAME_REQUEST ? <ChatPageUsers userId={userId}  /> : null}
+								{section === HOME_SECTION.GAME_REQUEST ? <ChatPageGameRequests userId={userId}  /> : null}
 
 							</Stack>
 						</Stack>

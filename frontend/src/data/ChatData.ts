@@ -7,7 +7,7 @@ import {
 } from "../types";
 import axios from "axios";
 import { ACCEPTED, PENDING } from "../APP_CONSTS";
-import { enChatMemberRank, enChatMemberRights } from "../enums";
+import { enChatMemberRank, enChatMemberRights, enGameDifficulty } from "../enums";
 
 const fetchAllUsers = async (): Promise<User[]> => {
   let users: User[] = [];
@@ -203,17 +203,45 @@ const ChatGroupMemberList2 = [
     id: 1,
     usrId: 0,
     channelId: 3,
-    rank: "admin", // member
+    rank: enChatMemberRank.ADMIN, // member
     rights: enChatMemberRights.PRIVILEDGED, // kicked, banned
   },
   {
     id: 2,
     usrId: 7,
     channelId: 3,
-    rank: "member", // member
+    rank: enChatMemberRank.MEMBER, // member
     rights: enChatMemberRights.PRIVILEDGED, // kicked, banned
   },
 ];
+
+const ChatGameRequestList = [
+
+  {
+    id: 1,
+    receiver: '1',
+    sender: '7',
+    difficulty: enGameDifficulty.EXTREME
+  },
+  {
+    id: 1,
+    receiver: '1',
+    sender: '5',
+    difficulty: enGameDifficulty.HARD
+  },
+  {
+    id: 1,
+    receiver: '3',
+    sender: '7',
+    difficulty: enGameDifficulty.EASY
+  },
+  {
+    id: 1,
+    receiver: '8',
+    sender: '1',
+    difficulty: enGameDifficulty.MEDIUM
+  }
+]
 
 export {
   ChatUserList,
@@ -224,6 +252,7 @@ export {
   ChatUserMessages,
   ChatGroupMemberList2,
   dummyUsers,
+  ChatGameRequestList,
   friendToUserType,
   fetchAllUsersFriends,
   fetchAllUsers,
