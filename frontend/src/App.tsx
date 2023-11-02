@@ -48,7 +48,7 @@ const App: React.FC = () => {
 	const [state, setState] = useState<string>(generateStrState());
 	const [token2fa, setToken2fa] = useState<string>('');
 	const [challenge, setChallenge] = useState<boolean>(true);
-	const [game, setGame] = useState< Game | null >(null);
+	const [game, setGame] = useState< Game >();
 	const socket = getSocket(userId);
 	const dispatch = useDispatch();
     const chatStore = useSelector(selectChatStore);
@@ -80,11 +80,6 @@ const App: React.FC = () => {
 				setChallenge(true);
 				console.log("I got invited to a game! \n\n");
 				setGame(data);
-				// const newGame: Game = {
-				// 	... data,
-				// 	status: 'found',
-				// }
-				// socket.emit('acceptMatch', newGame);
 			}
 			console.log("Match invitation received! \n\n", data);
 			});
@@ -119,12 +114,12 @@ const App: React.FC = () => {
 					<Route path='/game' element={<ProtectedRoute isAuth={isAuth} path='/game' element={<GameSelection userId={userId} />} />} />
 					<Route path='/profile' element={<ProtectedRoute isAuth={isAuth} path='/profile' element={<Profile userId={userId} isAuth={isAuth} />} />} />
 					<Route path='/*' element={<PageNotFound />} />
-					<Route path='/challenge' {challenge ? <GameChallenge game={game}/> : null }
 				</Routes>
 				<div className='shadow-xl flex backdrop-blur-sm bg-white/75 dark:bg-slate-900 h-11 border-t-4 border-slate-300 dark:border-slate-700 items-center justify-evenly'>
 					<Footer />
 				</div>
 			</Router>
+			{ challenge ? <GameChallenge userId={userId} game={game} setChallenge={setChallenge} /> : null}
 		</div>
 	)
 }
