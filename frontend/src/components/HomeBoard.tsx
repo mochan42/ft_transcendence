@@ -52,7 +52,7 @@ const HomeBoard = (select : ISelectSection) => {
 	const chatStore = useSelector(selectChatStore)
     const userId = Cookies.get('userId') ? Cookies.get('userId') : '';
 	const gameRequestCount = chatStore.chatGameRequests.filter(
-		(el) => el.receiver == userId 
+		(el) => el.player2.toString() == userId 
 	).length
 	let counters = [
 		0, //home

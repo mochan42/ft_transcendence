@@ -1,3 +1,5 @@
+import { enGameDifficulty } from "./enums";
+
 type User = {
   id: string;
   userName: string;
@@ -118,17 +120,8 @@ type Game = {
   difficulty: number;
   isBoost: boolean;
   status: 'request' | 'found' | 'playing' | 'finished' | 'aborted';
-  score1?: number;
-  score2?: number;
-  paddle1Y?: number;
-  paddle2Y?: number;
-  boostX?: number;
-  boostY?: number;
-  ballX?: number;
-  ballY?: number;
 }
 
-<<<<<<< HEAD
 type GameMap = {
   gameId: number;
   score1: number;
@@ -139,13 +132,6 @@ type GameMap = {
   boostY: number;
   ballx: number;
   ballY: number;
-=======
-type TGameReq = {
-  id: number;
-  receiver: string;
-  sender: string;
-  difficulty: string;
->>>>>>> dev
 }
 
 export type {
@@ -163,9 +149,5 @@ export type {
   ChatProps,
   Chat,
   Game,
-<<<<<<< HEAD
   GameMap,
-=======
-  TGameReq
->>>>>>> dev
 };

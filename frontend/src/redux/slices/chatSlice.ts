@@ -4,7 +4,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 // import { ThunkAction } from "redux-thunk";
 // import { CHAT_ACTION_TYPE, IChatState } from "..";
 import { CHAT_ACTION_TYPE, IChatState, TAction } from "..";
-import { User, Friend, Group, JoinGroup, Chat, TGameReq } from "../../types";
+import { User, Friend, Group, JoinGroup, Chat, Game } from "../../types";
 // import axios from "axios";
 // import { io } from "socket.io-client";
 
@@ -106,7 +106,7 @@ const chatSlice = createSlice({
       state.chatGroupCreateFormPasswdState = action.payload;
     },
     // update the list of game request sent via chat
-    updateChatGameRequests: (state, action: PayloadAction<TGameReq[]>) => {
+    updateChatGameRequests: (state, action: PayloadAction<Game[]>) => {
       state.chatGameRequests = action.payload;
     },
   },
