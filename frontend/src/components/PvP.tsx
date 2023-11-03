@@ -3,7 +3,7 @@ import VictoryLoss from './VictoryLoss';
 import Boost from './Boost';
 import Ball from './Ball';
 import Paddle from './Paddle';
-import { Game, User } from '../types';
+import { GameType, User } from '../types';
 import MatchMaking from './MatchMaking';
 import { getSocket } from '../utils/socketService';
 
@@ -60,7 +60,7 @@ const PvP: React.FC<PvPProps> = ({ userId, difficulty, isGameOver, player1Score,
 	
 	useEffect(() => {
 		if (socket !== null) {
-			socket.on('matchFound', (data: Game) => {
+			socket.on('matchFound', (data: GameType) => {
 				console.log("The game may start\n\n\n\n");
 				if (userId && (+userId == data.player1 || +userId == data.player2)) {
 					setPlayer2Id(data.player2.toString());

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { User, Game } from "../types";
+import { User, GameType } from "../types";
 import { Button } from './ui/Button';
 import UserCard from './UserCard';
 import axios from 'axios';
@@ -19,10 +19,10 @@ interface MatchMakingProps {
 const MatchMaking:React.FC<MatchMakingProps> =({ setOpponentId, setMatchFound, socket, userId, setState, difficulty, includeBoost}) => {
 	const [searchingForMatch, setSearchingForMatch] = useState< boolean | undefined >(undefined);
 	const [opponentInfo, setOpponentInfo] = useState< User | null >(null);
-	const url_info = 'https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/users/';
+	const url_info = 'https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/';
 	const MatchMaking = 'MatchMaking';
 	const navigate = useNavigate();
-	let game: Game = {
+	let game: GameType = {
 		id: -1,
 		player1: userId ? +userId : 0,
 		player2: 3,
@@ -33,7 +33,7 @@ const MatchMaking:React.FC<MatchMakingProps> =({ setOpponentId, setMatchFound, s
 	
 	useEffect(() => {
 		if (socket !== null) {
-			socket.on('foundMatch', async (data: Game) => {
+			socket.on('foundMatch', async (data: GameType) => {
 				if (data.status === 'found') {
 					console.log("Match was found!")
 					if (userId && +userId != data.player2) {

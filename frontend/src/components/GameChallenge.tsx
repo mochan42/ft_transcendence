@@ -19,7 +19,7 @@ const GameChallenge: React.FC<GameChallengeProps> = ({ userId,  game, setChallen
 
     function acceptGame() {
 		if (game != undefined && game != null) {
-			const newGame: Game = {
+			const newGame: GameType = {
 				... game,
 				status: 'found',
 			}
@@ -33,7 +33,7 @@ const GameChallenge: React.FC<GameChallengeProps> = ({ userId,  game, setChallen
 
     function declineGame() {
 		if (game != undefined && game != null) {
-			const newGame: Game = {
+			const newGame: GameType = {
 				... game,
 				status: 'aborted',
 			}

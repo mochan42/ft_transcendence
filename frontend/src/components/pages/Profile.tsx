@@ -19,11 +19,11 @@ import '../../css/profile.css';
 	const [allGoals, setAllGoals] = useState< Goal[] | null >(null);
 	const [friends, setFriends] = useState< Friend [] | null>(null)
 	const id = userId;
-	const urlFriends = 'https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/users/' + id + '/friends';
-	const url_info = 'https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/users/' + id;
-	const url_stats = 'https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/users/' + id + '/stats'
-	const url_achievements = 'https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/users/' + id + '/achievements';
-	const url_goals = 'https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/goals';
+	const urlFriends = 'https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/' + id + '/friends';
+	const url_info = 'https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/' + id;
+	const url_stats = 'https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/' + id + '/stats'
+	const url_achievements = 'https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/' + id + '/achievements';
+	const url_goals = 'https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/goals';
 	const [achievedGoals, setAchievedGoals] = useState<Goal[]>();
 	const [notAchievedGoals, setNotAchievedGoals] = useState<Goal[]>();
 	const [userFriends, setUserFriends] = useState<User [] | null >(null)
@@ -45,7 +45,7 @@ import '../../css/profile.css';
     }
 
 	const Handle2faBtnClick = async () => {
-        const resp = await axios.patch<User>('https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/users/2fa/' + id);
+        const resp = await axios.patch<User>('https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/2fa/' + id);
         if (resp.status === 200) {
 			setUserInfo(resp.data);
             //window.location.reload()
@@ -131,7 +131,7 @@ import '../../css/profile.css';
 				}
 				if (usersInfo === null) {
 					try {
-						const response = await axios.get< User[] >('https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/users/');
+						const response = await axios.get< User[] >('https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/');
 						if (response.status === 200) {
 							setUsersInfo(response.data);
 							console.log('Received Users Info: ', response.data)

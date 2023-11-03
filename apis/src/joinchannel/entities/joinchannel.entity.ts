@@ -14,6 +14,6 @@ export class Joinchannel {
   @Column({ nullable: true })
   satus: string;
 
-  @Column()
+  @Column({ nullable: true })
   createdAt: string;
 }

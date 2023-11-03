@@ -1,16 +1,16 @@
-https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev
+https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev
 
 ### channels 
-GET https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/channels
+GET https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/channels
 
 ### get all users
-GET https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/users/
+GET https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/
 
 ### test
-GET https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/friends
+GET https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/friends
 
 #### add user
-POST https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/users
+POST https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users
 Content-Type: application/json
 
 {
@@ -29,7 +29,7 @@ Content-Type: application/json
 }
 
 ###  Edit user info
-PATCH  https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/users/2
+PATCH  https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/2
 Content-Type: application/json
 
 {
@@ -48,16 +48,16 @@ Content-Type: application/json
 }
 
 ### udpate 2FA option
-PATCH   https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/users/2fa/30
+PATCH   https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/2fa/30
 
 ###  delete user
-DELETE  https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/users/1
+DELETE  https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/1
 
 ### get user stat
-GET https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/users/2/stats
+GET https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/2/stats
 
 ### creat user stat
-POST https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/users/2/stats
+POST https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/2/stats
 Content-Type: application/json
 
 {
@@ -67,7 +67,7 @@ Content-Type: application/json
 }
 
 ### update user stat
-PATCH https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/users/2/stats
+PATCH https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/2/stats
 Content-Type: application/json
 
 {
@@ -77,13 +77,13 @@ Content-Type: application/json
 }
 
 ### delete user stat
-DELETE  https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/users/1/stats
+DELETE  https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/1/stats
 
 ### get user achievement
-GET https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/users/2/achievements/
+GET https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/2/achievements/
 
 ### add user achievement
-POST https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/users/2/achievements/
+POST https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/2/achievements/
 Content-Type: application/json
 
 {
@@ -92,13 +92,13 @@ Content-Type: application/json
 }
 
 ### delete achievement
-DELETE https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/users/1/achievements/
+DELETE https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/1/achievements/
 
 ### Get all goals 
-GET  https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/goals/
+GET  https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/goals/
 
 ### add the first goal
-POST  https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/goals/
+POST  https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/goals/
 Content-Type: application/json
 
 {
@@ -107,7 +107,7 @@ Content-Type: application/json
 	"description": "Welcome on board!"
 }
 ### add a new goal
-POST  https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/goals/
+POST  https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/goals/
 Content-Type: application/json
 
 {
@@ -117,7 +117,7 @@ Content-Type: application/json
 }
 
 ### 2nd. goal
-POST  https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/goals/
+POST  https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/goals/
 Content-Type: application/json
 
 {
@@ -127,7 +127,7 @@ Content-Type: application/json
 }
 
 ### 3rd goal
-POST  https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/goals/
+POST  https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/goals/
 Content-Type: application/json
 
 {
@@ -137,7 +137,7 @@ Content-Type: application/json
 }
 
 ### 4th. goal
-POST  https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/goals/
+POST  https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/goals/
 Content-Type: application/json
 
 {
@@ -147,7 +147,7 @@ Content-Type: application/json
 }
 
 ### 5th. goal
-POST  https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/goals/
+POST  https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/goals/
 Content-Type: application/json
 
 {
@@ -164,7 +164,7 @@ Content-Type: application/json
 # const image = ['https://www.svgrepo.com/show/470680/robot-face.svg', 'https://www.svgrepo.com/show/235195/robot-ai.svg', 'https://www.svgrepo.com/show/134/robot.svg', 'https://www.svgrepo.com/show/402624/robot-face.svg', 'https://www.svgrepo.com/show/145418/robot.svg'];
 
 ### patch a goal
-PATCH  https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/goals/2
+PATCH  https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/goals/2
 Content-Type: application/json
 
 {
@@ -175,13 +175,13 @@ Content-Type: application/json
 	
 
 ### Delete a goal
-DELETE https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/goals/2
+DELETE https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/goals/2
 
 ### display all user's friends
-GET https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/friends
+GET https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/friends
 
 ### add a friend request to a user
-POST  https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/friends
+POST  https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/friends
 Content-Type: application/json
 
 {
@@ -192,7 +192,7 @@ Content-Type: application/json
 }
 
 ### update friend relation
-PATCH   https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/friends/3
+PATCH   https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/friends/3
 Content-Type: application/json
 
 {
@@ -203,10 +203,10 @@ Content-Type: application/json
 }
 
 ### delete friendship
-DELETE https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/friends/2
+DELETE https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/friends/2
 
 ### aut
-POST https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/users/auth
+POST https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/auth
 Content-Type: application/json
 
 {
@@ -214,10 +214,10 @@ Content-Type: application/json
 }
 
 ### Generate secrete for 2FA
-GET https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/users/auth/2fa/30
+GET https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/auth/2fa/30
 
 ### Validate the secrete
-POST https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/users/auth/2fa
+POST https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/auth/2fa
 Content-Type: application/json
 
 {
@@ -226,14 +226,14 @@ Content-Type: application/json
 }
 
 ### avatar
-GET https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/users/avatar/faci30682023382.jpg
+GET https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/avatar/faci30682023382.jpg
 
 
 ### get all messages
-GET https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/chats
+GET https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/chats
 
 ### send a message
-POST https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/chats
+POST https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/chats
 Content-Type: application/json
 
 {
@@ -245,9 +245,9 @@ Content-Type: application/json
 
 ### Delete a message
 
-DELETE  https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/chats/4
+DELETE  https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/chats/4
 ### get games
-GET https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/games
+GET https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/games
 
 ### game making
-GET https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/gamequeue/12
+GET https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/gamequeue/12
