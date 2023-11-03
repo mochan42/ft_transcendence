@@ -13,7 +13,7 @@ const GameChallenge: React.FC<GameChallengeProps> = ({ userId,  game, setChallen
     const socket = getSocket(userId);
 
     function acceptGame() {
-		if (game) {
+		if (game != undefined && game != null) {
 			const newGame: Game = {
 				... game,
 				status: 'found',
@@ -21,21 +21,21 @@ const GameChallenge: React.FC<GameChallengeProps> = ({ userId,  game, setChallen
 			if (socket != null) {
 				socket.emit('acceptMatch', newGame);
 			}
-			setChallenge(false);
 		}
+		setChallenge(false);
     }
 
     function declineGame() {
-		if (game) {
+		if (game != undefined && game != null) {
 			const newGame: Game = {
 				... game,
 				status: 'aborted',
 			}
 			if (socket != null) {
 				socket.emit('abortMatch', newGame);
-			}
-			setChallenge(false);
+			}	
 		}
+		setChallenge(false);
     }
 
     return (

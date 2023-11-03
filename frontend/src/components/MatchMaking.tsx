@@ -18,7 +18,7 @@ interface MatchMakingProps {
 const MatchMaking:React.FC<MatchMakingProps> =({ setOpponentId, setMatchFound, socket, userId, setState, difficulty, includeBoost}) => {
 	const [searchingForMatch, setSearchingForMatch] = useState< boolean | undefined >(undefined);
 	const [opponentInfo, setOpponentInfo] = useState< User | null >(null);
-	const url_info = 'https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/';
+	const url_info = 'https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/users/';
 	const MatchMaking = 'MatchMaking';
 	let game: Game = {
 		id: -1,

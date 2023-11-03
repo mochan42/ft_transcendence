@@ -39,7 +39,7 @@ const App: React.FC = () => {
 		}
 		return token;
 	}
-	const authSession: boolean = Cookies.get('isAuth') ? true : false;
+	const authSession: boolean = Cookies.get('isAuth') ? true : true;
 	const userCookie = Cookies.get('userId');
 	const idSession: string | null =  userCookie ? userCookie : null ;
 	const [isAuth, setIsAuth] = useState<boolean>(authSession);

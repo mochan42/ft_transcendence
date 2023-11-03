@@ -11,7 +11,7 @@ import { enChatMemberRank, enChatMemberRights, enGameDifficulty } from "../enums
 
 const fetchAllUsers = async (): Promise<User[]> => {
   let users: User[] = [];
-  const resp = await axios.get<User[]>("https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users");
+  const resp = await axios.get<User[]>("https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/users");
   if (resp.status === 200) {
     users = resp.data;
   }
@@ -19,7 +19,7 @@ const fetchAllUsers = async (): Promise<User[]> => {
 };
 
 const fetchUser = async (userId: string): Promise<User | undefined> => {
-  const resp = await axios.get<User>("https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/" + userId);
+  const resp = await axios.get<User>("https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/users/" + userId);
   if (resp.status === 200) {
     return resp.data;
   }
@@ -29,7 +29,7 @@ const fetchUser = async (userId: string): Promise<User | undefined> => {
 
 const fetchAllFriends = async (): Promise<Friend[]> => {
   let friends: Friend[] = [];
-  const urlFriend = "https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/friends";
+  const urlFriend = "https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/friends";
   const resp = await axios<Friend[]>(urlFriend);
   if (resp.status === 200) {
     friends = resp.data;
@@ -39,7 +39,7 @@ const fetchAllFriends = async (): Promise<Friend[]> => {
 
 const fetchAllMessages = async (): Promise<Chat[]> => {
   let messages: Chat[] = [];
-  const resp = await axios.get<Chat[]>("https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/chats");
+  const resp = await axios.get<Chat[]>("https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/chats");
   if (resp.status === 200) {
     messages = resp.data;
   }
@@ -54,7 +54,7 @@ const fetchAllStats = async (userId: any) => {
     losses: 0,
     draws: 0
   }
-  const userStatUrl = `https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/${userId}/stats`;
+  const userStatUrl = `https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/users/${userId}/stats`;
   const resp = await axios.get<UserStats>(userStatUrl);
   if (resp.status === 200) {
     stats = {...resp.data, userId: resp.data.userId }
