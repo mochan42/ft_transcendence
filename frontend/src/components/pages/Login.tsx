@@ -12,7 +12,7 @@ const Login: React.FC<Props> = ({setIsAuth, isAuth, state}) => {
     const handleLogin = () => {
         const generatedState = state;
         const client_id_42 = process.env.REACT_APP_UID;
-        const url_auth_42 = `https://api.intra.42.fr/oauth/authorize?client_id=${client_id_42}&redirect_uri=https%3A%2F%2Fspecial-dollop-r6jj956gq9xf5r9-3000.app.github.dev%2F&response_type=code&state=${generatedState}`;
+        const url_auth_42 = `https://api.intra.42.fr/oauth/authorize?client_id=${client_id_42}&redirect_uri=https%3A%2F%2Fliterate-space-garbanzo-vjvjp6xjpvvfp57j-3000.app.github.dev%2F&response_type=code&state=${generatedState}`;
         window.location.href = url_auth_42;
     }
   

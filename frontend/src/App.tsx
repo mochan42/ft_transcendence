@@ -39,7 +39,7 @@ const App: React.FC = () => {
 		}
 		return token;
 	}
-	const authSession: boolean = Cookies.get('isAuth') ? true : true;
+	const authSession: boolean = Cookies.get('isAuth') ? true : false;
 	const userCookie = Cookies.get('userId');
 	const idSession: string | null =  userCookie ? userCookie : null ;
 	const [isAuth, setIsAuth] = useState<boolean>(authSession);
@@ -47,7 +47,7 @@ const App: React.FC = () => {
 	const [code, setCode] = useState<string | null>(null);
 	const [state, setState] = useState<string>(generateStrState());
 	const [token2fa, setToken2fa] = useState<string>('');
-	const [challenge, setChallenge] = useState<boolean>(true);
+	const [challenge, setChallenge] = useState<boolean>(false);
 	const [game, setGame] = useState< Game >();
 	const socket = getSocket(userId);
 	const dispatch = useDispatch();
