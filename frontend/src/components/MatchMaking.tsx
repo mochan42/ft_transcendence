@@ -4,6 +4,7 @@ import { Button } from './ui/Button';
 import UserCard from './UserCard';
 import axios from 'axios';
 import { fetchUser } from '../data/ChatData';
+import { useNavigate } from 'react-router-dom';
 
 interface MatchMakingProps {
 	userId: string | undefined | null;
@@ -12,7 +13,7 @@ interface MatchMakingProps {
 	includeBoost: boolean;
 	setOpponentId: (number: number) => void;
 	setMatchFound: (boolean: boolean) => void;
-	setState: React.Dispatch<React.SetStateAction<'select' | 'bot' | 'player'>>;
+	setState?: React.Dispatch<React.SetStateAction<'select' | 'bot' | 'player'>>;
 }
 
 const MatchMaking:React.FC<MatchMakingProps> =({ setOpponentId, setMatchFound, socket, userId, setState, difficulty, includeBoost}) => {
@@ -20,10 +21,11 @@ const MatchMaking:React.FC<MatchMakingProps> =({ setOpponentId, setMatchFound, s
 	const [opponentInfo, setOpponentInfo] = useState< User | null >(null);
 	const url_info = 'https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/users/';
 	const MatchMaking = 'MatchMaking';
+	const navigate = useNavigate();
 	let game: Game = {
 		id: -1,
 		player1: userId ? +userId : 0,
-		player2: 34,
+		player2: 3,
 		difficulty: difficulty,
 		isBoost: includeBoost,
 		status: 'request'
@@ -44,7 +46,7 @@ const MatchMaking:React.FC<MatchMakingProps> =({ setOpponentId, setMatchFound, s
 				}
 				else if (data.status === 'aborted') {
 					console.log("Match ", data.id , " was aborted.\n");
-					setState('select');
+					setState?('select') : navigate("/game");
 				}
 			});
 			socket.on('foundOpponent', (data: number) => {
@@ -80,7 +82,7 @@ const MatchMaking:React.FC<MatchMakingProps> =({ setOpponentId, setMatchFound, s
 								socket.emit('requestMatch', game);
 							}
 						} else if (searchingForMatch === false) {
-							setState('select');
+							setState?('select') : navigate("/game");
 						} else {
 							setMatchFound(true);
 						}

@@ -111,7 +111,7 @@ type Chat = {
   receiver: number;
 };
 
-type Game = {
+type GameType = {
   id: number;
   player1: number;
   player2: number;
@@ -149,6 +149,6 @@ export type {
   ChatMessageProps,
   ChatProps,
   Chat,
-  Game,
+  GameType,
   TGameReq
 };

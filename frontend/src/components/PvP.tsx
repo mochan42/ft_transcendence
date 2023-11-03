@@ -23,7 +23,7 @@ interface PvPProps {
 	playerPoint: () => void;
 	opponentPoint: () => void;
 	setReset: (boolean: boolean) => void;
-	setState: React.Dispatch<React.SetStateAction<'select' | 'bot' | 'player'>>;
+	setState?: React.Dispatch<React.SetStateAction<'select' | 'bot' | 'player'>>;
   }
 
 const PvP: React.FC<PvPProps> = ({ userId, difficulty, isGameOver, player1Score, player2Score, isReset, includeBoost, playerPoint, opponentPoint, setIsGameOver, setReset, setState, setPlayer1Id, setPlayer2Id }) => {
