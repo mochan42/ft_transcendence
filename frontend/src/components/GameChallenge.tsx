@@ -3,8 +3,8 @@ import { Button } from './ui/Button';
 import { getSocket } from '../utils/socketService';
 
 interface GameChallengeProps{
-    game: Game,
-    userId: string,
+    game: Game | undefined,
+    userId: string | null,
     setChallenge: (boolean: boolean) => void;
 }
 
@@ -13,25 +13,29 @@ const GameChallenge: React.FC<GameChallengeProps> = ({ userId,  game, setChallen
     const socket = getSocket(userId);
 
     function acceptGame() {
-        const newGame: Game = {
-            ... game,
-            status: 'found',
-        }
-        if (socket != null) {
-            socket.emit('acceptMatch', newGame);
-        }
-        setChallenge(false);
+		if (game) {
+			const newGame: Game = {
+				... game,
+				status: 'found',
+			}
+			if (socket != null) {
+				socket.emit('acceptMatch', newGame);
+			}
+			setChallenge(false);
+		}
     }
 
     function declineGame() {
-        const newGame: Game = {
-            ... game,
-            status: 'aborted',
-        }
-        if (socket != null) {
-            socket.emit('abortMatch', newGame);
-        }
-        setChallenge(false);
+		if (game) {
+			const newGame: Game = {
+				... game,
+				status: 'aborted',
+			}
+			if (socket != null) {
+				socket.emit('abortMatch', newGame);
+			}
+			setChallenge(false);
+		}
     }
 
     return (

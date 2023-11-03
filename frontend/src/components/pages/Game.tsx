@@ -21,8 +21,8 @@ const Game:React.FC<GameProps> = ({ difficulty, userId, includeBoost, opponent, 
 	const [gameActive, setGameActive] = useState(false)
 	const [reset, setReset] = useState(false)
 	const [isGameOver, setIsGameOver] = useState(false)
-	const [player1Id, setPlayer1Id] = useState(null)
-	const [player2Id, setPlayer2Id] = useState(null)
+	const [player1Id, setPlayer1Id] = useState('-1')
+	const [player2Id, setPlayer2Id] = useState('-1')
 	const [player1Info, setPlayer1Info] = useState< User | null | undefined >(null);
 	const [player2Info, setPlayer2Info] = useState< User | null | undefined >(null);
 	const [player1Score, setPlayer1Score] = useState(0)
@@ -132,7 +132,7 @@ const Game:React.FC<GameProps> = ({ difficulty, userId, includeBoost, opponent, 
 			</div>
 			<div className='w-full h-5/6 border-t-2 border-l-2 border-r-2 border-slate-700 black:border-slate-200 bg-slate-400 dark:text-slate-200 text-center'>
 				{(opponent === 'bot') ? <Pong userId={userId} difficulty={difficulty} isGameActive={gameActive} isReset={reset} isGameOver={isGameOver} player1Score={player1Score} opponentScore={player2Score} includeBoost={includeBoost} setIsGameOver={setIsGameOver} playerPoint={playerPoint} opponentPoint={opponentPoint} setReset={setReset}/> : null }
-				{(opponent === 'player') ? <PvP userId={userId} difficulty={difficulty} isGameActive={gameActive} isReset={reset} isGameOver={isGameOver} player1Score={player1Score} opponentScore={player2Score} includeBoost={includeBoost} setIsGameOver={setIsGameOver} playerPoint={playerPoint} opponentPoint={opponentPoint} setReset={setReset} setState={setState} setPlayer1Id={setPlayer1Id} setPlayer2Id={setPlayer2Id}/> : null}
+				{(opponent === 'player') ? <PvP userId={userId} difficulty={difficulty} isGameActive={gameActive} isReset={reset} isGameOver={isGameOver} player1Score={player1Score} player2Score={player2Score} includeBoost={includeBoost} setIsGameOver={setIsGameOver} playerPoint={playerPoint} opponentPoint={opponentPoint} setReset={setReset} setState={setState} setPlayer1Id={setPlayer1Id} setPlayer2Id={setPlayer2Id}/> : null}
 			</div>
 		</div>
 	)

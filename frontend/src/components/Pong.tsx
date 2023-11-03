@@ -9,7 +9,7 @@ interface PongProps {
 	difficulty: number;
 	isGameActive: boolean;
 	isReset: boolean;
-	playerScore: number;
+	player1Score: number;
 	opponentScore: number;
 	isGameOver: boolean;
 	includeBoost: boolean;
@@ -19,7 +19,7 @@ interface PongProps {
 	setReset: (boolean: boolean) => void;
   }
 
-const Pong: React.FC<PongProps> = ({ userId, difficulty, isGameActive, isGameOver, isReset, playerScore, opponentScore, includeBoost, playerPoint, opponentPoint, setIsGameOver, setReset }) => {
+const Pong: React.FC<PongProps> = ({ userId, difficulty, isGameActive, isGameOver, isReset, player1Score, opponentScore, includeBoost, playerPoint, opponentPoint, setIsGameOver, setReset }) => {
 
 	const itsdifficult = (difficulty + 2) * 2
 	const PongRef = useRef<HTMLDivElement>(null);
@@ -228,7 +228,7 @@ const Pong: React.FC<PongProps> = ({ userId, difficulty, isGameActive, isGameOve
 				moveBall();
 				checkCollision();
 			}
-			if (playerScore >= 10 || opponentScore >= 10) {
+			if (player1Score >= 10 || opponentScore >= 10) {
 				setIsGameOver(true);
 			}
 			if (isReset && !isGameOver) {
@@ -295,7 +295,7 @@ const Pong: React.FC<PongProps> = ({ userId, difficulty, isGameActive, isGameOve
 				{includeBoost && !isBoost ? <Boost x={boostStartX} y={boostStartY} width={boostWidth} height={boostWidth} /> : null}
 				{isGameOver ? (
 						<div className="absolute inset-0 bg-black bg-opacity-80">
-							<VictoryLoss userId={userId} isVictory={playerScore === 10} difficulty={difficulty} />
+							<VictoryLoss userId={userId} isVictory={player1Score === 10} difficulty={difficulty} />
 						</div>
 					) : null
 				}

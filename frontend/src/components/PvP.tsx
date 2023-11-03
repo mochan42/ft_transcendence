@@ -13,20 +13,20 @@ interface PvPProps {
 	difficulty: number;
 	isGameActive: boolean;
 	isReset: boolean;
-	playerScore: number;
-	opponentScore: number;
+	player1Score: number;
+	player2Score: number;
 	isGameOver: boolean;
 	includeBoost: boolean;
 	setIsGameOver: (boolean: boolean) => void;
 	setPlayer1Id: (string: string) => void;
-	setPlayer2Id: (sstring: string) => void;
+	setPlayer2Id: (string: string) => void;
 	playerPoint: () => void;
 	opponentPoint: () => void;
 	setReset: (boolean: boolean) => void;
 	setState: React.Dispatch<React.SetStateAction<'select' | 'bot' | 'player'>>;
   }
 
-const PvP: React.FC<PvPProps> = ({ userId, difficulty, isGameOver, playerScore, isReset, opponentScore, includeBoost, playerPoint, opponentPoint, setIsGameOver, setReset, setState, setPlayer1Id, setPlayer2Id }) => {
+const PvP: React.FC<PvPProps> = ({ userId, difficulty, isGameOver, player1Score, player2Score, isReset, includeBoost, playerPoint, opponentPoint, setIsGameOver, setReset, setState, setPlayer1Id, setPlayer2Id }) => {
 
 	// const [player1PaddleDirection, setPlayer1PaddleDirection] = useState<number>(0); // dynamic
 	// const [player2PaddleDirection, setPlayer2PaddleDirection] = useState<number>(0); // dynamic
