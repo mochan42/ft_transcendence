@@ -152,6 +152,16 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
     this.server.emit('matchFound', game);
   }
 
+  @SubscribeMessage('updateMatchClient')
+  handleUpdateMatch(
+    @ConnectedSocket() socket: Socket,
+    @MessageBody() data: any,
+  ){
+    // console.log("gameUpdate on game #: ", data.id);
+    // const tmp = await this.gamesService.update(data);
+    this.server.emit('updateMatch', data);
+  }
+
 
   @SubscribeMessage('requestMatch')
   async handleRequestMatch(
