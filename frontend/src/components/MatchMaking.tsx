@@ -28,7 +28,15 @@ const MatchMaking:React.FC<MatchMakingProps> =({ setOpponentId, setMatchFound, s
 		player2: 2,
 		difficulty: difficulty,
 		isBoost: includeBoost,
-		status: 'request'
+		status: 'request',
+		score1: 0,
+		score2: 0,
+		paddle1Y: 0,
+		paddle2Y: 0,
+		boostX: 0,
+		boostY: 0,
+		ballX: 0,
+		ballY: 0,
 	}
 	
 	useEffect(() => {
