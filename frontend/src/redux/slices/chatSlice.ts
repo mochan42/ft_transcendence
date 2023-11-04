@@ -35,7 +35,6 @@ const initialState: IChatState = {
   chatActiveUser: null,
   chatUserFriendDialogState: false,
   chatUserMessages: ChatUserMessages,
-  chatDirectMessages: [],
   chatActiveGroup: null,
   chatGroupDialogState: false,
   chatGroupCreateFormPasswdState: true,
@@ -84,9 +83,6 @@ const chatSlice = createSlice({
     },
     updateChatUserMessages: (state, action: PayloadAction<Chat[]>) => {
       state.chatUserMessages = action.payload;
-    },
-    updateChatDirectMessages: (state, action: PayloadAction<Chat[]>) => {
-      state.chatDirectMessages = action.payload;
     },
     updateChatGroups: (state, action: PayloadAction<Group[]>) => {
       state.chatGroupList = action.payload;

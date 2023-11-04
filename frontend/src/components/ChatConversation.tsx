@@ -14,6 +14,7 @@ import { getSocket } from '../utils/socketService';
 import { PRIVATE, GROUP } from '../APP_CONSTS';
 import { fetchAllDirectMessages } from "./ChatPageUsers";
 import img42 from '../img/icon_42.png'
+import Cookies from "js-cookie";
 
 export const getUserById = (users: User[], id: any) => {
     return users.filter((user: User) => id == user.id)[0];
@@ -23,7 +24,7 @@ export const formatMessages = (users: User[], messages: Chat[], userId: any): Ch
     let chats: ChatMessageProps[] = [];
     messages.map((el) => {
         const message : ChatMessageProps = {
-            user: (el.author == userId) ? getUserById(users, userId).userNameLoc : getUserById(users, el.author).userNameLoc,
+            user: (el.author == userId) ? Cookies.get('userName') + '' : getUserById(users, el.author).userNameLoc,
             id: el.id,
             message: el.message,
             incoming: (el.author == userId) ? false : true,
@@ -77,8 +78,9 @@ const ChatConversation: React.FC<ChatProps> = ({ userId }) => {
     }
     
     useEffect(() => {
-        setMessages(formatMessages(chatStore.chatUsers, chatStore.chatDirectMessages, userId));
-    }, [chatStore.chatUserMessages, chatStore.chatDirectMessages, messages]);
+        const newDirectMessages = fetchAllDirectMessages(chatStore.chatUserMessages, userId, chatStore.chatRoomId);
+        setMessages(formatMessages(chatStore.chatUsers, newDirectMessages, userId));
+    }, [chatStore.chatUserMessages, chatStore.chatRoomId]);
 
     useEffect(() => {
         scrollToBottom();

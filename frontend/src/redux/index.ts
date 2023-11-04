@@ -25,7 +25,6 @@ export interface IChatState {
   chatActiveUser: Friend | null;
   chatUserFriendDialogState: boolean;
   chatUserMessages: Chat[];
-  chatDirectMessages: Chat[];
   chatActiveGroup: Group | null;
   chatGroupDialogState: boolean;
   chatGroupCreateFormPasswdState: boolean;

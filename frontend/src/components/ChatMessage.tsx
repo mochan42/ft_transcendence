@@ -14,7 +14,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ incoming, user, message }) =>
 				{incoming ? 
 				<p className={'text-sm text-slate-600'}>
 					{user}:
-				</p> : <p></p>}
+				</p> : <p>Me</p>}
 			</div>
 			<div className={cn('p-3 rounded-lg max-w-max', backgroundColor)}>
 				<p className={cn('text-sm', textColor)}>

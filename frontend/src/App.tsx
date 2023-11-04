@@ -21,7 +21,6 @@ import { updateChatUserMessages, updateChatDirectMessages } from "./redux/slices
 import { useDispatch, useSelector } from "react-redux";
 import { selectChatStore } from "./redux/store";
 import { fetchAllMessages} from './data/ChatData';
-import { fetchAllDirectMessages } from './components/ChatPageUsers';
 import GameChallenge from './components/GameChallenge';
 import Game from './components/pages/Game';
 
@@ -61,13 +60,8 @@ const App: React.FC = () => {
 	//----------------------------CHAT---------------------------
 	useEffect(() => {
 		if (socket != null) {
-			socket.on("receiveMessage", async (data: any) => {
-				if (data.sender == userId || data.receiver == chatStore.chatRoomId) {
-					const allMessages: Chat[] = await fetchAllMessages();
-					dispatch(updateChatUserMessages(allMessages));
-					const newDirectMessages = fetchAllDirectMessages(allMessages, userId, chatStore.chatRoomId);
-					dispatch(updateChatDirectMessages(newDirectMessages));
-				}
+			socket.on("receiveMessage", (data: any) => {
+				dispatch(updateChatUserMessages(data.all));
 			});
 		}
 	});

@@ -138,7 +138,8 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
   ) {
     const newMessage: MessageDto = { ...message };
     const savedMessage = await this.chatsService.saveMessage(newMessage);
-    this.server.emit('receiveMessage', savedMessage);
+    const allMessages = await this.chatsService.findAllMessages();
+    this.server.emit('receiveMessage', { new: savedMessage, all: allMessages });
   }
 
   /***********************GAME*********************** */
