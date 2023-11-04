@@ -120,17 +120,13 @@ type GameType = {
   difficulty: number;
   isBoost: boolean;
   status: 'request' | 'found' | 'playing' | 'finished' | 'aborted';
-}
-
-type GameMap = {
-  gameId: number;
   score1: number;
   score2: number;
   paddle1Y: number;
   paddle2Y: number;
   boostX: number;
   boostY: number;
-  ballx: number;
+  ballX: number;
   ballY: number;
 }
 
@@ -155,6 +151,5 @@ export type {
   ChatProps,
   Chat,
   GameType,
-  GameMap,
   TFormMember
 };
