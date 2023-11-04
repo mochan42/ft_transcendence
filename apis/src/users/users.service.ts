@@ -27,7 +27,7 @@ export class UsersService {
   async update(id: number, userNameLoc: string, avatar: string) {
     const toUpdate = await this.UserRepository.findOne({ where: { id } });
     if (avatar) {
-      avatar = 'https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/avatar/' + avatar;
+      avatar = 'https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/users/avatar/' + avatar;
     } else {
       avatar = toUpdate.avatar;
     }

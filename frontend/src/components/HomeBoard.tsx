@@ -51,6 +51,7 @@ const HomeBoard = (select : ISelectSection) => {
 	const navigate = useNavigate();
 	const chatStore = useSelector(selectChatStore)
     const userId = Cookies.get('userId') ? Cookies.get('userId') : '';
+	// get number of incoming game request
 	const gameRequestCount = chatStore.chatGameRequests.filter(
 		(el) => el.player2.toString() == userId 
 	).length

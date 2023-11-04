@@ -16,13 +16,14 @@ import GameSelection from './components/pages/GameSelection';
 import Cookies from 'js-cookie';
 import { Utils__isAPICodeAvailable } from './utils/utils__isAPICodeAvailable';
 import { getSocket } from './utils/socketService';
-import { Game, Chat } from './types';
+import { GameType, Chat } from './types';
 import { updateChatUserMessages, updateChatDirectMessages } from "./redux/slices/chatSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { selectChatStore } from "./redux/store";
 import { fetchAllMessages} from './data/ChatData';
 import { fetchAllDirectMessages } from './components/ChatPageUsers';
 import GameChallenge from './components/GameChallenge';
+import Game from './components/pages/Game';
 
 
 
@@ -47,8 +48,8 @@ const App: React.FC = () => {
 	const [code, setCode] = useState<string | null>(null);
 	const [state, setState] = useState<string>(generateStrState());
 	const [token2fa, setToken2fa] = useState<string>('');
-	const [challenge, setChallenge] = useState<boolean>(true);
-	const [game, setGame] = useState< Game >();
+	const [challenge, setChallenge] = useState<boolean>(false);
+	const [game, setGame] = useState< GameType >();
 	const socket = getSocket(userId);
 	const dispatch = useDispatch();
     const chatStore = useSelector(selectChatStore);
@@ -112,14 +113,16 @@ const App: React.FC = () => {
 							setToken2fa={setToken2fa}
 					/>} />
 					<Route path='/game' element={<ProtectedRoute isAuth={isAuth} path='/game' element={<GameSelection userId={userId} />} />} />
+					<Route path='/game/pvp' element={<ProtectedRoute isAuth={isAuth} path='/game/pvp' element={<Game difficulty={game ? game.difficulty : 0} userId={userId ? userId : "0"} includeBoost={game ? game.isBoost : false} opponent={'player'} status={'found'} game={game ? game : undefined} />} />} />
 					<Route path='/profile' element={<ProtectedRoute isAuth={isAuth} path='/profile' element={<Profile userId={userId} isAuth={isAuth} />} />} />
 					<Route path='/*' element={<PageNotFound />} />
 				</Routes>
 				<div className='shadow-xl flex backdrop-blur-sm bg-white/75 dark:bg-slate-900 h-11 border-t-4 border-slate-300 dark:border-slate-700 items-center justify-evenly'>
 					<Footer />
 				</div>
+				{ challenge ? <GameChallenge userId={userId} game={game} setChallenge={setChallenge} /> : null}
 			</Router>
-			{ challenge ? <GameChallenge userId={userId} game={game} setChallenge={setChallenge} /> : null}
+			
 		</div>
 	)
 }

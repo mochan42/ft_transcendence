@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react'
 import { Button } from '../ui/Button'
 import SmallHeading from '../ui/SmallHeading'
 import Pong from '../Pong'
-import axios from 'axios';
-import { User } from '../../types';
+// import axios from 'axios';
+import { GameType, User } from '../../types';
 import PvP from '../PvP';
 import { fetchUser } from '../../data/ChatData';
 
@@ -13,18 +13,21 @@ interface GameProps {
 	userId: string | null;
 	includeBoost: boolean;
 	opponent: string;
-	setState: React.Dispatch<React.SetStateAction<'select' | 'bot' | 'player'>>;
+	status?: string;
+	setState?: React.Dispatch<React.SetStateAction<'select' | 'bot' | 'player'>>;
+	game?: GameType;
 }
 
-const Game:React.FC<GameProps> = ({ difficulty, userId, includeBoost, opponent, setState }) => {
+const Game:React.FC<GameProps> = ({ difficulty, userId, includeBoost, opponent, setState, status, game }) => {
 	
 	const [gameActive, setGameActive] = useState(false)
 	const [reset, setReset] = useState(false)
 	const [isGameOver, setIsGameOver] = useState(false)
-	const [player1Id, setPlayer1Id] = useState(null)
-	const [player2Id, setPlayer2Id] = useState(null)
+	const [player1Id, setPlayer1Id] = useState('-1')
+	const [player2Id, setPlayer2Id] = useState('-1')
 	const [player1Info, setPlayer1Info] = useState< User | null | undefined >(null);
 	const [player2Info, setPlayer2Info] = useState< User | null | undefined >(null);
+	const [userInfo, setUserInfo] = useState< User | null | undefined >(null);
 	const [player1Score, setPlayer1Score] = useState(0)
 	const [player2Score, setPlayer2Score] = useState(0)
 
@@ -65,10 +68,9 @@ const Game:React.FC<GameProps> = ({ difficulty, userId, includeBoost, opponent, 
 	};
 
 	useEffect(() => {
-			console.log("\n\n !!! \n ", player1Info);
 			(async() => {
 				if (player1Id && player2Id) {
-					console.log(player1Id, player2Id, "In if\n");
+					console.log("player1Id: ", player1Id, "player2ID :", player2Id, "\n");
 					const ply1 = await fetchUser(player1Id);
 					const ply2 = await fetchUser(player2Id);
 					setPlayer1Info(ply1);
@@ -77,6 +79,10 @@ const Game:React.FC<GameProps> = ({ difficulty, userId, includeBoost, opponent, 
 				else if (userId) {
 					const tmp = await fetchUser(userId)
 					setPlayer1Info(tmp);
+				}
+				if (userId) {
+					const user = await fetchUser(userId)
+					setUserInfo(user);
 				}
 			})();
 			window.addEventListener('keypress', handleKeyPress);
@@ -89,16 +95,16 @@ const Game:React.FC<GameProps> = ({ difficulty, userId, includeBoost, opponent, 
 		<div className='h-full w-full flex flex-col items-center justify-between bg-gray-200 dark:bg-slate-900 border-t-8 dark:border-slate-900'>
 			<div className='h-1/6 gap-6 items-center justify-between flex'>
 				<div className='left-10'>
-					<Button variant={'link'} onClick={() => setState('select')}>
+					<Button variant={'link'} onClick={() => setState?('select') : null}>
 						<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
 							<path strokeLinecap="round" strokeLinejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" />
 						</svg>
 					</Button>
 				</div>
 				<div className='border-8 dark:border-slate-900 flex justify-between gap-8 items-center'>
-					<img className='min-w-[24px] h-12 w-12 rounded-full overflow-hidden' src={(player1Info && player1Info.avatar) ? player1Info.avatar : 'https://fastly.picsum.photos/id/294/200/200.jpg?hmac=tSuqBbGGNYqgxQ-6KO7-wxq8B4m3GbZqQAbr7tNApz8'}></img>
+					<img className='min-w-[24px] h-12 w-12 rounded-full overflow-hidden' src={(player1Info && player1Info.avatar) ? player1Info.avatar : userInfo?.avatar }></img>
 					<SmallHeading className='text-lg dark:text-amber-400'>
-						{ player1Info ? player1Info.userNameLoc : 'Player 1' }
+						{ player1Info ? player1Info.userNameLoc : userInfo?.userNameLoc }
 					</SmallHeading>
 				</div>
 				<div className='border-8 dark:border-slate-900'>
@@ -124,7 +130,7 @@ const Game:React.FC<GameProps> = ({ difficulty, userId, includeBoost, opponent, 
 					</Button>
 				</div>
 				<div className='border-8 dark:border-slate-900 flex justify-between gap-8 items-center'>
-					<img className='min-w-[24px] h-12 w-12 rounded-full overflow-hidden' src={(player2Info && player2Info.avatar) ? player2Info.avatar : 'https://fastly.picsum.photos/id/294/200/200.jpg?hmac=tSuqBbGGNYqgxQ-6KO7-wxq8B4m3GbZqQAbr7tNApz8'}></img>
+					<img className='min-w-[24px] h-12 w-12 rounded-full overflow-hidden' src={player2Info ? player2Info.avatar : 'https://fastly.picsum.photos/id/294/200/200.jpg?hmac=tSuqBbGGNYqgxQ-6KO7-wxq8B4m3GbZqQAbr7tNApz8'}></img>
 					<SmallHeading className='text-lg dark:text-amber-400'>
 						{ player2Info ? player2Info.userNameLoc : 'Player 2' }
 					</SmallHeading>
@@ -132,7 +138,7 @@ const Game:React.FC<GameProps> = ({ difficulty, userId, includeBoost, opponent, 
 			</div>
 			<div className='w-full h-5/6 border-t-2 border-l-2 border-r-2 border-slate-700 black:border-slate-200 bg-slate-400 dark:text-slate-200 text-center'>
 				{(opponent === 'bot') ? <Pong userId={userId} difficulty={difficulty} isGameActive={gameActive} isReset={reset} isGameOver={isGameOver} player1Score={player1Score} opponentScore={player2Score} includeBoost={includeBoost} setIsGameOver={setIsGameOver} playerPoint={playerPoint} opponentPoint={opponentPoint} setReset={setReset}/> : null }
-				{(opponent === 'player') ? <PvP userId={userId} difficulty={difficulty} isGameActive={gameActive} isReset={reset} isGameOver={isGameOver} player1Score={player1Score} opponentScore={player2Score} includeBoost={includeBoost} setIsGameOver={setIsGameOver} playerPoint={playerPoint} opponentPoint={opponentPoint} setReset={setReset} setState={setState} setPlayer1Id={setPlayer1Id} setPlayer2Id={setPlayer2Id}/> : null}
+				{(opponent === 'player') ? <PvP userId={userId} isGameOver={isGameOver} player1Score={player1Score} player2Score={player2Score} setIsGameOver={setIsGameOver} setState={setState} setPlayer1Id={setPlayer1Id} setPlayer2Id={setPlayer2Id} setPlayer1Info={setPlayer1Info} setPlayer2Info={setPlayer2Info} setPlayer1Score={setPlayer1Score} setPlayer2Score={setPlayer2Score} game={game}/> : null}
 			</div>
 		</div>
 	)

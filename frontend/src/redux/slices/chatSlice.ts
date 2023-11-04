@@ -4,7 +4,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 // import { ThunkAction } from "redux-thunk";
 // import { CHAT_ACTION_TYPE, IChatState } from "..";
 import { CHAT_ACTION_TYPE, IChatState, TAction } from "..";
-import { User, Friend, Group, JoinGroup, Chat, Game } from "../../types";
+import { User, Friend, Group, JoinGroup, Chat, GameType } from "../../types";
 // import axios from "axios";
 // import { io } from "socket.io-client";
 
@@ -106,7 +106,7 @@ const chatSlice = createSlice({
       state.chatGroupCreateFormPasswdState = action.payload;
     },
     // update the list of game request sent via chat
-    updateChatGameRequests: (state, action: PayloadAction<Game[]>) => {
+    updateChatGameRequests: (state, action: PayloadAction<GameType[]>) => {
       state.chatGameRequests = action.payload;
     },
   },
@@ -139,7 +139,7 @@ export default chatSlice;
 //   return async (): Promise<void> => {
 //     try {
 //       const response = await axios.get<TChatUserData[]>(
-//         "https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/"
+//         "https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/users/"
 //       );
 //       if (response.status === 200) {
 //         dispatch(chatSlice.actions.updateChatUsers(response.data));

@@ -25,7 +25,7 @@ const Chat: React.FC<ChatProps> = ({ userId, socket }) => {
 
     var id = 0;
 
-    const url_info = 'https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/' + userId;
+    const url_info = 'https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/users/' + userId;
 
     useEffect(() => {
         // Fetch channels from the server and update the channels state
@@ -40,7 +40,7 @@ const Chat: React.FC<ChatProps> = ({ userId, socket }) => {
             if (response.status === 200) {
                 setUserInfo(response.data);
                 setUserName(response.data.userName); // Set the username from user info
-                console.log('Received User Info: ', response.data);
+                // console.log('Received User Info: ', response.data);
             }
         } catch (error) {
             console.log('Error fetching user infos', error);

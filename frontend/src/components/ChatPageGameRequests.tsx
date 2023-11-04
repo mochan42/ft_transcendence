@@ -3,7 +3,7 @@ import { ChatUserList, friendToUserType } from '../data/ChatData';
 import { Box, Stack, IconButton, Typography, Divider, Avatar, Button } from "@mui/material";
 import { CircleDashed, Handshake } from "phosphor-react";
 import ChatConversation from "./ChatConversation";
-import { ChatProps, User, Game } from "../types";
+import { ChatProps, User, GameType } from "../types";
 import ChatFriends from "./ChatFriends";
 import { useSelector } from "react-redux";
 import { selectChatStore } from "../redux/store";
@@ -27,7 +27,7 @@ const GetUserById = (userId: string | number ): User => {
 }
 
 //const getReqplayer1UserData = (request: Game) : User => 
-const ChatGameRequestElement = (request: Game) => {
+const ChatGameRequestElement = (request: GameType) => {
     const userId = Cookies.get('userId') ? Cookies.get('userId') : '';
     console.log("Show userId", userId)
     const chatStore = useSelector(selectChatStore);

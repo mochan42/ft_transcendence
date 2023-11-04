@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import { User, Game } from "../types";
+import { User, GameType } from "../types";
 import { Button } from './ui/Button';
 import UserCard from './UserCard';
 import axios from 'axios';
 import { fetchUser } from '../data/ChatData';
+import { useNavigate } from 'react-router-dom';
 
 interface MatchMakingProps {
 	userId: string | undefined | null;
@@ -12,18 +13,19 @@ interface MatchMakingProps {
 	includeBoost: boolean;
 	setOpponentId: (number: number) => void;
 	setMatchFound: (boolean: boolean) => void;
-	setState: React.Dispatch<React.SetStateAction<'select' | 'bot' | 'player'>>;
+	setState?: React.Dispatch<React.SetStateAction<'select' | 'bot' | 'player'>>;
 }
 
 const MatchMaking:React.FC<MatchMakingProps> =({ setOpponentId, setMatchFound, socket, userId, setState, difficulty, includeBoost}) => {
 	const [searchingForMatch, setSearchingForMatch] = useState< boolean | undefined >(undefined);
 	const [opponentInfo, setOpponentInfo] = useState< User | null >(null);
-	const url_info = 'https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/';
+	const url_info = 'https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/users/';
 	const MatchMaking = 'MatchMaking';
-	let game: Game = {
+	const navigate = useNavigate();
+	let game: GameType = {
 		id: -1,
 		player1: userId ? +userId : 0,
-		player2: 34,
+		player2: 2,
 		difficulty: difficulty,
 		isBoost: includeBoost,
 		status: 'request'
@@ -31,7 +33,7 @@ const MatchMaking:React.FC<MatchMakingProps> =({ setOpponentId, setMatchFound, s
 	
 	useEffect(() => {
 		if (socket !== null) {
-			socket.on('foundMatch', async (data: Game) => {
+			socket.on('foundMatch', async (data: GameType) => {
 				if (data.status === 'found') {
 					console.log("Match was found!")
 					if (userId && +userId != data.player2) {
@@ -44,7 +46,7 @@ const MatchMaking:React.FC<MatchMakingProps> =({ setOpponentId, setMatchFound, s
 				}
 				else if (data.status === 'aborted') {
 					console.log("Match ", data.id , " was aborted.\n");
-					setState('select');
+					setState?('select') : navigate("/game");
 				}
 			});
 			socket.on('foundOpponent', (data: number) => {
@@ -68,7 +70,7 @@ const MatchMaking:React.FC<MatchMakingProps> =({ setOpponentId, setMatchFound, s
 				</div>
 				<div className={'border-l-4 border-amber-400 h-full w-1/2 z-0'}>
 					<div className={'h-4/5'} >
-						<UserCard userId={opponentInfo?.id}/>
+						<UserCard userId={opponentInfo ? opponentInfo.id : userId}/>
 						</div>
 				</div>
 				<button 
@@ -80,7 +82,7 @@ const MatchMaking:React.FC<MatchMakingProps> =({ setOpponentId, setMatchFound, s
 								socket.emit('requestMatch', game);
 							}
 						} else if (searchingForMatch === false) {
-							setState('select');
+							setState?('select') : navigate("/game");
 						} else {
 							setMatchFound(true);
 						}

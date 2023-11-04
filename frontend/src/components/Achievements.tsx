@@ -12,8 +12,8 @@ const Achievements:React.FC<AchievementsProps> =({ userId, setShowScreen }) => {
 	
 	const [userAchievements, setUserAchievements] = useState< UserAchievements[] | null >(null);
 	const [allGoals, setAllGoals] = useState< Goal[] | null >(null);
-	const url_achievements = 'https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/' + userId + '/achievements';
-	const url_goals = 'https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/goals';
+	const url_achievements = 'https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/users/' + userId + '/achievements';
+	const url_goals = 'https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/goals';
 	const id = userId;
 	const [achievedGoals, setAchievedGoals] = useState<Goal[]>();
 	const [notAchievedGoals, setNotAchievedGoals] = useState<Goal[]>();
@@ -23,7 +23,7 @@ const Achievements:React.FC<AchievementsProps> =({ userId, setShowScreen }) => {
 			const response: AxiosResponse<UserAchievements[]> = await axios.get(url_achievements);
 			if (response.status === 200) {
 				setUserAchievements(response.data);
-				console.log('Received User Achievements: ', response.data);
+				// console.log('Received User Achievements: ', response.data);
 			}
 		} catch (error) {
 			console.log('Error fetching user achievements:', error);
@@ -35,7 +35,7 @@ const Achievements:React.FC<AchievementsProps> =({ userId, setShowScreen }) => {
 			const response: AxiosResponse<Goal[] | null> = await axios.get(url_goals);
 			if (response.status === 200) {
 				setAllGoals(response.data);
-				console.log('Received Goals: ', response.data);
+				// console.log('Received Goals: ', response.data);
 			}
 		} catch (error) {
 			console.log('Error fetching Goals:', error);

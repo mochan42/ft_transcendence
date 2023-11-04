@@ -57,7 +57,7 @@ const Home = ({
 	const [usersInfo, setUsersInfo] = useState<User[] | null>(null);
 	const [authCount, setAuthCount] = useState<number>(0);
 	const id = userId;
-	const urlFriends = 'https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/' + id + '/friends';
+	const urlFriends = 'https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/users/' + id + '/friends';
 	const [userFriends, setUserFriends] = useState<User[] | null>(null);
 	const [friends, setFriends] = useState<Friend[] | null>(null);
 	const navigate = useNavigate();
@@ -70,7 +70,7 @@ const Home = ({
 	const authenticateToAPI = async (token: string, state: string): Promise<any> => {
 		if (token.length != 0 && state.length !== 0) {
 			try {
-				const resp = await axios.post('https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/auth', { token, state },
+				const resp = await axios.post('https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/users/auth', { token, state },
 				{withCredentials: true}
 				);
 				if (resp.status === 200) {
@@ -105,10 +105,10 @@ const Home = ({
 	
 	const getUsersInfo = async () => {
 		try {
-			const response = await axios.get<User[]>('https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/');
+			const response = await axios.get<User[]>('https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/users/');
 			if (response.status === 200) {
 				setUsersInfo(response.data);
-				console.log('Received Users Info: ', response.data)
+				// console.log('Received Users Info: ', response.data)
 			}
 		}
 		catch (error) {
@@ -122,7 +122,7 @@ const Home = ({
 				const response = await axios.get<Friend[]>(urlFriends);
 				if (response.status === 200) {
 					setFriends(response.data);
-					console.log('Received Friends data', response.data);
+					// console.log('Received Friends data', response.data);
 				}
 			}
 		}

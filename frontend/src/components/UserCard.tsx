@@ -10,7 +10,7 @@ interface UserCardProps {
 const UserCard: React.FC<UserCardProps> = ({ userId }) => {
 	
 	const [userInfo, setUserInfo] = useState< User | null >(null);
-	const url_info = 'https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/' + userId;
+	const url_info = 'https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/users/' + userId;
 	const navigate = useNavigate();
 
 	const getUserInfo = async () => {
@@ -19,7 +19,7 @@ const UserCard: React.FC<UserCardProps> = ({ userId }) => {
 				const response = await axios.get<User>(url_info);
 				if (response.status === 200) {
 					setUserInfo(response.data);
-					console.log('Received User Info: ', response.data)
+					// console.log('Received User Info: ', response.data)
 				}
 			}
 			catch (error) {

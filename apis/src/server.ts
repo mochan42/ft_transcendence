@@ -1,7 +1,7 @@
 const http = require('http').createServer();
 
 const io = require('socket.io')(http, {
-  cors: { origin: 'https://special-dollop-r6jj956gq9xf5r9-3000.app.github.dev' },
+  cors: { origin: 'https://literate-space-garbanzo-vjvjp6xjpvvfp57j-3000.app.github.dev' },
 });
 
 io.on('connection', (socket) => {

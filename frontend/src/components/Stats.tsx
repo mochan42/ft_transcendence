@@ -26,11 +26,11 @@ type UserAchievements = {
 
 const Stats:React.FC<StatsProps> =({ userId, setShowScreen }) => {
 
-	const url_stats = 'https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/' + userId + '/stats';
+	const url_stats = 'https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/users/' + userId + '/stats';
 	const [userStats, setUserStats] = useState< UserStats | null >(null);
 	const [winRatio, setWinRatio] = useState<number>(0);
 	const [userAchievements, setUserAchievements] = useState< UserAchievements[] | null >(null);
-	const url_achievements = 'https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/' + userId + '/achievements';
+	const url_achievements = 'https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/users/' + userId + '/achievements';
 
 	// useEffect(() => {
 	// 	if (userAchievements === null) {
@@ -43,7 +43,7 @@ const Stats:React.FC<StatsProps> =({ userId, setShowScreen }) => {
 			const response: AxiosResponse<UserAchievements[]> = await axios.get(url_achievements);
 			if (response.status === 200) {
 				setUserAchievements(response.data);
-				console.log('Received User Achievements: ', response.data);
+				// console.log('Received User Achievements: ', response.data);
 			}
 		} catch (error) {
 			console.log('Error fetching user achievements:', error);
@@ -55,7 +55,7 @@ const Stats:React.FC<StatsProps> =({ userId, setShowScreen }) => {
 			const response = await axios.get<UserStats>(url_stats);
 			if (response.status === 200) {
 				setUserStats(response.data);
-				console.log('Received User Stats: ', response.data);
+				// console.log('Received User Stats: ', response.data);
 			}
 		} catch (error) {
 			console.log('Error fetching user stats:', error);

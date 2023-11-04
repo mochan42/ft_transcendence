@@ -17,7 +17,7 @@ const EditProfile:React.FC<EditProfileProps> = ({ setShowScreen, userId }) => {
 
     const [userInfo, setUserInfo] = useState<User | null>(null);
     const [errors, setErrors] = useState<Partial<FormDataLoc>>({});
-    const url_info = 'https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/' + userId;
+    const url_info = 'https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/users/' + userId;
     const [formData, setFormData] = useState<FormDataLoc>({
         name: '',
         image: null,
@@ -28,7 +28,7 @@ const EditProfile:React.FC<EditProfileProps> = ({ setShowScreen, userId }) => {
             const response = await axios.get<User>(url_info);
             if (response.status === 200) {
                 setUserInfo(response.data);
-                console.log('Received User Info: ', response.data)
+                // console.log('Received User Info: ', response.data)
             }
         }
         catch (error) {
@@ -59,7 +59,7 @@ const EditProfile:React.FC<EditProfileProps> = ({ setShowScreen, userId }) => {
 
     const updateUser = async (updatedUser: FormData) => {
         if (userInfo) {
-            const verifyUserName = await axios.get('https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/exist/' + updatedUser.get('name'));
+            const verifyUserName = await axios.get('https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/users/exist/' + updatedUser.get('name'));
             if (verifyUserName.status === 200) {
                 if (verifyUserName.data) {
                     alert('username already exists');

@@ -14,15 +14,15 @@ const VictoryLoss: React.FC<VictoryLossProps> = ({ isVictory, userId, difficulty
 	const [UserAchievements, setUserAchievements] = useState< UserAchievements[] | null >(null);
 	const [updatedStats, setUpdatedStats] = useState(false);
 	const [updatedAchievements, setUpdatedAchievements] = useState(false);
-	const url_stats = 'https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/' + userId + '/stats';
-	const url_achievements = 'https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/' + userId + '/achievements';
+	const url_stats = 'https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/users/' + userId + '/stats';
+	const url_achievements = 'https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/users/' + userId + '/achievements';
 	
 	const getUserStats = async () => {
 		try {
 			const response = await axios.get<UserStats>(url_stats);
 			if (response.status === 200) {
 				setUserStats(response.data);
-				console.log('Received User Stats: ', response.data);
+				// console.log('Received User Stats: ', response.data);
 			}
 		} catch (error) {
 			console.log('Error fetching user stats:', error);
@@ -54,7 +54,7 @@ const VictoryLoss: React.FC<VictoryLossProps> = ({ isVictory, userId, difficulty
 			const response: AxiosResponse<UserAchievements[]> = await axios.get(url_achievements);
 			if (response.status === 200) {
 				setUserAchievements(response.data);
-				console.log('Received User Achievements: ', response.data);
+				// console.log('Received User Achievements: ', response.data);
 			}
 		} catch (error) {
 			console.log('Error fetching user achievements:', error);
