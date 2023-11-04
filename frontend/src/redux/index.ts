@@ -18,7 +18,7 @@ export interface IChatState {
   chatUsers: User[];
   chatUserFriends: Friend[];
   chatUserFriendRequests: Friend[];
-  chatGroupList: Group[];
+  chatGroupList: (Group | null)[];
   chatGroupMembers: JoinGroup[];
   chatType: String | null;
   chatRoomId: String | null;
@@ -30,6 +30,7 @@ export interface IChatState {
   chatGroupDialogState: boolean;
   chatGroupCreateFormPasswdState: boolean;
   chatGameRequests: GameType[];
+  chatGameRequest: GameType | null
 }
 
 

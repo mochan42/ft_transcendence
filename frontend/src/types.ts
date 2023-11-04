@@ -134,6 +134,12 @@ type GameMap = {
   ballY: number;
 }
 
+type TFormMember =
+{
+    id : string;
+    name : string;
+}
+
 export type {
   User,
   UserStats,
@@ -150,4 +156,5 @@ export type {
   Chat,
   GameType,
   GameMap,
+  TFormMember
 };

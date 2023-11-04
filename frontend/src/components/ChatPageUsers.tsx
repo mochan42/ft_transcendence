@@ -159,7 +159,7 @@ const  ChatPageUsers = (chatProp : ChatProps) => {
 
                 {/* show profile for user or group on toggle. it depends on which chat is selected */}
                 <Stack>
-    			{ chatStore.chatSideBar.open && <ChatUserProfile/> }
+    			{ chatStore.chatSideBar.open && <ChatUserProfile userId={chatProp.userId}/> }
                 </Stack>
         </Stack>
         {/* handle friend request dialog panel */}

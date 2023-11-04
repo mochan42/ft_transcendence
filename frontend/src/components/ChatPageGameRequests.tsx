@@ -1,20 +1,14 @@
 import { useState, useEffect } from "react";
-import { ChatUserList, friendToUserType } from '../data/ChatData';
 import { Box, Stack, IconButton, Typography, Divider, Avatar, Button } from "@mui/material";
 import { CircleDashed, Handshake } from "phosphor-react";
-import ChatConversation from "./ChatConversation";
 import { ChatProps, User, GameType } from "../types";
-import ChatFriends from "./ChatFriends";
 import { useSelector } from "react-redux";
 import { selectChatStore } from "../redux/store";
 import ChatUserProfile from "./ChatUserProfile";
 import { useDispatch } from "react-redux";
-import { selectConversation, updateChatActiveUser, updateStateUserFriendDialog, updateChatDirectMessages } from "../redux/slices/chatSlice";
-import { enChatType, enGameDifficulty } from "../enums";
+import { updateStateUserFriendDialog, updateChatGameRequest } from "../redux/slices/chatSlice";
 import Cookies from 'js-cookie';
-import { fr, faker } from "@faker-js/faker";
-import axios from 'axios';
-import { PRIVATE } from '../APP_CONSTS';
+import { faker } from "@faker-js/faker";
 
 const GetUserById = (userId: string | number ): User => {
     const chatStore = useSelector(selectChatStore);
@@ -26,7 +20,6 @@ const GetUserById = (userId: string | number ): User => {
     return users[0]
 }
 
-//const getReqplayer1UserData = (request: Game) : User => 
 const ChatGameRequestElement = (request: GameType) => {
     const userId = Cookies.get('userId') ? Cookies.get('userId') : '';
     console.log("Show userId", userId)
@@ -38,18 +31,7 @@ const ChatGameRequestElement = (request: GameType) => {
     return (
         <Box 
             onClick={ () => {
-                // dispatch(selectConversation({chatRoomId: user.id, chatType: enChatType.OneOnOne}))
-                // dispatch(updateChatActiveUser(chatStore.chatUserFriends.filter((el) => {
-                //     if (el.player1 == user.id && el.player2 == userId) {
-                //         return el;
-                //     }
-                //     if (el.player2 == user.id && el.player1 == userId) {
-                //         return el;
-                //     }
-                // })[0]));
-                // const newDirectMessages = fetchAllDirectMessages(chatStore.chatUserMessages, userId, user.id);
-                // dispatch(updateChatDirectMessages(newDirectMessages))
-                activeUser = GetUserById(request.player1);
+                dispatch(updateChatGameRequest(request))
             }}
             sx={{
                 width: "100%",
@@ -100,12 +82,12 @@ const  ChatPageGameRequests = (chatProp : ChatProps) => {
     const dispatch = useDispatch()
     const handleOpenDialog = ()=>{
         dispatch(updateStateUserFriendDialog(true));
+
         // setDialogState(true)
     }
-    // const handleCloseDialog = ()=>{
-    //     dispatch(updateStateUserFriendDialog(false)); 
-    //     // setDialogState(false)
-    // }
+    chatStore.chatGameRequests 
+    ? dispatch(updateChatGameRequest(chatStore.chatGameRequests[0]))
+    : dispatch(updateChatGameRequest(null))
     return (
     <>
         <Stack direction={"row"} sx={{ width: "95vw"}}>
@@ -152,21 +134,22 @@ const  ChatPageGameRequests = (chatProp : ChatProps) => {
                 </Stack>
         </Box>
 
-                {/* conversation panel */}
-                <Stack sx={{ width: "100%" }} alignItems={"center"} justifyContent={"center"}>
-                    {chatStore.chatRoomId !== null && chatStore.chatType === enChatType.OneOnOne 
-                        ? <ChatConversation userId={chatProp.userId} />
-                        : <Typography variant="subtitle2">Select game request to view challenger </Typography>
+                {/* challenger profile panel */}
+                <Stack 
+                    sx={{ width: "100%" }}
+                    alignItems={"center"}
+                    justifyContent={"center"}
+                >
+                    {
+                        chatStore.chatGameRequest
+                        ? <ChatUserProfile userId={chatStore.chatGameRequest.player1} />
+                        : <Typography
+                            variant="subtitle2"
+                          >Select game request to view challenger 
+                          </Typography>
                     }
                 </Stack>
-
-                {/* show profile for user or group on toggle. it depends on which chat is selected */}
-                <Stack>
-    			{ chatStore.chatSideBar.open && <ChatUserProfile/> }
-                </Stack>
         </Stack>
-        {/* handle friend request dialog panel */}
-        { chatStore.chatUserFriendDialogState && <ChatFriends />}
     </>
       );
 }

@@ -40,6 +40,7 @@ const initialState: IChatState = {
   chatGroupDialogState: false,
   chatGroupCreateFormPasswdState: true,
   chatGameRequests: ChatGameRequestList,
+  chatGameRequest: null,
 };
 
 //export default (state: ISidebarData, action: TAction) : ISidebarData => {}
@@ -88,7 +89,7 @@ const chatSlice = createSlice({
     updateChatDirectMessages: (state, action: PayloadAction<Chat[]>) => {
       state.chatDirectMessages = action.payload;
     },
-    updateChatGroups: (state, action: PayloadAction<Group[]>) => {
+    updateChatGroups: (state, action: PayloadAction<(Group | null)[]>) => {
       state.chatGroupList = action.payload;
     },
     updateChatGroupMembers: (state, action: PayloadAction<JoinGroup[]>) => {
@@ -98,7 +99,7 @@ const chatSlice = createSlice({
       state.chatGroupDialogState = action.payload;
     },
     // onclick of chat group element, update chatActiveGroup
-    updateChatActiveGroup: (state, action: PayloadAction<Group>) => {
+    updateChatActiveGroup: (state, action: PayloadAction<Group | null>) => {
       state.chatActiveGroup = action.payload;
     },
     // Disables and enables the password component on create group form
@@ -108,6 +109,10 @@ const chatSlice = createSlice({
     // update the list of game request sent via chat
     updateChatGameRequests: (state, action: PayloadAction<GameType[]>) => {
       state.chatGameRequests = action.payload;
+    },
+    // onclick of chat item, update chatGameRequest
+    updateChatGameRequest: (state, action: PayloadAction<GameType | null>) => {
+      state.chatGameRequest = action.payload;
     },
   },
 });
@@ -129,6 +134,7 @@ export const {
   updateChatActiveGroup,
   updateChatGroupCreateFormPasswdState,
   updateChatGameRequests,
+  updateChatGameRequest
 } = chatSlice.actions;
 export default chatSlice;
 
