@@ -19,7 +19,7 @@ const GameChallenge: React.FC<GameChallengeProps> = ({ userId,  game, setChallen
 
     function acceptGame() {
 		if (game != undefined && game != null) {
-			const newGame: Game = {
+			const newGame: GameType = {
 				... game,
 				status: 'found',
 			}
@@ -33,7 +33,7 @@ const GameChallenge: React.FC<GameChallengeProps> = ({ userId,  game, setChallen
 
     function declineGame() {
 		if (game != undefined && game != null) {
-			const newGame: Game = {
+			const newGame: GameType = {
 				... game,
 				status: 'aborted',
 			}
@@ -49,11 +49,12 @@ const GameChallenge: React.FC<GameChallengeProps> = ({ userId,  game, setChallen
 			if (game) {
 				const user = await fetchUser(game.player1.toString());
 				setOpponent(user);
+				console.log("Found game object!\n");
 			} else {
 				console.log("Game object isn't defined, can't load game object.\n");
 			}
 		})()
-	},);
+	},[game]);
 
     return (
         <div className='h-full w-full absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 bg-slate-900 bg-opacity-70'>

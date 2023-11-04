@@ -40,7 +40,7 @@ const Chat: React.FC<ChatProps> = ({ userId, socket }) => {
             if (response.status === 200) {
                 setUserInfo(response.data);
                 setUserName(response.data.userName); // Set the username from user info
-                console.log('Received User Info: ', response.data);
+                // console.log('Received User Info: ', response.data);
             }
         } catch (error) {
             console.log('Error fetching user infos', error);

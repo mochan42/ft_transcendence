@@ -43,7 +43,7 @@ const Stats:React.FC<StatsProps> =({ userId, setShowScreen }) => {
 			const response: AxiosResponse<UserAchievements[]> = await axios.get(url_achievements);
 			if (response.status === 200) {
 				setUserAchievements(response.data);
-				console.log('Received User Achievements: ', response.data);
+				// console.log('Received User Achievements: ', response.data);
 			}
 		} catch (error) {
 			console.log('Error fetching user achievements:', error);
@@ -55,7 +55,7 @@ const Stats:React.FC<StatsProps> =({ userId, setShowScreen }) => {
 			const response = await axios.get<UserStats>(url_stats);
 			if (response.status === 200) {
 				setUserStats(response.data);
-				console.log('Received User Stats: ', response.data);
+				// console.log('Received User Stats: ', response.data);
 			}
 		} catch (error) {
 			console.log('Error fetching user stats:', error);

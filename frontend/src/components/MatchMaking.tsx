@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { User, Game } from "../types";
+import { User, GameType } from "../types";
 import { Button } from './ui/Button';
 import UserCard from './UserCard';
 import axios from 'axios';
@@ -22,10 +22,10 @@ const MatchMaking:React.FC<MatchMakingProps> =({ setOpponentId, setMatchFound, s
 	const url_info = 'https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/users/';
 	const MatchMaking = 'MatchMaking';
 	const navigate = useNavigate();
-	let game: Game = {
+	let game: GameType = {
 		id: -1,
 		player1: userId ? +userId : 0,
-		player2: 3,
+		player2: 2,
 		difficulty: difficulty,
 		isBoost: includeBoost,
 		status: 'request'
@@ -33,7 +33,7 @@ const MatchMaking:React.FC<MatchMakingProps> =({ setOpponentId, setMatchFound, s
 	
 	useEffect(() => {
 		if (socket !== null) {
-			socket.on('foundMatch', async (data: Game) => {
+			socket.on('foundMatch', async (data: GameType) => {
 				if (data.status === 'found') {
 					console.log("Match was found!")
 					if (userId && +userId != data.player2) {
@@ -70,7 +70,7 @@ const MatchMaking:React.FC<MatchMakingProps> =({ setOpponentId, setMatchFound, s
 				</div>
 				<div className={'border-l-4 border-amber-400 h-full w-1/2 z-0'}>
 					<div className={'h-4/5'} >
-						<UserCard userId={opponentInfo?.id}/>
+						<UserCard userId={opponentInfo ? opponentInfo.id : userId}/>
 						</div>
 				</div>
 				<button 

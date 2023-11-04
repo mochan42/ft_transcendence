@@ -26,7 +26,7 @@ const Leaderboard:React.FC<LeaderboardProps> =({ userId }) => {
 			const response = await axios.get< User[] >('https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/users/');
 			if (response.status === 200) {
 				setUsersInfo(response.data);
-				console.log('Received Users Info: ', response.data)
+				// console.log('Received Users Info: ', response.data)
 			}
 		}
 		catch (error) {
@@ -39,7 +39,7 @@ const Leaderboard:React.FC<LeaderboardProps> =({ userId }) => {
 			const response = await axios.get< Friend [] >(urlFriends);
 			if (response.status === 200) {
 				setFriends(response.data);
-				console.log('Received Friends data', response.data);
+				// console.log('Received Friends data', response.data);
 			}
 		}
 		catch (error) {

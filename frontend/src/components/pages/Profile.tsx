@@ -63,8 +63,8 @@ import '../../css/profile.css';
 			const notAchievedGoals = allGoals?.filter((goal) => {
 				return !userAchievements?.some((achievement) => achievement.goalId === goal.id);
 			})
-			console.log('achieved goals: ', achievedGoals)
-			console.log('not achieved goals: ', notAchievedGoals)
+			// console.log('achieved goals: ', achievedGoals)
+			// console.log('not achieved goals: ', notAchievedGoals)
 			setAchievedGoals(achievedGoals);
 			setNotAchievedGoals(notAchievedGoals);
 		}
@@ -77,7 +77,7 @@ import '../../css/profile.css';
 						const response = await axios.get<User>(url_info);
 						if (response.status === 200) {
 							setUserInfo(response.data);
-							console.log('Received User Info: ', response.data)
+							// console.log('Received User Info: ', response.data)
 						}
 					}
 					catch (error) {
@@ -89,7 +89,7 @@ import '../../css/profile.css';
 						const response = await axios.get<UserStats>(url_stats);
 						if (response.status === 200) {
 							setUserStats(response.data);
-							console.log('Received User Stats: ', response.data);
+							// console.log('Received User Stats: ', response.data);
 						}
 					} catch (error) {
 						console.log('Error fetching user stats:', error);
@@ -100,7 +100,7 @@ import '../../css/profile.css';
 						const response: AxiosResponse<UserAchievements[]> = await axios.get(url_achievements);
 						if (response.status === 200) {
 							setUserAchievements(response.data);
-							console.log('Received User Achievements: ', response.data);
+							// console.log('Received User Achievements: ', response.data);
 						}
 					} catch (error) {
 						console.log('Error fetching user achievements:', error);
@@ -111,7 +111,7 @@ import '../../css/profile.css';
 						const response: AxiosResponse<Goal[] | null> = await axios.get(url_goals);
 						if (response.status === 200) {
 							setAllGoals(response.data);
-							console.log('Received Goals: ', response.data);
+							// console.log('Received Goals: ', response.data);
 						}
 					} catch (error) {
 						console.log('Error fetching Goals:', error);
@@ -122,7 +122,7 @@ import '../../css/profile.css';
 						const response = await axios.get< Friend [] >(urlFriends);
 						if (response.status === 200) {
 							setFriends(response.data);
-							console.log('Received Friends data', response.data);
+							// console.log('Received Friends data', response.data);
 						}
 					}
 					catch (error) {
@@ -134,7 +134,7 @@ import '../../css/profile.css';
 						const response = await axios.get< User[] >('https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/users/');
 						if (response.status === 200) {
 							setUsersInfo(response.data);
-							console.log('Received Users Info: ', response.data)
+							// console.log('Received Users Info: ', response.data)
 						}
 					}
 					catch (error) {

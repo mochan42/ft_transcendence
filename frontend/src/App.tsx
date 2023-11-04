@@ -48,7 +48,7 @@ const App: React.FC = () => {
 	const [code, setCode] = useState<string | null>(null);
 	const [state, setState] = useState<string>(generateStrState());
 	const [token2fa, setToken2fa] = useState<string>('');
-	const [challenge, setChallenge] = useState<boolean>(true);
+	const [challenge, setChallenge] = useState<boolean>(false);
 	const [game, setGame] = useState< GameType >();
 	const socket = getSocket(userId);
 	const dispatch = useDispatch();
@@ -113,7 +113,7 @@ const App: React.FC = () => {
 							setToken2fa={setToken2fa}
 					/>} />
 					<Route path='/game' element={<ProtectedRoute isAuth={isAuth} path='/game' element={<GameSelection userId={userId} />} />} />
-					<Route path='/game/pvp' element={<ProtectedRoute isAuth={isAuth} path='/game/pvp' element={<Game difficulty={game ? game.difficulty : 0} userId={userId ? userId : "0"} includeBoost={game ? game.isBoost : false} opponent={game ? game.player1.toString() : "0"} status={'found'} game={game ? game : undefined} />} />} />
+					<Route path='/game/pvp' element={<ProtectedRoute isAuth={isAuth} path='/game/pvp' element={<Game difficulty={game ? game.difficulty : 0} userId={userId ? userId : "0"} includeBoost={game ? game.isBoost : false} opponent={'player'} status={'found'} game={game ? game : undefined} />} />} />
 					<Route path='/profile' element={<ProtectedRoute isAuth={isAuth} path='/profile' element={<Profile userId={userId} isAuth={isAuth} />} />} />
 					<Route path='/*' element={<PageNotFound />} />
 				</Routes>
