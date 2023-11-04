@@ -68,12 +68,12 @@ const fetchAllStats = async (userId: any) => {
 const friends: Friend[] = await fetchAllFriends();
 const ChatUserList = await fetchAllUsers();
 // will filters all pending|accepted users;
-const fetchAllUsersFriends = async (relation: string, friendList: Friend[]): Promise<Friend[]> => {
+const fetchAllUsersFriends = (relation: string, friendList: Friend[]): Friend[]  => {
   return friendList.filter((el: any) => el.relation == relation);
 };
 
-const ChatUserFriendsList: Friend[] = await fetchAllUsersFriends(ACCEPTED, friends);
-const ChatUserFriendRequestList: Friend[] = await fetchAllUsersFriends(PENDING, friends);
+const ChatUserFriendsList: Friend[] = fetchAllUsersFriends(ACCEPTED, friends);
+const ChatUserFriendRequestList: Friend[] = fetchAllUsersFriends(PENDING, friends);
 const ChatUserMessages: Chat[] = await fetchAllMessages();
 
 const friendToUserType = (user: string | null, friend: Friend, userList: User[]) => {

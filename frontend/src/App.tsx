@@ -17,12 +17,13 @@ import Cookies from 'js-cookie';
 import { Utils__isAPICodeAvailable } from './utils/utils__isAPICodeAvailable';
 import { getSocket } from './utils/socketService';
 import { GameType, Chat } from './types';
-import { updateChatUserMessages, updateChatDirectMessages } from "./redux/slices/chatSlice";
+import { updateChatUserMessages, updateChatDirectMessages, updateChatUserFriendRequests, updateChatUserFriends, updateChatUsers } from "./redux/slices/chatSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { selectChatStore } from "./redux/store";
-import { fetchAllMessages} from './data/ChatData';
+import { fetchAllFriends, fetchAllMessages, fetchAllUsersFriends} from './data/ChatData';
 import GameChallenge from './components/GameChallenge';
 import Game from './components/pages/Game';
+import { ACCEPTED, PENDING } from './APP_CONSTS';
 
 
 
@@ -62,6 +63,40 @@ const App: React.FC = () => {
 		if (socket != null) {
 			socket.on("receiveMessage", (data: any) => {
 				dispatch(updateChatUserMessages(data.all));
+			});
+
+			socket.on('invitedByFriend', (data: any) => {
+				if (data.new != userId) {
+					return ;
+				}
+				const newFriendRequestList = fetchAllUsersFriends(PENDING, data.all);
+				dispatch(updateChatUserFriendRequests(newFriendRequestList));
+			});
+
+			socket.on('newFriend', (data: any) => {
+				if (data.new.sender != userId && data.new.received != userId) {
+					return ;
+				}
+				const newFriendRequestList = fetchAllUsersFriends(PENDING, data.all);
+				const newFriendList = fetchAllUsersFriends(ACCEPTED, data.all);
+				dispatch(updateChatUserFriendRequests(newFriendRequestList));
+				dispatch(updateChatUserFriends(newFriendList));
+			});
+			
+			socket.on('deniedFriend', async (data: any) => {
+				if (data.new.sender != userId && data.new.received != userId) {
+					return ;
+				}
+				const newFriendRequestList = fetchAllUsersFriends(PENDING, data.all);
+				dispatch(updateChatUserFriendRequests(newFriendRequestList));
+			});
+
+			socket.on('logout', (data: any) => {
+				dispatch(updateChatUsers(data.all));
+			});
+
+			socket.on('connected', (data: any) => {
+				dispatch(updateChatUsers(data.all));
 			});
 		}
 	});
