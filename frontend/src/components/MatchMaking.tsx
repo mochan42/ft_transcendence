@@ -85,7 +85,7 @@ const MatchMaking:React.FC<MatchMakingProps> =({ setOpponentId, setMatchFound, s
 					onClick={() => {
 						if (searchingForMatch === undefined) {
 							setSearchingForMatch(false);
-							console.log("\nSearching for Opponent - Sending requestMatch event to Backend!\n\n")
+							console.log("\nSearching for Opponent - Sending requestMatch event to Backend!\n With difficulty: ", game.difficulty, " and booster: ", game.isBoost, "\n");
 							if (socket !== null) {
 								socket.emit('requestMatch', game);
 							}
