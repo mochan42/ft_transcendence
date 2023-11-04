@@ -28,7 +28,7 @@ const EditProfile:React.FC<EditProfileProps> = ({ setShowScreen, userId }) => {
             const response = await axios.get<User>(url_info);
             if (response.status === 200) {
                 setUserInfo(response.data);
-                console.log('Received User Info: ', response.data)
+                // console.log('Received User Info: ', response.data)
             }
         }
         catch (error) {

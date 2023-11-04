@@ -108,7 +108,7 @@ const Home = ({
 			const response = await axios.get<User[]>('https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/');
 			if (response.status === 200) {
 				setUsersInfo(response.data);
-				console.log('Received Users Info: ', response.data)
+				// console.log('Received Users Info: ', response.data)
 			}
 		}
 		catch (error) {
@@ -122,7 +122,7 @@ const Home = ({
 				const response = await axios.get<Friend[]>(urlFriends);
 				if (response.status === 200) {
 					setFriends(response.data);
-					console.log('Received Friends data', response.data);
+					// console.log('Received Friends data', response.data);
 				}
 			}
 		}

@@ -23,7 +23,7 @@ const Achievements:React.FC<AchievementsProps> =({ userId, setShowScreen }) => {
 			const response: AxiosResponse<UserAchievements[]> = await axios.get(url_achievements);
 			if (response.status === 200) {
 				setUserAchievements(response.data);
-				console.log('Received User Achievements: ', response.data);
+				// console.log('Received User Achievements: ', response.data);
 			}
 		} catch (error) {
 			console.log('Error fetching user achievements:', error);
@@ -35,7 +35,7 @@ const Achievements:React.FC<AchievementsProps> =({ userId, setShowScreen }) => {
 			const response: AxiosResponse<Goal[] | null> = await axios.get(url_goals);
 			if (response.status === 200) {
 				setAllGoals(response.data);
-				console.log('Received Goals: ', response.data);
+				// console.log('Received Goals: ', response.data);
 			}
 		} catch (error) {
 			console.log('Error fetching Goals:', error);

@@ -25,7 +25,7 @@ const MatchMaking:React.FC<MatchMakingProps> =({ setOpponentId, setMatchFound, s
 	let game: GameType = {
 		id: -1,
 		player1: userId ? +userId : 0,
-		player2: 3,
+		player2: 2,
 		difficulty: difficulty,
 		isBoost: includeBoost,
 		status: 'request'
@@ -70,7 +70,7 @@ const MatchMaking:React.FC<MatchMakingProps> =({ setOpponentId, setMatchFound, s
 				</div>
 				<div className={'border-l-4 border-amber-400 h-full w-1/2 z-0'}>
 					<div className={'h-4/5'} >
-						<UserCard userId={opponentInfo?.id}/>
+						<UserCard userId={opponentInfo ? opponentInfo.id : userId}/>
 						</div>
 				</div>
 				<button 
