@@ -2,7 +2,7 @@
 	"name": "transcending",
 	"version": "0.1.0",
 	"private": true,
-	"proxy": "https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev",
+	"proxy": "http://localhost:5000",
 	"dependencies": {
 		"@testing-library/jest-dom": "^5.16.5",
 		"@testing-library/react": "^13.4.0",

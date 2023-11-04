@@ -12,10 +12,11 @@ import RHF_TextField from './ui/RHF_TextField';
 import RHF_AutoCompDropDown from './ui/RHF_AutoCompDropDown';
 import Cookies from 'js-cookie';
 import { useDispatch, useSelector } from "react-redux";
-import { selectChatStore } from "../redux/store";
+import { selectChatDialogStore, selectChatStore } from "../redux/store";
 import { getSocket } from '../utils/socketService';
 import { enChatPrivacy } from '../enums';
 import { updateChatActiveGroup, updateChatGroupCreateFormPasswdState, updateChatGroups } from '../redux/slices/chatSlice';
+import { updateChatDialogSetPasswd } from '../redux/slices/chatDialogSlice';
 
 
 /**
@@ -30,33 +31,26 @@ const Transition = React.forwardRef(function Transition (
     }
 );
 
-type TGroupDialog = {
-    openState: boolean,
-    handleClose: React.Dispatch<React.SetStateAction<boolean>>,
-}
 
-type THandler = {
-    close: React.Dispatch<React.SetStateAction<boolean>>
-}
-
-
-const CreateGroupFormSetPasswd = ( handleFormClose: THandler ) => {
+const CreateGroupFormSetPasswd = () => {
     const chatStore = useSelector(selectChatStore);
+    const chatDialogStore = useSelector(selectChatDialogStore)
     const dispatch = useDispatch()
+    const open = chatDialogStore.chatDialogSetPasswd
+    const handleClose = () => { 
+        dispatch(updateChatDialogSetPasswd(false))
+    } 
 
 
     const groupSchema = Yup.object().shape(
         {
             passwd: Yup.string().required("Password is required").min(6),
-            // members: Yup.array().min(1, "Must at least 1 member"),
 
         }
     )
 
     const defaultValues = { 
         passwd: "" ,
-        // members: [], // to be replace with list of all users
-        // privacy_state: enChatPrivacy.PUBLIC,
     }
 
     const methods = useForm({
@@ -84,14 +78,26 @@ const CreateGroupFormSetPasswd = ( handleFormClose: THandler ) => {
             let newGroupData = chatStore.chatActiveGroup;
 
             // set new password to new group data
-            newGroupData ? (newGroupData.password = getValues("passwd")) : null
+            if (newGroupData)
+            {
+                newGroupData.password = getValues("passwd")
+                if (newGroupData.privacy == enChatPrivacy.PUBLIC)
+                    newGroupData.privacy = enChatPrivacy.PROTECTED
+                if (newGroupData.password == "")
+                    newGroupData.privacy = enChatPrivacy.PUBLIC
+            }
+
             
             // update active group data in store
             dispatch(updateChatActiveGroup(newGroupData));
 
             // remove old group from group list - pop
             const groupListPop = chatStore.chatGroupList.filter( (el) => { 
-                (el) && (el.channelId != newGroupData?.channelId )
+                if ((el) && (newGroupData))
+                {
+                    if (el.channelId != newGroupData?.channelId )
+                        return el
+                }
             })
 
             // add new group to new group list - push
@@ -104,21 +110,19 @@ const CreateGroupFormSetPasswd = ( handleFormClose: THandler ) => {
             // NOTE !!!
             // new emit 'setPassword' to be updated in backend
             socket.emit('setPassword', newGroupData);
-            handleFormClose.close(false);
+            //handleClose();
         }
         catch (error)
         {
             console.log("EEROR!", error);
         }
+        handleClose();
     }
 
     return (
         <FormProvider {...methods} > 
             <form onSubmit={methods.handleSubmit(onSubmit)}>
                 <Stack spacing={3} padding={2}>
-                    {/* channel title */}
-                    {/* <RHF_TextField name="title" label="Title" type="text"/> */}
-                    {/* channel password */}
                     <RHF_TextField name="passwd" 
                         label="Password" 
                         type="password" 
@@ -128,7 +132,7 @@ const CreateGroupFormSetPasswd = ( handleFormClose: THandler ) => {
                     alignItems={"center"}
                     justifyContent={"end"}
                 >
-                    <Button onClick={()=>handleFormClose.close(true)}>Cancel </Button>
+                    <Button onClick={()=>handleClose()}>Cancel </Button>
                     <Button type="submit" variant='contained'>Set Password</Button>
                 </Stack>
            </form>
@@ -136,10 +140,12 @@ const CreateGroupFormSetPasswd = ( handleFormClose: THandler ) => {
     )
 }
 
-const ChatGroupFormSetPasswd = (state: TGroupDialog) => {
+const ChatGroupFormSetPasswd = () => {
+    const chatDialogStore = useSelector(selectChatDialogStore)
+    const open = chatDialogStore.chatDialogSetPasswd
     return (
         <Dialog fullWidth maxWidth="xs" 
-            open={state.openState} TransitionComponent={Transition}
+            open={open} TransitionComponent={Transition}
             keepMounted
             sx={{p: 4}}
         >
@@ -150,11 +156,10 @@ const ChatGroupFormSetPasswd = (state: TGroupDialog) => {
             <DialogContent>
 
                 {/* Create form */}
-                <CreateGroupFormSetPasswd close={state.handleClose} />
+                <CreateGroupFormSetPasswd />
             </DialogContent>
         </Dialog>
     )
 }
-
 
 export default ChatGroupFormSetPasswd 

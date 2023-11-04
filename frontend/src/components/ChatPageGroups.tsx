@@ -28,7 +28,7 @@ const ChatGroupElement = (group : Group) => {
             onClick={()=>{
                 dispatch(selectConversation({chatRoomId: group.channelId, chatType: enChatType.Group}))
                 dispatch(updateChatActiveGroup(chatStore.chatGroupList.filter((el) => {
-                    if (el.channelId === group.channelId) {
+                    if (el && (el.channelId === group.channelId)) {
                         return el;
                     }
                 })[0]));
@@ -116,7 +116,9 @@ const  ChatPageGroups = (chatProp : ChatProps) => {
                         sx={{flexGrow:1, overflowY:"scroll", height:"100%"}}
                         spacing={0.5} 
                     >
-                        { chatStore.chatGroupList.map((el: Group) => { return (<ChatGroupElement key={el.channelId} {...el} />) })}
+                        { chatStore.chatGroupList.map((el) => {
+                            if (el)
+                                return (<ChatGroupElement key={el.channelId} {...el} />) })}
                     </Stack>
                 </Stack>
             </Box>

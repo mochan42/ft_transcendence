@@ -9,6 +9,7 @@ import Cookies from 'js-cookie';
 import { User } from "../types";
 import { ACCEPTED, PENDING } from '../APP_CONSTS';
 import ChatUserProfile from './ChatUserProfile';
+import ChatUserShwProfile from './ChatUserShwProfile';
 
 
 const ChatDialogShwProfile = ({userId} : any) =>{
@@ -29,7 +30,7 @@ const ChatDialogShwProfile = ({userId} : any) =>{
         >
             {/* Dialog content  */}
             <Stack sx={{heigt: "100%"}}>
-                <ChatUserProfile userId={userId} />
+                <ChatUserShwProfile userId={userId} />
             </Stack>
 
         </Dialog>

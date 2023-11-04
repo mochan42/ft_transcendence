@@ -12,8 +12,8 @@ const Achievements:React.FC<AchievementsProps> =({ userId, setShowScreen }) => {
 	
 	const [userAchievements, setUserAchievements] = useState< UserAchievements[] | null >(null);
 	const [allGoals, setAllGoals] = useState< Goal[] | null >(null);
-	const url_achievements = 'https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/users/' + userId + '/achievements';
-	const url_goals = 'https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/goals';
+	const url_achievements = 'http://localhost:5000/pong/users/' + userId + '/achievements';
+	const url_goals = 'http://localhost:5000/pong/goals';
 	const id = userId;
 	const [achievedGoals, setAchievedGoals] = useState<Goal[]>();
 	const [notAchievedGoals, setNotAchievedGoals] = useState<Goal[]>();

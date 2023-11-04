@@ -9,7 +9,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   app.enableCors({
-    origin: 'https://literate-space-garbanzo-vjvjp6xjpvvfp57j-3000.app.github.dev',
+    origin: 'http://localhost:3000',
     // origin: '*',
     methods: 'GET,HEAD,PUT,PATCH,POST',
     credentials: true,

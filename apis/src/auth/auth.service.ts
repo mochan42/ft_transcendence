@@ -126,7 +126,7 @@ export class AuthService {
       client_id: process.env.UID,
       client_secret: process.env.SECRET,
       code: authUserDto.token,
-      redirect_uri: 'https://literate-space-garbanzo-vjvjp6xjpvvfp57j-3000.app.github.dev/',
+      redirect_uri: 'http://localhost:3000/',
       state: authUserDto.state,
     };
     try {

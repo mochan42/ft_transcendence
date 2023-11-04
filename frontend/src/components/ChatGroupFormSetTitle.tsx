@@ -12,10 +12,11 @@ import RHF_TextField from './ui/RHF_TextField';
 import RHF_AutoCompDropDown from './ui/RHF_AutoCompDropDown';
 import Cookies from 'js-cookie';
 import { useDispatch, useSelector } from "react-redux";
-import { selectChatStore } from "../redux/store";
+import { selectChatDialogStore, selectChatStore } from "../redux/store";
 import { getSocket } from '../utils/socketService';
 import { enChatPrivacy } from '../enums';
 import { updateChatActiveGroup, updateChatGroupCreateFormPasswdState, updateChatGroups } from '../redux/slices/chatSlice';
+import { updateChatDialogSetTitle } from '../redux/slices/chatDialogSlice';
 
 
 /**
@@ -30,19 +31,13 @@ const Transition = React.forwardRef(function Transition (
     }
 );
 
-type TGroupDialog = {
-    openState: boolean,
-    handleClose: React.Dispatch<React.SetStateAction<boolean>>,
-}
 
-type THandler = {
-    close: React.Dispatch<React.SetStateAction<boolean>>
-}
-
-
-const CreateGroupFormSetTitle = ( handleFormClose: THandler ) => {
-    const chatStore = useSelector(selectChatStore);
+const CreateGroupFormSetTitle = () => {
     const dispatch = useDispatch()
+    const chatStore = useSelector(selectChatStore);
+    const handleClose = () => { 
+        dispatch(updateChatDialogSetTitle(false))
+    } 
 
 
     const groupSchema = Yup.object().shape(
@@ -85,15 +80,21 @@ const CreateGroupFormSetTitle = ( handleFormClose: THandler ) => {
         try{
             let newGroupData = chatStore.chatActiveGroup;
 
-            // set new password to new group data
-            newGroupData ? (newGroupData.title = getValues("newTitle")) : null
-            
+            // set new title to new group data
+            if (newGroupData)
+                newGroupData.title = getValues("newTitle")
+
+            console.log(newGroupData?.title)
             // update active group data in store
             dispatch(updateChatActiveGroup(newGroupData));
 
             // remove old group from group list - pop
             const groupListPop = chatStore.chatGroupList.filter( (el) => { 
-                (el) && (el.channelId != newGroupData?.channelId )
+                if ((el) && (newGroupData))
+                {
+                    if (el.channelId != newGroupData?.channelId )
+                        return el
+                }
             })
 
             // add new group to new group list - push
@@ -106,12 +107,12 @@ const CreateGroupFormSetTitle = ( handleFormClose: THandler ) => {
             // NOTE !!!
             // new emit 'setChannelTitle ' to be updated in backend
             socket.emit('setChannelTitle', newGroupData);
-            handleFormClose.close(false);
         }
         catch (error)
         {
             console.log("EEROR!", error);
         }
+        handleClose();
     }
 
     return (
@@ -119,19 +120,16 @@ const CreateGroupFormSetTitle = ( handleFormClose: THandler ) => {
             <form onSubmit={methods.handleSubmit(onSubmit)}>
                 <Stack spacing={3} padding={2}>
                     {/* channel title - old */}
-                    <RHF_TextField name="title" label="Title" type="text" disabled/>
+                    <RHF_TextField name="oldTitle" label="oldTitle" type="text" disabled/>
 
                     {/* channel title - new */}
-                    <RHF_TextField name="title" 
-                        label="title" 
-                        type="text" 
-                    />
+                    <RHF_TextField name="newTitle" label="newTitle" type="text" />
                 </Stack>
                 <Stack spacing={2} direction={"row"} 
                     alignItems={"center"}
                     justifyContent={"end"}
                 >
-                    <Button onClick={()=>handleFormClose.close(true)}>Cancel </Button>
+                    <Button onClick={handleClose}>Cancel </Button>
                     <Button type="submit" variant='contained'>Apply</Button>
                 </Stack>
            </form>
@@ -139,10 +137,12 @@ const CreateGroupFormSetTitle = ( handleFormClose: THandler ) => {
     )
 }
 
-const ChatGroupFormSetTitle = (state: TGroupDialog) => {
+const ChatGroupFormSetTitle = () => {
+    const chatDialogStore = useSelector(selectChatDialogStore)
+    const open = chatDialogStore.chatDialogSetTitle
     return (
         <Dialog fullWidth maxWidth="xs" 
-            open={state.openState} TransitionComponent={Transition}
+            open={open} TransitionComponent={Transition}
             keepMounted
             sx={{p: 4}}
         >
@@ -153,7 +153,7 @@ const ChatGroupFormSetTitle = (state: TGroupDialog) => {
             <DialogContent>
 
                 {/* Create form */}
-                <CreateGroupFormSetTitle close={state.handleClose} />
+                <CreateGroupFormSetTitle />
             </DialogContent>
         </Dialog>
     )

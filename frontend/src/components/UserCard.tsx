@@ -10,7 +10,7 @@ interface UserCardProps {
 const UserCard: React.FC<UserCardProps> = ({ userId }) => {
 	
 	const [userInfo, setUserInfo] = useState< User | null >(null);
-	const url_info = 'https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/users/' + userId;
+	const url_info = 'http://localhost:5000/pong/users/' + userId;
 	const navigate = useNavigate();
 
 	const getUserInfo = async () => {

@@ -25,7 +25,7 @@ const Chat: React.FC<ChatProps> = ({ userId, socket }) => {
 
     var id = 0;
 
-    const url_info = 'https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/users/' + userId;
+    const url_info = 'http://localhost:5000/pong/users/' + userId;
 
     useEffect(() => {
         // Fetch channels from the server and update the channels state

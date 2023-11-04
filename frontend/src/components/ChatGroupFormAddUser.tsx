@@ -12,12 +12,13 @@ import RHF_TextField from './ui/RHF_TextField';
 import RHF_AutoCompDropDown from './ui/RHF_AutoCompDropDown';
 import Cookies from 'js-cookie';
 import { useDispatch, useSelector } from "react-redux";
-import { selectChatStore } from "../redux/store";
+import { selectChatDialogStore, selectChatStore } from "../redux/store";
 import { getSocket } from '../utils/socketService';
 import { enChatPrivacy } from '../enums';
 import { updateChatActiveGroup, updateChatGroupCreateFormPasswdState, updateChatGroups } from '../redux/slices/chatSlice';
 import { TFormMember, User } from '../types';
 import { getUserById } from './ChatConversation';
+import { updateChatDialogAddUser } from '../redux/slices/chatDialogSlice';
 
 
 /**
@@ -32,19 +33,13 @@ const Transition = React.forwardRef(function Transition (
     }
 );
 
-type TGroupDialog = {
-    openState: boolean,
-    handleClose: React.Dispatch<React.SetStateAction<boolean>>,
-}
 
-type THandler = {
-    close: React.Dispatch<React.SetStateAction<boolean>>
-}
-
-
-const CreateGroupFormAddUser = ( handleFormClose: THandler ) => {
+const CreateGroupFormAddUser = () => {
     const chatStore = useSelector(selectChatStore);
     const dispatch = useDispatch()
+    const handleClose = () => { 
+        dispatch(updateChatDialogAddUser(false))
+    } 
 
     // fetch user data of all group members
     let memberUsers: User[] = [];
@@ -63,14 +58,14 @@ const CreateGroupFormAddUser = ( handleFormClose: THandler ) => {
 
     const groupSchema = Yup.object().shape(
         {
-            passwd: Yup.string().required("Password is required").min(6),
+            members: Yup.array().min(1, "Must at least 1 member"),
             // members: Yup.array().min(1, "Must at least 1 member"),
 
         }
     )
 
     const defaultValues = { 
-        passwd: "" ,
+        members: [] ,
         // members: [], // to be replace with list of all users
         // privacy_state: enChatPrivacy.PUBLIC,
     }
@@ -110,12 +105,12 @@ const CreateGroupFormAddUser = ( handleFormClose: THandler ) => {
             //socket.emit('addUser', groupListPush);
             
             // update group members in store with new member of  type JoinGroup
-            handleFormClose.close(false);
         }
         catch (error)
         {
             console.log("EEROR!", error);
         }
+        handleClose()
     }
 
     return (
@@ -130,18 +125,20 @@ const CreateGroupFormAddUser = ( handleFormClose: THandler ) => {
                     alignItems={"center"}
                     justifyContent={"end"}
                 >
-                    <Button onClick={()=>handleFormClose.close(true)}>Cancel </Button>
-                    <Button type="submit" variant='contained'>Set Password</Button>
+                    <Button onClick={handleClose}>Cancel </Button>
+                    <Button type="submit" variant='contained'>Add Users</Button>
                 </Stack>
            </form>
         </FormProvider>
     )
 }
 
-const ChatGroupFormAddUser = (state: TGroupDialog) => {
+const ChatGroupFormAddUser = () => {
+    const chatDialogStore = useSelector(selectChatDialogStore)
+    const open = chatDialogStore.chatDialogAddUser
     return (
         <Dialog fullWidth maxWidth="xs" 
-            open={state.openState} TransitionComponent={Transition}
+            open={open} TransitionComponent={Transition}
             keepMounted
             sx={{p: 4}}
         >
@@ -152,7 +149,7 @@ const ChatGroupFormAddUser = (state: TGroupDialog) => {
             <DialogContent>
 
                 {/* Create form */}
-                <CreateGroupFormAddUser close={state.handleClose} />
+                <CreateGroupFormAddUser />
             </DialogContent>
         </Dialog>
     )

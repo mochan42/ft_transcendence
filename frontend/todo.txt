@@ -97,6 +97,7 @@ npm cache clean --force                 : clear the cache
 + ensure that user can send message only when in priviledge mode (group) or not blocked (oneonone)
 + all store data to be populated on successful user login
 + chat - make trackable with path, seperate from home url
++ update channel upon channel create
 
 
 ----- PUSH TODO ------------------

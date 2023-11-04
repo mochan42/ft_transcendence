@@ -6,7 +6,7 @@ let int: number = 0;
 
 export const getSocket = (id: any) => {
   if (!socket && id) {
-    socket = io("https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev", {
+    socket = io("http://localhost:5000", {
       extraHeaders: {
         "X-Custom-Data": id,
       },

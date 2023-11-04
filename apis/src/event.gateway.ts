@@ -26,7 +26,7 @@ import { Game } from './games/entities/game.entity';
 
 @WebSocketGateway({
   cors: {
-    origin: 'https://literate-space-garbanzo-vjvjp6xjpvvfp57j-3000.app.github.dev',
+    origin: 'http://localhost:3000',
     // origin: '*',
     credentials: true
   },

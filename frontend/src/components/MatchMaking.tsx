@@ -19,7 +19,7 @@ interface MatchMakingProps {
 const MatchMaking:React.FC<MatchMakingProps> =({ setOpponentId, setMatchFound, socket, userId, setState, difficulty, includeBoost}) => {
 	const [searchingForMatch, setSearchingForMatch] = useState< boolean | undefined >(undefined);
 	const [opponentInfo, setOpponentInfo] = useState< User | null >(null);
-	const url_info = 'https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/users/';
+	const url_info = 'http://localhost:5000/pong/users/';
 	const MatchMaking = 'MatchMaking';
 	const navigate = useNavigate();
 	let game: GameType = {
@@ -54,7 +54,7 @@ const MatchMaking:React.FC<MatchMakingProps> =({ setOpponentId, setMatchFound, s
 				}
 				else if (data.status === 'aborted') {
 					console.log("Match ", data.id , " was aborted.\n");
-					setState?('select') : navigate("/game");
+					setState? setState('select') : navigate("/game");
 				}
 			});
 			socket.on('foundOpponent', (data: number) => {
@@ -90,7 +90,7 @@ const MatchMaking:React.FC<MatchMakingProps> =({ setOpponentId, setMatchFound, s
 								socket.emit('requestMatch', game);
 							}
 						} else if (searchingForMatch === false) {
-							setState?('select') : navigate("/game");
+							setState? setState('select') : navigate("/game");
 						} else {
 							setMatchFound(true);
 						}

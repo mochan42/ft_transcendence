@@ -13,8 +13,8 @@ import { User, UserStats } from "../types";
 
 /* component to show contact profile */
 
-const ChatUserProfile = ({ userId }: any) => {
-    // const userId = Cookies.get('userId') ? Cookies.get('userId') : '';
+const ChatUserProfile = () => {
+    const userId = Cookies.get('userId') ? Cookies.get('userId') : '';
     const [userStats, setUserStats] = useState<UserStats | null >(null);
     const theme = useTheme()
     const dispatch = useDispatch();

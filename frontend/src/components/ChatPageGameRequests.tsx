@@ -9,29 +9,38 @@ import { useDispatch } from "react-redux";
 import { updateStateUserFriendDialog, updateChatGameRequest } from "../redux/slices/chatSlice";
 import Cookies from 'js-cookie';
 import { faker } from "@faker-js/faker";
+import ChatDialogShwProfile from "./ChatDialogShwProfile";
+import ChatUserShwProfile from "./ChatUserShwProfile";
+import { GameDifficultyTxt } from "../data/ChatData";
 
-const GetUserById = (userId: string | number ): User => {
+const GetUserById = (userId: string | number ): User | null => {
     const chatStore = useSelector(selectChatStore);
-    const users = chatStore.chatUsers.filter( (el) => el.id == userId.toString())
+    const users = chatStore.chatUsers.filter( (el) => {
+        if (el.id == userId.toString())
+            return el
+    })
     if (users.length)
-    {
+    { 
         return (users[0])
     }
-    return users[0]
+    return null
 }
+
 
 const ChatGameRequestElement = (request: GameType) => {
     const userId = Cookies.get('userId') ? Cookies.get('userId') : '';
     console.log("Show userId", userId)
     const chatStore = useSelector(selectChatStore);
     const dispatch = useDispatch();
-    let activeUser = {} as User
+    let activeUser = {} as User | null
     activeUser = GetUserById(request.player1);
+    //console.log("active_user - ", activeUser)
 
     return (
         <Box 
             onClick={ () => {
                 dispatch(updateChatGameRequest(request))
+                //console.log("one click ------ away ")
             }}
             sx={{
                 width: "100%",
@@ -55,10 +64,11 @@ const ChatGameRequestElement = (request: GameType) => {
                     <Typography variant="subtitle2">
                         { activeUser? activeUser.userName : faker.person.firstName()}
                     </Typography>
-                    {/* <Typography variant="caption">{  } </Typography> */}
                 </Stack>
                 <Stack spacing={2} alignItems={"center"}>
-                    <Typography variant="caption">{ request.difficulty }</Typography>
+                    <Typography variant="caption">
+                        { GameDifficultyTxt[request.difficulty] }
+                    </Typography>
                 </Stack>
                 <Stack direction={"row"} alignItems={"center"} spacing={2}>
                     {/* accept button  */}
@@ -77,28 +87,20 @@ const ChatGameRequestElement = (request: GameType) => {
 }
 
 const  ChatPageGameRequests = (chatProp : ChatProps) => {
-    // const [dialogState, setDialogState] = useState<boolean>(false);
     const chatStore = useSelector(selectChatStore)
-    const dispatch = useDispatch()
-    const handleOpenDialog = ()=>{
-        dispatch(updateStateUserFriendDialog(true));
 
-        // setDialogState(true)
-    }
-    chatStore.chatGameRequests 
-    ? dispatch(updateChatGameRequest(chatStore.chatGameRequests[0]))
-    : dispatch(updateChatGameRequest(null))
+    //console.log("game request", chatStore.chatGameRequest)
     return (
     <>
         <Stack direction={"row"} sx={{ width: "95vw"}}>
-        <Box 
-          sx={{
-            position:"relative",
-            height: "100%",
-            minWidth: "450px",
-            backgroundColor: "white",
-            boxShadow: "0px 0px 2px rgba(0, 0, 0, 0.25)"
-          }}>
+            <Box 
+              sx={{
+                position:"relative",
+                height: "100%",
+                minWidth: "450px",
+                backgroundColor: "white",
+                boxShadow: "0px 0px 2px rgba(0, 0, 0, 0.25)"
+              }}>
                 <Stack p={3} spacing={1} sx={{height:"75vh"}} >
 
                     {/* game request list */}
@@ -126,29 +128,31 @@ const  ChatPageGameRequests = (chatProp : ChatProps) => {
                                         return reqplayer1;
                                     }
                                 })
-                                // .map((incomingRequest) => getUserById(incomingRequest.player1))
                                 .map((incomingRequest) => {
-                                    return (<ChatGameRequestElement {...incomingRequest} key={incomingRequest.id} />)
+                                    return (<ChatGameRequestElement {...incomingRequest}
+                                            key={incomingRequest.id} 
+                                            />)
                                 })}
                     </Stack>
                 </Stack>
-        </Box>
+            </Box>
 
-                {/* challenger profile panel */}
-                <Stack 
-                    sx={{ width: "100%" }}
-                    alignItems={"center"}
-                    justifyContent={"center"}
-                >
-                    {
-                        chatStore.chatGameRequest
-                        ? <ChatUserProfile userId={chatStore.chatGameRequest.player1} />
-                        : <Typography
-                            variant="subtitle2"
-                          >Select game request to view challenger 
-                          </Typography>
-                    }
-                </Stack>
+            {/* challenger profile panel */}
+            <Stack 
+                sx={{ width: "100%" }}
+                alignItems={"center"}
+                justifyContent={"center"}
+            >
+                {
+                    chatStore.chatGameRequest &&
+                     <ChatUserShwProfile userId={chatStore.chatGameRequest.player1} />
+                }
+                {
+                    !chatStore.chatGameRequest &&
+                     (<Typography variant="subtitle2">Select game request to view challenger 
+                      </Typography>)
+                }
+            </Stack>
         </Stack>
     </>
       );

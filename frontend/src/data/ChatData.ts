@@ -23,21 +23,22 @@ const fetchAllUsers = async (): Promise<User[]> => {
 };
 
 const fetchUser = async (userId: string): Promise<User | undefined> => {
-  const resp = await axios.get<User>(backendUrl + "/pong/users/" + userId);
-  if (resp.status === 200) {
-    return resp.data;
-  }
-  console.log("Fetching user ", userId, " failed with exit code ", resp.status);
+  // const resp = await axios.get<User>(backendUrl + "/pong/users/" + userId);
+  // if (resp.status === 200) {
+  //   return resp.data;
+  // }
+  // console.log("Fetching user ", userId, " failed with exit code ", resp.status);
+  return 
 };
 
 
 const fetchAllFriends = async (): Promise<Friend[]> => {
   let friends: Friend[] = [];
   const urlFriend = backendUrl + "/pong/friends";
-  const resp = await axios<Friend[]>(urlFriend);
-  if (resp.status === 200) {
-    friends = resp.data;
-  }
+  // const resp = await axios<Friend[]>(urlFriend);
+  // if (resp.status === 200) {
+  //   friends = resp.data;
+  // }
   return friends;
 };
 
@@ -236,7 +237,15 @@ const ChatGameRequestList :GameType[] = [
     player2: 1,
     difficulty: enGameDifficulty.EXTREME,
     isBoost: false,
-    status: 'request'
+    status: 'request',
+    score1: 0,
+    score2: 4,
+    paddle1Y: 4,
+    paddle2Y: 5,
+    boostX: 4,
+    boostY: 3,
+    ballX: 8,
+    ballY: 5,
   },
   {
     id: 1,
@@ -244,7 +253,15 @@ const ChatGameRequestList :GameType[] = [
     player2: 1,
     difficulty: enGameDifficulty.HARD,
     isBoost: false,
-    status: 'request'
+    status: 'request',
+    score1: 0,
+    score2: 4,
+    paddle1Y: 4,
+    paddle2Y: 5,
+    boostX: 4,
+    boostY: 3,
+    ballX: 8,
+    ballY: 5,
   },
   {
     id: 2,
@@ -252,7 +269,15 @@ const ChatGameRequestList :GameType[] = [
     player2: 3,
     difficulty: enGameDifficulty.EASY,
     isBoost: true,
-    status: 'request'
+    status: 'request',
+    score1: 0,
+    score2: 4,
+    paddle1Y: 4,
+    paddle2Y: 5,
+    boostX: 4,
+    boostY: 3,
+    ballX: 8,
+    ballY: 5,
   },
   {
     id: 3,
@@ -260,7 +285,15 @@ const ChatGameRequestList :GameType[] = [
     player2: 8,
     difficulty: enGameDifficulty.MEDIUM,
     isBoost: true,
-    status: 'request'
+    status: 'request',
+    score1: 0,
+    score2: 4,
+    paddle1Y: 4,
+    paddle2Y: 5,
+    boostX: 4,
+    boostY: 3,
+    ballX: 8,
+    ballY: 5,
   }
 ]
 

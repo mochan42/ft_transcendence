@@ -24,8 +24,8 @@ const initialState: IChatState = {
     open: false,
     type: CHAT_ACTION_TYPE.CHAT_CONTACT, // options: 'CONTACT' 'STARRED' 'SHARED'
   },
-  chatUsers: ChatUserList,
-  //chatUsers: dummyUsers, // dev purpose
+  //chatUsers: ChatUserList,
+  chatUsers: dummyUsers, // dev purpose
   chatUserFriends: ChatUserFriendsList,
   chatUserFriendRequests: ChatUserFriendRequestList,
   chatGroupList: ChatGroupList,
@@ -145,7 +145,7 @@ export default chatSlice;
 //   return async (): Promise<void> => {
 //     try {
 //       const response = await axios.get<TChatUserData[]>(
-//         "https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/users/"
+//         "http://localhost:5000/pong/users/"
 //       );
 //       if (response.status === 200) {
 //         dispatch(chatSlice.actions.updateChatUsers(response.data));
