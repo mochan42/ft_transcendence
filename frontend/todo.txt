@@ -112,7 +112,7 @@ video 27 - handle friend request with socket.io 27:00
 
 [ Activities ]
 --------------
-
++ Test implementation for the following forms 
 + Channel creation form - add all users in channel creation form.
 + group profile btn - action - change password
 + group profile btn - action - rename channel title
