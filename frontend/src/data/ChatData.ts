@@ -8,7 +8,7 @@ import {
 } from "../types";
 import axios from "axios";
 import { ACCEPTED, PENDING } from "../APP_CONSTS";
-import { enChatMemberRank, enChatMemberRights, enGameDifficulty } from "../enums";
+import { enChatGroupInviteStatus, enChatMemberRank, enChatMemberRights, enGameDifficulty } from "../enums";
 import { BACKEND_URL } from "./Global";
 
 const backendUrl = BACKEND_URL
@@ -95,10 +95,31 @@ const ChatGroupList = [
   },
   {
     channelId: 2,
-    password: "",
+    password: "xpwkrfa",
     title: "Trans_project_team",
-    privacy: "public",
+    privacy: "protected",
     ownerId: 5,
+  },
+  {
+    channelId: 1,
+    password: "",
+    title: "Movie nite",
+    privacy: "private",
+    ownerId: 3,
+  },
+  {
+    channelId: 4,
+    password: "",
+    title: "Graduation",
+    privacy: "private",
+    ownerId: 3,
+  },
+  {
+    channelId: 5,
+    password: "",
+    title: "Travels",
+    privacy: "private",
+    ownerId: 7,
   },
 ];
 
@@ -182,34 +203,39 @@ const ChatGroupMemberList = [
     channelId: 3,
     rank: enChatMemberRank.ADMIN, // member
     rights: enChatMemberRights.PRIVILEDGED, // kicked, banned
+    status: enChatGroupInviteStatus.PENDING
   },
   {
     id: 2,
-    usrId: 7,
-    channelId: 3,
+    usrId: 1,
+    channelId: 2,
     rank: enChatMemberRank.MEMBER, // member
     rights: enChatMemberRights.PRIVILEDGED, // kicked, banned
+    status: enChatGroupInviteStatus.ACCEPTED
   },
   {
     id: 4,
     usrId: 5,
-    channelId: 3,
+    channelId: 1,
     rank: enChatMemberRank.MEMBER, // member
     rights: enChatMemberRights.BANNED, // kicked, banned
+    status: enChatGroupInviteStatus.ACCEPTED
   },
   {
     id: 5,
-    usrId: 3,
-    channelId: 3,
+    usrId: 1,
+    channelId: 4,
     rank: enChatMemberRank.MEMBER, // member
     rights: enChatMemberRights.PRIVILEDGED, // kicked, banned
+    status: enChatGroupInviteStatus.INVITE
   },
   {
     id: 6,
     usrId: 8,
-    channelId: 3,
+    channelId: 5,
     rank: enChatMemberRank.OWNER, // member
     rights: enChatMemberRights.PRIVILEDGED, // kicked, banned
+    status: enChatGroupInviteStatus.ACCEPTED
   },
 ];
 const ChatGroupMemberList2 = [
@@ -219,6 +245,7 @@ const ChatGroupMemberList2 = [
     channelId: 3,
     rank: enChatMemberRank.ADMIN, // member
     rights: enChatMemberRights.PRIVILEDGED, // kicked, banned
+    status: enChatGroupInviteStatus.ACCEPTED
   },
   {
     id: 2,
@@ -226,6 +253,7 @@ const ChatGroupMemberList2 = [
     channelId: 3,
     rank: enChatMemberRank.MEMBER, // member
     rights: enChatMemberRights.PRIVILEDGED, // kicked, banned
+    status: enChatGroupInviteStatus.ACCEPTED
   },
 ];
 

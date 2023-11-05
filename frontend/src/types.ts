@@ -72,6 +72,7 @@ type JoinGroup = {
   channelId: number;
   rank: string;
   rights: string;
+  status: string
 };
 
 type Message = {

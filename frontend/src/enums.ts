@@ -43,5 +43,14 @@ enum enGameDifficulty {
   VERY_HARD,
   EXTREME,
 }
+
+enum enChatGroupInviteStatus {
+  PENDING = "pending",
+  ACCEPTED = "accepted",
+  INVITE = "invited"
+}
 export { HOME_SECTION, logStatus, enChatType, enChatMemberRank,
-enChatMemberRights, enChatPrivacy, enGameDifficulty};
+enChatMemberRights, enChatPrivacy, 
+enGameDifficulty,
+enChatGroupInviteStatus,
+}

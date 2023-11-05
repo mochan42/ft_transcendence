@@ -8,9 +8,7 @@ import { selectChatDialogStore } from "../redux/store";
 import { faker } from "@faker-js/faker"
 import img42 from '../img/icon_42.png'
 import { User } from "../types";
-import { dummyUsers } from "../data/ChatData";
-import ChatGroupMemberComp  from "./ChatGroupComp";
-import { ChatBtnChangePasswd } from "./ChatGroupProfileComp";
+import { ChatGroupMemberProfileComp }  from "./ChatGroupComp";
 import Cookies from 'js-cookie';
 import { enChatMemberRank } from "../enums";
 import ChatGroupActionBtn from "./ChatGroupActionBtn";
@@ -19,6 +17,7 @@ import ChatGroupFormSetPasswd from "./ChatGroupFormSetPasswd";
 import ChatGroupFormSetTitle from "./ChatGroupFormSetTitle";
 import ChatGroupFormAddUser from "./ChatGroupFormAddUser";
 import ChatDialogShwProfile from "./ChatDialogShwProfile";
+import ChatDialogShwPasswd from "./ChatDialogShwPasswd";
 
 /* component to show contact profile */
 const ChatGroupProfile = () => {
@@ -81,6 +80,7 @@ const ChatGroupProfile = () => {
                         >
                             <Typography variant="subtitle2" fontWeight={600}>{ activeGroupTitle } </Typography>
                             <Typography variant="subtitle2" fontWeight={400}>{`${groupMemberNo} Members`} </Typography>
+                            <Typography variant="subtitle2" fontWeight={400}>{ activeGroupPrivacy } </Typography>
                         </Stack>
                     </Stack>
 
@@ -105,7 +105,11 @@ const ChatGroupProfile = () => {
                                 const memberUser = (chatStore.chatUsers.filter(el => parseInt(el.id) === member.usrId)[0])
                                 if (memberUser)
                                 {
-                                    return <ChatGroupMemberComp key={memberUser.id} memberUser={memberUser} memberJoin={member} />
+                                    return <ChatGroupMemberProfileComp 
+                                                key={memberUser.id}
+                                                memberUser={memberUser} 
+                                                memberJoin={member} 
+                                            />
                                 }
                             })
                         }
@@ -122,6 +126,7 @@ const ChatGroupProfile = () => {
                   chatDialogStore.chatDialogProfileUserId && 
                     <ChatDialogShwProfile userId={chatDialogStore.chatDialogProfileUserId}/>
                 }
+                { chatDialogStore.chatDialogShwPasswd && <ChatDialogShwPasswd/>}
             </Stack>
 
         </Box>
