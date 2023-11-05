@@ -7,7 +7,6 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
-
 import { Server, Socket } from 'socket.io';
 import { ChatsService } from './chats/chats.service';
 import { FriendsService } from './friends/friends.service';
@@ -26,7 +25,7 @@ import { Game } from './games/entities/game.entity';
 
 @WebSocketGateway({
   cors: {
-    origin: 'https://special-dollop-r6jj956gq9xf5r9-3000.app.github.dev',
+    origin: `${ process.env.FRONTEND_URL }`,
     // origin: '*',
     credentials: true
   },
@@ -158,6 +157,7 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   /***********************GAME*********************** */
+
   @SubscribeMessage('acceptMatch')
   async handleAcceptMatch(
     @ConnectedSocket() socket: Socket,
@@ -173,10 +173,57 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @ConnectedSocket() socket: Socket,
     @MessageBody() data: any,
   ){
-    // console.log("gameUpdate on game #: ", data.id);
-    // const tmp = await this.gamesService.update(data);
     this.server.emit('updateMatch', data);
   }
+
+  @SubscribeMessage('updatePaddle1')
+  handleUpdatePaddle1(
+    @ConnectedSocket() socket: Socket,
+    @MessageBody() data: any,
+  ){
+    this.server.emit('updatePaddle1', data);
+  }
+  
+  @SubscribeMessage('updatePaddle2')
+  handleUpdatePaddle2(
+    @ConnectedSocket() socket: Socket,
+    @MessageBody() data: any,
+  ){
+    this.server.emit('updatePaddle2', data);
+  }
+
+  @SubscribeMessage('updateBallX')
+  handleUpdateBallX(
+    @ConnectedSocket() socket: Socket,
+    @MessageBody() data: any,
+  ){
+    this.server.emit('updateBallX', data);
+  }
+
+  @SubscribeMessage('updateBallY')
+  handleUpdateBallY(
+    @ConnectedSocket() socket: Socket,
+    @MessageBody() data: any,
+  ){
+    this.server.emit('updateBallY', data);
+  }
+
+  @SubscribeMessage('updateBoostX')
+  handleUpdateBoostX(
+    @ConnectedSocket() socket: Socket,
+    @MessageBody() data: any,
+  ){
+    this.server.emit('updateBoostX', data);
+  }
+
+  @SubscribeMessage('updateBoostY')
+  handleUpdateBoostY(
+    @ConnectedSocket() socket: Socket,
+    @MessageBody() data: any,
+  ){
+    this.server.emit('updateBoostY', data);
+  }
+
 
 
   @SubscribeMessage('requestMatch')

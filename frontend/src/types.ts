@@ -138,6 +138,45 @@ type GameType = {
   speedY?: number;
 }
 
+type paddle1Type = {
+  gameId: number,
+  paddlePos: number,
+}
+
+type paddle2Type = {
+  gameId: number,
+  paddlePos: number,
+}
+
+type ballXType = {
+  gameId: number,
+  ballPos: number,
+}
+
+type ballYType = {
+  gameId: number,
+  ballPos: number,
+}
+
+type boostXType = {
+  gameId: number,
+  boostX: number,
+}
+
+type boostYType = {
+  gameId: number,
+  boostY: number,
+}
+
+type update = {
+  id: number;
+  paddle1Pos: number;
+  ballX: number;
+  ballY: number;
+  boostX: number;
+  boostY: number;
+}
+
 type TFormMember =
 {
     id : string;
@@ -160,4 +199,11 @@ export type {
   Chat,
   GameType,
   TFormMember,
+  paddle1Type,
+  paddle2Type,
+  ballXType,
+  ballYType,
+  boostXType,
+  boostYType,
+  update,
 };
