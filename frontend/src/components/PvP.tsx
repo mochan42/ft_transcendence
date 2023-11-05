@@ -37,15 +37,15 @@ const PvP: React.FC<PvPProps> = ({ userId, player1Score, player2Score, isGameAct
 		status: 'aborted',
 		score1: 0,
 		score2: 0,
-		paddle1Y: 200,
-		paddle2Y: 200,
+		paddle1Y: 0,
+		paddle2Y: 0,
 		boostX: 200,
 		boostY: 200,
 		ballX: 300,
 		ballY: 300,		
 		gameMaker: -1,
-		paddle1Speed: 1,
-		paddle2Speed: 1,
+		paddle1Speed: 10,
+		paddle2Speed: 10,
 		paddle1Dir: 1,
 		paddle2Dir: 1,
 		speedX: 1,
@@ -86,8 +86,6 @@ const PvP: React.FC<PvPProps> = ({ userId, player1Score, player2Score, isGameAct
 	const [paddle2Speed, setPaddle2Speed] = useState((difficulty + 1) * 2); // dynamic
 
 	const movePaddles = () => {
-		let Y1 = paddle1Y;
-		let Y2 = paddle2Y;
 		if (gameMaker) {
 			setPaddle1Y((prevY) => {
 				let newY = prevY + paddle1Dir * paddle1Speed;
@@ -96,6 +94,14 @@ const PvP: React.FC<PvPProps> = ({ userId, player1Score, player2Score, isGameAct
 				newY = 0;
 				} else if (newY > (startY * 2) + 30 - paddleLengths[difficulty]) {
 				newY = (startY * 2) + 30 - paddleLengths[difficulty]; // Maximum paddle height is div height - paddle length
+				}
+				if (prevY != newY) {
+					const tmp: GameType = {
+						...gameObj,
+						paddle1Y: newY,
+					}
+					console.log("changed from: ", prevY, " to ", newY);
+					socket.emit('updateMatchClient', tmp);
 				}
 				return newY;
 			})
@@ -107,59 +113,55 @@ const PvP: React.FC<PvPProps> = ({ userId, player1Score, player2Score, isGameAct
 				  newY = 0;
 				} else if (newY > (startY * 2) + 30 - paddleLengths[difficulty]) {
 				  newY = (startY * 2) + 30 - paddleLengths[difficulty]; // Maximum paddle height is div height - paddle length
-				}			
+				}
+				if (prevY != newY) {
+					const tmp: GameType = {
+						...gameObj,
+						paddle2Y: newY,
+					}
+					console.log("changed from: ", prevY, " to ", newY);
+					socket.emit('updateMatchClient', tmp);
+					console.log("reaching me!\n\n");
+				}
 				return newY;
 			})
-		}
-		if (paddle1Y != Y1) {
-			const tmp: GameType = {
-				...gameObj,
-				paddle1Y: paddle1Y,
-			}
-			// setGameObj(tmp);
-			console.log("changed from: ", Y1, " to ", paddle1Y);
-			socket.emit('updateMatchClient', tmp);
-		} else if (paddle2Y != Y2) {
-			const tmp: GameType = {
-				...gameObj,
-				paddle2Y: paddle2Y,
-			}
-			// setGameObj(tmp);
-			console.log("changed from: ", Y2, " to ", paddle2Y);
-			socket.emit('updateMatchClient', tmp);
 		}
 	};
 	
 	useEffect (() => {
-		if (socket != null) {
-		socket.on('updateMatch', (game: GameType) => {
-			if (userId == game.player1.toString() || userId == game.player2.toString()) {
-				console.log("Match Update received", game.paddle1Y);
-				setGameObj(game);
-				// setBallX(game.ballX);
-				// setBallY(game.ballY);
-				// setBoostX(game.boostX);
-				// setBoostY(game.boostY);
-				// setPaddle1Y(game.paddle1Y);
-				// setPaddle2Y(game.paddle2Y);
-				// setPlayer1Score(game.score1);
+		const gameLoop = setInterval(() => {
+			if (socket != null) {
+				socket.on('updateMatch', (game: GameType) => {
+					if (userId == game.player1.toString() || userId == game.player2.toString()) {
+						console.log("Match Update received", game.paddle1Y);
+						setGameObj(game);
+						// setBallX(game.ballX);
+						// setBallY(game.ballY);
+						// setBoostX(game.boostX);
+						// setBoostY(game.boostY);
+						setPaddle1Y(game.paddle1Y);
+						setPaddle2Y(game.paddle2Y);
+						// setPlayer1Score(game.score1);
+					}
+				})
+				socket.off('updateMatch', (() => {}));
 			}
-		})
-	}
+		}, 1000 / 2);
+		return () => clearInterval(gameLoop);
 	});
-	
 
 	useEffect(() => {
 		// const gameLoop = setInterval(() => {
 			movePaddles();
+			console.log("Running\n");
 			// setTimeout(() => {
 			// }, 200)
 			// moveBall();
 			// checkCollision();
 			
-		// }, 1000 / 60);
+		// }, 1000 / 200);
 		// return () => clearInterval(gameLoop);
-	});
+	}, [paddle1Dir, paddle2Dir]);
 
 	useEffect(() => {
 		if (socket != null) {
@@ -169,6 +171,8 @@ const PvP: React.FC<PvPProps> = ({ userId, player1Score, player2Score, isGameAct
 					console.log("That is us! :D \n")
 					setPlayer1Id(data.player1.toString());
 					setPlayer2Id(data.player2.toString());
+					setPaddle1Speed(10);
+					setPaddle2Speed(10);
 					setMatchFound(true);
 					setGameMaker(true);
 					
@@ -178,6 +182,8 @@ const PvP: React.FC<PvPProps> = ({ userId, player1Score, player2Score, isGameAct
 						score2: player2Score,
 						gameMaker: +userId,
 						status: 'playing',
+						paddle2Speed: 10,
+						paddle1Speed: 10,
 					}
 					console.log("\nFirst Player: Sending updated event info: ", tmp);
 					socket.emit('updateMatchClient', tmp);

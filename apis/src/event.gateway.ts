@@ -26,7 +26,7 @@ import { Game } from './games/entities/game.entity';
 
 @WebSocketGateway({
   cors: {
-    origin: 'https://special-dollop-r6jj956gq9xf5r9-3000.app.github.dev',
+    origin: 'https://literate-space-garbanzo-vjvjp6xjpvvfp57j-3000.app.github.dev',
     // origin: '*',
     credentials: true
   },
