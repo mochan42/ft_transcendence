@@ -51,7 +51,7 @@ Content-Type: application/json
 PATCH   https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/users/2fa/30
 
 ###  delete user
-DELETE  https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/users/1
+DELETE  https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/users/35
 
 ### get user stat
 GET https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/users/2/stats
@@ -203,7 +203,7 @@ Content-Type: application/json
 }
 
 ### delete friendship
-DELETE https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/friends/2
+DELETE https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/friends/6
 
 ### aut
 POST https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/users/auth

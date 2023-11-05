@@ -70,12 +70,12 @@ const fetchAllStats = async (userId: any) => {
 const friends: Friend[] = await fetchAllFriends();
 const ChatUserList = await fetchAllUsers();
 // will filters all pending|accepted users;
-const fetchAllUsersFriends = async (relation: string, friendList: Friend[]): Promise<Friend[]> => {
+const fetchAllUsersFriends = (relation: string, friendList: Friend[]): Friend[]  => {
   return friendList.filter((el: any) => el.relation == relation);
 };
 
-const ChatUserFriendsList: Friend[] = await fetchAllUsersFriends(ACCEPTED, friends);
-const ChatUserFriendRequestList: Friend[] = await fetchAllUsersFriends(PENDING, friends);
+const ChatUserFriendsList: Friend[] = fetchAllUsersFriends(ACCEPTED, friends);
+const ChatUserFriendRequestList: Friend[] = fetchAllUsersFriends(PENDING, friends);
 const ChatUserMessages: Chat[] = await fetchAllMessages();
 
 const friendToUserType = (user: string | null, friend: Friend, userList: User[]) => {
@@ -236,6 +236,7 @@ const ChatGameRequestList :GameType[] = [
     player1: 7,
     player2: 1,
     difficulty: enGameDifficulty.EXTREME,
+<<<<<<< HEAD
     isBoost: false,
     status: 'request',
     score1: 0,
@@ -246,6 +247,25 @@ const ChatGameRequestList :GameType[] = [
     boostY: 3,
     ballX: 8,
     ballY: 5,
+=======
+    status: 'request',
+		includeBoost: false,
+		score1: 0,
+		score2: 0,
+		paddle1Y: 200,
+		paddle2Y: 200,
+		boostX: 200,
+		boostY: 200,
+		ballX: 300,
+		ballY: 300,		
+		gameMaker: -1,
+		paddle1Speed: 1,
+		paddle2Speed: 1,
+		paddle1Dir: 1,
+		paddle2Dir: 1,
+		speedX: 1,
+		speedY: 1,
+>>>>>>> tmp
   },
   {
     id: 1,
@@ -254,6 +274,7 @@ const ChatGameRequestList :GameType[] = [
     difficulty: enGameDifficulty.HARD,
     isBoost: false,
     status: 'request',
+<<<<<<< HEAD
     score1: 0,
     score2: 4,
     paddle1Y: 4,
@@ -262,6 +283,24 @@ const ChatGameRequestList :GameType[] = [
     boostY: 3,
     ballX: 8,
     ballY: 5,
+=======
+    includeBoost: false,
+		score1: 0,
+		score2: 0,
+		paddle1Y: 200,
+		paddle2Y: 200,
+		boostX: 200,
+		boostY: 200,
+		ballX: 300,
+		ballY: 300,		
+		gameMaker: -1,
+		paddle1Speed: 1,
+		paddle2Speed: 1,
+		paddle1Dir: 1,
+		paddle2Dir: 1,
+		speedX: 1,
+		speedY: 1,
+>>>>>>> tmp
   },
   {
     id: 2,
@@ -270,6 +309,7 @@ const ChatGameRequestList :GameType[] = [
     difficulty: enGameDifficulty.EASY,
     isBoost: true,
     status: 'request',
+<<<<<<< HEAD
     score1: 0,
     score2: 4,
     paddle1Y: 4,
@@ -278,6 +318,24 @@ const ChatGameRequestList :GameType[] = [
     boostY: 3,
     ballX: 8,
     ballY: 5,
+=======
+    includeBoost: false,
+		score1: 0,
+		score2: 0,
+		paddle1Y: 200,
+		paddle2Y: 200,
+		boostX: 200,
+		boostY: 200,
+		ballX: 300,
+		ballY: 300,		
+		gameMaker: -1,
+		paddle1Speed: 1,
+		paddle2Speed: 1,
+		paddle1Dir: 1,
+		paddle2Dir: 1,
+		speedX: 1,
+		speedY: 1,
+>>>>>>> tmp
   },
   {
     id: 3,
@@ -286,6 +344,7 @@ const ChatGameRequestList :GameType[] = [
     difficulty: enGameDifficulty.MEDIUM,
     isBoost: true,
     status: 'request',
+<<<<<<< HEAD
     score1: 0,
     score2: 4,
     paddle1Y: 4,
@@ -294,6 +353,24 @@ const ChatGameRequestList :GameType[] = [
     boostY: 3,
     ballX: 8,
     ballY: 5,
+=======
+    includeBoost: false,
+		score1: 0,
+		score2: 0,
+		paddle1Y: 200,
+		paddle2Y: 200,
+		boostX: 200,
+		boostY: 200,
+		ballX: 300,
+		ballY: 300,		
+		gameMaker: -1,
+		paddle1Speed: 1,
+		paddle2Speed: 1,
+		paddle1Dir: 1,
+		paddle2Dir: 1,
+		speedX: 1,
+		speedY: 1,
+>>>>>>> tmp
   }
 ]
 

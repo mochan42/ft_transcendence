@@ -43,18 +43,27 @@ export class GamesService {
 
   async makeMatch(player1: number, player2: number, difficulty: number, isBoost: boolean) {
     const game: CreateGameDto = {
+      id: -1,
       player1: player1,
       player2: player2,
+      difficulty: difficulty,
+      includeBoost: false,
+      status: 'request',
       score1: 0,
       score2: 0,
-      difficulty: difficulty,
-      ballX: null,
-      ballY: null,
-      leftPaddleY: null,
-      rightPaddleY: null,
-      boostX: null,
-      boostY: null,
-      status: 'request'
+      paddle1Y: 0,
+      paddle2Y: 0,
+      boostX: 0,
+      boostY: 0,
+      ballX: 0,
+      ballY: 0,
+      gameMaker: -1,
+      paddle1Speed: 30,
+      paddle2Speed: 30,
+      paddle1Dir: 1,
+      paddle2Dir: 1,
+      speedX: 5,
+      speedY: 5,
     };
     return await this.gameRepo.save(game);
   }

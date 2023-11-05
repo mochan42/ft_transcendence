@@ -1,7 +1,7 @@
 const http = require('http').createServer();
 
 const io = require('socket.io')(http, {
-  cors: { origin: 'http://localhost:3000' },
+  cors: { origin:  `${ process.env.FRONTEND_URL }` },
 });
 
 io.on('connection', (socket) => {

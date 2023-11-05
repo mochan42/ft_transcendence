@@ -93,6 +93,7 @@ const Home = ({
 						}
 						Cookies.set('userId', userData.user.id, { expires: 7 });
 						Cookies.set('isAuth', 'true', { expires: 7 });
+						Cookies.set('userName', userData.user.userNameLoc, { expires: 7 });
 						return AuthResp.ISNOT2FA;
 					}
 				}

@@ -9,7 +9,7 @@ import { useSelector } from "react-redux";
 import { selectChatStore } from "../redux/store";
 import ChatUserProfile from "./ChatUserProfile";
 import { useDispatch } from "react-redux";
-import { selectConversation, updateChatActiveUser, updateStateUserFriendDialog, updateChatDirectMessages } from "../redux/slices/chatSlice";
+import { selectConversation, updateChatActiveUser, updateStateUserFriendDialog} from "../redux/slices/chatSlice";
 import { enChatType } from "../enums";
 import Cookies from 'js-cookie';
 import { fr } from "@faker-js/faker";
@@ -36,6 +36,10 @@ const ChatElement = (user: User) => {
     const chatStore = useSelector(selectChatStore);
     const dispatch = useDispatch();
 
+    useEffect(() => {
+
+    }, [chatStore.chatUserMessages]);
+
     return (
         <Box 
             onClick={ () => {
@@ -48,8 +52,6 @@ const ChatElement = (user: User) => {
                         return el;
                     }
                 })[0]));
-                const newDirectMessages = fetchAllDirectMessages(chatStore.chatUserMessages, userId, user.id);
-                dispatch(updateChatDirectMessages(newDirectMessages))
             }}
             sx={{
                 width: "100%",
@@ -102,6 +104,10 @@ const  ChatPageUsers = (chatProp : ChatProps) => {
     //     dispatch(updateStateUserFriendDialog(false)); 
     //     // setDialogState(false)
     // }
+    useEffect(() => {
+
+    }, [chatStore.chatUserMessages, chatStore.chatUsers]);
+    
     return (
     <>
         <Stack direction={"row"} sx={{ width: "95vw"}}>

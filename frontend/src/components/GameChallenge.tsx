@@ -25,10 +25,11 @@ const GameChallenge: React.FC<GameChallengeProps> = ({ userId,  game, setChallen
 			}
 			if (socket != null) {
 				socket.emit('acceptMatch', newGame);
+				console.log("Accepting match: ", game);
 			}
 		}
 		setChallenge(false);
-		navigate('/game/pvp')
+		navigate('/game/pvp');
     }
 
     function declineGame() {

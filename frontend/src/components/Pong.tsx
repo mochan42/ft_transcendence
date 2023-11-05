@@ -45,7 +45,7 @@ const Pong: React.FC<PongProps> = ({ userId, difficulty, isGameActive, isGameOve
 	const [boostStartY, setBoostStartY] = useState(200);
 	const [ballX, setBallX] = useState(startX);
 	const [ballY, setBallY] = useState(startY);
-	const [lastBoost, setLastBoost] = useState<number>(Date.now);
+	// const [lastBoost, setLastBoost] = useState<number>(Date.now);
 
 	const checkCollision = () => {
 
@@ -251,7 +251,6 @@ const Pong: React.FC<PongProps> = ({ userId, difficulty, isGameActive, isGameOve
 				setBoostStartX(newBoostX);
 				setBoostStartY(newBoostY);
 			}
-
 		}, 1000 / 60);
 
 		return () => clearInterval(gameLoop);

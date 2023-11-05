@@ -7,7 +7,6 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
-
 import { Server, Socket } from 'socket.io';
 import { ChatsService } from './chats/chats.service';
 import { FriendsService } from './friends/friends.service';
@@ -26,7 +25,11 @@ import { Game } from './games/entities/game.entity';
 
 @WebSocketGateway({
   cors: {
+<<<<<<< HEAD
     origin: 'http://localhost:3000',
+=======
+    origin: `${ process.env.FRONTEND_URL }`,
+>>>>>>> tmp
     // origin: '*',
     credentials: true
   },
@@ -47,12 +50,15 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   async handleConnection(@ConnectedSocket() socket: Socket, ...args: any[]) {
     const user = await this.chatsService.getUserFromSocket(socket);
-    socket.emit('connected', `Welcome ${user.userName}, you're connected`);
+    const allUser = await this.userService.findAll();
+    this.server.emit('connected', {new : user, all: allUser});
   }
 
-  async handleDisconnect(socket: Socket) {
+  async handleDisconnect(@ConnectedSocket() socket: Socket) {
     const user = await this.chatsService.getUserFromSocket(socket);
-    return await this.userService.updateLoginState(+user.id, false);
+    const logoutUser = await this.userService.updateLoginState(+user.id, false);
+    const allUsers = await this.userService.findAll();
+    this.server.emit('logout', { new: logoutUser, all: allUsers });
   }
 
   @SubscribeMessage('inviteFriend')
@@ -69,9 +75,10 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
     };
 
     const friendShip = await this.friendsService.create(friendDto);
+    const friends = await this.friendsService.findAll();
 
-    socket.emit('inviteFriendSucces', {});
-    this.server.emit('invitedByFriend', friendShip.receiver);
+    socket.emit('inviteFriendSucces', friends);
+    this.server.emit('invitedByFriend', { new : friendShip.receiver, all: friends});
   }
 
   @SubscribeMessage('acceptFriend')
@@ -82,8 +89,8 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const reqToAccept = await this.friendsService.findBYId(friendship);
     const updatedFriend: Friend = { ...reqToAccept, relation: ACCEPTED };
     const friend = await this.friendsService.update(updatedFriend);
-
-    this.server.emit('newFriend', friend);
+    const allFriends = await this.friendsService.findAll();
+    this.server.emit('newFriend', { new: friend, all: allFriends});
   }
 
   @SubscribeMessage('denyFriend')
@@ -138,10 +145,12 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
   ) {
     const newMessage: MessageDto = { ...message };
     const savedMessage = await this.chatsService.saveMessage(newMessage);
-    this.server.emit('receiveMessage', savedMessage);
+    const allMessages = await this.chatsService.findAllMessages();
+    this.server.emit('receiveMessage', { new: savedMessage, all: allMessages });
   }
 
   /***********************GAME*********************** */
+
   @SubscribeMessage('acceptMatch')
   async handleAcceptMatch(
     @ConnectedSocket() socket: Socket,
@@ -151,6 +160,63 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const game = await this.gamesService.acceptMatch(data);
     this.server.emit('matchFound', game);
   }
+
+  @SubscribeMessage('updateMatchClient')
+  handleUpdateMatch(
+    @ConnectedSocket() socket: Socket,
+    @MessageBody() data: any,
+  ){
+    this.server.emit('updateMatch', data);
+  }
+
+  @SubscribeMessage('updatePaddle1')
+  handleUpdatePaddle1(
+    @ConnectedSocket() socket: Socket,
+    @MessageBody() data: any,
+  ){
+    this.server.emit('updatePaddle1', data);
+  }
+  
+  @SubscribeMessage('updatePaddle2')
+  handleUpdatePaddle2(
+    @ConnectedSocket() socket: Socket,
+    @MessageBody() data: any,
+  ){
+    this.server.emit('updatePaddle2', data);
+  }
+
+  @SubscribeMessage('updateBallX')
+  handleUpdateBallX(
+    @ConnectedSocket() socket: Socket,
+    @MessageBody() data: any,
+  ){
+    this.server.emit('updateBallX', data);
+  }
+
+  @SubscribeMessage('updateBallY')
+  handleUpdateBallY(
+    @ConnectedSocket() socket: Socket,
+    @MessageBody() data: any,
+  ){
+    this.server.emit('updateBallY', data);
+  }
+
+  @SubscribeMessage('updateBoostX')
+  handleUpdateBoostX(
+    @ConnectedSocket() socket: Socket,
+    @MessageBody() data: any,
+  ){
+    this.server.emit('updateBoostX', data);
+  }
+
+  @SubscribeMessage('updateBoostY')
+  handleUpdateBoostY(
+    @ConnectedSocket() socket: Socket,
+    @MessageBody() data: any,
+  ){
+    this.server.emit('updateBoostY', data);
+  }
+
 
 
   @SubscribeMessage('requestMatch')

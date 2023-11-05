@@ -17,13 +17,14 @@ import Cookies from 'js-cookie';
 import { Utils__isAPICodeAvailable } from './utils/utils__isAPICodeAvailable';
 import { getSocket } from './utils/socketService';
 import { GameType, Chat } from './types';
-import { updateChatUserMessages, updateChatDirectMessages } from "./redux/slices/chatSlice";
+import { updateChatUserMessages, updateChatUserFriendRequests, updateChatUserFriends, updateChatUsers } from "./redux/slices/chatSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { selectChatStore } from "./redux/store";
-import { fetchAllMessages} from './data/ChatData';
-import { fetchAllDirectMessages } from './components/ChatPageUsers';
+import { fetchAllFriends, fetchAllMessages, fetchAllUsersFriends} from './data/ChatData';
 import GameChallenge from './components/GameChallenge';
 import Game from './components/pages/Game';
+import { ACCEPTED, PENDING } from './APP_CONSTS';
+import Game_2 from './components/pages/Game_2';
 
 
 
@@ -61,13 +62,42 @@ const App: React.FC = () => {
 	//----------------------------CHAT---------------------------
 	useEffect(() => {
 		if (socket != null) {
-			socket.on("receiveMessage", async (data: any) => {
-				if (data.sender == userId || data.receiver == chatStore.chatRoomId) {
-					const allMessages: Chat[] = await fetchAllMessages();
-					dispatch(updateChatUserMessages(allMessages));
-					const newDirectMessages = fetchAllDirectMessages(allMessages, userId, chatStore.chatRoomId);
-					dispatch(updateChatDirectMessages(newDirectMessages));
+			socket.on("receiveMessage", (data: any) => {
+				dispatch(updateChatUserMessages(data.all));
+			});
+
+			socket.on('invitedByFriend', (data: any) => {
+				if (data.new != userId) {
+					return ;
 				}
+				const newFriendRequestList = fetchAllUsersFriends(PENDING, data.all);
+				dispatch(updateChatUserFriendRequests(newFriendRequestList));
+			});
+
+			socket.on('newFriend', (data: any) => {
+				if (data.new.sender != userId && data.new.received != userId) {
+					return ;
+				}
+				const newFriendRequestList = fetchAllUsersFriends(PENDING, data.all);
+				const newFriendList = fetchAllUsersFriends(ACCEPTED, data.all);
+				dispatch(updateChatUserFriendRequests(newFriendRequestList));
+				dispatch(updateChatUserFriends(newFriendList));
+			});
+			
+			socket.on('deniedFriend', async (data: any) => {
+				if (data.new.sender != userId && data.new.received != userId) {
+					return ;
+				}
+				const newFriendRequestList = fetchAllUsersFriends(PENDING, data.all);
+				dispatch(updateChatUserFriendRequests(newFriendRequestList));
+			});
+
+			socket.on('logout', (data: any) => {
+				dispatch(updateChatUsers(data.all));
+			});
+
+			socket.on('connected', (data: any) => {
+				dispatch(updateChatUsers(data.all));
 			});
 		}
 	});
@@ -76,7 +106,7 @@ const App: React.FC = () => {
 	useEffect(() => {
 		if (socket != null) {
 			socket.on('invitedToMatch', (data: any) => {
-			console.log(userId, "   ", data.player2, "\n\n");
+			console.log("Invitation received!", userId, "   ", data.player2, "\n\n");
 			if (data.player2 == userId) {
 				setChallenge(true);
 				console.log("I got invited to a game! \n\n");
@@ -113,7 +143,7 @@ const App: React.FC = () => {
 							setToken2fa={setToken2fa}
 					/>} />
 					<Route path='/game' element={<ProtectedRoute isAuth={isAuth} path='/game' element={<GameSelection userId={userId} />} />} />
-					<Route path='/game/pvp' element={<ProtectedRoute isAuth={isAuth} path='/game/pvp' element={<Game difficulty={game ? game.difficulty : 0} userId={userId ? userId : "0"} includeBoost={game ? game.isBoost : false} opponent={'player'} status={'found'} game={game ? game : undefined} />} />} />
+					<Route path='/game/pvp' element={<ProtectedRoute isAuth={isAuth} path='/game/pvp' element={<Game_2 difficulty={game ? game.difficulty : 0} userId={userId ? userId : "0"} includeBoost={game ? game.includeBoost : false} opponent={'player'} status={'found'} game={game ? game : undefined} />} />} />
 					<Route path='/profile' element={<ProtectedRoute isAuth={isAuth} path='/profile' element={<Profile userId={userId} isAuth={isAuth} />} />} />
 					<Route path='/*' element={<PageNotFound />} />
 				</Routes>

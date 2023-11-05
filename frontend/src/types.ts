@@ -118,7 +118,7 @@ type GameType = {
   player1: number;
   player2: number;
   difficulty: number;
-  isBoost: boolean;
+  includeBoost: boolean;
   status: 'request' | 'found' | 'playing' | 'finished' | 'aborted';
   score1: number;
   score2: number;
@@ -128,6 +128,53 @@ type GameType = {
   boostY: number;
   ballX: number;
   ballY: number;
+  isBoost?: boolean;
+  gameMaker?: number;
+  paddle1Speed?: number,
+  paddle2Speed?: number;
+  paddle1Dir?: number;
+  paddle2Dir?: number;
+  speedX?: number;
+  speedY?: number;
+}
+
+type paddle1Type = {
+  gameId: number,
+  paddlePos: number,
+}
+
+type paddle2Type = {
+  gameId: number,
+  paddlePos: number,
+}
+
+type ballXType = {
+  gameId: number,
+  ballPos: number,
+}
+
+type ballYType = {
+  gameId: number,
+  ballPos: number,
+}
+
+type boostXType = {
+  gameId: number,
+  boostX: number,
+}
+
+type boostYType = {
+  gameId: number,
+  boostY: number,
+}
+
+type update = {
+  id: number;
+  paddle1Pos: number;
+  ballX: number;
+  ballY: number;
+  boostX: number;
+  boostY: number;
 }
 
 type TFormMember =
@@ -151,5 +198,12 @@ export type {
   ChatProps,
   Chat,
   GameType,
-  TFormMember
+  TFormMember,
+  paddle1Type,
+  paddle2Type,
+  ballXType,
+  ballYType,
+  boostXType,
+  boostYType,
+  update,
 };

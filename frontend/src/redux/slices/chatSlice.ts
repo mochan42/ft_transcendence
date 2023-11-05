@@ -24,7 +24,7 @@ const initialState: IChatState = {
     open: false,
     type: CHAT_ACTION_TYPE.CHAT_CONTACT, // options: 'CONTACT' 'STARRED' 'SHARED'
   },
-  //chatUsers: ChatUserList,
+  // chatUsers: ChatUserList,
   chatUsers: dummyUsers, // dev purpose
   chatUserFriends: ChatUserFriendsList,
   chatUserFriendRequests: ChatUserFriendRequestList,
@@ -35,7 +35,6 @@ const initialState: IChatState = {
   chatActiveUser: null,
   chatUserFriendDialogState: false,
   chatUserMessages: ChatUserMessages,
-  chatDirectMessages: [],
   chatActiveGroup: null,
   chatGroupDialogState: false,
   chatGroupCreateFormPasswdState: true,
@@ -86,9 +85,6 @@ const chatSlice = createSlice({
     updateChatUserMessages: (state, action: PayloadAction<Chat[]>) => {
       state.chatUserMessages = action.payload;
     },
-    updateChatDirectMessages: (state, action: PayloadAction<Chat[]>) => {
-      state.chatDirectMessages = action.payload;
-    },
     updateChatGroups: (state, action: PayloadAction<(Group | null)[]>) => {
       state.chatGroupList = action.payload;
     },
@@ -126,7 +122,6 @@ export const {
   selectConversation,
   updateChatActiveUser,
   updateStateUserFriendDialog,
-  updateChatDirectMessages,
   updateChatUserMessages,
   updateChatGroups,
   updateChatGroupMembers,
