@@ -185,6 +185,7 @@ const ChatUserFriendRequestComp = (reqData : User) => {
     const chatStore = useSelector(selectChatStore);
     const userId = Cookies.get('userId') ? Cookies.get('userId') : '';
     const socket = getSocket(userId);
+    const dispatch = useDispatch()
 
     const isSender = (reqData: User): boolean => {
         const friend = chatStore.chatUserFriendRequests.find((el: any) => {
@@ -202,6 +203,7 @@ const ChatUserFriendRequestComp = (reqData : User) => {
             }
         })[0];
         socket.emit('acceptFriend', stranger.id);
+        dispatch(updateStateUserFriendDialog(false));
     }
 
     const onDeny = () => {
@@ -212,8 +214,13 @@ const ChatUserFriendRequestComp = (reqData : User) => {
             }
         })[0];
         socket.emit('denyFriend', stranger.id);
+        dispatch(updateStateUserFriendDialog(false));
+
     }
 
+    useEffect(() => {
+
+    }, [chatStore.chatUserFriendDialogState]);
     return (
         <StyledChatBox sx={{
             width : "100%",

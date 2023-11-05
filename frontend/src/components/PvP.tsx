@@ -6,6 +6,8 @@ import Paddle from './Paddle';
 import { GameType, User } from '../types';
 import MatchMaking from './MatchMaking';
 import { getSocket } from '../utils/socketService';
+import throttle from 'lodash/throttle';
+
 
 
 interface PvPProps {
@@ -28,6 +30,7 @@ interface PvPProps {
 
 const PvP: React.FC<PvPProps> = ({ userId, player1Score, player2Score, isGameActive, isGameOver, selectedDifficulty, setIsGameOver, setState, setPlayer1Id, setPlayer2Id, setPlayer1Score, setPlayer2Score, setPlayer1Info, setPlayer2Info, game}) => {
 
+	
 	const GameTmp: GameType = {
 		id: -1,
 		player1: -1,
@@ -51,8 +54,8 @@ const PvP: React.FC<PvPProps> = ({ userId, player1Score, player2Score, isGameAct
 		speedX: 1,
 		speedY: 1,
 	};
-
-
+	
+	
 	const socket = getSocket(userId);
 	const [gameObj, setGameObj] = useState<GameType>(GameTmp);
 	
@@ -85,85 +88,90 @@ const PvP: React.FC<PvPProps> = ({ userId, player1Score, player2Score, isGameAct
 	const [paddle1Speed, setPaddle1Speed] = useState((difficulty + 1) * 2); // dynamic
 	const [paddle2Speed, setPaddle2Speed] = useState((difficulty + 1) * 2); // dynamic
 
-	const movePaddles = () => {
-		if (gameMaker) {
-			setPaddle1Y((prevY) => {
-				let newY = prevY + paddle1Dir * paddle1Speed;
-				// Ensure the paddle stays within the valid range
-				if (newY < 0) {
-				newY = 0;
-				} else if (newY > (startY * 2) + 30 - paddleLengths[difficulty]) {
-				newY = (startY * 2) + 30 - paddleLengths[difficulty]; // Maximum paddle height is div height - paddle length
-				}
-				const tmp: GameType = {
-					...gameObj,
-					paddle1Y: newY,
-				}
-				const time = setTimeout(() => {
-				}, 5000)
-				clearTimeout(time);
-				socket.emit('updateMatchClient', tmp)
-				return newY;
-			})
-		} else {
-			setPaddle2Y((prevY) => {
-				let newY = prevY + paddle2Dir * paddle2Speed;
-				// Ensure the paddle stays within the valid range
-				if (newY < 0) {
-				  newY = 0;
-				} else if (newY > (startY * 2) + 30 - paddleLengths[difficulty]) {
-				  newY = (startY * 2) + 30 - paddleLengths[difficulty]; // Maximum paddle height is div height - paddle length
-				}
-				const tmp: GameType = {
-					...gameObj,
-					paddle2Y: newY,
-				}
-				const time = setTimeout(() => {
-				}, 5000)
-				clearTimeout(time);
-				socket.emit('updateMatchClient', tmp)
-				return newY;
-			})
+	const calculateNewPaddLePos = (paddle: number, speed: number, paddleDir: number): number => {
+		const  newPos = paddle + (paddleDir * speed);
+		if (newPos < 0) {
+			return 0;
 		}
+		if (newPos > (startY * 2) + 30 - paddleLengths[difficulty]) {
+			return (startY * 2) + 30 - paddleLengths[difficulty]; 
+		}
+		return newPos;
+	}
+
+	const movePaddlePlayer1 = (event: KeyboardEvent) => {
+		if (userId != gameObj.player1.toString()) {
+			return ;
+		}
+		if (event.key !== 'w' && event.key !== 'ArrowUp' && event.key !== 's' && event.key !== 'ArrowDown') {
+			return ;
+		}
+		let moveDirection = 1;
+		let paddle1Y = gameObj.paddle1Y;
+		
+		if (event.key === 'w' || event.key === 'ArrowUp') {
+			moveDirection = -1;
+		}
+
+		paddle1Y = calculateNewPaddLePos(paddle1Y, 5, moveDirection);
+		
+		const updateGame : GameType = {
+			...gameObj,
+			paddle1Y: paddle1Y,
+		}
+		socket.timeout(200).emit('updateMatchClient', updateGame);
 	};
 
-	useEffect (() => {
-		if (socket != null) {
-			socket.on('updateMatch', (game: GameType) => {
-				if (userId == game.player1.toString() || userId == game.player2.toString()) {
-					console.log("Match Update received", game.paddle1Y);
-					setGameObj(game);
-				}
-				// setBallX(game.ballX);
-				// setBallY(game.ballY);
-				// setBoostX(game.boostX);
-				// setBoostY(game.boostY);
-				// setPaddle1Y(game.paddle1Y);
-				// setPaddle2Y(game.paddle2Y);
-				// setPlayer1Score(game.score1);
-			})
+	const movePaddlePlayer2 = (event: KeyboardEvent) => {
+		if (userId != gameObj.player2.toString()) {
+			return ;
 		}
-	});
-	
+		if (event.key !== 'w' && event.key !== 'ArrowUp' && event.key !== 's' && event.key !== 'ArrowDown') {
+			return ;
+		}
+		
+		let moveDirection = 1;
+		let paddle2Y = gameObj.paddle2Y;
+		
+		if (event.key === 'w' || event.key === 'ArrowUp') {
+			moveDirection = -1;
+		}
+
+		paddle2Y = calculateNewPaddLePos(paddle2Y, 2, moveDirection);
+
+		const updateGame : GameType = {
+			...gameObj,
+			paddle2Y: paddle2Y,
+		}
+		socket.timeout(200).emit('updateMatchClient', updateGame);
+	};
+		
+	const throttledMovePaddlePlayer1 = throttle(movePaddlePlayer1, 16);
+	const throttledMovePaddlePlayer2 = throttle(movePaddlePlayer2, 16);
+
+	// -------------------------- GAME SETUP ------------------------------------------------------
 
 	useEffect(() => {
-		// const gameLoop = setInterval(() => {
-			movePaddles();
-			// setTimeout(() => {
-			// }, 200)
-			// moveBall();
-			// checkCollision();
-			
-		// }, 1000 / 60);
-		// return () => clearInterval(gameLoop);
-	});
+		document.addEventListener('keydown', throttledMovePaddlePlayer1);
 
+		return () => {
+			document.removeEventListener('keydown', throttledMovePaddlePlayer1);
+		};
+	}, [gameObj]);
+
+	useEffect(() => {
+		document.addEventListener('keydown', throttledMovePaddlePlayer2);
+
+		return () => {
+			document.removeEventListener('keydown', throttledMovePaddlePlayer2);
+		};
+	}, [gameObj]);
+	
 	useEffect(() => {
 		if (socket != null) {
 			socket.on('matchFound', (data: GameType) => {
 				console.log("A matchFound event is triggered for users ", data.player1, " and ", data.player2, "\n\n Current userId: ", userId);
 				if (userId && userId == data.player1.toString()) {
-					console.log("That is us! :D \n")
 					setPlayer1Id(data.player1.toString());
 					setPlayer2Id(data.player2.toString());
 					setMatchFound(true);
@@ -176,59 +184,23 @@ const PvP: React.FC<PvPProps> = ({ userId, player1Score, player2Score, isGameAct
 						gameMaker: +userId,
 						status: 'playing',
 					}
-					console.log("\nFirst Player: Sending updated event info: ", tmp);
 					socket.emit('updateMatchClient', tmp);
 				} else if (userId && userId == data.player2.toString()) {
-					console.log("That is us! :D \n")
 					setPlayer1Id(data.player1.toString());
 					setPlayer2Id(data.player2.toString());
 					setMatchFound(true);
 				}
-			})
+			});
+
+			socket.on('updateMatch', (currentGame: GameType) => {
+				if (userId == currentGame.player1.toString() || userId == currentGame.player2.toString()) {
+					setGameObj(currentGame);
+				}
+			});
 		}
 	});
 
-
 	// // GAME LOGIC STARTS HERE
-	
-	const handleKeyDown = (event: KeyboardEvent) => {
-		if (event.key === 'w' || event.key === 'ArrowUp') {
-			event.preventDefault();
-			if (gameMaker) {
-				setPaddle1Dir(-1);
-			} else {
-				setPaddle2Dir(-1);
-			}
-		} else if (event.key === 's' || event.key === 'ArrowDown') {
-			event.preventDefault();
-			if (gameMaker) {
-				setPaddle1Dir(1);
-			} else {
-				setPaddle2Dir(1);
-			}
-		}
-	};
-	
-	const handleKeyUp = (event: KeyboardEvent) => {
-		if (event.key === 'w' || event.key === 'ArrowUp' || event.key === 's' || event.key === 'ArrowDown') {
-			if (gameMaker) {
-				setPaddle1Dir(0); // Stop paddle movement
-			} else {
-				setPaddle2Dir(0); // Stop paddle movement
-			}
-		}
-	};
-
-
-	useEffect(() => {
-		document.addEventListener('keydown', handleKeyDown);
-		document.addEventListener('keyup', handleKeyUp);
-	
-		return () => {
-		  document.removeEventListener('keydown', handleKeyDown);
-		  document.removeEventListener('keyup', handleKeyUp);
-		};
-	},);
 
 	return (
 		<div className="relative w-full h-full" ref={PvPRef}>

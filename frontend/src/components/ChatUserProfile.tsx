@@ -10,6 +10,7 @@ import Cookies from 'js-cookie';
 import Game from "./pages/Game";
 import { useEffect, useState } from "react";
 import { User, UserStats } from "../types";
+import { getSocket } from "../utils/socketService";
 
 /* component to show contact profile */
 
@@ -19,10 +20,18 @@ const ChatUserProfile = ({ userId }: any) => {
     const theme = useTheme()
     const dispatch = useDispatch();
     const chatStore = useSelector(selectChatStore);
+    const socket = getSocket(userId)
     
     let userSelect =  {} as User
     if (chatStore.chatActiveUser && userId != null) {
         userSelect = friendToUserType(userId, chatStore.chatActiveUser, chatStore.chatUsers)
+    }
+
+    const onBlock = () => {
+        if (!chatStore.chatActiveUser) {
+            return ;
+        }
+        socket.emit('blockFriend', chatStore.chatActiveUser.id);
     }
 
     useEffect(() => {
@@ -107,7 +116,7 @@ const ChatUserProfile = ({ userId }: any) => {
                     </Stack>
                     <Divider />
                     <Stack alignItems={"center"} direction={"row"} spacing={2}>
-                        <Button startIcon={ <Prohibit/>} fullWidth variant="outlined"> Mute </Button>
+                        <Button startIcon={ <Prohibit/>} fullWidth variant="outlined" onClick={() => { onBlock() }}> BLock </Button>
                         <Button startIcon={ <GameController/>} fullWidth variant="outlined"> Play game </Button>
                     </Stack>
 

@@ -146,6 +146,17 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
     this.server.emit('receiveMessage', { new: savedMessage, all: allMessages });
   }
 
+  @SubscribeMessage('blockFriend')
+  async blockFriend(
+    @ConnectedSocket() socket: Socket,
+    @MessageBody() friendShip: any
+    ) 
+  {
+    const removeFriend = await this.friendsService.remove(+friendShip);
+    const allFriends = await this.friendsService.findAll();
+    this.server.emit('BlockedFriendSucces', { new: removeFriend, all: allFriends });
+  }
+
   /***********************GAME*********************** */
   @SubscribeMessage('acceptMatch')
   async handleAcceptMatch(
