@@ -130,15 +130,15 @@ const Game:React.FC<GameProps> = ({ difficulty, userId, includeBoost, opponent, 
 					</Button>
 				</div>
 				<div className='border-8 dark:border-slate-900 flex justify-between gap-8 items-center'>
-					<img className='min-w-[24px] h-12 w-12 rounded-full overflow-hidden' src={player2Info ? player2Info.avatar : 'https://fastly.picsum.photos/id/294/200/200.jpg?hmac=tSuqBbGGNYqgxQ-6KO7-wxq8B4m3GbZqQAbr7tNApz8'}></img>
+					<img className='min-w-[24px] h-12 w-12 rounded-full overflow-hidden' src={player2Info ? player2Info.avatar : (opponent === 'bot') ? 'https://www.svgrepo.com/show/303599/spider-man-4-logo.svg' : 'https://fastly.picsum.photos/id/294/200/200.jpg?hmac=tSuqBbGGNYqgxQ-6KO7-wxq8B4m3GbZqQAbr7tNApz8'}></img>
 					<SmallHeading className='text-lg dark:text-amber-400'>
-						{ player2Info ? player2Info.userNameLoc : 'Player 2' }
+						{ player2Info ? player2Info.userNameLoc : (opponent === 'bot') ? 'Bot' : 'Player 2' }
 					</SmallHeading>
 				</div>
 			</div>
 			<div className='w-full h-5/6 border-t-2 border-l-2 border-r-2 border-slate-700 black:border-slate-200 bg-slate-400 dark:text-slate-200 text-center'>
 				{(opponent === 'bot') ? <Pong userId={userId} difficulty={difficulty} isGameActive={gameActive} isReset={reset} isGameOver={isGameOver} player1Score={player1Score} opponentScore={player2Score} includeBoost={includeBoost} setIsGameOver={setIsGameOver} playerPoint={playerPoint} opponentPoint={opponentPoint} setReset={setReset}/> : null }
-				{(opponent === 'player') ? <PvP userId={userId} isGameOver={isGameOver} player1Score={player1Score} player2Score={player2Score} setIsGameOver={setIsGameOver} setState={setState} setPlayer1Id={setPlayer1Id} setPlayer2Id={setPlayer2Id} setPlayer1Info={setPlayer1Info} setPlayer2Info={setPlayer2Info} setPlayer1Score={setPlayer1Score} setPlayer2Score={setPlayer2Score} game={game}/> : null}
+				{(opponent === 'player') ? <PvP userId={userId} selectedDifficulty={difficulty} isGameOver={isGameOver} player1Score={player1Score} player2Score={player2Score} setIsGameOver={setIsGameOver} setState={setState} setPlayer1Id={setPlayer1Id} setPlayer2Id={setPlayer2Id} setPlayer1Info={setPlayer1Info} setPlayer2Info={setPlayer2Info} setPlayer1Score={setPlayer1Score} setPlayer2Score={setPlayer2Score} game={game}/> : null}
 			</div>
 		</div>
 	)

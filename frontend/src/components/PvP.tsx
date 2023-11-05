@@ -13,6 +13,7 @@ interface PvPProps {
 	player1Score: number;
 	player2Score: number;
 	isGameOver: boolean;
+	selectedDifficulty: number;
 	setIsGameOver: (boolean: boolean) => void;
 	setState?: React.Dispatch<React.SetStateAction<'select' | 'bot' | 'player'>>;
 	setPlayer1Id: (string: string) => void;
@@ -24,7 +25,7 @@ interface PvPProps {
 	game?: GameType;
 }
 
-const PvP: React.FC<PvPProps> = ({ userId, player1Score, player2Score, isGameOver, setIsGameOver, setState, setPlayer1Id, setPlayer2Id, setPlayer1Score, setPlayer2Score, setPlayer1Info, setPlayer2Info, game}) => {
+const PvP: React.FC<PvPProps> = ({ userId, player1Score, player2Score, isGameOver, selectedDifficulty, setIsGameOver, setState, setPlayer1Id, setPlayer2Id, setPlayer1Score, setPlayer2Score, setPlayer1Info, setPlayer2Info, game}) => {
 
 	
 	const GameTmp: GameType = {
@@ -77,44 +78,39 @@ const PvP: React.FC<PvPProps> = ({ userId, player1Score, player2Score, isGameOve
 	}
 
 	useEffect(() => { // Case that we accepted a Game Challenge
-		if (game && game.status == 'found') {
+		if (game) {
+			console.log("I am the receiver of a game challenge\n");
 			setGameObj(game);
-			console.log("Game in game/pvp\n");
-			if (socket != null) {
-				socket.emit('matchFound', game);
-			}
-			console.log("The game can start! \n");
+			gameObj.status = 'playing';
 			setMatchFound(true);
-			game.status = 'playing';
-			
-		}
-		if (gameObj) {
-			console.log("Game object in game/pvp\n")
 			setDifficulty(gameObj.difficulty)
-			setItsDifficult((difficulty + 2) * 2)
-			if (userId && gameObj.player1.toString() == userId) {
-				setGameMaker(true);
-			}
+			setItsDifficult((gameObj.difficulty + 2) * 2)
 			setPlayer1Id(gameObj.player1.toString());
 			setPlayer2Id(gameObj.player2.toString());
-			if (gameObj.isBoost) {
-				setIncludeBoost(gameObj.isBoost);
+			setIncludeBoost(true);
+			if (socket != null) {
+				socket.emit('matchFound', gameObj);
 			}
+			console.log("\n game obj: ", gameObj, "\n");
 		}
-	},[]);
+	},);
 
 	useEffect(() => { // In case we get matched by Backend queue
 		if (socket != null) {
 			socket.on('matchFound', (data: GameType) => {
-				console.log("The game may start\n\n\n\n");
-				if (userId && (+userId == data.player1 || +userId == data.player2)) {
+				console.log("A matchFound event is triggered for users ", data.player1, " and ", data.player2, "\n\n Current userId: ", userId);
+				if (userId && (userId == data.player1.toString() || userId == data.player2.toString())) {
+					console.log("That is us! :D \n")
+					setGameObj(data);
 					setPlayer1Id(data.player1.toString());
 					setPlayer2Id(data.player2.toString());
 					setMatchFound(true);
+					setGameMaker(true);
+					console.log("We have a gameObj: ", data);
 				}
 			})
 		}
-	},[matchFound]);
+	},);
 
 	
 	//  movePaddles]);
@@ -125,38 +121,40 @@ const PvP: React.FC<PvPProps> = ({ userId, player1Score, player2Score, isGameOve
 	
 	const gameLoop = () => {
 		if (!isGameOver) {
-			if (gameMaker) {
-				setLeftPaddleY((prevY) => {
-					let newY = prevY + player1PaddleDirection * player1PaddleSpeed;
-					// Ensure the paddle stays within the valid range
-					if (newY < 0) {
-						newY = 0;
-					} else if (newY > (startY * 2) + 30 - paddleLengths[difficulty]) {
-						newY = (startY * 2) + 30 - paddleLengths[difficulty]; // Maximum paddle height is div height - paddle length
-					}
-					gameObj.paddle1Y = newY;
-					return newY;
-				})
-			} else {
-				setRightPaddleY((prevY) => {
-					let newY = prevY + player2PaddleDirection * player2PaddleSpeed;
-					// Ensure the paddle stays within the valid range
-					if (newY < 0) {
-						newY = 0;
-					} else if (newY > (startY * 2) + 30 - paddleLengths[difficulty]) {
-						newY = (startY * 2) + 30 - paddleLengths[difficulty]; // Maximum paddle height is div height - paddle length
-					}
-					gameObj.paddle2Y = newY;
-					return newY;
-				})
-			}
+			console.log(gameObj);
+			// if (gameMaker) {
+			// 	setLeftPaddleY((prevY) => {
+			// 		let newY = prevY + player1PaddleDirection * player1PaddleSpeed;
+			// 		// Ensure the paddle stays within the valid range
+			// 		if (newY < 0) {
+			// 			newY = 0;
+			// 		} else if (newY > (startY * 2) + 30 - paddleLengths[difficulty]) {
+			// 			newY = (startY * 2) + 30 - paddleLengths[difficulty]; // Maximum paddle height is div height - paddle length
+			// 		}
+			// 		gameObj.paddle1Y = newY;
+			// 		return newY;
+			// 	})
+			// } else {
+			// 	setRightPaddleY((prevY) => {
+			// 		let newY = prevY + player2PaddleDirection * player2PaddleSpeed;
+			// 		// Ensure the paddle stays within the valid range
+			// 		if (newY < 0) {
+			// 			newY = 0;
+			// 		} else if (newY > (startY * 2) + 30 - paddleLengths[difficulty]) {
+			// 			newY = (startY * 2) + 30 - paddleLengths[difficulty]; // Maximum paddle height is div height - paddle length
+			// 		}
+			// 		gameObj.paddle2Y = newY;
+			// 		return newY;
+			// 	})
+			// }
 			// movePaddles();
 			if (player1Score >= 10 || player2Score >= 10) {
 				setIsGameOver(true);
 			}
+			// setLeftPaddleY((prevY) => { return prevY + 1})
 			requestAnimationFrame(gameLoop);
 		}
-		console.log(rightPaddleY, " ", player2PaddleDirection, " ", player2PaddleSpeed, "\n");
+		// console.log(rightPaddleY, " ", player2PaddleDirection, " ", player2PaddleSpeed, "\n");
 	};
 	
 	
@@ -200,14 +198,14 @@ const PvP: React.FC<PvPProps> = ({ userId, player1Score, player2Score, isGameOve
 		  document.removeEventListener('keydown', handleKeyDown);
 		  document.removeEventListener('keyup', handleKeyUp);
 		};
-	}, [gameMaker]);
+	},);
 
 	useEffect(() => {
 		// Start the game loop
-		if (!isGameOver) {
+		if (!isGameOver && gameObj.id > 0) {
 			requestAnimationFrame(gameLoop);
 		}
-	}, [isGameOver]);
+	}, [isGameOver, gameObj]);
 
 	return (
 		<div className="relative w-full h-full" ref={PvPRef}>

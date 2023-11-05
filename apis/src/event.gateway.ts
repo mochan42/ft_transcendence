@@ -180,5 +180,4 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
       }
     }
   }
-
 }
