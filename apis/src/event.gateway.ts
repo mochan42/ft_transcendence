@@ -165,12 +165,52 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
     this.server.emit('updateMatch', data);
   }
 
-  @SubscribeMessage('updatePaddle')
-  handleUpdatePaddle(
+  @SubscribeMessage('updatePaddle1')
+  handleUpdatePaddle1(
     @ConnectedSocket() socket: Socket,
     @MessageBody() data: any,
   ){
-    this.server.emit('updatePaddle', data);
+    this.server.emit('updatePaddle1', data);
+  }
+  
+  @SubscribeMessage('updatePaddle2')
+  handleUpdatePaddle2(
+    @ConnectedSocket() socket: Socket,
+    @MessageBody() data: any,
+  ){
+    this.server.emit('updatePaddle2', data);
+  }
+
+  @SubscribeMessage('updateBallX')
+  handleUpdateBallX(
+    @ConnectedSocket() socket: Socket,
+    @MessageBody() data: any,
+  ){
+    this.server.emit('updateBallX', data);
+  }
+
+  @SubscribeMessage('updateBallY')
+  handleUpdateBallY(
+    @ConnectedSocket() socket: Socket,
+    @MessageBody() data: any,
+  ){
+    this.server.emit('updateBallY', data);
+  }
+
+  @SubscribeMessage('updateBoostX')
+  handleUpdateBoostX(
+    @ConnectedSocket() socket: Socket,
+    @MessageBody() data: any,
+  ){
+    this.server.emit('updateBoostX', data);
+  }
+
+  @SubscribeMessage('updateBoostY')
+  handleUpdateBoostY(
+    @ConnectedSocket() socket: Socket,
+    @MessageBody() data: any,
+  ){
+    this.server.emit('updateBoostY', data);
   }
 
 

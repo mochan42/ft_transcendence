@@ -3,7 +3,7 @@ import VictoryLoss from './VictoryLoss';
 import Boost from './Boost';
 import Ball from './Ball';
 import Paddle from './Paddle';
-import { GameType, User, update } from '../types';
+import { GameType, User, ballXType, ballYType, paddle1Type, paddle2Type, update } from '../types';
 import MatchMaking from './MatchMaking';
 import { getSocket } from '../utils/socketService';
 import { number } from 'prop-types';
@@ -93,27 +93,44 @@ const PvP_2: React.FC<PvP_2Props> = ({ playerPoint, opponentPoint, setReset, use
 				gameId: gameObj.id,
 				paddlePos: newY,
 			}
-			socket.emit('updatePaddle', updatePaddle)
+			socket.emit('updatePaddle2', updatePaddle)
 			return newY;
 		})
 	}
 
 	useEffect(() => {
+		const readLoop = setInterval(() => {
+			socket.on('updatePaddle1', (data: paddle1Type) => {
+				if (data.gameId == gameObj.id) {
+					setPaddle1Y(data.paddlePos);
+				}
+			})
+			socket.on('updateBallX', (data: ballXType) => {
+				if (data.gameId == gameObj.id) {
+					setBallX(data.ballPos);
+				}
+			})
+			socket.on('updateBallY', (data: ballYType) => {
+				if (data.gameId == gameObj.id) {
+					setBallY(data.ballPos);
+				}
+			})
+			socket.off('updatePaddle1');
+			socket.off('updateBallX');
+			socket.off('updateBallY');
+		}, 10);
+	return () => clearInterval(readLoop);
+	})
+
+	useEffect(() => {
 		const gameLoop = setInterval(() => {
 			if (isGameActive && !isGameOver) {
 				movePaddles();
-				socket.on('updateMatch', (data: update) => {
-					setBallX(data.ballX);
-					setBallY(data.ballY);
-					setBoostX(data.boostX);
-					setBoostY(data.boostY);
-					setPaddle1Y(data.paddle1Pos);
-				})
 			}
 			if (player1Score >= 10 || player2Score >= 10) {
 				setIsGameOver(true);
 			}
-		}, 30);
+		}, 10);
 
 		return () => clearInterval(gameLoop);
 	}, [isGameActive, isGameOver, includeBoost, startX, startY, difficulty, player2Score, player1Score, ballX, ballY, paddle1Y, paddle2Y, movePaddles]);

@@ -3,7 +3,7 @@ import VictoryLoss from './VictoryLoss';
 import Boost from './Boost';
 import Ball from './Ball';
 import Paddle from './Paddle';
-import { GameType, User, paddle } from '../types';
+import { GameType, User, paddle1Type } from '../types';
 import MatchMaking from './MatchMaking';
 import { getSocket } from '../utils/socketService';
 
@@ -84,110 +84,20 @@ const PvP: React.FC<PvPProps> = ({ playerPoint, opponentPoint, setReset, userId,
 	const [paddle2Y, setPaddle2Y] = useState(0); // dynamic
 	const [paddle1Dir, setPaddle1Dir] = useState<number>(0); // dynamic
 	const [paddle2Dir, setPaddle2Dir] = useState<number>(0); // dynamic
-	const [speedX, setSpeedX] = useState(-(itsDifficult)); // dynamic
-	const [speedY, setSpeedY] = useState(-(itsDifficult)); // dynamic
+	const [speedX, setSpeedX] = useState(-20); // dynamic
+	const [speedY, setSpeedY] = useState(-20); // dynamic
 	const [paddle1Speed, setPaddle1Speed] = useState((difficulty + 1) * 2); // dynamic
 	const [paddle2Speed, setPaddle2Speed] = useState((difficulty + 1) * 2); // dynamic
 	const [boostStartX, setBoostStartX] = useState(200);
 	const [boostStartY, setBoostStartY] = useState(200);
-	// const movePaddles = () => {
-	// 	if (gameMaker) {
-	// 		setPaddle1Y((prevY) => {
-	// 			let newY = prevY + paddle1Dir * paddle1Speed;
-	// 			// Ensure the paddle stays within the valid range
-	// 			if (newY < 0) {
-	// 			newY = 0;
-	// 			} else if (newY > (startY * 2) + 30 - paddleLengths[difficulty]) {
-	// 			newY = (startY * 2) + 30 - paddleLengths[difficulty]; // Maximum paddle height is div height - paddle length
-	// 			}
-	// 			if (prevY != newY) {
-	// 				const tmp: GameType = {
-	// 					...gameObj,
-	// 					paddle1Y: newY,
-	// 				}
-	// 				console.log("changed from: ", prevY, " to ", newY);
-	// 				socket.emit('updateMatchClient', tmp);
-	// 			}
-	// 			return newY;
-	// 		})
-	// 	} else {
-	// 		setPaddle2Y((prevY) => {
-	// 			let newY = prevY + paddle2Dir * paddle2Speed;
-	// 			// Ensure the paddle stays within the valid range
-	// 			if (newY < 0) {
-	// 			  newY = 0;
-	// 			} else if (newY > (startY * 2) + 30 - paddleLengths[difficulty]) {
-	// 			  newY = (startY * 2) + 30 - paddleLengths[difficulty]; // Maximum paddle height is div height - paddle length
-	// 			}
-	// 			if (prevY != newY) {
-	// 				const tmp: GameType = {
-	// 					...gameObj,
-	// 					paddle2Y: newY,
-	// 				}
-	// 				console.log("changed from: ", prevY, " to ", newY);
-	// 				socket.emit('updateMatchClient', tmp);
-	// 			}
-	// 			return newY;
-	// 		})
-	// 	}
-	// };
-	
-	// useEffect (() => {
-	// 	const gameLoop = setInterval(() => {
-	// 		if (socket != null) {
-	// 			socket.on('updateMatch', (game: GameType) => {
-	// 				if (userId == game.player1.toString() || userId == game.player2.toString()) {
-	// 					console.log("Match Update received", game.paddle1Y);
-	// 					setGameObj(game);
-	// 					// setBallX(game.ballX);
-	// 					// setBallY(game.ballY);
-	// 					// setBoostX(game.boostX);
-	// 					// setBoostY(game.boostY);
-	// 					setPaddle1Y(game.paddle1Y);
-	// 					setPaddle2Y(game.paddle2Y);
-	// 					// setPlayer1Score(game.score1);
-	// 				}
-	// 			})
-	// 			socket.off('updateMatch', (() => {}));
-	// 		}
-	// 	}, 1000 / 5);
-	// 	return () => clearInterval(gameLoop);
-	// });
 
 	// useEffect(() => {
-	// 	const gameLoop = setInterval(() => {
-	// 		// movePaddles();
-	// 		handleKeyDown
-	// 		if (gameMaker) {
-	// 			const tmp: GameType = {
-	// 				...gameObj,
-	// 				paddle1Y: paddle1Y,
-	// 			}
-	// 			console.log("changed from: ", paddle1Y);
-	// 			socket.emit('updateMatchClient', tmp);
-	// 		} else {
-	// 			const tmp: GameType = {
-	// 				...gameObj,
-	// 				paddle2Y: paddle2Y,
-	// 			}
-	// 			// console.log("changed from: ", prevY, " to ", newY);
-	// 			socket.emit('updateMatchClient', tmp);
-	// 			console.log("Running\n");
-	// 		}
-	// 		// setTimeout(() => {
-	// 		// }, 200)
-	// 		// moveBall();
-	// 		// checkCollision();
-			
-	// 	}, 1000 / 5);
-	// 	return () => clearInterval(gameLoop);
-	// }, [paddle1Y, paddle2Y]);
-
-	socket.on('updatePaddle', (data: paddle) => {
+	socket.on('updatePaddle2', (data: paddle1Type) => {
 		if (data.gameId == gameObj.id) {
 			setPaddle2Y(data.paddlePos);
 		}
 	})
+	// });
 
 	const checkCollision = () => {
 		var margin = (((difficulty + 2) * 2) * 3)
@@ -314,34 +224,42 @@ const PvP: React.FC<PvPProps> = ({ playerPoint, opponentPoint, setReset, userId,
 			setSpeedY(prevSpeedY => prevSpeedY * 2.5);
 			setIsBoost(true);
 		}
-
-		setBallX((prevX) => prevX + speedX);
-		setBallY((prevY) => prevY + speedY);
+		setBallX((prevX) => {
+			let newX = prevX + speedX;
+			const updateBallX = {
+				gameId: gameObj.id,
+				ballPos: newX,
+			}
+			socket.emit('updateBallX', updateBallX)
+			return newX;
+		});
+		setBallY((prevY) => {
+			let newY = prevY + speedY;
+			const updateBallY = {
+				gameId: gameObj.id,
+				ballPos: newY,
+			}
+			socket.emit('updateBallY', updateBallY)
+			return newY;
+		});		
 	};
 
 	const movePaddles = () => {
 		setPaddle1Y((prevY) => {
-		  let newY = prevY + paddle1Dir * paddle1Speed;
-	  
-		  // Ensure the paddle stays within the valid range
-		  if (newY < 0) {
-			newY = 0;
-		  } else if (newY > (startY * 2) + 30 - paddleLengths[difficulty]) {
-			newY = (startY * 2) + 30 - paddleLengths[difficulty]; // Maximum paddle height is div height - paddle length
-		  }
-		  return newY;
-		})
-
-		setPaddle2Y((prevY) => {
-			let newY = prevY + paddle2Dir * paddle2Speed;
-	  
-		  // Ensure the paddle stays within the valid range
-		  if (newY < 0) {
-			newY = 0;
-		  } else if (newY > (startY * 2) + 30 - paddleLengths[difficulty]) {
-			newY = (startY * 2) + 30 - paddleLengths[difficulty]; // Maximum paddle height is div height - paddle length
-		  }
-		  return newY;
+			let newY = prevY + paddle1Dir * paddle1Speed;
+		
+			// Ensure the paddle stays within the valid range
+			if (newY < 0) {
+				newY = 0;
+			} else if (newY > (startY * 2) + 30 - paddleLengths[difficulty]) {
+				newY = (startY * 2) + 30 - paddleLengths[difficulty]; // Maximum paddle height is div height - paddle length
+			}
+			const updatePaddle = {
+				gameId: gameObj.id,
+				paddlePos: newY,
+			}
+			socket.emit('updatePaddle1', updatePaddle)
+			return newY;
 		})
 	}
 
@@ -351,18 +269,18 @@ const PvP: React.FC<PvPProps> = ({ playerPoint, opponentPoint, setReset, userId,
 				movePaddles();
 				moveBall();
 				checkCollision();
-				const tmp = {
-					paddle1Pos: paddle1Y,
-					ballX: ballX,
-					ballY: ballY,
-					boostX: boostX,
-					boostY: boostY,
-					// score1: player1Score,
-					// score2: player2Score,
-					// isGameActive: isGameActive,
-					// isGameOver: isGameOver,
-				} 
-				socket.emit('updateMatchClient', tmp);
+				// const tmp = {
+				// 	paddle1Pos: paddle1Y,
+				// 	ballX: ballX,
+				// 	ballY: ballY,
+				// 	boostX: boostX,
+				// 	boostY: boostY,
+				// 	// score1: player1Score,
+				// 	// score2: player2Score,
+				// 	// isGameActive: isGameActive,
+				// 	// isGameOver: isGameOver,
+				// } 
+				// socket.emit('updateMatchClient', tmp);
 			}
 			if (player1Score >= 10 || player2Score >= 10) {
 				setIsGameOver(true);
@@ -387,7 +305,7 @@ const PvP: React.FC<PvPProps> = ({ playerPoint, opponentPoint, setReset, userId,
 				setBoostStartX(newBoostX);
 				setBoostStartY(newBoostY);
 			}
-		}, 30);
+		}, 10);
 
 		return () => clearInterval(gameLoop);
 	}, [isGameActive, isGameOver, includeBoost, startX, startY, isBoost, boostStartX, boostStartY, difficulty, player2Score, player1Score, ballX, ballY, speedX, speedY, paddle1Y, paddle2Y, checkCollision, moveBall, movePaddles]);
