@@ -96,6 +96,7 @@ npm cache clean --force                 : clear the cache
 + - make all users messagable without being friend.
 + ensure that user can send message only when in priviledge mode (group) or not blocked (oneonone)
 + all store data to be populated on successful user login
++ chat - make trackable with path, seperate from home url
 
 
 ----- PUSH TODO ------------------
@@ -110,21 +111,20 @@ video 27 - handle friend request with socket.io 27:00
 
 [ Activities ]
 --------------
-+ ChatUserProfile
-  - add Score and rank to profile
-+ udpate chatSlice with chatGameRequest
-+ create dummy data for chatGameRequest
-+ add game request count as indicator on HomeBoard (game icon)
-+ create ChatPageGameRequest.tsx page
 
++ Channel creation form - add all users in channel creation form.
++ group profile btn - action - change password
++ group profile btn - action - rename channel title
++ group profile btn - action - add user
+
+
+_-------------------------
 
 + Facinet: function to fetch and post all game request.
 -          Emit event on post to update count indicator
 
 
-+ Channel creation form
-  - update the users with proper data 
-  - add all users in channel creation form.
++ Channel creation form - update the users with proper data 
 
 
 + update information with real data. (chatuser and chatgroup page)
@@ -134,7 +134,7 @@ video 27 - handle friend request with socket.io 27:00
     - change password
     - unset password
     - show password
-    - rename group title
+    - rename channel title
     - delete group
     - add user
 
@@ -152,3 +152,12 @@ video 27 - handle friend request with socket.io 27:00
     - block user
     - play game
 
+
+pvp
+37
+137
+149
+
+matchmaking
+-49
+-85

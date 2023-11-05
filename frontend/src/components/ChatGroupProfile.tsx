@@ -26,7 +26,7 @@ const ChatGroupProfile = () => {
     const activeGroupPrivacy = (chatStore.chatActiveGroup ? chatStore.chatActiveGroup.privacy: "")
     const groupMemberNo = (chatStore.chatActiveGroup ? chatStore.chatGroupMembers.length: 0)
     const loggedUser = chatStore.chatGroupMembers.filter(el => (el.usrId.toString()) === userId)
-    // console.log(loggedUser, 'id- ', userId, loggedUser[0].rank)
+    console.log(loggedUser, 'id- ', userId, loggedUser[0].rank)
     // console.log("Show userId", userId)
     let actionBtnState = (loggedUser[0].rank === enChatMemberRank.MEMBER) ? false : true
     // const actionBtnState = true

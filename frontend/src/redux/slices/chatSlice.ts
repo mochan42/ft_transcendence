@@ -4,7 +4,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 // import { ThunkAction } from "redux-thunk";
 // import { CHAT_ACTION_TYPE, IChatState } from "..";
 import { CHAT_ACTION_TYPE, IChatState, TAction } from "..";
-import { User, Friend, Group, JoinGroup, Chat, TGameReq } from "../../types";
+import { User, Friend, Group, JoinGroup, Chat, GameType } from "../../types";
 // import axios from "axios";
 // import { io } from "socket.io-client";
 
@@ -39,6 +39,7 @@ const initialState: IChatState = {
   chatGroupDialogState: false,
   chatGroupCreateFormPasswdState: true,
   chatGameRequests: ChatGameRequestList,
+  chatGameRequest: null,
 };
 
 //export default (state: ISidebarData, action: TAction) : ISidebarData => {}
@@ -84,7 +85,7 @@ const chatSlice = createSlice({
     updateChatUserMessages: (state, action: PayloadAction<Chat[]>) => {
       state.chatUserMessages = action.payload;
     },
-    updateChatGroups: (state, action: PayloadAction<Group[]>) => {
+    updateChatGroups: (state, action: PayloadAction<(Group | null)[]>) => {
       state.chatGroupList = action.payload;
     },
     updateChatGroupMembers: (state, action: PayloadAction<JoinGroup[]>) => {
@@ -94,7 +95,7 @@ const chatSlice = createSlice({
       state.chatGroupDialogState = action.payload;
     },
     // onclick of chat group element, update chatActiveGroup
-    updateChatActiveGroup: (state, action: PayloadAction<Group>) => {
+    updateChatActiveGroup: (state, action: PayloadAction<Group | null>) => {
       state.chatActiveGroup = action.payload;
     },
     // Disables and enables the password component on create group form
@@ -102,8 +103,12 @@ const chatSlice = createSlice({
       state.chatGroupCreateFormPasswdState = action.payload;
     },
     // update the list of game request sent via chat
-    updateChatGameRequests: (state, action: PayloadAction<TGameReq[]>) => {
+    updateChatGameRequests: (state, action: PayloadAction<GameType[]>) => {
       state.chatGameRequests = action.payload;
+    },
+    // onclick of chat item, update chatGameRequest
+    updateChatGameRequest: (state, action: PayloadAction<GameType | null>) => {
+      state.chatGameRequest = action.payload;
     },
   },
 });
@@ -117,7 +122,6 @@ export const {
   selectConversation,
   updateChatActiveUser,
   updateStateUserFriendDialog,
-  updateChatDirectMessages,
   updateChatUserMessages,
   updateChatGroups,
   updateChatGroupMembers,
@@ -125,6 +129,7 @@ export const {
   updateChatActiveGroup,
   updateChatGroupCreateFormPasswdState,
   updateChatGameRequests,
+  updateChatGameRequest
 } = chatSlice.actions;
 export default chatSlice;
 

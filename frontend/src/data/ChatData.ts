@@ -4,6 +4,7 @@ import {
   User,
   Friend,
   UserStats,
+  GameType,
 } from "../types";
 import axios from "axios";
 import { ACCEPTED, PENDING } from "../APP_CONSTS";
@@ -227,32 +228,48 @@ const ChatGroupMemberList2 = [
   },
 ];
 
-const ChatGameRequestList = [
+const ChatGameRequestList :GameType[] = [
 
   {
-    id: 1,
-    receiver: '1',
-    sender: '7',
-    difficulty: enGameDifficulty.EXTREME
+    id: 0,
+    player1: 7,
+    player2: 1,
+    difficulty: enGameDifficulty.EXTREME,
+    isBoost: false,
+    status: 'request'
   },
   {
     id: 1,
-    receiver: '1',
-    sender: '5',
-    difficulty: enGameDifficulty.HARD
+    player1: 5,
+    player2: 1,
+    difficulty: enGameDifficulty.HARD,
+    isBoost: false,
+    status: 'request'
   },
   {
-    id: 1,
-    receiver: '3',
-    sender: '7',
-    difficulty: enGameDifficulty.EASY
+    id: 2,
+    player1: 7,
+    player2: 3,
+    difficulty: enGameDifficulty.EASY,
+    isBoost: true,
+    status: 'request'
   },
   {
-    id: 1,
-    receiver: '8',
-    sender: '1',
-    difficulty: enGameDifficulty.MEDIUM
+    id: 3,
+    player1: 1,
+    player2: 8,
+    difficulty: enGameDifficulty.MEDIUM,
+    isBoost: true,
+    status: 'request'
   }
+]
+
+const GameDifficultyTxt: string[] = [
+  'easy',
+  'medium',
+  'hard',
+  'very_hard',
+  'extreme',
 ]
 
 export {
@@ -265,6 +282,7 @@ export {
   ChatGroupMemberList2,
   dummyUsers,
   ChatGameRequestList,
+  GameDifficultyTxt,
   friendToUserType,
   fetchAllUsersFriends,
   fetchAllUsers,

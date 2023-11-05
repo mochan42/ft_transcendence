@@ -1,3 +1,5 @@
+import { enGameDifficulty } from "./enums";
+
 type User = {
   id: string;
   userName: string;
@@ -118,21 +120,20 @@ type GameType = {
   difficulty: number;
   isBoost: boolean;
   status: 'request' | 'found' | 'playing' | 'finished' | 'aborted';
-  score1?: number;
-  score2?: number;
-  paddle1Y?: number;
-  paddle2Y?: number;
-  boostX?: number;
-  boostY?: number;
-  ballX?: number;
-  ballY?: number;
+  score1: number;
+  score2: number;
+  paddle1Y: number;
+  paddle2Y: number;
+  boostX: number;
+  boostY: number;
+  ballX: number;
+  ballY: number;
 }
 
-type TGameReq = {
-  id: number;
-  receiver: string;
-  sender: string;
-  difficulty: string;
+type TFormMember =
+{
+    id : string;
+    name : string;
 }
 
 export type {
@@ -150,5 +151,5 @@ export type {
   ChatProps,
   Chat,
   GameType,
-  TGameReq
+  TFormMember
 };

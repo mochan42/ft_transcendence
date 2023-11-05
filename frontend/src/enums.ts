@@ -37,12 +37,11 @@ enum enChatMemberRights {
 }
 
 enum enGameDifficulty {
-  EASY = 'easy',
-  MEDIUM = 'medium',
-  HARD = 'hard',
-  VERY_HARD = 'very hard',
-  EXTREME = 'extreme',
-
+  EASY,
+  MEDIUM,
+  HARD,
+  VERY_HARD,
+  EXTREME,
 }
 export { HOME_SECTION, logStatus, enChatType, enChatMemberRank,
 enChatMemberRights, enChatPrivacy, enGameDifficulty};

@@ -15,8 +15,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { selectChatStore } from "../redux/store";
 import { getSocket } from '../utils/socketService';
 import { enChatPrivacy } from '../enums';
-import { updateChatGroupCreateFormPasswdState } from '../redux/slices/chatSlice';
-import { TFormMember } from '../types';
+import { updateChatActiveGroup, updateChatGroupCreateFormPasswdState, updateChatGroups } from '../redux/slices/chatSlice';
+import { TFormMember, User } from '../types';
+import { getUserById } from './ChatConversation';
 
 
 /**
@@ -41,32 +42,37 @@ type THandler = {
 }
 
 
-// const MEMBERS = [
-//     {id: "2", name: "Cudoh"},
-//     {id: "3", name: "Philip"},
-//     {id: "4", name: "Monine"},
-// ];
-const CreateGroupForm = ( handleFormClose: THandler ) => {
+const CreateGroupFormAddUser = ( handleFormClose: THandler ) => {
     const chatStore = useSelector(selectChatStore);
     const dispatch = useDispatch()
 
-    let  MEMBERS : TFormMember[] = [];
-    const memberUserList = chatStore.chatUsers.map((el) => {
-        MEMBERS.push({ id: el.id, name: el.userName })
+    // fetch user data of all group members
+    let memberUsers: User[] = [];
+    chatStore.chatGroupMembers.forEach((member) => {
+        memberUsers.push(getUserById(chatStore.chatUsers, member.usrId))
+    })
+
+    // filter out non-members
+    const nonMemberUsers = chatStore.chatUsers.filter(el => !(memberUsers.includes(el)));
+    
+    // create list of non members for form selection
+    let  nonMembers : TFormMember[] = [];
+    nonMemberUsers.map((el) => {
+        nonMembers.push({ id: el.id, name: el.userName })
     })
 
     const groupSchema = Yup.object().shape(
         {
-            title: Yup.string().required("Title is required"),
-            members: Yup.array().min(1, "Must at least 1 member"),
-            privacy_state: Yup.string(),
+            passwd: Yup.string().required("Password is required").min(6),
+            // members: Yup.array().min(1, "Must at least 1 member"),
+
         }
     )
 
     const defaultValues = { 
-        title: "" ,
-        members: [], // to be replace with list of all users
-        privacy_state: enChatPrivacy.PUBLIC,
+        passwd: "" ,
+        // members: [], // to be replace with list of all users
+        // privacy_state: enChatPrivacy.PUBLIC,
     }
 
     const methods = useForm({
@@ -86,28 +92,24 @@ const CreateGroupForm = ( handleFormClose: THandler ) => {
 
     const socket = getSocket(Cookies.get('userId'));
 
-    const handleRadioBtn = (e : React.ChangeEvent<HTMLInputElement>) =>{
-        const state = e.target.value;
-        // setPrivacy(e.target.value);
-        setValue("privacy_state", state)
-        console.log(state);
-        (state == enChatPrivacy.PROTECTED) 
-            ? dispatch(updateChatGroupCreateFormPasswdState(false)) 
-            : dispatch(updateChatGroupCreateFormPasswdState(true)) 
-    }
 
     //const onSubmit:SubmitHandler<TFormInputs> = async (data: TFormInputs) => {
     // would be easier if data has the same names with channels colums in apis side
     const onSubmit = async (data: any) => {
-        dispatch(updateChatGroupCreateFormPasswdState(true)) 
         try{
-            //API CALL
+
+            // send data to backend for update
+            // API CALL - post updated data to backend
+            // NOTE !!!
             const newMembers = data.members.map((elt: {id: any, name: any }) => elt.id);
             const formatedData = {
                 ...data,
                 members: newMembers
             };
-            socket.emit('createChannel', formatedData);
+            // new emit 'setAddUser' to be created in backend
+            //socket.emit('addUser', groupListPush);
+            
+            // update group members in store with new member of  type JoinGroup
             handleFormClose.close(false);
         }
         catch (error)
@@ -120,59 +122,23 @@ const CreateGroupForm = ( handleFormClose: THandler ) => {
         <FormProvider {...methods} > 
             <form onSubmit={methods.handleSubmit(onSubmit)}>
                 <Stack spacing={3} padding={2}>
-                    {/* channel title */}
-                    <RHF_TextField name="title" label="Title" type="text"/>
-                    {/* Privacy */}
-                    <FormLabel>Privacy</FormLabel>
-                        <RadioGroup name='privacy_state' 
-                            onChange={handleRadioBtn}
-                            defaultValue={defaultValues.privacy_state}
-                        >
-                            {/* channel public */}
-                            <FormControlLabel
-                                name='state_public'
-                                label="Public"
-                                control={<Radio />}
-                                value={enChatPrivacy.PUBLIC}
-                            />
-                            {/* channel private */}
-                            <FormControlLabel
-                                name='state_private'
-                                label="Private"
-                                control={<Radio />}
-                                value={enChatPrivacy.PRIVATE}
-                            />
-                            {/* channel protection */}
-                            <FormControlLabel
-                                name='state_protected'
-                                label="Protected"
-                                control={<Radio />}
-                                value={enChatPrivacy.PROTECTED}
-                            />
-                        </RadioGroup>
-                    {/* channel password */}
-                    <RHF_TextField name="passwd" 
-                        label="Password" 
-                        type="password" 
-                        disabled={chatStore.chatGroupCreateFormPasswdState}
-                    />
+
                     {/* channel members */}
-                    <RHF_AutoCompDropDown name="members" label="Members" options={MEMBERS}/>
+                    <RHF_AutoCompDropDown name="members" label="Members" options={nonMembers}/>
                 </Stack>
                 <Stack spacing={2} direction={"row"} 
                     alignItems={"center"}
                     justifyContent={"end"}
                 >
                     <Button onClick={()=>handleFormClose.close(true)}>Cancel </Button>
-                    <Button type="submit" variant='contained'>Create</Button>
+                    <Button type="submit" variant='contained'>Set Password</Button>
                 </Stack>
            </form>
-
         </FormProvider>
     )
 }
 
-const ChatPageGroupsCreate = (state: TGroupDialog) => {
+const ChatGroupFormAddUser = (state: TGroupDialog) => {
     return (
         <Dialog fullWidth maxWidth="xs" 
             open={state.openState} TransitionComponent={Transition}
@@ -180,18 +146,17 @@ const ChatPageGroupsCreate = (state: TGroupDialog) => {
             sx={{p: 4}}
         >
             {/* Title */}
-            <DialogTitle>Create New Channel</DialogTitle>
+            <DialogTitle>Add User</DialogTitle>
 
             {/* Dialog content */}
             <DialogContent>
 
                 {/* Create form */}
-                <CreateGroupForm close={state.handleClose} />
+                <CreateGroupFormAddUser close={state.handleClose} />
             </DialogContent>
-         
         </Dialog>
     )
 }
 
 
-export default ChatPageGroupsCreate
+export default ChatGroupFormAddUser

@@ -9,17 +9,18 @@ import { fetchAllStats, friendToUserType } from "../data/ChatData";
 import Cookies from 'js-cookie';
 import Game from "./pages/Game";
 import { useEffect, useState } from "react";
-import { UserStats } from "../types";
+import { User, UserStats } from "../types";
 
 /* component to show contact profile */
-const ChatUserProfile = () => {
-    const userId = Cookies.get('userId') ? Cookies.get('userId') : '';
+
+const ChatUserProfile = ({ userId }: any) => {
+    // const userId = Cookies.get('userId') ? Cookies.get('userId') : '';
     const [userStats, setUserStats] = useState<UserStats | null >(null);
     const theme = useTheme()
     const dispatch = useDispatch();
     const chatStore = useSelector(selectChatStore);
     
-    let userSelect =  null
+    let userSelect =  {} as User
     if (chatStore.chatActiveUser && userId != null) {
         userSelect = friendToUserType(userId, chatStore.chatActiveUser, chatStore.chatUsers)
     }
