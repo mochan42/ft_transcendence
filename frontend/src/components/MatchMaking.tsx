@@ -23,7 +23,7 @@ const MatchMaking:React.FC<MatchMakingProps> =({ setGameObj, setMatchFound, sock
 	let game: GameType = {
 		id: -1,
 		player1: userId ? +userId : 0,
-		player2: 4,
+		player2: 1,
 		difficulty: difficulty,
 		includeBoost: includeBoost,
 		status: 'request',
