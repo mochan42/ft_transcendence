@@ -3,7 +3,7 @@ import { styled, useTheme } from '@mui/material/styles'
 import { Stack, Avatar, Typography, Button, Box, Badge, Divider } from '@mui/material'
 import { Friend, JoinGroup, User } from '../types';
 import { useSelector, useDispatch } from 'react-redux';
-import { selectChatStore } from '../redux/store';
+import { selectChatDialogStore, selectChatStore } from '../redux/store';
 import { toggleSidebar, updateStateUserFriendDialog, updateChatUserFriendRequests } from '../redux/slices/chatSlice';
 import { updateChatUserFriends, updateChatActiveUser } from '../redux/slices/chatSlice';
 import { ACCEPTED, PENDING } from '../APP_CONSTS';
@@ -11,6 +11,8 @@ import Cookies from 'js-cookie';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import { enChatMemberRank, enChatMemberRights } from '../enums';
+import { updateChatDialogProfileUserId, updateChatDialogShwProfile } from '../redux/slices/chatDialogSlice';
+import ChatDialogShwProfile from './ChatDialogShwProfile';
 
 
 
@@ -28,6 +30,7 @@ interface IUserData {
 const ChatGroupMemberComp = (user: IUserData) => {
     const theme = useTheme();
     const chatStore = useSelector(selectChatStore);
+    const chatDialogStore = useSelector(selectChatDialogStore);
     const dispatch = useDispatch();
     const userId = Cookies.get('userId') ? Cookies.get('userId') : '';
     // const userId = '0' // for testing only
@@ -42,6 +45,11 @@ const ChatGroupMemberComp = (user: IUserData) => {
     const handleClose = () => {
       setAnchorEl(null);
     };
+    const onShwProfile = () => {
+        dispatch(updateChatDialogShwProfile(true))
+        dispatch(updateChatDialogProfileUserId(user.memberUser.id))
+        handleClose()
+    }
     return (
         <>
         <StyledChatBox sx={{
@@ -102,7 +110,7 @@ const ChatGroupMemberComp = (user: IUserData) => {
             'aria-labelledby': 'basic-button',
           }}
         >
-            <MenuItem onClick={handleClose}>View profile</MenuItem>
+            <MenuItem onClick={onShwProfile}>View profile</MenuItem>
             <MenuItem onClick={handleClose}>Play game</MenuItem>
             { loggedUser.rank != enChatMemberRank.MEMBER &&
               user.memberJoin.rank != enChatMemberRank.OWNER &&  <Divider/> }

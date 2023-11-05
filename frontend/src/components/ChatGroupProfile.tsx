@@ -18,6 +18,7 @@ import { useState } from "react";
 import ChatGroupFormSetPasswd from "./ChatGroupFormSetPasswd";
 import ChatGroupFormSetTitle from "./ChatGroupFormSetTitle";
 import ChatGroupFormAddUser from "./ChatGroupFormAddUser";
+import ChatDialogShwProfile from "./ChatDialogShwProfile";
 
 /* component to show contact profile */
 const ChatGroupProfile = () => {
@@ -117,6 +118,10 @@ const ChatGroupProfile = () => {
                 { chatDialogStore.chatDialogSetTitle && <ChatGroupFormSetTitle />}
                 { chatDialogStore.chatDialogSetPasswd && <ChatGroupFormSetPasswd />}
                 { chatDialogStore.chatDialogAddUser && <ChatGroupFormAddUser />}
+                { chatDialogStore.chatDialogShwProfile && 
+                  chatDialogStore.chatDialogProfileUserId && 
+                    <ChatDialogShwProfile userId={chatDialogStore.chatDialogProfileUserId}/>
+                }
             </Stack>
 
         </Box>
