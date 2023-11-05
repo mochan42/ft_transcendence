@@ -8,6 +8,7 @@ import { User, ProfileProps, UserStats, UserAchievements, Goal, Friend } from '.
 import EditProfile from '../EditProfile';
 
 import '../../css/profile.css';
+import { BACKEND_URL } from '../../data/Global';
 
     const Profile:React.FC<ProfileProps> =({ userId, isAuth }) => {
 	
@@ -19,11 +20,11 @@ import '../../css/profile.css';
 	const [allGoals, setAllGoals] = useState< Goal[] | null >(null);
 	const [friends, setFriends] = useState< Friend [] | null>(null)
 	const id = userId;
-	const urlFriends = 'https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/users/' + id + '/friends';
-	const url_info = 'https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/users/' + id;
-	const url_stats = 'https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/users/' + id + '/stats'
-	const url_achievements = 'https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/users/' + id + '/achievements';
-	const url_goals = 'https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/goals';
+	const urlFriends = `${BACKEND_URL}/pong/users/` + id + '/friends';
+	const url_info = `${BACKEND_URL}/pong/users/` + id;
+	const url_stats = `${BACKEND_URL}/pong/users/` + id + '/stats'
+	const url_achievements = `${BACKEND_URL}/pong/users/` + id + '/achievements';
+	const url_goals = `${BACKEND_URL}/pong/goals`;
 	const [achievedGoals, setAchievedGoals] = useState<Goal[]>();
 	const [notAchievedGoals, setNotAchievedGoals] = useState<Goal[]>();
 	const [userFriends, setUserFriends] = useState<User [] | null >(null)
@@ -45,7 +46,7 @@ import '../../css/profile.css';
     }
 
 	const Handle2faBtnClick = async () => {
-        const resp = await axios.patch<User>('https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/users/2fa/' + id);
+        const resp = await axios.patch<User>(`${BACKEND_URL}/pong/users/2fa/` + id);
         if (resp.status === 200) {
 			setUserInfo(resp.data);
             //window.location.reload()
@@ -70,96 +71,96 @@ import '../../css/profile.css';
 		}
 	  }, [userAchievements, allGoals]);
 	
-		useEffect(() => {
-			(async () => {
-				if (userInfo === null) {
-					try {
-						const response = await axios.get<User>(url_info);
-						if (response.status === 200) {
-							setUserInfo(response.data);
-							// console.log('Received User Info: ', response.data)
-						}
-					}
-					catch (error) {
-						console.log('Error fetching user infos', error);
+	useEffect(() => {
+		(async () => {
+			if (userInfo === null) {
+				try {
+					const response = await axios.get<User>(url_info);
+					if (response.status === 200) {
+						setUserInfo(response.data);
+						// console.log('Received User Info: ', response.data)
 					}
 				}
-				if (userStats === null) {
-					try {
-						const response = await axios.get<UserStats>(url_stats);
-						if (response.status === 200) {
-							setUserStats(response.data);
-							// console.log('Received User Stats: ', response.data);
-						}
-					} catch (error) {
-						console.log('Error fetching user stats:', error);
+				catch (error) {
+					console.log('Error fetching user infos', error);
+				}
+			}
+			if (userStats === null) {
+				try {
+					const response = await axios.get<UserStats>(url_stats);
+					if (response.status === 200) {
+						setUserStats(response.data);
+						// console.log('Received User Stats: ', response.data);
+					}
+				} catch (error) {
+					console.log('Error fetching user stats:', error);
+				}
+			}
+			if (userAchievements === null) {
+				try {
+					const response: AxiosResponse<UserAchievements[]> = await axios.get(url_achievements);
+					if (response.status === 200) {
+						setUserAchievements(response.data);
+						// console.log('Received User Achievements: ', response.data);
+					}
+				} catch (error) {
+					console.log('Error fetching user achievements:', error);
+				}
+			}
+			if (allGoals === null) {
+				try {
+					const response: AxiosResponse<Goal[] | null> = await axios.get(url_goals);
+					if (response.status === 200) {
+						setAllGoals(response.data);
+						// console.log('Received Goals: ', response.data);
+					}
+				} catch (error) {
+					console.log('Error fetching Goals:', error);
+				}
+			}
+			if (friends === null) {
+				try {
+					const response = await axios.get< Friend [] >(urlFriends);
+					if (response.status === 200) {
+						setFriends(response.data);
+						// console.log('Received Friends data', response.data);
 					}
 				}
-				if (userAchievements === null) {
-					try {
-						const response: AxiosResponse<UserAchievements[]> = await axios.get(url_achievements);
-						if (response.status === 200) {
-							setUserAchievements(response.data);
-							// console.log('Received User Achievements: ', response.data);
-						}
-					} catch (error) {
-						console.log('Error fetching user achievements:', error);
+				catch (error) {
+					console.log('Error receiving Friends information: ', error);
+				}
+			}
+			if (usersInfo === null) {
+				try {
+					const response = await axios.get< User[] >(`${BACKEND_URL}/pong/users/`);
+					if (response.status === 200) {
+						setUsersInfo(response.data);
+						// console.log('Received Users Info: ', response.data)
 					}
 				}
-				if (allGoals === null) {
-					try {
-						const response: AxiosResponse<Goal[] | null> = await axios.get(url_goals);
-						if (response.status === 200) {
-							setAllGoals(response.data);
-							// console.log('Received Goals: ', response.data);
-						}
-					} catch (error) {
-						console.log('Error fetching Goals:', error);
-					}
+				catch (error) {
+					console.log('Error fetching users infos', error);
 				}
-				if (friends === null) {
-					try {
-						const response = await axios.get< Friend [] >(urlFriends);
-						if (response.status === 200) {
-							setFriends(response.data);
-							// console.log('Received Friends data', response.data);
-						}
-					}
-					catch (error) {
-						console.log('Error receiving Friends information: ', error);
-					}
-				}
-				if (usersInfo === null) {
-					try {
-						const response = await axios.get< User[] >('https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/users/');
-						if (response.status === 200) {
-							setUsersInfo(response.data);
-							// console.log('Received Users Info: ', response.data)
-						}
-					}
-					catch (error) {
-						console.log('Error fetching users infos', error);
-					}
-				}
-				if (userFriends === null && usersInfo) {
-					const usersFriends = usersInfo?.filter((user) =>
-						friends?.some((friend) => (friend.sender === user.id || friend.receiver === user.id) && user.id !== userId)
-					);
-					setUserFriends(usersFriends);
-                }
-                if (userInfo) {
-                    setState2fa(userInfo.is2Fa)// should be substituted with getuserinfo for latest 2fa status
-                    ConfigureBtn2fa(userInfo.is2Fa);
-                }
-			})();
-		}, [
-			userInfo, ConfigureBtn2fa, allGoals,
-			friends, userAchievements, userFriends,
-			userId, userStats, usersInfo, url_info,
-			url_stats, url_achievements, urlFriends,
-			url_goals
-		]
-		);
+			}
+			if (userFriends === null && usersInfo) {
+				const usersFriends = usersInfo?.filter((user) =>
+					friends?.some((friend) => (friend.sender === user.id || friend.receiver === user.id) && user.id !== userId)
+				);
+				setUserFriends(usersFriends);
+			}
+			if (userInfo) {
+				setState2fa(userInfo.is2Fa)// should be substituted with getuserinfo for latest 2fa status
+				ConfigureBtn2fa(userInfo.is2Fa);
+			}
+		})();
+	}, [
+		userInfo, ConfigureBtn2fa, allGoals,
+		friends, userAchievements, userFriends,
+		userId, userStats, usersInfo, url_info,
+		url_stats, url_achievements, urlFriends,
+		url_goals
+	]
+	);
 
 	return (
 		<div className='h-5/6 w-full'>
