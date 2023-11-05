@@ -70,7 +70,7 @@ const App: React.FC = () => {
 	useEffect(() => {
 		if (socket != null) {
 			socket.on('invitedToMatch', (data: any) => {
-			console.log(userId, "   ", data.player2, "\n\n");
+			console.log("Invitation received!", userId, "   ", data.player2, "\n\n");
 			if (data.player2 == userId) {
 				setChallenge(true);
 				console.log("I got invited to a game! \n\n");
@@ -107,7 +107,7 @@ const App: React.FC = () => {
 							setToken2fa={setToken2fa}
 					/>} />
 					<Route path='/game' element={<ProtectedRoute isAuth={isAuth} path='/game' element={<GameSelection userId={userId} />} />} />
-					<Route path='/game/pvp' element={<ProtectedRoute isAuth={isAuth} path='/game/pvp' element={<Game difficulty={game ? game.difficulty : 0} userId={userId ? userId : "0"} includeBoost={game ? game.isBoost : false} opponent={'player'} status={'found'} game={game ? game : undefined} />} />} />
+					<Route path='/game/pvp' element={<ProtectedRoute isAuth={isAuth} path='/game/pvp' element={<Game difficulty={game ? game.difficulty : 0} userId={userId ? userId : "0"} includeBoost={game ? game.includeBoost : false} opponent={'player'} status={'found'} game={game ? game : undefined} />} />} />
 					<Route path='/profile' element={<ProtectedRoute isAuth={isAuth} path='/profile' element={<Profile userId={userId} isAuth={isAuth} />} />} />
 					<Route path='/*' element={<PageNotFound />} />
 				</Routes>
