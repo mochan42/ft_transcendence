@@ -7,7 +7,6 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
-
 import { Server, Socket } from 'socket.io';
 import { ChatsService } from './chats/chats.service';
 import { FriendsService } from './friends/friends.service';
@@ -26,7 +25,7 @@ import { Game } from './games/entities/game.entity';
 
 @WebSocketGateway({
   cors: {
-    origin: 'https://literate-space-garbanzo-vjvjp6xjpvvfp57j-3000.app.github.dev',
+    origin: `${ process.env.FRONTEND_URL }`,
     // origin: '*',
     credentials: true
   },
@@ -147,6 +146,7 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   /***********************GAME*********************** */
+
   @SubscribeMessage('acceptMatch')
   async handleAcceptMatch(
     @ConnectedSocket() socket: Socket,
@@ -162,10 +162,17 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @ConnectedSocket() socket: Socket,
     @MessageBody() data: any,
   ){
-    // console.log("gameUpdate on game #: ", data.id);
-    // const tmp = await this.gamesService.update(data);
     this.server.emit('updateMatch', data);
   }
+
+  @SubscribeMessage('updatePaddle')
+  handleUpdatePaddle(
+    @ConnectedSocket() socket: Socket,
+    @MessageBody() data: any,
+  ){
+    this.server.emit('updatePaddle', data);
+  }
+
 
 
   @SubscribeMessage('requestMatch')

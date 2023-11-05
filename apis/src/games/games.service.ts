@@ -58,12 +58,12 @@ export class GamesService {
       ballX: 0,
       ballY: 0,
       gameMaker: -1,
-      paddle1Speed: 1,
-      paddle2Speed: 1,
+      paddle1Speed: 30,
+      paddle2Speed: 30,
       paddle1Dir: 1,
       paddle2Dir: 1,
-      speedX: 1,
-      speedY: 1,
+      speedX: 5,
+      speedY: 5,
     };
     return await this.gameRepo.save(game);
   }

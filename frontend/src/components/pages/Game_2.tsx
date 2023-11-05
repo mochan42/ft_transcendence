@@ -1,11 +1,9 @@
 import { useEffect, useState } from 'react'
 import { Button } from '../ui/Button'
 import SmallHeading from '../ui/SmallHeading'
-import Pong from '../Pong'
-// import axios from 'axios';
 import { GameType, User } from '../../types';
-import PvP from '../PvP';
 import { fetchUser } from '../../data/ChatData';
+import PvP_2 from '../PvP_2';
 
 
 interface GameProps {
@@ -18,7 +16,7 @@ interface GameProps {
 	game?: GameType;
 }
 
-const Game:React.FC<GameProps> = ({ difficulty, userId, includeBoost, opponent, setState, status, game }) => {
+const Game_2:React.FC<GameProps> = ({ difficulty, userId, includeBoost, opponent, setState, status, game }) => {
 	
 	const [gameActive, setGameActive] = useState(false)
 	const [reset, setReset] = useState(false)
@@ -137,12 +135,11 @@ const Game:React.FC<GameProps> = ({ difficulty, userId, includeBoost, opponent, 
 				</div>
 			</div>
 			<div className='w-full h-5/6 border-t-2 border-l-2 border-r-2 border-slate-700 black:border-slate-200 bg-slate-400 dark:text-slate-200 text-center'>
-				{(opponent === 'bot') ? <Pong userId={userId} difficulty={difficulty} isGameActive={gameActive} isReset={reset} isGameOver={isGameOver} player1Score={player1Score} opponentScore={player2Score} includeBoost={includeBoost} setIsGameOver={setIsGameOver} playerPoint={playerPoint} opponentPoint={opponentPoint} setReset={setReset}/> : null }
-				{(opponent === 'player') ? <PvP isReset={reset} setReset={setReset} userId={userId} isGameActive={gameActive} selectedDifficulty={difficulty} isGameOver={isGameOver} player1Score={player1Score} player2Score={player2Score} setIsGameOver={setIsGameOver} setState={setState} playerPoint={playerPoint} opponentPoint={opponentPoint} setPlayer1Id={setPlayer1Id} setPlayer2Id={setPlayer2Id} setPlayer1Info={setPlayer1Info} setPlayer2Info={setPlayer2Info} setPlayer1Score={setPlayer1Score} setPlayer2Score={setPlayer2Score} game={game}/> : null}
+				<PvP_2 isReset={reset} setReset={setReset} userId={userId} isGameActive={gameActive} selectedDifficulty={difficulty} isGameOver={isGameOver} player1Score={player1Score} player2Score={player2Score} setIsGameOver={setIsGameOver} setState={setState} playerPoint={playerPoint} opponentPoint={opponentPoint} setPlayer1Id={setPlayer1Id} setPlayer2Id={setPlayer2Id} setPlayer1Info={setPlayer1Info} setPlayer2Info={setPlayer2Info} setPlayer1Score={setPlayer1Score} setPlayer2Score={setPlayer2Score} game={game}/>
 			</div>
 		</div>
 	)
 
 }
 
-export default Game
+export default Game_2

@@ -138,6 +138,19 @@ type GameType = {
   speedY?: number;
 }
 
+type paddle = {
+  gameId: number,
+  paddlePos: number,
+}
+
+type update = {
+  paddle1Pos: number;
+  ballX: number;
+  ballY: number;
+  boostX: number;
+  boostY: number;
+}
+
 type TFormMember =
 {
     id : string;
@@ -160,4 +173,6 @@ export type {
   Chat,
   GameType,
   TFormMember,
+  paddle,
+  update,
 };
