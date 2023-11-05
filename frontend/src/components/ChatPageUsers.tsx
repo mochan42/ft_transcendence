@@ -38,7 +38,7 @@ const ChatElement = (user: User) => {
 
     useEffect(() => {
 
-    }, chatStore.chatUserMessages);
+    }, [chatStore.chatUserMessages]);
 
     return (
         <Box 
@@ -106,7 +106,8 @@ const  ChatPageUsers = (chatProp : ChatProps) => {
     // }
     useEffect(() => {
 
-    }, chatStore.chatUserMessages);
+    }, [chatStore.chatUserMessages, chatStore.chatUsers]);
+    
     return (
     <>
         <Stack direction={"row"} sx={{ width: "95vw"}}>

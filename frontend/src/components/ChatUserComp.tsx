@@ -29,12 +29,10 @@ const ChatUserComp = (userData : User) => {
     const onSendRequest = () => {
 
         socket.emit('inviteFriend', userData.id);
-        socket.on('inviteFriendSucces', async (emptyObject: any) => {
-            const friends = await fetchAllFriends();
-            const newFriendRequestList = await fetchAllUsersFriends(PENDING, friends);
+        socket.on('inviteFriendSucces', (friends: any) => {
+            const newFriendRequestList = fetchAllUsersFriends(PENDING, friends);
             dispatch(updateChatUserFriendRequests(newFriendRequestList));
         });
-        // const newFriendRequestList = [...chatStore.chatUserFriendRequests, newOutgoingReq]
     }
 
     const isUserKnown = () => {
@@ -59,16 +57,9 @@ const ChatUserComp = (userData : User) => {
     }
 
     useEffect(() => {
-        socket.on('invitedByFriend', async (receiver: any) => {
-            if (receiver != userId) {
-                return ;
-            }
-            const friends = await fetchAllFriends();
-            const newFriendRequestList = await fetchAllUsersFriends(PENDING, friends);
-            dispatch(updateChatUserFriendRequests(newFriendRequestList));
-        });
-    });
-    
+
+    }, [chatStore.chatUserFriendRequests]);
+
     return (
         <StyledChatBox sx={{
             width : "100%",
@@ -85,7 +76,7 @@ const ChatUserComp = (userData : User) => {
             >
                 <Stack direction={"row"} alignItems={"center"} spacing={2}>
                     {" "}
-                    {userData.isLogged ? 
+                    {userData.isLogged == true ? 
                         (
                             <Badge
                                 variant='dot'
@@ -133,13 +124,13 @@ const ChatUserFriendComp = (userData : User) => {
             }
         })[0];
 
-        // Create new list which excludes found user
-        const newFriendListExc = chatStore.chatUserFriends
-            .filter(el => el.sender != user.sender && el.receiver != user.receiver)
-        // Add user to the top of the new friend list
-        const newFriendListInc = [user, ...newFriendListExc]
-        // update the store data for user friend list
-        dispatch(updateChatUserFriends(newFriendListInc));
+        // // Create new list which excludes found user
+        // const newFriendListExc = chatStore.chatUserFriends
+        //     .filter(el => el.sender != user.sender && el.receiver != user.receiver)
+        // // Add user to the top of the new friend list
+        // const newFriendListInc = [user, ...newFriendListExc]
+        // // update the store data for user friend list
+        // dispatch(updateChatUserFriends(newFriendListInc));
         dispatch(updateChatActiveUser(user));
         // close the dialog
         dispatch(updateStateUserFriendDialog(false)); 
@@ -170,7 +161,7 @@ const ChatUserFriendComp = (userData : User) => {
                                 <Avatar alt="image" src={userData.avatar} />
                             </Badge>
                          )
-                         : (<Avatar alt={userData.userNameLoc} src={userData.avatar} />)
+                         : (<Avatar alt="image" src={userData.avatar} />)
                         //  : (<Avatar alt={userData.userName} src={userData.img} />)
                     }
                     <Stack>
@@ -192,7 +183,6 @@ const ChatUserFriendComp = (userData : User) => {
 const ChatUserFriendRequestComp = (reqData : User) => {
     const theme = useTheme()
     const chatStore = useSelector(selectChatStore);
-    const dispatch = useDispatch();
     const userId = Cookies.get('userId') ? Cookies.get('userId') : '';
     const socket = getSocket(userId);
 
@@ -212,13 +202,6 @@ const ChatUserFriendRequestComp = (reqData : User) => {
             }
         })[0];
         socket.emit('acceptFriend', stranger.id);
-        socket.on('newFriend', async (newFriend: any) => {
-            const friends = await fetchAllFriends();
-            const newFriendRequestList = await fetchAllUsersFriends(PENDING, friends);
-            const newFriendList = await fetchAllUsersFriends(ACCEPTED, friends);
-            dispatch(updateChatUserFriendRequests(newFriendRequestList));
-            dispatch(updateChatUserFriends(newFriendList));
-        });
     }
 
     const onDeny = () => {
@@ -229,12 +212,8 @@ const ChatUserFriendRequestComp = (reqData : User) => {
             }
         })[0];
         socket.emit('denyFriend', stranger.id);
-        socket.on('deniedFriend', async (data: any) => {
-            const friends = await fetchAllFriends();
-            const newFriendRequestList = await fetchAllUsersFriends(PENDING, friends);
-            dispatch(updateChatUserFriendRequests(newFriendRequestList));
-        });
     }
+
     return (
         <StyledChatBox sx={{
             width : "100%",

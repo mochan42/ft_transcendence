@@ -47,12 +47,15 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   async handleConnection(@ConnectedSocket() socket: Socket, ...args: any[]) {
     const user = await this.chatsService.getUserFromSocket(socket);
-    socket.emit('connected', `Welcome ${user.userName}, you're connected`);
+    const allUser = await this.userService.findAll();
+    this.server.emit('connected', {new : user, all: allUser});
   }
 
-  async handleDisconnect(socket: Socket) {
+  async handleDisconnect(@ConnectedSocket() socket: Socket) {
     const user = await this.chatsService.getUserFromSocket(socket);
-    return await this.userService.updateLoginState(+user.id, false);
+    const logoutUser = await this.userService.updateLoginState(+user.id, false);
+    const allUsers = await this.userService.findAll();
+    this.server.emit('logout', { new: logoutUser, all: allUsers });
   }
 
   @SubscribeMessage('inviteFriend')
@@ -69,9 +72,10 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
     };
 
     const friendShip = await this.friendsService.create(friendDto);
+    const friends = await this.friendsService.findAll();
 
-    socket.emit('inviteFriendSucces', {});
-    this.server.emit('invitedByFriend', friendShip.receiver);
+    socket.emit('inviteFriendSucces', friends);
+    this.server.emit('invitedByFriend', { new : friendShip.receiver, all: friends});
   }
 
   @SubscribeMessage('acceptFriend')
@@ -82,8 +86,8 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const reqToAccept = await this.friendsService.findBYId(friendship);
     const updatedFriend: Friend = { ...reqToAccept, relation: ACCEPTED };
     const friend = await this.friendsService.update(updatedFriend);
-
-    this.server.emit('newFriend', friend);
+    const allFriends = await this.friendsService.findAll();
+    this.server.emit('newFriend', { new: friend, all: allFriends});
   }
 
   @SubscribeMessage('denyFriend')
