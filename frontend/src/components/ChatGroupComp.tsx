@@ -32,7 +32,7 @@ const ChatGroupMemberProfileComp = (user: IUserData) => {
     const dispatch = useDispatch();
     const userId = Cookies.get('userId') ? Cookies.get('userId') : '';
     // const userId = '0' // for testing only
-    const loggedUser = chatStore.chatGroupMembers.filter(el => (el.usrId.toString()) === userId)[0]
+    const loggedUser = chatStore.chatGroupMembers.filter(el => (el.userId.toString()) == userId)[0]
     // console.log(loggedUser, 'id- ', userId)
 
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -142,7 +142,7 @@ export function IsUserInGroup (userId: string | undefined, group: Group) : boole
         el => el.channelId == group.channelId )
     
     const memberResult = groupMembers.filter(el => {
-        if (el.usrId && userId && parseInt(userId) == el.usrId)
+        if (el.userId && userId && parseInt(userId) == el.userId)
             return el
     })
     result = (memberResult.length == 1)? true : false 

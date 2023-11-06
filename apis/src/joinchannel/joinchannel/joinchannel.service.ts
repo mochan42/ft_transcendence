@@ -18,4 +18,12 @@ export class JoinchannelService {
   async findAll() {
     return await this.JoinchannelRepo.find();
   }
+
+  async delete(id: number) {
+    return await this.JoinchannelRepo.delete(id);
+  }
+
+  async deleteAll() {
+    return await this.JoinchannelRepo.delete({});
+  }
 }

@@ -32,9 +32,12 @@ export class FriendsController {
   }
 
   @Patch('friends/:id')
-  async update(@Param('id') id: string, @Body() updateFriendDto: UpdateFriendDto) {
+  async update(
+    @Param('id') id: string,
+    @Body() updateFriendDto: UpdateFriendDto,
+  ) {
     const friend = await this.friendsService.findBYId(+id);
-    const updatedFriend = {...friend, relation: ACCEPTED }
+    const updatedFriend = { ...friend, relation: ACCEPTED };
     return this.friendsService.update(updatedFriend);
   }
 

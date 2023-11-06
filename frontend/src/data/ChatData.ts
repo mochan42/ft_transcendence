@@ -6,6 +6,7 @@ import {
   UserStats,
   GameType,
   Group,
+  JoinGroup,
 } from "../types";
 import axios from "axios";
 import { ACCEPTED, PENDING } from "../APP_CONSTS";
@@ -24,22 +25,20 @@ const fetchAllUsers = async (): Promise<User[]> => {
 };
 
 const fetchUser = async (userId: string): Promise<User | undefined> => {
-  // const resp = await axios.get<User>(backendUrl + "/pong/users/" + userId);
-  // if (resp.status === 200) {
-  //   return resp.data;
-  // }
-  // console.log("Fetching user ", userId, " failed with exit code ", resp.status);
-  return 
+  const resp = await axios.get<User>(backendUrl + "/pong/users/" + userId);
+  if (resp.status === 200) {
+    return resp.data;
+  }
 };
 
 
 const fetchAllFriends = async (): Promise<Friend[]> => {
   let friends: Friend[] = [];
   const urlFriend = backendUrl + "/pong/friends";
-  // const resp = await axios<Friend[]>(urlFriend);
-  // if (resp.status === 200) {
-  //   friends = resp.data;
-  // }
+  const resp = await axios<Friend[]>(urlFriend);
+  if (resp.status === 200) {
+    friends = resp.data;
+  }
   return friends;
 };
 
@@ -87,25 +86,28 @@ const friendToUserType = (user: string | null, friend: Friend, userList: User[])
 } 
 
 const fetchAllGroups = async (): Promise<Group[]> => {
-  let allGroups: Group[] = []; 
-  const resp = await axios.get(`${BACKEND_URL}/pong/channels`);
+  const resp = await axios.get<Group[]>(`${BACKEND_URL}/pong/channels`);
   if (resp.status === 200) {
-    const temp = resp.data;
-    temp.map((el: any) => {
-      const group : Group = {
-        channelId: el.id,
-        password: el.password,
-        title: el.label,
-        privacy: el.privacy,
-        ownerId: el.owner
-      };
-      allGroups.push(group);
-    });
+    return resp.data;
   }
-  return allGroups;
+  return [];
+}
+const ChatGroupList: Group[] = await fetchAllGroups();
+
+const fetchAllMembers = async (): Promise<JoinGroup[]> => {
+  const resp = await axios.get<JoinGroup[]>(`${BACKEND_URL}/pong/channels/members`);
+  if (resp.status === 200) {
+    return resp.data;
+  }
+  return [];
 }
 
-const ChatGroupList: Group[] = await fetchAllGroups();
+export const getMembers = (members: JoinGroup[], group: number): JoinGroup[] => {
+  const allMembers: JoinGroup[] = members.filter((el: any) => el.channelId === group);
+  return allMembers ? allMembers: [];
+}
+
+const ChatGroupMemberList: JoinGroup[] = await fetchAllMembers();
 // const ChatGroupList = [
 //   {
 //     channelId: 3,
@@ -196,66 +198,66 @@ const dummyUsers = [
   }
 ]
 
-const ChatGroupMemberList = [
-  {
-    id: 1,
-    usrId: 1,
-    channelId: 3,
-    rank: enChatMemberRank.ADMIN, // member
-    rights: enChatMemberRights.PRIVILEDGED, // kicked, banned
-    status: enChatGroupInviteStatus.PENDING
-  },
-  {
-    id: 2,
-    usrId: 1,
-    channelId: 2,
-    rank: enChatMemberRank.MEMBER, // member
-    rights: enChatMemberRights.PRIVILEDGED, // kicked, banned
-    status: enChatGroupInviteStatus.ACCEPTED
-  },
-  {
-    id: 4,
-    usrId: 5,
-    channelId: 1,
-    rank: enChatMemberRank.MEMBER, // member
-    rights: enChatMemberRights.BANNED, // kicked, banned
-    status: enChatGroupInviteStatus.ACCEPTED
-  },
-  {
-    id: 5,
-    usrId: 1,
-    channelId: 4,
-    rank: enChatMemberRank.MEMBER, // member
-    rights: enChatMemberRights.PRIVILEDGED, // kicked, banned
-    status: enChatGroupInviteStatus.INVITE
-  },
-  {
-    id: 6,
-    usrId: 8,
-    channelId: 5,
-    rank: enChatMemberRank.OWNER, // member
-    rights: enChatMemberRights.PRIVILEDGED, // kicked, banned
-    status: enChatGroupInviteStatus.ACCEPTED
-  },
-];
-const ChatGroupMemberList2 = [
-  {
-    id: 1,
-    usrId: 0,
-    channelId: 3,
-    rank: enChatMemberRank.ADMIN, // member
-    rights: enChatMemberRights.PRIVILEDGED, // kicked, banned
-    status: enChatGroupInviteStatus.ACCEPTED
-  },
-  {
-    id: 2,
-    usrId: 7,
-    channelId: 3,
-    rank: enChatMemberRank.MEMBER, // member
-    rights: enChatMemberRights.PRIVILEDGED, // kicked, banned
-    status: enChatGroupInviteStatus.ACCEPTED
-  },
-];
+// const ChatGroupMemberList = [
+//   {
+//     id: 1,
+//     userId: 1,
+//     channelId: 3,
+//     rank: enChatMemberRank.ADMIN, // member
+//     rights: enChatMemberRights.PRIVILEDGED, // kicked, banned
+//     status: enChatGroupInviteStatus.PENDING
+//   },
+//   {
+//     id: 2,
+//     userId: 1,
+//     channelId: 2,
+//     rank: enChatMemberRank.MEMBER, // member
+//     rights: enChatMemberRights.PRIVILEDGED, // kicked, banned
+//     status: enChatGroupInviteStatus.ACCEPTED
+//   },
+//   {
+//     id: 4,
+//     userId: 5,
+//     channelId: 1,
+//     rank: enChatMemberRank.MEMBER, // member
+//     rights: enChatMemberRights.BANNED, // kicked, banned
+//     status: enChatGroupInviteStatus.ACCEPTED
+//   },
+//   {
+//     id: 5,
+//     userId: 1,
+//     channelId: 4,
+//     rank: enChatMemberRank.MEMBER, // member
+//     rights: enChatMemberRights.PRIVILEDGED, // kicked, banned
+//     status: enChatGroupInviteStatus.INVITE
+//   },
+//   {
+//     id: 6,
+//     userId: 8,
+//     channelId: 5,
+//     rank: enChatMemberRank.OWNER, // member
+//     rights: enChatMemberRights.PRIVILEDGED, // kicked, banned
+//     status: enChatGroupInviteStatus.ACCEPTED
+//   },
+// ];
+// const ChatGroupMemberList2 = [
+//   {
+//     id: 1,
+//     userId: 0,
+//     channelId: 3,
+//     rank: enChatMemberRank.ADMIN, // member
+//     rights: enChatMemberRights.PRIVILEDGED, // kicked, banned
+//     status: enChatGroupInviteStatus.ACCEPTED
+//   },
+//   {
+//     id: 2,
+//     userId: 7,
+//     channelId: 3,
+//     rank: enChatMemberRank.MEMBER, // member
+//     rights: enChatMemberRights.PRIVILEDGED, // kicked, banned
+//     status: enChatGroupInviteStatus.ACCEPTED
+//   },
+// ];
 
 const ChatGameRequestList :GameType[] = [
 
@@ -371,7 +373,6 @@ export {
   ChatGroupList,
   ChatGroupMemberList,
   ChatUserMessages,
-  ChatGroupMemberList2,
   dummyUsers,
   ChatGameRequestList,
   GameDifficultyTxt,

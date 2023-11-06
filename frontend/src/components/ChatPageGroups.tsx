@@ -2,7 +2,7 @@
 import { Box, Stack, IconButton, Typography, Divider, Avatar, Badge, Link, Icon} from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { Users, ChatCircleDots, Phone, Plus, Handshake} from "phosphor-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import img42 from "../img/icon_42.png"
 import ChatPageGroupsCreate from "./ChatPageGroupsCreate";
 
@@ -18,7 +18,7 @@ import Cookies from 'js-cookie';
 import { updateChatDialogGroupInvite } from "../redux/slices/chatDialogSlice";
 import ChatFriends from "./ChatFriends";
 import ChatDialogGroupInvite from "./ChatDialogGroupInvite";
-import { ChatGroupMemberList2 } from "../data/ChatData";
+import { getMembers } from "../data/ChatData";
 
 
 const ChatGroupElement = (group : Group) => {
@@ -26,20 +26,23 @@ const ChatGroupElement = (group : Group) => {
     const userId = Cookies.get('userId') ? Cookies.get('userId') : '';
     const chatStore = useSelector(selectChatStore);
 
+    useEffect(() => {
+
+    });
+
     return (
         <Box 
             onClick={()=>{
                 dispatch(selectConversation({chatRoomId: group.channelId, chatType: enChatType.Group}))
                 dispatch(updateChatActiveGroup(chatStore.chatGroupList.filter((el) => {
-                    if (el && (el.channelId === group.channelId)) {
+                    if (el && (el.channelId == group.channelId)) {
                         return el;
                     }
                 })[0]));
+                dispatch(updateChatGroupMembers(getMembers(chatStore.chatGroupMembers, group.channelId)));
                 //  ! TODO : update the active group memberlist here using store reducer
                 // use data from backend
                 // this is to be done with the chatActiveGroupMembers in Store
-                dispatch(updateChatGroupMembers(ChatGroupMemberList2));
-
             }}
             sx={{
                 width: "100%",
@@ -61,12 +64,10 @@ const ChatGroupElement = (group : Group) => {
                     </Badge>
                     <Stack spacing={0.2}>
                         <Typography variant="subtitle2">{ group.title }</Typography>
-                        <Typography variant="caption">{ 'Last Message' } </Typography>
+                        <Typography variant="caption">{ `${ getMembers(chatStore.chatGroupMembers, group.channelId).length } Members` } </Typography>
                     </Stack>
                 </Stack>
                 <Stack spacing={2} alignItems={"center"}>
-                    <Typography variant="caption">{ 'Time' }</Typography>
-                    <Badge color="primary" badgeContent={ 'Unread' }></Badge>
                 </Stack>
 
             </Stack>

@@ -11,8 +11,8 @@ import { StatService } from 'src/stat/stat.service';
 export class AuthService {
   constructor(
     private usersService: UsersService,
-    private statService: StatService
-    ) {}
+    private statService: StatService,
+  ) {}
   async signin(authUserDto: AuthUserDto) {
     console.log('---------------------\n');
     console.log('CODE: ', authUserDto.token);
@@ -39,7 +39,7 @@ export class AuthService {
       logTimes = false;
     } else {
       signedUser = await this.usersService.create(pongUser);
-      const defaultStat = { wins: 0, losses: 0, draws: 0 }
+      const defaultStat = { wins: 0, losses: 0, draws: 0 };
       // firstTime creat user's stats.
       await this.statService.create(signedUser.id, defaultStat);
     }
@@ -126,7 +126,7 @@ export class AuthService {
       client_id: process.env.UID,
       client_secret: process.env.SECRET,
       code: authUserDto.token,
-      redirect_uri:  `${process.env.FRONTEND_URL}/`,
+      redirect_uri: `${process.env.FRONTEND_URL}/`,
       state: authUserDto.state,
     };
     try {

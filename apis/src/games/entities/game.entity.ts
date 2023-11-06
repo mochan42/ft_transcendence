@@ -14,7 +14,7 @@ export class Game {
   @Column()
   difficulty: number;
 
-  @Column({nullable: true})
+  @Column({ nullable: true })
   includeBoost: boolean;
 
   @Column()
@@ -25,43 +25,43 @@ export class Game {
 
   @Column()
   score2: number;
-  
-  @Column({nullable: true})
+
+  @Column({ nullable: true })
   paddle1Y: number;
 
-  @Column({nullable: true})
+  @Column({ nullable: true })
   paddle2Y: number;
-  
-  @Column({nullable: true})
+
+  @Column({ nullable: true })
   boostX: number;
 
-  @Column({nullable: true})
+  @Column({ nullable: true })
   boostY: number;
-  
-  @Column({nullable: true})
+
+  @Column({ nullable: true })
   ballX: number;
 
-  @Column({nullable: true})
+  @Column({ nullable: true })
   ballY: number;
-  
-  @Column({nullable: true})
+
+  @Column({ nullable: true })
   gameMaker: number;
-  
-  @Column({nullable: true})
+
+  @Column({ nullable: true })
   paddle1Speed: number;
 
-  @Column({nullable: true})
+  @Column({ nullable: true })
   paddle2Speed: number;
-  
-  @Column({nullable: true})
+
+  @Column({ nullable: true })
   paddle1Dir: number;
 
-  @Column({nullable: true})
+  @Column({ nullable: true })
   paddle2Dir: number;
 
-  @Column({nullable: true})
+  @Column({ nullable: true })
   speedX: number;
 
-  @Column({nullable: true})
+  @Column({ nullable: true })
   speedY: number;
 }

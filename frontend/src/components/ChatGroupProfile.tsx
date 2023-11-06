@@ -2,12 +2,12 @@ import { Avatar, Box, Button, Divider, IconButton, Stack, Typography } from "@mu
 import { useTheme } from "@mui/material/styles";
 import { Prohibit, Gear, X, SignOut } from "phosphor-react";
 import { useDispatch, useSelector } from "react-redux";
-import { toggleSidebar } from "../redux/slices/chatSlice";
+import { toggleSidebar, updateChatActiveGroup } from "../redux/slices/chatSlice";
 import { selectChatStore } from "../redux/store";
 import { selectChatDialogStore } from "../redux/store";
 import { faker } from "@faker-js/faker"
 import img42 from '../img/icon_42.png'
-import { User } from "../types";
+import { JoinGroup, User } from "../types";
 import { ChatGroupMemberProfileComp }  from "./ChatGroupComp";
 import Cookies from 'js-cookie';
 import { enChatMemberRank } from "../enums";
@@ -18,6 +18,7 @@ import ChatGroupFormSetTitle from "./ChatGroupFormSetTitle";
 import ChatGroupFormAddUser from "./ChatGroupFormAddUser";
 import ChatDialogShwProfile from "./ChatDialogShwProfile";
 import ChatDialogShwPasswd from "./ChatDialogShwPasswd";
+import { getMembers } from "../data/ChatData";
 
 /* component to show contact profile */
 const ChatGroupProfile = () => {
@@ -30,11 +31,12 @@ const ChatGroupProfile = () => {
     const chatDialogStore = useSelector(selectChatDialogStore);
     const activeGroupTitle = (chatStore.chatActiveGroup ? chatStore.chatActiveGroup.title : "")
     const activeGroupPrivacy = (chatStore.chatActiveGroup ? chatStore.chatActiveGroup.privacy: "")
-    const groupMemberNo = (chatStore.chatActiveGroup ? chatStore.chatGroupMembers.length: 0)
-    const loggedUser = chatStore.chatGroupMembers.filter(el => (el.usrId.toString()) === userId)
+    const groupMembers = chatStore.chatActiveGroup ? getMembers(chatStore.chatGroupMembers, chatStore.chatActiveGroup.channelId): [];
+    const groupMemberNo = (chatStore.chatActiveGroup ? groupMembers.length: 0)
+    const loggedUser = groupMembers.filter((el: JoinGroup) => el.userId.toString() == userId)
     // console.log(loggedUser, 'id- ', userId, loggedUser[0].rank)
     // console.log("Show userId", userId)
-    let actionBtnState = (loggedUser[0].rank === enChatMemberRank.MEMBER) ? false : true
+    let actionBtnState = (loggedUser && loggedUser[0].rank === enChatMemberRank.MEMBER) ? false : true
     const [ChangePasswdDialogState, setChangePasswdDialogState] = useState<Boolean>(false)
     // const actionBtnState = true
 
@@ -102,7 +104,7 @@ const ChatGroupProfile = () => {
                     >
                         {
                             chatStore.chatGroupMembers.map( (member) => {
-                                const memberUser = (chatStore.chatUsers.filter(el => parseInt(el.id) === member.usrId)[0])
+                                const memberUser = (chatStore.chatUsers.filter(el => parseInt(el.id) === member.userId)[0])
                                 if (memberUser)
                                 {
                                     return <ChatGroupMemberProfileComp 

@@ -4,7 +4,6 @@ import { UpdateChannelDto } from './dto/update-channel.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Channel } from './entities/channel.entity';
-import { CreateAchievementDto } from 'src/achievements/dto/create-achievement.dto';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
@@ -14,10 +13,6 @@ export class ChannelsService {
     private ChannelRepo: Repository<Channel>,
   ) {}
   async create(createChannelDto: CreateChannelDto) {
-    if (createChannelDto.type != 'public' && !createChannelDto.password) {
-      return null;
-    }
-
     const newChannel = {
       ...createChannelDto,
       password: await this.cryptPasswd(createChannelDto.password),
@@ -30,8 +25,8 @@ export class ChannelsService {
     return await this.ChannelRepo.find();
   }
 
-  async findOne(id: number) {
-    return await this.ChannelRepo.findOne({ where: { id } });
+  async findOne(channelId: number) {
+    return await this.ChannelRepo.findOne({ where: { channelId } });
   }
 
   async update(id: number, updateChannelDto: UpdateChannelDto) {
@@ -41,8 +36,8 @@ export class ChannelsService {
     return await this.ChannelRepo.save(updated);
   }
 
-  async remove(id: number) {
-    return await this.ChannelRepo.delete(id);
+  async remove(channelId: number) {
+    return await this.ChannelRepo.delete(channelId);
   }
 
   async cryptPasswd(passwd: string | null): Promise<string | null> {

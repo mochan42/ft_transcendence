@@ -14,7 +14,7 @@ import { UpdateStatDto } from './dto/update-stat.dto';
 @Controller('pong')
 export class StatController {
   constructor(private readonly statService: StatService) {}
-  
+
   @Get('stats')
   findAll() {
     return this.statService.findAll();
@@ -27,12 +27,11 @@ export class StatController {
   ) {
     return this.statService.create(userId, createStatDto);
   }
-  
+
   @Get('users/:userId/stats')
   findOne(@Param('userId') userId: string) {
     return this.statService.findOne(+userId);
   }
-
 
   @Patch('users/:userId/stats')
   update(

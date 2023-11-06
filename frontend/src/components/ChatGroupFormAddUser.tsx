@@ -44,7 +44,7 @@ const CreateGroupFormAddUser = () => {
     // fetch user data of all group members
     let memberUsers: User[] = [];
     chatStore.chatGroupMembers.forEach((member) => {
-        memberUsers.push(getUserById(chatStore.chatUsers, member.usrId))
+        memberUsers.push(getUserById(chatStore.chatUsers, member.userId))
     })
 
     // filter out non-members

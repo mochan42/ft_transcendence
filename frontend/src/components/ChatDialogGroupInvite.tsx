@@ -33,7 +33,7 @@ function GetJoinGroupListForLoggedUser () : JoinGroup[] {
     const JoinGroupList = ChatGroupMemberList // use only for development, real data from api
 
     const affiliatedJoinGroupList = JoinGroupList.filter(el => 
-        (userId && (el.usrId.toString()) == userId))
+        (userId && (el.userId.toString()) == userId))
 
     return affiliatedJoinGroupList
 }

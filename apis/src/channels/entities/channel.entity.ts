@@ -3,17 +3,17 @@ import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 @Entity()
 export class Channel {
   @PrimaryGeneratedColumn()
-  id: number;
-
-  @Column()
-  owner: number;
-
-  @Column()
-  label: String;
-
-  @Column()
-  type: String;
+  channelId: number;
 
   @Column({ nullable: true })
-  password: String;
+  password: string;
+
+  @Column()
+  title: String;
+
+  @Column()
+  privacy: String;
+
+  @Column()
+  ownerId: number;
 }

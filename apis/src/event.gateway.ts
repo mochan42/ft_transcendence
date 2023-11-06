@@ -15,7 +15,13 @@ import { CreateChannelDto } from './channels/dto/create-channel.dto';
 import { ChannelsService } from './channels/channels.service';
 import { JoinchannelService } from './joinchannel/joinchannel/joinchannel.service';
 import { UsersService } from './users/users.service';
-import { ACCEPTED, PENDING } from './APIS_CONSTS';
+import {
+  ACCEPTED,
+  MEMBER_RANK,
+  MEMBER_RIGHTS,
+  MEMBER_STATUS,
+  PENDING,
+} from './APIS_CONSTS';
 import { GamequeueService } from './gamequeue/gamequeue.service';
 import { GamesService } from './games/games.service';
 import { CreateGameDto } from './games/dto/create-game.dto';
@@ -25,13 +31,9 @@ import { Game } from './games/entities/game.entity';
 
 @WebSocketGateway({
   cors: {
-<<<<<<< HEAD
-    origin: 'http://localhost:3000',
-=======
-    origin: `${ process.env.FRONTEND_URL }`,
->>>>>>> tmp
+    origin: `${process.env.FRONTEND_URL}`,
     // origin: '*',
-    credentials: true
+    credentials: true,
   },
 })
 export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
@@ -51,7 +53,7 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
   async handleConnection(@ConnectedSocket() socket: Socket, ...args: any[]) {
     const user = await this.chatsService.getUserFromSocket(socket);
     const allUser = await this.userService.findAll();
-    this.server.emit('connected', {new : user, all: allUser});
+    this.server.emit('connected', { new: user, all: allUser });
   }
 
   async handleDisconnect(@ConnectedSocket() socket: Socket) {
@@ -78,7 +80,10 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const friends = await this.friendsService.findAll();
 
     socket.emit('inviteFriendSucces', friends);
-    this.server.emit('invitedByFriend', { new : friendShip.receiver, all: friends});
+    this.server.emit('invitedByFriend', {
+      new: friendShip.receiver,
+      all: friends,
+    });
   }
 
   @SubscribeMessage('acceptFriend')
@@ -90,7 +95,7 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const updatedFriend: Friend = { ...reqToAccept, relation: ACCEPTED };
     const friend = await this.friendsService.update(updatedFriend);
     const allFriends = await this.friendsService.findAll();
-    this.server.emit('newFriend', { new: friend, all: allFriends});
+    this.server.emit('newFriend', { new: friend, all: allFriends });
   }
 
   @SubscribeMessage('denyFriend')
@@ -110,32 +115,40 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const user = await this.chatsService.getUserFromSocket(socket);
 
     const channel: CreateChannelDto = {
-      owner: +user.id,
-      label: payload.title,
-      type: payload.privacy_state,
       password: payload.passwd,
-      createdAt: new Date().toISOString(),
+      title: payload.title,
+      privacy: payload.privacy_state,
+      ownerId: +user.id,
     };
 
     const newChannel = await this.channelsService.create(channel);
     const members = [...payload.members];
-
     if (members.length && newChannel) {
-      const createdAt = new Date().toISOString();
-
-      members.forEach(async (member) => {
+      const owner = {
+        userId: +user.id,
+        channelId: newChannel.channelId,
+        rank: MEMBER_RANK.OWNER,
+        rights: MEMBER_RIGHTS.PRIVILEDGED,
+        status: MEMBER_STATUS.ACCEPTED,
+      };
+      await this.joinchannelService.create(owner);
+      
+      const joints = members.map(async (member) => {
         const joinchannelDTo = {
-          user: +member,
-          channel: newChannel.id,
-          status: null,
-          createdAt: createdAt,
+          userId: +member,
+          channelId: newChannel.channelId,
+          rank: MEMBER_RANK.MEMBER,
+          rights: MEMBER_RIGHTS.PRIVILEDGED,
+          status: MEMBER_STATUS.INVITE,
         };
 
-        await this.joinchannelService.create(joinchannelDTo);
+        return await this.joinchannelService.create(joinchannelDTo);
       });
+      await Promise.all(joints);
     }
-
-    socket.emit('newChannel', newChannel);
+    const allMembers = await this.joinchannelService.findAll();
+    const allChannels = await this.channelsService.findAll();
+    this.server.emit('newChannel', { members: allMembers, groups: allChannels });
   }
 
   @SubscribeMessage('sendMessage')
@@ -152,12 +165,14 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @SubscribeMessage('blockFriend')
   async blockFriend(
     @ConnectedSocket() socket: Socket,
-    @MessageBody() friendShip: any
-    ) 
-  {
+    @MessageBody() friendShip: any,
+  ) {
     const removeFriend = await this.friendsService.remove(+friendShip);
     const allFriends = await this.friendsService.findAll();
-    this.server.emit('BlockedFriendSucces', { new: removeFriend, all: allFriends });
+    this.server.emit('BlockedFriendSucces', {
+      new: removeFriend,
+      all: allFriends,
+    });
   }
 
   /***********************GAME*********************** */
@@ -167,7 +182,7 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @ConnectedSocket() socket: Socket,
     @MessageBody() data: Game,
   ) {
-    console.log("Game was accepted\n");
+    console.log('Game was accepted\n');
     const game = await this.gamesService.acceptMatch(data);
     this.server.emit('matchFound', game);
   }
@@ -176,7 +191,7 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
   handleUpdateMatch(
     @ConnectedSocket() socket: Socket,
     @MessageBody() data: any,
-  ){
+  ) {
     this.server.emit('updateMatch', data);
   }
 
@@ -184,15 +199,15 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
   handleUpdatePaddle1(
     @ConnectedSocket() socket: Socket,
     @MessageBody() data: any,
-  ){
+  ) {
     this.server.emit('updatePaddle1', data);
   }
-  
+
   @SubscribeMessage('updatePaddle2')
   handleUpdatePaddle2(
     @ConnectedSocket() socket: Socket,
     @MessageBody() data: any,
-  ){
+  ) {
     this.server.emit('updatePaddle2', data);
   }
 
@@ -200,7 +215,7 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
   handleUpdateBallX(
     @ConnectedSocket() socket: Socket,
     @MessageBody() data: any,
-  ){
+  ) {
     this.server.emit('updateBallX', data);
   }
 
@@ -208,7 +223,7 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
   handleUpdateBallY(
     @ConnectedSocket() socket: Socket,
     @MessageBody() data: any,
-  ){
+  ) {
     this.server.emit('updateBallY', data);
   }
 
@@ -216,7 +231,7 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
   handleUpdateBoostX(
     @ConnectedSocket() socket: Socket,
     @MessageBody() data: any,
-  ){
+  ) {
     this.server.emit('updateBoostX', data);
   }
 
@@ -224,32 +239,39 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
   handleUpdateBoostY(
     @ConnectedSocket() socket: Socket,
     @MessageBody() data: any,
-  ){
+  ) {
     this.server.emit('updateBoostY', data);
   }
-
-
 
   @SubscribeMessage('requestMatch')
   async handleRequestMatch(
     @ConnectedSocket() socket: Socket,
     @MessageBody() data: any,
   ) {
-    console.log("requestMatch was received.\n")
+    console.log('requestMatch was received.\n');
     const player1 = data.player1;
     if (data.player2 > 0) {
       const player2 = data.player2;
-      const makeGame = await this.gamesService.makeMatch(+player1, +player2, data.difficulty, data.isBoost);
+      const makeGame = await this.gamesService.makeMatch(
+        +player1,
+        +player2,
+        data.difficulty,
+        data.isBoost,
+      );
       if (makeGame) {
         this.server.emit('invitedToMatch', makeGame);
-        console.log("Broadcasting invitedToMatch\n\n")
+        console.log('Broadcasting invitedToMatch\n\n');
       }
-
     }
     const opponent = this.gameQueueService.findOpponent(socket);
     if (opponent) {
       const player2 = await this.chatsService.getUserFromSocket(socket);
-      const makeGame = await this.gamesService.makeMatch(+player1, +player2, data.difficulty, data.isBoost);
+      const makeGame = await this.gamesService.makeMatch(
+        +player1,
+        +player2,
+        data.difficulty,
+        data.isBoost,
+      );
 
       if (makeGame) {
         socket.emit('matchFound', makeGame);

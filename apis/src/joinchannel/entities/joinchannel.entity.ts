@@ -6,14 +6,17 @@ export class Joinchannel {
   id: number;
 
   @Column()
-  user: number;
+  userId: number;
 
   @Column()
-  channel: number;
+  channelId: number;
 
-  @Column({ nullable: true })
-  satus: string;
+  @Column()
+  rank: string;
 
-  @Column({ nullable: true })
-  createdAt: string;
+  @Column()
+  rights: string;
+
+  @Column()
+  status: string;
 }

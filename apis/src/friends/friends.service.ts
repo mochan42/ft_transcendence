@@ -29,8 +29,8 @@ export class FriendsService {
     });
   }
 
-  async findBYId(id: number) : Promise<Friend> {
-    return await this.FriendRepo.findOne({where: { id: id }});
+  async findBYId(id: number): Promise<Friend> {
+    return await this.FriendRepo.findOne({ where: { id: id } });
   }
 
   async update(updatedFriend: Friend) {

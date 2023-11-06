@@ -17,7 +17,7 @@ import Cookies from 'js-cookie';
 import { Utils__isAPICodeAvailable } from './utils/utils__isAPICodeAvailable';
 import { getSocket } from './utils/socketService';
 import { GameType, Chat } from './types';
-import { updateChatUserMessages, updateChatUserFriendRequests, updateChatUserFriends, updateChatUsers } from "./redux/slices/chatSlice";
+import { updateChatUserMessages, updateChatUserFriendRequests, updateChatUserFriends, updateChatUsers, updateChatGroups, updateChatGroupMembers } from "./redux/slices/chatSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { selectChatStore } from "./redux/store";
 import { fetchAllFriends, fetchAllMessages, fetchAllUsersFriends} from './data/ChatData';
@@ -62,6 +62,10 @@ const App: React.FC = () => {
 	//----------------------------CHAT---------------------------
 	useEffect(() => {
 		if (socket != null) {
+			socket.on('newChannel', (data: any) => {
+				dispatch(updateChatGroups(data.groups));
+				dispatch(updateChatGroupMembers(data.members));
+			});
 			socket.on("receiveMessage", (data: any) => {
 				dispatch(updateChatUserMessages(data.all));
 			});

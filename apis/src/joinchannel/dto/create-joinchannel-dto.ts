@@ -2,14 +2,17 @@ import { IsNumber, IsString } from 'class-validator';
 
 export class CreateJoinchannelDto {
   @IsNumber()
-  user: number;
+  userId: number;
 
   @IsNumber()
-  channel: number;
+  channelId: number;
 
   @IsString()
-  status?: string;
+  rank: string;
 
   @IsString()
-  createdAt: string;
+  rights: string;
+
+  @IsString()
+  status: string;
 }

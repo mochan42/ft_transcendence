@@ -68,7 +68,7 @@ type Group = {
 
 type JoinGroup = {
   id: number;
-  usrId: number;
+  userId: number;
   channelId: number;
   rank: string;
   rights: string;

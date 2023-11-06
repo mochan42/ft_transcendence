@@ -2,6 +2,17 @@ https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev
 
 ### channels 
 GET https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/channels
+### ellete channels 
+DELETE  https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/channels/10
+
+### ALL members
+GET https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/channels/members
+
+### Delete a member
+DELETE  https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/channels/members/42
+
+### Delete all members
+DELETE  https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/chanel-all-members
 
 ### get all users
 GET https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/

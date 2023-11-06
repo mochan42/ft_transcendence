@@ -24,7 +24,7 @@
 //       paddle2Y: 0,
 //       id: Math.random().toString(),
 //     };
-    
+
 //     // Broadcast to both players in the game
 //     this.Server.emit('gameState', gameState);
 //   }
@@ -38,7 +38,7 @@
 //     // and check that the socket.id is allowed to move the requested paddle
 //     const gameState: GameState = this.getGameState(data.id);
 //     gameState[data.player] += data.deltaY;
-    
+
 //     // Emit updated position to both clients
 //     this.server.to(data.id).emit('gameState', gameState);
 //   }
@@ -52,7 +52,7 @@
 //     const gameState: GameState = this.getGameState(data.id);
 //     gameState.ballX = data.ballX;
 //     gameState.ballY = data.ballY;
-    
+
 //     // Broadcast the new game state to both players
 //     this.server.to(data.id).emit('gameState', gameState);
 //   }

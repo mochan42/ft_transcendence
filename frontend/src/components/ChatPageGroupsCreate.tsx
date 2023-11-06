@@ -15,7 +15,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { selectChatStore } from "../redux/store";
 import { getSocket } from '../utils/socketService';
 import { enChatPrivacy } from '../enums';
-import { updateChatGroupCreateFormPasswdState } from '../redux/slices/chatSlice';
+import { updateChatGroupCreateFormPasswdState, updateChatGroupMembers, updateChatGroups } from '../redux/slices/chatSlice';
 import { TFormMember } from '../types';
 
 
@@ -108,6 +108,10 @@ const CreateGroupForm = ( handleFormClose: THandler ) => {
                 members: newMembers
             };
             socket.emit('createChannel', formatedData);
+            socket.on('newChannel', (data: any) => {
+				dispatch(updateChatGroups(data.groups));
+				dispatch(updateChatGroupMembers(data.members));
+			});
             handleFormClose.close(false);
         }
         catch (error)

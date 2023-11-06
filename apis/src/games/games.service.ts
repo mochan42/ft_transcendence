@@ -11,7 +11,7 @@ import {
   BOOST_Y_ZERO,
   LEFT_PADDLE_Y_ZERO,
   RIGHT_PADDLE_Y_ZERO,
-  GAME_STATE
+  GAME_STATE,
 } from '../APIS_CONSTS';
 
 @Injectable()
@@ -41,7 +41,12 @@ export class GamesService {
     return `This action removes a #${id} game`;
   }
 
-  async makeMatch(player1: number, player2: number, difficulty: number, isBoost: boolean) {
+  async makeMatch(
+    player1: number,
+    player2: number,
+    difficulty: number,
+    isBoost: boolean,
+  ) {
     const game: CreateGameDto = {
       id: -1,
       player1: player1,

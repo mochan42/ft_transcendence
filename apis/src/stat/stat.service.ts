@@ -35,7 +35,7 @@ export class StatService {
   async findAll() {
     return await this.StatRepository.find();
   }
-  
+
   async update(id: string, updateStatDto: UpdateStatDto) {
     const oldStat = await this.StatRepository.findOne({
       where: { userId: id },
