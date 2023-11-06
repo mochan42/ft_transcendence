@@ -119,6 +119,8 @@ const App: React.FC = () => {
 		}
 	});
     
+	const title = document.getElementsByTagName('title');
+	title[0].innerHTML = 'Transcendance App';
 	return (
 		<div className='flex-cols font-mono dark:bg-white/75 bg-slate-900 bg-opacity-80 h-screen'>
 			<Router>

@@ -126,7 +126,7 @@ export class AuthService {
       client_id: process.env.UID,
       client_secret: process.env.SECRET,
       code: authUserDto.token,
-      redirect_uri:  `${ process.env.FRONTEND_URL }/`,
+      redirect_uri:  `${process.env.FRONTEND_URL}/`,
       state: authUserDto.state,
     };
     try {

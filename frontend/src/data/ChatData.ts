@@ -5,6 +5,7 @@ import {
   Friend,
   UserStats,
   GameType,
+  Group,
 } from "../types";
 import axios from "axios";
 import { ACCEPTED, PENDING } from "../APP_CONSTS";
@@ -84,22 +85,42 @@ const friendToUserType = (user: string | null, friend: Friend, userList: User[])
   return userList.filter((el) => friend.receiver == el.id)[0];
 } 
 
-const ChatGroupList = [
-  {
-    channelId: 3,
-    password: "",
-    title: "Revolution crew",
-    privacy: "public",
-    ownerId: 7,
-  },
-  {
-    channelId: 2,
-    password: "",
-    title: "Trans_project_team",
-    privacy: "public",
-    ownerId: 5,
-  },
-];
+const fetchAllGroups = async (): Promise<Group[]> => {
+  let allGroups: Group[] = []; 
+  const resp = await axios.get(`${BACKEND_URL}/pong/channels`);
+  if (resp.status === 200) {
+    const temp = resp.data;
+    temp.map((el: any) => {
+      const group : Group = {
+        channelId: el.id,
+        password: el.password,
+        title: el.label,
+        privacy: el.privacy,
+        ownerId: el.owner
+      };
+      allGroups.push(group);
+    });
+  }
+  return allGroups;
+}
+
+const ChatGroupList: Group[] = await fetchAllGroups();
+// const ChatGroupList = [
+//   {
+//     channelId: 3,
+//     password: "",
+//     title: "Revolution crew",
+//     privacy: "public",
+//     ownerId: 7,
+//   },
+//   {
+//     channelId: 2,
+//     password: "",
+//     title: "Trans_project_team",
+//     privacy: "public",
+//     ownerId: 5,
+//   },
+// ];
 
 const dummyUsers = [
   {
