@@ -9,7 +9,7 @@ import {
 } from "../types";
 import axios from "axios";
 import { ACCEPTED, PENDING } from "../APP_CONSTS";
-import { enChatMemberRank, enChatMemberRights, enGameDifficulty } from "../enums";
+import { enChatGroupInviteStatus, enChatMemberRank, enChatMemberRights, enGameDifficulty } from "../enums";
 import { BACKEND_URL } from "./Global";
 
 const backendUrl = BACKEND_URL
@@ -24,21 +24,22 @@ const fetchAllUsers = async (): Promise<User[]> => {
 };
 
 const fetchUser = async (userId: string): Promise<User | undefined> => {
-  const resp = await axios.get<User>(backendUrl + "/pong/users/" + userId);
-  if (resp.status === 200) {
-    return resp.data;
-  }
-  console.log("Fetching user ", userId, " failed with exit code ", resp.status);
+  // const resp = await axios.get<User>(backendUrl + "/pong/users/" + userId);
+  // if (resp.status === 200) {
+  //   return resp.data;
+  // }
+  // console.log("Fetching user ", userId, " failed with exit code ", resp.status);
+  return 
 };
 
 
 const fetchAllFriends = async (): Promise<Friend[]> => {
   let friends: Friend[] = [];
   const urlFriend = backendUrl + "/pong/friends";
-  const resp = await axios<Friend[]>(urlFriend);
-  if (resp.status === 200) {
-    friends = resp.data;
-  }
+  // const resp = await axios<Friend[]>(urlFriend);
+  // if (resp.status === 200) {
+  //   friends = resp.data;
+  // }
   return friends;
 };
 
@@ -202,34 +203,39 @@ const ChatGroupMemberList = [
     channelId: 3,
     rank: enChatMemberRank.ADMIN, // member
     rights: enChatMemberRights.PRIVILEDGED, // kicked, banned
+    status: enChatGroupInviteStatus.PENDING
   },
   {
     id: 2,
-    usrId: 7,
-    channelId: 3,
+    usrId: 1,
+    channelId: 2,
     rank: enChatMemberRank.MEMBER, // member
     rights: enChatMemberRights.PRIVILEDGED, // kicked, banned
+    status: enChatGroupInviteStatus.ACCEPTED
   },
   {
     id: 4,
     usrId: 5,
-    channelId: 3,
+    channelId: 1,
     rank: enChatMemberRank.MEMBER, // member
     rights: enChatMemberRights.BANNED, // kicked, banned
+    status: enChatGroupInviteStatus.ACCEPTED
   },
   {
     id: 5,
-    usrId: 3,
-    channelId: 3,
+    usrId: 1,
+    channelId: 4,
     rank: enChatMemberRank.MEMBER, // member
     rights: enChatMemberRights.PRIVILEDGED, // kicked, banned
+    status: enChatGroupInviteStatus.INVITE
   },
   {
     id: 6,
     usrId: 8,
-    channelId: 3,
+    channelId: 5,
     rank: enChatMemberRank.OWNER, // member
     rights: enChatMemberRights.PRIVILEDGED, // kicked, banned
+    status: enChatGroupInviteStatus.ACCEPTED
   },
 ];
 const ChatGroupMemberList2 = [
@@ -239,6 +245,7 @@ const ChatGroupMemberList2 = [
     channelId: 3,
     rank: enChatMemberRank.ADMIN, // member
     rights: enChatMemberRights.PRIVILEDGED, // kicked, banned
+    status: enChatGroupInviteStatus.ACCEPTED
   },
   {
     id: 2,
@@ -246,6 +253,7 @@ const ChatGroupMemberList2 = [
     channelId: 3,
     rank: enChatMemberRank.MEMBER, // member
     rights: enChatMemberRights.PRIVILEDGED, // kicked, banned
+    status: enChatGroupInviteStatus.ACCEPTED
   },
 ];
 

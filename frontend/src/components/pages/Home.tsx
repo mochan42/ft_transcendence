@@ -192,6 +192,8 @@ const Home = ({
 	}
 	// // hack for access
 	// // to be removed later
+	// loginState.setIsLogin(true)
+	// setUserId('1');
 	if (!userId && !loginState.isLogin) {
 		return (
 			<>

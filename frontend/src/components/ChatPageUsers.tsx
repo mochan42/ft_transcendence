@@ -93,12 +93,10 @@ const ChatElement = (user: User) => {
 }
 
 const  ChatPageUsers = (chatProp : ChatProps) => {
-    // const [dialogState, setDialogState] = useState<boolean>(false);
     const chatStore = useSelector(selectChatStore)
     const dispatch = useDispatch()
     const handleOpenDialog = ()=>{
         dispatch(updateStateUserFriendDialog(true));
-        // setDialogState(true)
     }
     // const handleCloseDialog = ()=>{
     //     dispatch(updateStateUserFriendDialog(false)); 
@@ -165,7 +163,7 @@ const  ChatPageUsers = (chatProp : ChatProps) => {
 
                 {/* show profile for user or group on toggle. it depends on which chat is selected */}
                 <Stack>
-    			{ chatStore.chatSideBar.open && <ChatUserProfile userId={chatProp.userId}/> }
+    			{ chatStore.chatSideBar.open && <ChatUserProfile /> }
                 </Stack>
         </Stack>
         {/* handle friend request dialog panel */}

@@ -20,11 +20,19 @@ import { BACKEND_URL } from '../../data/Global';
 	const [allGoals, setAllGoals] = useState< Goal[] | null >(null);
 	const [friends, setFriends] = useState< Friend [] | null>(null)
 	const id = userId;
+<<<<<<< HEAD
 	const urlFriends = `${BACKEND_URL}/pong/users/` + id + '/friends';
 	const url_info = `${BACKEND_URL}/pong/users/` + id;
 	const url_stats = `${BACKEND_URL}/pong/users/` + id + '/stats'
 	const url_achievements = `${BACKEND_URL}/pong/users/` + id + '/achievements';
 	const url_goals = `${BACKEND_URL}/pong/goals`;
+=======
+	const urlFriends = 'http://localhost:5000/pong/users/' + id + '/friends';
+	const url_info = 'http://localhost:5000/pong/users/' + id;
+	const url_stats = 'http://localhost:5000/pong/users/' + id + '/stats'
+	const url_achievements = 'http://localhost:5000/pong/users/' + id + '/achievements';
+	const url_goals = 'http://localhost:5000/pong/goals';
+>>>>>>> be45aca1692a4e4a03084e94dfbf73650c2fc5a2
 	const [achievedGoals, setAchievedGoals] = useState<Goal[]>();
 	const [notAchievedGoals, setNotAchievedGoals] = useState<Goal[]>();
 	const [userFriends, setUserFriends] = useState<User [] | null >(null)
@@ -46,7 +54,11 @@ import { BACKEND_URL } from '../../data/Global';
     }
 
 	const Handle2faBtnClick = async () => {
+<<<<<<< HEAD
         const resp = await axios.patch<User>(`${BACKEND_URL}/pong/users/2fa/` + id);
+=======
+        const resp = await axios.patch<User>('http://localhost:5000/pong/users/2fa/' + id);
+>>>>>>> be45aca1692a4e4a03084e94dfbf73650c2fc5a2
         if (resp.status === 200) {
 			setUserInfo(resp.data);
             //window.location.reload()

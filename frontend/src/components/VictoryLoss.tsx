@@ -1,6 +1,7 @@
 import axios, { AxiosResponse } from "axios";
 import { useEffect, useState } from "react";
 import { UserAchievements, UserStats } from "../types";
+import { BACKEND_URL } from "../data/Global";
 
 interface VictoryLossProps {
 	isVictory: boolean;
@@ -14,8 +15,8 @@ const VictoryLoss: React.FC<VictoryLossProps> = ({ isVictory, userId, difficulty
 	const [UserAchievements, setUserAchievements] = useState< UserAchievements[] | null >(null);
 	const [updatedStats, setUpdatedStats] = useState(false);
 	const [updatedAchievements, setUpdatedAchievements] = useState(false);
-	const url_stats = 'https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/' + userId + '/stats';
-	const url_achievements = 'https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/' + userId + '/achievements';
+	const url_stats = `${BACKEND_URL}/pong/users/` + userId + '/stats';
+	const url_achievements = `${BACKEND_URL}/pong/users/` + userId + '/achievements';
 	
 	const getUserStats = async () => {
 		try {

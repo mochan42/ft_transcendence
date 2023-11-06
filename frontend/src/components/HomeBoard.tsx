@@ -10,6 +10,8 @@ import { UseSelector } from "react-redux/es/hooks/useSelector";
 import { selectChatStore } from "../redux/store";
 import { useSelector } from "react-redux";
 import Cookies from 'js-cookie';
+import { toggleSidebar } from "../redux/slices/chatSlice";
+import { useDispatch } from "react-redux";
 
 
 const ChatBoardBtns = [
@@ -49,12 +51,14 @@ const HomeBoard = (select : ISelectSection) => {
     const theme = useTheme();
 
 	const navigate = useNavigate();
+	const dispatch = useDispatch()
 	const chatStore = useSelector(selectChatStore)
     const userId = Cookies.get('userId') ? Cookies.get('userId') : '';
 	// get number of incoming game request
 	const gameRequestCount = chatStore.chatGameRequests.filter(
 		(el) => el.player2.toString() == userId 
 	).length
+
 	let counters = [
 		0, //home
 		0, //chat
@@ -62,8 +66,10 @@ const HomeBoard = (select : ISelectSection) => {
 		gameRequestCount // game requests
 	]
 
-    //const [selected, setSelected] = useState<Number>(0)
-    
+   const disableProfileView = () => {
+		if (chatStore.chatSideBar.open)
+			dispatch(toggleSidebar());
+   } 
 
 
     
@@ -73,7 +79,7 @@ const HomeBoard = (select : ISelectSection) => {
 					<div key={el.index}>
 						{el.index === select.section ? (
 							<div className="bg-slate-900 rounded-md">
-								<button
+								<button 
 									className="w-16 h-16 text-amber-400 py-2 flex items-center justify-center text-2xl"
 								>
 									<Badge badgeContent={counters[el.id]} color="primary">
@@ -88,6 +94,7 @@ const HomeBoard = (select : ISelectSection) => {
 									select.setSection(el.index);
 									console.log("Select:", select.section, "-", el.index)
 									navigate('/')
+									disableProfileView();
 								}}
 								className="w-full py-2 flex items-center justify-center text-2xl"
 							>

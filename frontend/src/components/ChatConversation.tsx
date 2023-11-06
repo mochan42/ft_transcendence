@@ -15,6 +15,7 @@ import { PRIVATE, GROUP } from '../APP_CONSTS';
 import { fetchAllDirectMessages } from "./ChatPageUsers";
 import img42 from '../img/icon_42.png'
 import Cookies from "js-cookie";
+import { BACKEND_URL } from "../data/Global";
 
 export const getUserById = (users: User[], id: any) => {
     return users.filter((user: User) => id == user.id)[0];
@@ -46,7 +47,7 @@ const ChatConversation: React.FC<ChatProps> = ({ userId }) => {
     const [messages, setMessages] = useState<ChatMessageProps[]>([]);
     const [username, setUserName] = useState<string>('');
     const messageContainerRef = useRef<HTMLDivElement | null>(null);
-    const url_info = 'https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/' + userId;
+    const url_info = `${BACKEND_URL}/pong/users/` + userId;
 	
 	const scrollToBottom = () => {
 		if (messageContainerRef.current) {

@@ -25,7 +25,11 @@ import { Game } from './games/entities/game.entity';
 
 @WebSocketGateway({
   cors: {
+<<<<<<< HEAD
+    origin: 'http://localhost:3000',
+=======
     origin: `${ process.env.FRONTEND_URL }`,
+>>>>>>> tmp
     // origin: '*',
     credentials: true
   },

@@ -74,8 +74,6 @@ npm cache clean --force                 : clear the cache
 
 
 ----
-+ add authslice
-+ create and update the game request page
 + Add dialog page to view profile from user list (friend dialog)
 + Create dialog for group just like one_on_one chat.
   - tab 1 : list all groups in one tab - show their type (public, protected, private)
@@ -84,10 +82,6 @@ npm cache clean --force                 : clear the cache
   - Note: ChatGroupPage will only list groups which user is a member of.
 
 
-+ if friendlist is not empty activate the conversation panel
-+ if grouplist is not empty activate the conversation panel
-+ toggle off profile sidebar on other button press 
-  - determine the buttons.
 
 + Ensure that no user can join a group twice.
 + Check that user is priviledge before display as group member
@@ -97,6 +91,7 @@ npm cache clean --force                 : clear the cache
 + ensure that user can send message only when in priviledge mode (group) or not blocked (oneonone)
 + all store data to be populated on successful user login
 + chat - make trackable with path, seperate from home url
++ update channel upon channel create
 
 
 ----- PUSH TODO ------------------
@@ -111,12 +106,19 @@ video 27 - handle friend request with socket.io 27:00
 
 [ Activities ]
 --------------
-
++ handle handshake with dialog
++ Add handshake iconButton to handle groups and invites
++ deactivated profile view on toggle between oneOnOne and group chat
++ group profile btn - action - Show password
+--
++ group member option - show profile
+---
++ Test implementation for the following forms 
 + Channel creation form - add all users in channel creation form.
 + group profile btn - action - change password
 + group profile btn - action - rename channel title
 + group profile btn - action - add user
-
+--
 
 _-------------------------
 

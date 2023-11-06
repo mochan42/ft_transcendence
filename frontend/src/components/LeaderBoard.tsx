@@ -5,6 +5,7 @@ import { Button } from "./ui/Button";
 import { useSelector } from "react-redux";
 import { selectChatStore } from "../redux/store";
 import { getSocket } from '../utils/socketService';
+import { BACKEND_URL } from "../data/Global";
 
 
 interface LeaderboardProps {
@@ -18,12 +19,12 @@ const Leaderboard:React.FC<LeaderboardProps> =({ userId }) => {
 	const [showScreen, setShowScreen] = useState< 'default' | 'FriendView'>('default');
 	const [topUsers, setTopUsers] = useState< User[] >([]);
 	const [friends, setFriends] = useState< Friend [] | null>(null)
-	const urlFriends = 'https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/' + userId + '/friends';
+	const urlFriends = `${BACKEND_URL}/pong/users/` + userId + '/friends';
 	const socket = getSocket(userId);
 	
 	const getUsersInfo = async () => { 
 		try {
-			const response = await axios.get< User[] >('https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/');
+			const response = await axios.get< User[] >(`${BACKEND_URL}/pong/users/`);
 			if (response.status === 200) {
 				setUsersInfo(response.data);
 				// console.log('Received Users Info: ', response.data)

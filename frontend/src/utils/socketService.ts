@@ -1,12 +1,13 @@
 import { io } from "socket.io-client";
 import Cookies from "js-cookie";
+import { BACKEND_URL } from "../data/Global";
 
 let socket: any = null;
 let int: number = 0;
 
 export const getSocket = (id: any) => {
   if (!socket && id) {
-    socket = io("https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev", {
+    socket = io(`${BACKEND_URL}`, {
       extraHeaders: {
         "X-Custom-Data": id,
       },

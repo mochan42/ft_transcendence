@@ -3,16 +3,20 @@ import { useDispatch as useAppDispatch, useSelector as useAppSelector } from "re
 import { persistStore, persistReducer } from "redux-persist"
 import { rootPersistConfig, rootReducer } from "./rootReducer";
 import chatSlice  from './slices/chatSlice'
+import chatDialogSlice from "./slices/chatDialogSlice";
 
 
 const store = configureStore({
     reducer: {
-        chatStore : chatSlice.reducer  
+        chatStore : chatSlice.reducer,
+        chatDialogStore : chatDialogSlice.reducer
+
     }
 })
 
 export type RootState = ReturnType<typeof store.getState>
 export const selectChatStore = (state: RootState) => state.chatStore;
+export const selectChatDialogStore = (state: RootState) => state.chatDialogStore;
 
 export default store;
 /*

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { User, GameType } from "../types";
 import UserCard from './UserCard';
 import { useNavigate } from 'react-router-dom';
+import { BACKEND_URL } from '../data/Global';
 
 interface MatchMakingProps {
 	userId: string | undefined | null;
@@ -17,7 +18,7 @@ interface MatchMakingProps {
 const MatchMaking:React.FC<MatchMakingProps> =({ setGameObj, setMatchFound, socket, userId, setState, difficulty, includeBoost}) => {
 	const [searchingForMatch, setSearchingForMatch] = useState< boolean | undefined >(undefined);
 	const [opponentInfo, setOpponentInfo] = useState< User | null >(null);
-	const url_info = 'https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/';
+	const url_info = `${BACKEND_URL}/pong/users/`;
 	const MatchMaking = 'MatchMaking';
 	const navigate = useNavigate();
 	let game: GameType = {

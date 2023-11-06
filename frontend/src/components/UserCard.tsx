@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { User } from '../types';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { BACKEND_URL } from '../data/Global';
 
 interface UserCardProps {
   	userId: string | undefined | null;
@@ -10,7 +11,7 @@ interface UserCardProps {
 const UserCard: React.FC<UserCardProps> = ({ userId }) => {
 	
 	const [userInfo, setUserInfo] = useState< User | null >(null);
-	const url_info = 'https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/' + userId;
+	const url_info = `${BACKEND_URL}/pong/users/` + userId;
 	const navigate = useNavigate();
 
 	const getUserInfo = async () => {

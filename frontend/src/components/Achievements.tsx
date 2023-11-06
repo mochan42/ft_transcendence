@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Button } from "./ui/Button"
 import axios, { AxiosResponse } from "axios";
 import {Goal, UserAchievements} from '../types';
+import { BACKEND_URL } from "../data/Global";
 
 interface AchievementsProps {
 	userId: string | null;
@@ -12,8 +13,8 @@ const Achievements:React.FC<AchievementsProps> =({ userId, setShowScreen }) => {
 	
 	const [userAchievements, setUserAchievements] = useState< UserAchievements[] | null >(null);
 	const [allGoals, setAllGoals] = useState< Goal[] | null >(null);
-	const url_achievements = 'https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/' + userId + '/achievements';
-	const url_goals = 'https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/goals';
+	const url_achievements = `${BACKEND_URL}/pong/users/` + userId + '/achievements';
+	const url_goals = `${BACKEND_URL}/pong/goals`;
 	const id = userId;
 	const [achievedGoals, setAchievedGoals] = useState<Goal[]>();
 	const [notAchievedGoals, setNotAchievedGoals] = useState<Goal[]>();

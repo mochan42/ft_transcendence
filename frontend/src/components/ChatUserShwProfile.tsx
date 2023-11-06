@@ -10,40 +10,34 @@ import Cookies from 'js-cookie';
 import Game from "./pages/Game";
 import { useEffect, useState } from "react";
 import { User, UserStats } from "../types";
-import { getSocket } from "../utils/socketService";
+import { getUserById } from "./ChatConversation";
 
 /* component to show contact profile */
-
-const ChatUserProfile = () => {
+type TUserId = {
+    userId: number
+}
+const ChatUserShwProfile = ( otherUserId : TUserId) => {
     const userId = Cookies.get('userId') ? Cookies.get('userId') : '';
     const [userStats, setUserStats] = useState<UserStats | null >(null);
     const theme = useTheme()
     const dispatch = useDispatch();
     const chatStore = useSelector(selectChatStore);
-    const socket = getSocket(userId)
-    
-    let userSelect =  {} as User
-    if (chatStore.chatActiveUser && userId != null) {
-        userSelect = friendToUserType(userId, chatStore.chatActiveUser, chatStore.chatUsers)
-    }
-
-    const onBlock = () => {
-        if (!chatStore.chatActiveUser) {
-            return ;
-        }
-        socket.emit('blockFriend', chatStore.chatActiveUser.id);
-    }
+    const [userSelect, setUserSelect] = useState<User | null>(null)
 
     useEffect(() => {
+    if (otherUserId.userId && userId != null) {
+        setUserSelect(getUserById(chatStore.chatUsers, otherUserId.userId))
+        //console.log ("show user in show profile - ", userSelect)
+    }
         (async() => {
-            const updatedUserStats = await fetchAllStats(userId);
+            const updatedUserStats = await fetchAllStats(otherUserId.userId);
             setUserStats(updatedUserStats);
         })();
     });
 
     return ( 
         <Box sx={{
-                width:"550px", backgroundColor: "white",
+                width:"100%", backgroundColor: "white",
                 boxShadow: "0px 0px 2px rgba(0, 0, 0, 0.25)",
                 height: "100%"
             }}
@@ -62,9 +56,6 @@ const ChatUserProfile = () => {
                             spacing={3}
                     >
                         <Typography variant="subtitle2">Profile</Typography>
-                        <IconButton onClick={ ()=> dispatch(toggleSidebar())}>
-                            <X/>
-                        </IconButton>
                     </Stack>
                 </Box>
 
@@ -75,13 +66,13 @@ const ChatUserProfile = () => {
                     <Stack alignItems={"center"} direction={"row"} spacing={2}>
                         <Avatar 
                             src={ userSelect ? userSelect.avatar : faker.image.avatar()} 
-                            alt={ userSelect ? userSelect.userNameLoc : faker.name.firstName()}
+                            alt={ userSelect ? userSelect.userNameLoc : faker.person.firstName()}
                             sx={{ height:80, width:80 }}
                         /> 
                         <Stack spacing={2}
                         >
                             <Typography variant="subtitle2" fontWeight={600}>
-                                { userSelect ? userSelect.userName : faker.name.firstName() } 
+                                { userSelect ? userSelect.userName : faker.person.firstName() } 
                             </Typography>
                             <Typography variant="subtitle2" fontWeight={400}>
                                 { userSelect ? userSelect.email : faker.internet.email() } 
@@ -115,11 +106,6 @@ const ChatUserProfile = () => {
                         </Typography>
                     </Stack>
                     <Divider />
-                    <Stack alignItems={"center"} direction={"row"} spacing={2}>
-                        <Button startIcon={ <Prohibit/>} fullWidth variant="outlined" onClick={() => { onBlock() }}> BLock </Button>
-                        <Button startIcon={ <GameController/>} fullWidth variant="outlined"> Play game </Button>
-                    </Stack>
-
                 </Stack>
 
             </Stack>
@@ -128,4 +114,4 @@ const ChatUserProfile = () => {
      );
 }
  
-export default ChatUserProfile;
+export default ChatUserShwProfile;

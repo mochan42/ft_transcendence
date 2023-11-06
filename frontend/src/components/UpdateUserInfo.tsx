@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { User } from "../types";
 import axios from "axios";
+import { BACKEND_URL } from "../data/Global";
 
 interface UpdateUserInfoProps {
     userId: number;
@@ -9,7 +10,7 @@ interface UpdateUserInfoProps {
 const UpdateUserInfo: React.FC<UpdateUserInfoProps> = ({ userId }) => {
     
     const [userInfo, setUserInfo] = useState< User | null >(null);
-	const url_info = 'https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/' + userId;
+	const url_info = `${BACKEND_URL}/pong/users/` + userId;
     
     const getUserInfo = async () => {
 		try {

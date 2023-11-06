@@ -1,21 +1,24 @@
 
 import { Box, Stack, IconButton, Typography, Divider, Avatar, Badge, Link, Icon} from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import { Users, ChatCircleDots, Phone, Plus} from "phosphor-react";
+import { Users, ChatCircleDots, Phone, Plus, Handshake} from "phosphor-react";
 import { useState } from "react";
 import img42 from "../img/icon_42.png"
-import { ChatGroupMemberList2, ChatUserList } from "../data/ChatData";
 import ChatPageGroupsCreate from "./ChatPageGroupsCreate";
 
 import { ChatProps, Group, User } from "../types";
 import ChatConversation from "./ChatConversation";
 import ChatGroupProfile from "./ChatGroupProfile";
-import { selectChatStore } from "../redux/store";
+import { selectChatDialogStore, selectChatStore } from "../redux/store";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { selectConversation, updateChatActiveGroup, updateChatGroupMembers } from "../redux/slices/chatSlice";
 import { enChatType } from "../enums";
 import Cookies from 'js-cookie';
+import { updateChatDialogGroupInvite } from "../redux/slices/chatDialogSlice";
+import ChatFriends from "./ChatFriends";
+import ChatDialogGroupInvite from "./ChatDialogGroupInvite";
+import { ChatGroupMemberList2 } from "../data/ChatData";
 
 
 const ChatGroupElement = (group : Group) => {
@@ -28,14 +31,14 @@ const ChatGroupElement = (group : Group) => {
             onClick={()=>{
                 dispatch(selectConversation({chatRoomId: group.channelId, chatType: enChatType.Group}))
                 dispatch(updateChatActiveGroup(chatStore.chatGroupList.filter((el) => {
-                    if (el.channelId === group.channelId) {
+                    if (el && (el.channelId === group.channelId)) {
                         return el;
                     }
                 })[0]));
                 //  ! TODO : update the active group memberlist here using store reducer
                 // use data from backend
                 // this is to be done with the chatActiveGroupMembers in Store
-                //dispatch(updateChatGroupMembers(ChatGroupMemberList2));
+                dispatch(updateChatGroupMembers(ChatGroupMemberList2));
 
             }}
             sx={{
@@ -74,11 +77,16 @@ const ChatGroupElement = (group : Group) => {
 
 const  ChatPageGroups = (chatProp : ChatProps) => {
     const theme = useTheme();
+    const dispatch = useDispatch()
     const [openDialog, setOpenDialog] = useState<boolean>(false);
     const chatStore = useSelector(selectChatStore)
+    const chatDialogStore = useSelector(selectChatDialogStore)
 
     const handleCloseDialog = () => {
         setOpenDialog(false);
+    }
+    const handleOpenDialogGroupInvite = ()=>{
+        dispatch(updateChatDialogGroupInvite(true));
     }
     return (
         <>
@@ -93,8 +101,15 @@ const  ChatPageGroups = (chatProp : ChatProps) => {
                 boxShadow: "0px 0px 2px rgba(0, 0, 0, 0.25)"
               }}>
                 <Stack p={3} spacing={1} sx={{height:"75vh"}} >
-                    <Stack alignItems={"centered"} >
+                    <Stack direction={"row"} alignItems={"centered"} 
+                        justifyContent={"space-between"}
+                    >
                         <Typography variant='h5'>Channels</Typography>
+                        <Stack alignItems={"centered"} spacing={1}>
+                            <IconButton onClick={handleOpenDialogGroupInvite}>
+                                <Handshake/>
+                            </IconButton>
+                        </Stack>
                     </Stack>
                     <Divider/>
 
@@ -104,7 +119,9 @@ const  ChatPageGroups = (chatProp : ChatProps) => {
                         justifyContent={"space-between"} 
                         alignItems={"center"} 
                     >
-                        <Typography variant="h5" component={Link}>
+                        <Typography variant="h5" component={Link}
+                            onClick={ () => { setOpenDialog(true)}}
+                        >
                             Create New Channel
                         </Typography>
                         <IconButton onClick={() => { setOpenDialog(true) }} >
@@ -116,7 +133,9 @@ const  ChatPageGroups = (chatProp : ChatProps) => {
                         sx={{flexGrow:1, overflowY:"scroll", height:"100%"}}
                         spacing={0.5} 
                     >
-                        { chatStore.chatGroupList.map((el: Group) => { return (<ChatGroupElement key={el.channelId} {...el} />) })}
+                        { chatStore.chatGroupList.map((el) => {
+                            if (el)
+                                return (<ChatGroupElement key={el.channelId} {...el} />) })}
                     </Stack>
                 </Stack>
             </Box>
@@ -136,7 +155,11 @@ const  ChatPageGroups = (chatProp : ChatProps) => {
         </Stack>
 
         {/* create group channel form */}
-        {openDialog && <ChatPageGroupsCreate openState={openDialog} handleClose={handleCloseDialog}/>}
+        { openDialog && 
+            <ChatPageGroupsCreate openState={openDialog} handleClose={handleCloseDialog}/>
+        }
+        {/* handle group list and invites dialog panel */}
+        { chatDialogStore.chatDialogGroupInvite && <ChatDialogGroupInvite />}
         </>
       );
 }

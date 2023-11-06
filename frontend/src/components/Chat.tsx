@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { io, Socket } from 'socket.io-client';
 import { User } from "../types";
 import axios from "axios";
+import { BACKEND_URL } from '../data/Global';
 
 interface ChatProps {
     userId: string | null;
@@ -25,7 +26,7 @@ const Chat: React.FC<ChatProps> = ({ userId, socket }) => {
 
     var id = 0;
 
-    const url_info = 'https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/' + userId;
+    const url_info = `${BACKEND_URL}/pong/users/` + userId;
 
     useEffect(() => {
         // Fetch channels from the server and update the channels state

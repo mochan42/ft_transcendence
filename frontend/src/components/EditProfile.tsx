@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Button } from './ui/Button'
 import { User } from '../types';
 import axios from 'axios';
+import { BACKEND_URL } from '../data/Global';
 
 interface EditProfileProps {
     setShowScreen: React.Dispatch<React.SetStateAction< 'default' | 'achievements' | 'friends' | 'stats' | 'userProfile' >>;
@@ -17,7 +18,7 @@ const EditProfile:React.FC<EditProfileProps> = ({ setShowScreen, userId }) => {
 
     const [userInfo, setUserInfo] = useState<User | null>(null);
     const [errors, setErrors] = useState<Partial<FormDataLoc>>({});
-    const url_info = 'https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/' + userId;
+    const url_info = `${BACKEND_URL}/pong/users/` + userId;
     const [formData, setFormData] = useState<FormDataLoc>({
         name: '',
         image: null,
@@ -59,7 +60,7 @@ const EditProfile:React.FC<EditProfileProps> = ({ setShowScreen, userId }) => {
 
     const updateUser = async (updatedUser: FormData) => {
         if (userInfo) {
-            const verifyUserName = await axios.get('https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/exist/' + updatedUser.get('name'));
+            const verifyUserName = await axios.get(`${BACKEND_URL}/pong/users/exist/` + updatedUser.get('name'));
             if (verifyUserName.status === 200) {
                 if (verifyUserName.data) {
                     alert('username already exists');
