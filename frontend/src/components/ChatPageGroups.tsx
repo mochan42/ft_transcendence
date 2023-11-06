@@ -28,21 +28,17 @@ const ChatGroupElement = (group : Group) => {
 
     useEffect(() => {
 
-    });
+    }, [chatStore.chatActiveGroup]);
 
     return (
         <Box 
             onClick={()=>{
                 dispatch(selectConversation({chatRoomId: group.channelId, chatType: enChatType.Group}))
-                dispatch(updateChatActiveGroup(chatStore.chatGroupList.filter((el) => {
+                dispatch(updateChatActiveGroup(chatStore.chatGroupList.filter((el: any) => {
                     if (el && (el.channelId == group.channelId)) {
                         return el;
                     }
                 })[0]));
-                dispatch(updateChatGroupMembers(getMembers(chatStore.chatGroupMembers, group.channelId)));
-                //  ! TODO : update the active group memberlist here using store reducer
-                // use data from backend
-                // this is to be done with the chatActiveGroupMembers in Store
             }}
             sx={{
                 width: "100%",
@@ -89,6 +85,11 @@ const  ChatPageGroups = (chatProp : ChatProps) => {
     const handleOpenDialogGroupInvite = ()=>{
         dispatch(updateChatDialogGroupInvite(true));
     }
+
+    useEffect(() => {
+
+    }, [chatStore.chatActiveGroup, chatStore.chatGroupList, chatStore.chatGroupMembers]);
+
     return (
         <>
         <Stack direction={"row"} sx={{ width: "95vw"}}>

@@ -48,12 +48,15 @@ type THandler = {
 // ];
 const CreateGroupForm = ( handleFormClose: THandler ) => {
     const chatStore = useSelector(selectChatStore);
-    const dispatch = useDispatch()
+    const dispatch = useDispatch();
+    const userId = Cookies.get('userId');
 
     let  MEMBERS : TFormMember[] = [];
-    const memberUserList = chatStore.chatUsers.map((el) => {
-        MEMBERS.push({ id: el.id, name: el.userName })
-    })
+    chatStore.chatUsers.forEach((el) => {
+        if (el.id != userId) {
+            MEMBERS.push({ id: el.id, name: el.userName });
+        }
+    });
 
     const groupSchema = Yup.object().shape(
         {

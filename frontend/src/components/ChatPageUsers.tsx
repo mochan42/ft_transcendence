@@ -14,7 +14,7 @@ import { enChatType } from "../enums";
 import Cookies from 'js-cookie';
 import { fr } from "@faker-js/faker";
 import axios from 'axios';
-import { PRIVATE } from '../APP_CONSTS';
+import { GROUP, PRIVATE } from '../APP_CONSTS';
 
 export const fetchAllDirectMessages = (allMessages: Chat[], userId: any, friend: any): Chat[] => {
     const chats = allMessages.filter((el) => {
@@ -25,6 +25,15 @@ export const fetchAllDirectMessages = (allMessages: Chat[], userId: any, friend:
             if (el.receiver == userId && el.author == friend) {
                 return el;
             }
+        }
+    });
+    return chats;
+}
+
+export const fetchAllGroupMessages = (allMessages: Chat[], groupId: number): Chat[] => {
+    const chats = allMessages.filter((el) => {
+        if (el.type == GROUP && el.receiver == groupId) {
+            return el;
         }
     });
     return chats;

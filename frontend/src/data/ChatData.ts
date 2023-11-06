@@ -86,20 +86,22 @@ const friendToUserType = (user: string | null, friend: Friend, userList: User[])
 } 
 
 const fetchAllGroups = async (): Promise<Group[]> => {
+  let groups: Group[] = [];
   const resp = await axios.get<Group[]>(`${BACKEND_URL}/pong/channels`);
   if (resp.status === 200) {
-    return resp.data;
+    groups = resp.data;
   }
-  return [];
+  return groups;
 }
 const ChatGroupList: Group[] = await fetchAllGroups();
 
 const fetchAllMembers = async (): Promise<JoinGroup[]> => {
+  let members: JoinGroup[] = [];
   const resp = await axios.get<JoinGroup[]>(`${BACKEND_URL}/pong/channels/members`);
   if (resp.status === 200) {
-    return resp.data;
+    members = resp.data;
   }
-  return [];
+  return members;
 }
 
 export const getMembers = (members: JoinGroup[], group: number): JoinGroup[] => {

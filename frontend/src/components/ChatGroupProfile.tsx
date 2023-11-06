@@ -12,7 +12,7 @@ import { ChatGroupMemberProfileComp }  from "./ChatGroupComp";
 import Cookies from 'js-cookie';
 import { enChatMemberRank } from "../enums";
 import ChatGroupActionBtn from "./ChatGroupActionBtn";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ChatGroupFormSetPasswd from "./ChatGroupFormSetPasswd";
 import ChatGroupFormSetTitle from "./ChatGroupFormSetTitle";
 import ChatGroupFormAddUser from "./ChatGroupFormAddUser";
@@ -24,7 +24,7 @@ import { getMembers } from "../data/ChatData";
 const ChatGroupProfile = () => {
 
     const theme = useTheme()
-     const userId = Cookies.get('userId') ? Cookies.get('userId') : ''; // not working
+    const userId = Cookies.get('userId') ? Cookies.get('userId') : ''; // not working
     //const userId = '1' // for testing only member (7) admin (1)
     const dispatch = useDispatch();
     const chatStore = useSelector(selectChatStore);
@@ -36,8 +36,12 @@ const ChatGroupProfile = () => {
     const loggedUser = groupMembers.filter((el: JoinGroup) => el.userId.toString() == userId)
     // console.log(loggedUser, 'id- ', userId, loggedUser[0].rank)
     // console.log("Show userId", userId)
-    let actionBtnState = (loggedUser && loggedUser[0].rank === enChatMemberRank.MEMBER) ? false : true
+    let actionBtnState = (loggedUser.length > 0 && loggedUser[0].rank === enChatMemberRank.MEMBER) ? false : true
     const [ChangePasswdDialogState, setChangePasswdDialogState] = useState<Boolean>(false)
+    
+    useEffect(() => {
+        
+    },[chatStore.chatActiveGroup, chatStore.chatGroupMembers, chatStore.chatGroupList]);
     // const actionBtnState = true
 
 
@@ -103,7 +107,7 @@ const ChatGroupProfile = () => {
                         spacing={0.5}
                     >
                         {
-                            chatStore.chatGroupMembers.map( (member) => {
+                            groupMembers.map( (member) => {
                                 const memberUser = (chatStore.chatUsers.filter(el => parseInt(el.id) === member.userId)[0])
                                 if (memberUser)
                                 {

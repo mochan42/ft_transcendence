@@ -5,14 +5,14 @@ import { Socket } from "socket.io-client";
 import { ChatMessageProps, User, Chat } from "../types";
 import ChatMessage from "./ChatMessage";
 import { friendToUserType, fetchAllMessages  } from "../data/ChatData";
-import { toggleSidebar, updateChatUserMessages, updateSidebarType, updateChatDirectMessages } from "../redux/slices/chatSlice";
+import { toggleSidebar, updateChatUserMessages, updateSidebarType } from "../redux/slices/chatSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { selectChatStore } from "../redux/store";
 import { ChatProps } from "../types";
 import { enChatType } from "../enums";
 import { getSocket } from '../utils/socketService';
 import { PRIVATE, GROUP } from '../APP_CONSTS';
-import { fetchAllDirectMessages } from "./ChatPageUsers";
+import { fetchAllDirectMessages, fetchAllGroupMessages } from "./ChatPageUsers";
 import img42 from '../img/icon_42.png'
 import Cookies from "js-cookie";
 import { BACKEND_URL } from "../data/Global";
@@ -79,9 +79,15 @@ const ChatConversation: React.FC<ChatProps> = ({ userId }) => {
     }
     
     useEffect(() => {
-        const newDirectMessages = fetchAllDirectMessages(chatStore.chatUserMessages, userId, chatStore.chatRoomId);
-        setMessages(formatMessages(chatStore.chatUsers, newDirectMessages, userId));
-    }, [chatStore.chatUserMessages, chatStore.chatRoomId]);
+        if (chatStore.chatType == enChatType.OneOnOne) {
+            const newDirectMessages = fetchAllDirectMessages(chatStore.chatUserMessages, userId, chatStore.chatRoomId);
+            setMessages(formatMessages(chatStore.chatUsers, newDirectMessages, userId));
+        }
+        else if (chatStore.chatRoomId != null) {
+            const newGroupMessages = fetchAllGroupMessages(chatStore.chatUserMessages, +chatStore.chatRoomId);
+            setMessages(formatMessages(chatStore.chatUsers, newGroupMessages, userId));
+        }
+    }, [chatStore.chatUserMessages, chatStore.chatRoomId, chatStore.chatType]);
 
     useEffect(() => {
         scrollToBottom();
