@@ -12,7 +12,7 @@ import ChatGroupProfile from "./ChatGroupProfile";
 import { selectChatDialogStore, selectChatStore } from "../redux/store";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
-import { selectConversation, updateChatActiveGroup, updateChatGroupMembers } from "../redux/slices/chatSlice";
+import { selectConversation, toggleSidebar, updateChatActiveGroup, updateChatGroupMembers } from "../redux/slices/chatSlice";
 import { enChatType } from "../enums";
 import Cookies from 'js-cookie';
 import { updateChatDialogGroupInvite } from "../redux/slices/chatDialogSlice";
@@ -39,6 +39,9 @@ const ChatGroupElement = (group : Group) => {
                         return el;
                     }
                 })[0]));
+                if (chatStore.chatSideBar.open) {
+                    dispatch(toggleSidebar());
+                }
             }}
             sx={{
                 width: "100%",
