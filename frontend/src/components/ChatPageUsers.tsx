@@ -41,7 +41,7 @@ export const fetchAllGroupMessages = (allMessages: Chat[], groupId: number): Cha
 
 const ChatElement = (user: User) => {
     const userId = Cookies.get('userId') ? Cookies.get('userId') : '';
-    console.log("Show userId", userId)
+    // console.log("Show userId", userId)
     const chatStore = useSelector(selectChatStore);
     const dispatch = useDispatch();
 
@@ -113,7 +113,7 @@ const  ChatPageUsers = (chatProp : ChatProps) => {
     // }
     useEffect(() => {
 
-    }, [chatStore.chatUserMessages, chatStore.chatUsers]);
+    }, [chatStore.chatUserMessages, chatStore.chatUsers, chatStore.chatUserFriends]);
     
     return (
     <>

@@ -26,4 +26,11 @@ export class JoinchannelService {
   async deleteAll() {
     return await this.JoinchannelRepo.delete({});
   }
+
+  async deleteJoin(userId: number, channelId: number) {
+    const join = await this.JoinchannelRepo.find({ where: { userId: userId, channelId: channelId } });
+    if (join) {
+      return this.delete(join[0].id);
+    }
+  }
 }

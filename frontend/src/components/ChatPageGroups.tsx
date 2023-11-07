@@ -136,7 +136,7 @@ const  ChatPageGroups = (chatProp : ChatProps) => {
                         spacing={0.5} 
                     >
                         { chatStore.chatGroupList.map((el) => {
-                            if (el)
+                            if (el) 
                                 return (<ChatGroupElement key={el.channelId} {...el} />) })}
                     </Stack>
                 </Stack>

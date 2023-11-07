@@ -1,6 +1,7 @@
-import { Controller, Delete, Get, Param } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { ChannelsService } from '../channels.service';
 import { JoinchannelService } from 'src/joinchannel/joinchannel/joinchannel.service';
+import { CreateChannelDto } from '../dto/create-channel.dto';
 
 @Controller()
 export class ChannelsController {
@@ -12,6 +13,11 @@ export class ChannelsController {
   @Get('pong/channels')
   async findAll() {
     return this.channelsService.findAll();
+  }
+
+  @Post('pong/channels')
+  async createGroup(@Body()group: CreateChannelDto) {
+    return this.channelsService.create(group);
   }
 
   @Delete('pong/channels/:id')

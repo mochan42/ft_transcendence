@@ -1,4 +1,13 @@
-https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev
+### Add a channel
+POST https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/channels
+Content-Type: application/json
+
+{
+	"password": "",
+    "title": "TESTING",
+    "privacy": "public",
+    "ownerId": 36
+}
 
 ### channels 
 GET https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/channels
@@ -196,21 +205,21 @@ POST  https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/friends
 Content-Type: application/json
 
 {
-	"receiver": 9,
-	"sender": 12,
-	"relation": "PENDING",
+	"receiver": 36,
+	"sender": 34,
+	"relation": "ACCEPTED",
 	"createdAt": "27/07/2023"
 }
 
 ### update friend relation
-PATCH   https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/friends/3
+PATCH   https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/friends/9
 Content-Type: application/json
 
 {
     "sender": 34,
-    "receiver": 2,
+    "receiver": 36,
     "relation": "ACCEPTED",
-    "createdAt": "2023-11-02T11:45:51.329Z"
+    "createdAt": "2023-11-05T08:16:15.333Z"
 }
 
 ### delete friendship

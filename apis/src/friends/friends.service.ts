@@ -40,4 +40,5 @@ export class FriendsService {
   async remove(id: number) {
     return await this.FriendRepo.delete(id);
   }
+
 }

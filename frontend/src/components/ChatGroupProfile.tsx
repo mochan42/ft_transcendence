@@ -2,15 +2,15 @@ import { Avatar, Box, Button, Divider, IconButton, Stack, Typography } from "@mu
 import { useTheme } from "@mui/material/styles";
 import { Prohibit, Gear, X, SignOut } from "phosphor-react";
 import { useDispatch, useSelector } from "react-redux";
-import { toggleSidebar, updateChatActiveGroup } from "../redux/slices/chatSlice";
+import { selectConversation, toggleSidebar, updateChatActiveGroup } from "../redux/slices/chatSlice";
 import { selectChatStore } from "../redux/store";
 import { selectChatDialogStore } from "../redux/store";
 import { faker } from "@faker-js/faker"
 import img42 from '../img/icon_42.png'
 import { JoinGroup, User } from "../types";
-import { ChatGroupMemberProfileComp }  from "./ChatGroupComp";
+import { ChatGroupMemberProfileComp, IsUserInGroup }  from "./ChatGroupComp";
 import Cookies from 'js-cookie';
-import { enChatMemberRank } from "../enums";
+import { enChatMemberRank, enChatType } from "../enums";
 import ChatGroupActionBtn from "./ChatGroupActionBtn";
 import { useEffect, useState } from "react";
 import ChatGroupFormSetPasswd from "./ChatGroupFormSetPasswd";
@@ -18,7 +18,8 @@ import ChatGroupFormSetTitle from "./ChatGroupFormSetTitle";
 import ChatGroupFormAddUser from "./ChatGroupFormAddUser";
 import ChatDialogShwProfile from "./ChatDialogShwProfile";
 import ChatDialogShwPasswd from "./ChatDialogShwPasswd";
-import { getMembers } from "../data/ChatData";
+import { ChatGroupMemberList, getMembers } from "../data/ChatData";
+import { getSocket } from "../utils/socketService";
 
 /* component to show contact profile */
 const ChatGroupProfile = () => {
@@ -33,15 +34,23 @@ const ChatGroupProfile = () => {
     const activeGroupPrivacy = (chatStore.chatActiveGroup ? chatStore.chatActiveGroup.privacy: "")
     const groupMembers = chatStore.chatActiveGroup ? getMembers(chatStore.chatGroupMembers, chatStore.chatActiveGroup.channelId): [];
     const groupMemberNo = (chatStore.chatActiveGroup ? groupMembers.length: 0)
-    const loggedUser = groupMembers.filter((el: JoinGroup) => el.userId.toString() == userId)
+    const loggedUser = groupMembers.filter((el: JoinGroup) => el.userId.toString() == userId);
+    const socket = getSocket(userId);
+
     // console.log(loggedUser, 'id- ', userId, loggedUser[0].rank)
     // console.log("Show userId", userId)
-    let actionBtnState = (loggedUser.length > 0 && loggedUser[0].rank === enChatMemberRank.MEMBER) ? false : true
-    const [ChangePasswdDialogState, setChangePasswdDialogState] = useState<Boolean>(false)
+    let actionBtnState = IsUserInGroup(userId, chatStore.chatActiveGroup) ? ((loggedUser.length > 0 && loggedUser[0].rank === enChatMemberRank.MEMBER) ? false : true): false
+    const [ChangePasswdDialogState, setChangePasswdDialogState] = useState<Boolean>(false);
+
+    const exitGroup = () => {
+        socket.emit('exitGroup', chatStore.chatActiveGroup?.channelId);
+        dispatch(selectConversation({chatRoomId: null, chatType: enChatType.Group}))
+        dispatch(toggleSidebar());
+    }
     
     useEffect(() => {
-        
-    },[chatStore.chatActiveGroup, chatStore.chatGroupMembers, chatStore.chatGroupList]);
+
+    }, [chatStore.chatActiveGroup, chatStore.chatGroupMembers, chatStore.chatGroupList]);
     // const actionBtnState = true
 
 
@@ -93,7 +102,7 @@ const ChatGroupProfile = () => {
                     {/* divider  */}
                     <Divider />
                     <Stack alignItems={"center"} direction={"row"} spacing={2}>
-                        <Button startIcon={ <SignOut/>} fullWidth variant="outlined"> Exit </Button>
+                        <Button startIcon={ <SignOut/>} fullWidth variant="outlined" disabled = { !IsUserInGroup(userId, chatStore.chatActiveGroup)}  onClick={() => {exitGroup()}}> Exit </Button>
                         {/* render action button if logged user is owner or admin */}
                         { actionBtnState && ChatGroupActionBtn(activeGroupPrivacy)
                             // <Button startIcon={ <Gear size={25} />} fullWidth variant="outlined" > Actions </Button>

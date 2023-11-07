@@ -2,7 +2,7 @@ import { Avatar, Box, Button, Divider, IconButton, Stack, Typography } from "@mu
 import { useTheme } from "@mui/material/styles";
 import { Prohibit, GameController, X } from "phosphor-react";
 import { useDispatch, useSelector } from "react-redux";
-import { toggleSidebar } from "../redux/slices/chatSlice";
+import { selectConversation, toggleSidebar } from "../redux/slices/chatSlice";
 import { faker } from "@faker-js/faker"
 import { selectChatStore } from "../redux/store";
 import { fetchAllStats, friendToUserType } from "../data/ChatData";
@@ -11,6 +11,7 @@ import Game from "./pages/Game";
 import { useEffect, useState } from "react";
 import { User, UserStats } from "../types";
 import { getSocket } from "../utils/socketService";
+import { enChatType } from "../enums";
 
 /* component to show contact profile */
 
@@ -32,6 +33,8 @@ const ChatUserProfile = () => {
             return ;
         }
         socket.emit('blockFriend', chatStore.chatActiveUser.id);
+        dispatch(selectConversation({chatRoomId: null, chatType: enChatType.OneOnOne}))
+        dispatch(toggleSidebar());
     }
 
     useEffect(() => {

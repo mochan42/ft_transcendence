@@ -175,6 +175,19 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
     });
   }
 
+  @SubscribeMessage('exitGroup')
+  async handleExitGroup(
+    @ConnectedSocket() socket: Socket,
+    @MessageBody() group: string
+  ) {
+    const user = await this.chatsService.getUserFromSocket(socket);
+    if (user) {
+      const join = await this.joinchannelService.deleteJoin(user.id, +group);
+      const allMembers = await this.joinchannelService.findAll();
+      socket.emit('exitGroupSuccess', { new: join, all: allMembers });
+    }
+  }
+
   /***********************GAME*********************** */
 
   @SubscribeMessage('acceptMatch')
