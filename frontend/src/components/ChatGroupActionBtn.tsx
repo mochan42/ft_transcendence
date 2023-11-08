@@ -65,10 +65,12 @@ export default function ChatGroupActionBtn(privacy: string) {
     if (chatStore.chatActiveGroup != null) {
       const newGroup = {...chatStore.chatActiveGroup, privacy: enChatPrivacy.PUBLIC, password: ''};
       socket.emit('setGroupPassword', newGroup);
+      dispatch(updateChatActiveGroup(newGroup));
     }
     handleClose();
   }
 
+  
   return (
     <div>
       <Button
@@ -95,10 +97,10 @@ export default function ChatGroupActionBtn(privacy: string) {
         <MenuItem onClick={OnAddUser}>Add User</MenuItem>
         <MenuItem onClick={OnSetTitle}>Rename Group Title</MenuItem>
         <MenuItem onClick={deleteGroup}>Delete Group</MenuItem>
-        { privacy == enChatPrivacy.PROTECTED && <MenuItem onClick={OnShwPasswd}>Show Password</MenuItem>}
-        { privacy != enChatPrivacy.PROTECTED && <MenuItem onClick={OnChangePasswd}>Set Password</MenuItem>}
-        { privacy == enChatPrivacy.PROTECTED && <MenuItem onClick={OnUnsetPassword}>Unset Password</MenuItem>}
-        { privacy == enChatPrivacy.PROTECTED && <MenuItem onClick={OnChangePasswd}>Change Password</MenuItem>}
+        { chatStore.chatActiveGroup && chatStore.chatActiveGroup.privacy == enChatPrivacy.PROTECTED && <MenuItem onClick={OnShwPasswd}>Show Password</MenuItem>}
+        { chatStore.chatActiveGroup && chatStore.chatActiveGroup.privacy != enChatPrivacy.PROTECTED && <MenuItem onClick={OnChangePasswd}>Set Password</MenuItem>}
+        { chatStore.chatActiveGroup && chatStore.chatActiveGroup.privacy == enChatPrivacy.PROTECTED && <MenuItem onClick={OnUnsetPassword}>Unset Password</MenuItem>}
+        { chatStore.chatActiveGroup && chatStore.chatActiveGroup.privacy == enChatPrivacy.PROTECTED && <MenuItem onClick={OnChangePasswd}>Change Password</MenuItem>}
       </Menu>
     </div>
   );

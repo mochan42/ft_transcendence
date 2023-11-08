@@ -86,6 +86,7 @@ const CreateGroupFormSetPasswd = () => {
                 if (newGroupData.password == "")
                     newGroupData.privacy = enChatPrivacy.PUBLIC
             }
+            dispatch(updateChatActiveGroup(newGroupData));
             socket.emit('setGroupPassword', newGroupData);
             handleClose();
         }

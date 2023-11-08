@@ -17,6 +17,7 @@ import { JoinchannelService } from './joinchannel/joinchannel/joinchannel.servic
 import { UsersService } from './users/users.service';
 import {
   ACCEPTED,
+  CHANNEL_TYPE,
   LOG_STATE,
   MEMBER_RANK,
   MEMBER_RIGHTS,
