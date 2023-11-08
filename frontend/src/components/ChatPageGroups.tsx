@@ -7,39 +7,73 @@ import img42 from "../img/icon_42.png"
 import ChatPageGroupsCreate from "./ChatPageGroupsCreate";
 
 import { ChatProps, Group, User } from "../types";
-import ChatConversation from "./ChatConversation";
+import ChatConversation, { getUserById } from "./ChatConversation";
 import ChatGroupProfile from "./ChatGroupProfile";
 import { selectChatDialogStore, selectChatStore } from "../redux/store";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { selectConversation, updateChatActiveGroup, updateChatGroupMembers } from "../redux/slices/chatSlice";
-import { enChatType } from "../enums";
+import { enChatPrivacy, enChatType } from "../enums";
 import Cookies from 'js-cookie';
-import { updateChatDialogGroupInvite } from "../redux/slices/chatDialogSlice";
+import { updateChatDialogGroupInvite, updateChatDialogInpPasswd } from "../redux/slices/chatDialogSlice";
 import ChatFriends from "./ChatFriends";
 import ChatDialogGroupInvite from "./ChatDialogGroupInvite";
 import { getMembers } from "../data/ChatData";
+import ChatGroupFormInputPasswd from "./ChatGroupFormInputPasswd";
 
 
 const ChatGroupElement = (group : Group) => {
     const dispatch = useDispatch();
     const userId = Cookies.get('userId') ? Cookies.get('userId') : '';
     const chatStore = useSelector(selectChatStore);
+    const chatDialogStore = useSelector(selectChatDialogStore)
+    const groupOwnerUserData = getUserById(chatStore.chatUsers, group.ownerId)
+
+    const handleOnClick = () => {
+        if (group.privacy == enChatPrivacy.PROTECTED)
+        {
+            dispatch(updateChatDialogInpPasswd(true))
+        }
+        else if (group.privacy == enChatPrivacy.PRIVATE)
+        {
+            alert("This is a private group. Contact group owner (" + 
+                 groupOwnerUserData?.userName + 
+                 ") for access")
+        }
+        else
+        {
+            dispatch(selectConversation({chatRoomId: group.channelId, chatType: enChatType.Group}))
+            dispatch(updateChatActiveGroup(chatStore.chatGroupList.filter((el: any) => {
+                if (el && (el.channelId == group.channelId)) {
+                    return el;
+                }
+            })[0]));
+        }
+
+    }
 
     useEffect(() => {
+        if (chatDialogStore.chatDialogInpPasswd == false && 
+            chatStore.chatGroupUsrPassInp == group.password)
+        {
+        dispatch(selectConversation({chatRoomId: group.channelId, chatType: enChatType.Group}))
+        dispatch(updateChatActiveGroup(chatStore.chatGroupList.filter((el: any) => {
+            if (el && (el.channelId == group.channelId)) {
+                return el;
+            }
+        })[0]));
 
-    }, [chatStore.chatActiveGroup]);
+        }
+
+
+    }, [chatStore.chatActiveGroup, 
+        chatDialogStore.chatDialogInpPasswd,
+        chatStore.chatGroupUsrPassInp]);
+
 
     return (
         <Box 
-            onClick={()=>{
-                dispatch(selectConversation({chatRoomId: group.channelId, chatType: enChatType.Group}))
-                dispatch(updateChatActiveGroup(chatStore.chatGroupList.filter((el: any) => {
-                    if (el && (el.channelId == group.channelId)) {
-                        return el;
-                    }
-                })[0]));
-            }}
+            onClick={handleOnClick}
             sx={{
                 width: "100%",
                 backgroundColor: "#ddd",
@@ -162,6 +196,8 @@ const  ChatPageGroups = (chatProp : ChatProps) => {
         }
         {/* handle group list and invites dialog panel */}
         { chatDialogStore.chatDialogGroupInvite && <ChatDialogGroupInvite />}
+        {/* control user access */}
+        { chatDialogStore.chatDialogInpPasswd && <ChatGroupFormInputPasswd />}
         </>
       );
 }

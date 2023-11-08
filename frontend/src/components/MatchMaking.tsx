@@ -72,7 +72,7 @@ const MatchMaking:React.FC<MatchMakingProps> =({ setGameObj, setMatchFound, sock
 								socket.emit('requestMatch', game);
 							}
 						} else if (searchingForMatch === true) {
-							setState?('select') : navigate("/game");
+							setState? setState('select') : navigate("/game");
 						}
 					}}
 					className='border-8 border-slate-200 text-slate-900 h-12 rounded-md absolute top-3/4 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 bg-slate-200'>

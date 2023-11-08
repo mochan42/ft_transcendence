@@ -13,7 +13,6 @@ import img42 from "../img/icon_42.png"
 import { getUserById } from './ChatConversation';
 
 
-
 const StyledChatBox = styled(Box)(({ theme }) => ({
     "&:hover": {
         cursor: "pointer",
@@ -31,7 +30,7 @@ const ChatGroupMemberProfileComp = (user: IUserData) => {
     const chatDialogStore = useSelector(selectChatDialogStore);
     const dispatch = useDispatch();
     const userId = Cookies.get('userId') ? Cookies.get('userId') : '';
-    // const userId = '0' // for testing only
+    // const userId = '0' // for development and testing only
     const loggedUser = chatStore.chatGroupMembers.filter(el => (el.userId.toString()) == userId)[0]
     // console.log(loggedUser, 'id- ', userId)
 

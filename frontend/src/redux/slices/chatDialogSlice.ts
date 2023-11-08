@@ -9,6 +9,7 @@ interface IChatDialogState {
   chatDialogProfileUserId : string | number | null
   chatDialogShwPasswd: boolean,
   chatDialogGroupInvite: boolean,
+  chatDialogInpPasswd: boolean,
 }
 const initialState: IChatDialogState = {
   chatDialogSetPasswd: false,
@@ -18,6 +19,7 @@ const initialState: IChatDialogState = {
   chatDialogProfileUserId: null,
   chatDialogShwPasswd: false,
   chatDialogGroupInvite: false,
+  chatDialogInpPasswd: false,
 };
 
 
@@ -46,6 +48,9 @@ const chatDialogSlice = createSlice({
     updateChatDialogGroupInvite: (state, action: PayloadAction<boolean>) => {
       state.chatDialogGroupInvite = action.payload;
     },
+    updateChatDialogInpPasswd: (state, action: PayloadAction<boolean>) => {
+      state.chatDialogInpPasswd = action.payload;
+    },
   },
 });
 
@@ -56,7 +61,8 @@ export const {
   updateChatDialogShwProfile,
   updateChatDialogProfileUserId,
   updateChatDialogShwPasswd,
-  updateChatDialogGroupInvite
+  updateChatDialogGroupInvite,
+  updateChatDialogInpPasswd
 } = chatDialogSlice.actions;
 
 export default chatDialogSlice;

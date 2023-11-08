@@ -75,11 +75,6 @@ npm cache clean --force                 : clear the cache
 
 ----
 + Add dialog page to view profile from user list (friend dialog)
-+ Create dialog for group just like one_on_one chat.
-  - tab 1 : list all groups in one tab - show their type (public, protected, private)
-  - tab 2 : show all invites received and sent
-  - listing all invite in dialog with join or cancel button.
-  - Note: ChatGroupPage will only list groups which user is a member of.
 
 
 
@@ -106,7 +101,13 @@ video 27 - handle friend request with socket.io 27:00
 
 [ Activities ]
 --------------
-+ handle handshake with dialog
+--
++ Create dialog for group just like one_on_one chat.
+  - tab 1 : list all groups in one tab - show their type (public, protected, private)
+  - tab 2 : show all invites received and sent
+  - listing all invite in dialog with join or cancel button.
+  - Note: ChatGroupPage will only list groups which user is a member of.
++ handle handshake with dialog and dialog tabs
 + Add handshake iconButton to handle groups and invites
 + deactivated profile view on toggle between oneOnOne and group chat
 + group profile btn - action - Show password

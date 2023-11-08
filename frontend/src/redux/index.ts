@@ -29,7 +29,8 @@ export interface IChatState {
   chatGroupDialogState: boolean;
   chatGroupCreateFormPasswdState: boolean;
   chatGameRequests: GameType[];
-  chatGameRequest: GameType | null
+  chatGameRequest: GameType | null,
+  chatGroupUsrPassInp: string,
 }
 
 

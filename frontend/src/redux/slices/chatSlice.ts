@@ -40,6 +40,7 @@ const initialState: IChatState = {
   chatGroupCreateFormPasswdState: true,
   chatGameRequests: ChatGameRequestList,
   chatGameRequest: null,
+  chatGroupUsrPassInp: "",
 };
 
 //export default (state: ISidebarData, action: TAction) : ISidebarData => {}
@@ -110,6 +111,9 @@ const chatSlice = createSlice({
     updateChatGameRequest: (state, action: PayloadAction<GameType | null>) => {
       state.chatGameRequest = action.payload;
     },
+    updateChatGroupUsrPassInp: (state, action: PayloadAction<string>) => {
+      state.chatGroupUsrPassInp = action.payload;
+    },
   },
 });
 
@@ -129,7 +133,8 @@ export const {
   updateChatActiveGroup,
   updateChatGroupCreateFormPasswdState,
   updateChatGameRequests,
-  updateChatGameRequest
+  updateChatGameRequest,
+  updateChatGroupUsrPassInp
 } = chatSlice.actions;
 export default chatSlice;
 
