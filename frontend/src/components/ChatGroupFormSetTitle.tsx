@@ -81,32 +81,30 @@ const CreateGroupFormSetTitle = () => {
             let newGroupData = chatStore.chatActiveGroup;
 
             // set new title to new group data
-            if (newGroupData)
-                newGroupData.title = getValues("newTitle")
+            if (newGroupData) {
+                newGroupData = {...newGroupData, title: getValues("newTitle") }
+                dispatch(updateChatActiveGroup(newGroupData));
+                socket.emit('setChannelTitle', newGroupData);
+            }
+            // // update active group data in store
 
-            console.log(newGroupData?.title)
-            // update active group data in store
-            dispatch(updateChatActiveGroup(newGroupData));
+            // // remove old group from group list - pop
+            // const groupListPop = chatStore.chatGroupList.filter( (el) => { 
+            //     if ((el) && (newGroupData))
+            //     {
+            //         if (el.channelId != newGroupData?.channelId )
+            //             return el
+            //     }
+            // })
 
-            // remove old group from group list - pop
-            const groupListPop = chatStore.chatGroupList.filter( (el) => { 
-                if ((el) && (newGroupData))
-                {
-                    if (el.channelId != newGroupData?.channelId )
-                        return el
-                }
-            })
+            // // add new group to new group list - push
+            // const groupListPush = [...groupListPop, newGroupData]
 
-            // add new group to new group list - push
-            const groupListPush = [...groupListPop, newGroupData]
+            // // update chatGroupList in store with new group list
+            // dispatch(updateChatGroups(groupListPush));
 
-            // update chatGroupList in store with new group list
-            dispatch(updateChatGroups(groupListPush));
-
-            // API CALL - post updated data to backend
-            // NOTE !!!
-            // new emit 'setChannelTitle ' to be updated in backend
-            socket.emit('setChannelTitle', newGroupData);
+            // console.log(newGroupData);
+            // console.log("-------------\n");
         }
         catch (error)
         {

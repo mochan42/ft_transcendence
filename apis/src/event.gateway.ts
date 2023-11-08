@@ -34,6 +34,7 @@ import { connected } from 'process';
 import { DatabaseModule } from './database/database.module';
 import { CreateJoinchannelDto } from './joinchannel/dto/create-joinchannel-dto';
 import { join } from 'path';
+import { Channel } from './channels/entities/channel.entity';
 
 @WebSocketGateway({
   cors: {
@@ -218,6 +219,16 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
       console.log(allMembers);
       this.server.emit('newMembers', {new: joins, all: allMembers});
     }
+  }
+
+  @SubscribeMessage('setChannelTitle')
+  async handleSetChannelTitle(
+    @ConnectedSocket() socket: Socket,
+    @MessageBody() data: Channel
+  ) {
+    const updatedChannel = await this.channelsService.updateByEntity(data);
+    const allChannels = await this.channelsService.findAll();
+    this.server.emit('channelTitleChanged', { new: updatedChannel, all: allChannels });
   }
   /***********************GAME*********************** */
 
