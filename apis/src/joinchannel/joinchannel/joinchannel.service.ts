@@ -28,7 +28,9 @@ export class JoinchannelService {
   }
 
   async deleteJoin(userId: number, channelId: number) {
-    const join = await this.JoinchannelRepo.find({ where: { userId: userId, channelId: channelId } });
+    const join = await this.JoinchannelRepo.find({
+      where: { userId: userId, channelId: channelId },
+    });
     if (join) {
       return this.delete(join[0].id);
     }

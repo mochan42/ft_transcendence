@@ -16,7 +16,7 @@ export class ChannelsController {
   }
 
   @Post('pong/channels')
-  async createGroup(@Body()group: CreateChannelDto) {
+  async createGroup(@Body() group: CreateChannelDto) {
     return this.channelsService.create(group);
   }
 

@@ -80,37 +80,14 @@ const CreateGroupFormSetPasswd = () => {
             // set new password to new group data
             if (newGroupData)
             {
-                newGroupData.password = getValues("passwd")
+                newGroupData = { ...newGroupData, password: getValues("passwd") }
                 if (newGroupData.privacy == enChatPrivacy.PUBLIC)
                     newGroupData.privacy = enChatPrivacy.PROTECTED
                 if (newGroupData.password == "")
                     newGroupData.privacy = enChatPrivacy.PUBLIC
             }
-
-            
-            // update active group data in store
-            dispatch(updateChatActiveGroup(newGroupData));
-
-            // remove old group from group list - pop
-            const groupListPop = chatStore.chatGroupList.filter( (el) => { 
-                if ((el) && (newGroupData))
-                {
-                    if (el.channelId != newGroupData?.channelId )
-                        return el
-                }
-            })
-
-            // add new group to new group list - push
-            const groupListPush = [...groupListPop, newGroupData]
-
-            // update chatGroupList in store with new group list
-            dispatch(updateChatGroups(groupListPush));
-
-            // API CALL - post updated data to backend
-            // NOTE !!!
-            // new emit 'setPassword' to be updated in backend
-            socket.emit('setPassword', newGroupData);
-            //handleClose();
+            socket.emit('setGroupPassword', newGroupData);
+            handleClose();
         }
         catch (error)
         {

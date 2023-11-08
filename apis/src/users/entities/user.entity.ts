@@ -35,7 +35,7 @@ export class User {
   @Column()
   xp: number;
 
-  @Column({nullable: true})
+  @Column({ nullable: true })
   currentState: string;
 
   @Column()
