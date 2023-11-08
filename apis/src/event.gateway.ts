@@ -30,6 +30,10 @@ import { Friend } from './friends/entities/friend.entity';
 import { MessageDto } from './chats/dto/message.dto';
 import { Game } from './games/entities/game.entity';
 import { promises } from 'dns';
+import { connected } from 'process';
+import { DatabaseModule } from './database/database.module';
+import { CreateJoinchannelDto } from './joinchannel/dto/create-joinchannel-dto';
+import { join } from 'path';
 
 @WebSocketGateway({
   cors: {
@@ -190,6 +194,31 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
   }
 
+  @SubscribeMessage('addUsersToGroup')
+  async handleAddUsersToGroup(
+    @ConnectedSocket() socket : Socket,
+    @MessageBody() data: any
+  ) {
+    if (data.group != null && data.users.length != 0) {
+      console.log("-------DATA--------\n")
+      console.log(data.users);
+      console.log("-------DATA--------\n")
+      const joins = data.users.members.map(async (el) => {
+        const newMember: CreateJoinchannelDto= {
+          channelId: +data.group,
+          rank: MEMBER_RANK.MEMBER,
+          rights: MEMBER_RIGHTS.PRIVILEDGED,
+          userId: el.id,
+          status: MEMBER_STATUS.PENDING
+        }
+        return await this.joinchannelService.create(newMember);
+      });
+      await Promise.all(joins);
+      const allMembers = await this.joinchannelService.findAll();
+      console.log(allMembers);
+      this.server.emit('newMembers', {new: joins, all: allMembers});
+    }
+  }
   /***********************GAME*********************** */
 
   @SubscribeMessage('acceptMatch')

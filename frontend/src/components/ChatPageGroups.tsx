@@ -28,7 +28,7 @@ const ChatGroupElement = (group : Group) => {
 
     useEffect(() => {
 
-    }, [chatStore.chatActiveGroup]);
+    }, [chatStore.chatActiveGroup, chatStore.chatGroupMembers]);
 
     return (
         <Box 

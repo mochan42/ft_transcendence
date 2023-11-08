@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useState } from 'react';
 import { FormProvider, useForm, SubmitHandler, UseFormHandleSubmit } from 'react-hook-form';
 import { Dialog, Slide, DialogTitle, DialogContent, RadioGroup, FormLabel } from '@mui/material';
@@ -14,8 +14,8 @@ import Cookies from 'js-cookie';
 import { useDispatch, useSelector } from "react-redux";
 import { selectChatDialogStore, selectChatStore } from "../redux/store";
 import { getSocket } from '../utils/socketService';
-import { enChatPrivacy } from '../enums';
-import { updateChatActiveGroup, updateChatGroupCreateFormPasswdState, updateChatGroups } from '../redux/slices/chatSlice';
+import { enChatPrivacy, enChatType } from '../enums';
+import { selectConversation, toggleSidebar, updateChatActiveGroup, updateChatGroupCreateFormPasswdState, updateChatGroupMembers, updateChatGroups } from '../redux/slices/chatSlice';
 import { TFormMember, User } from '../types';
 import { getUserById } from './ChatConversation';
 import { updateChatDialogAddUser } from '../redux/slices/chatDialogSlice';
@@ -40,6 +40,8 @@ const CreateGroupFormAddUser = () => {
     const handleClose = () => { 
         dispatch(updateChatDialogAddUser(false))
     } 
+    const userId = Cookies.get('userId')
+    const socket = getSocket(userId); 
 
     // fetch user data of all group members
     let memberUsers: User[] = [];
@@ -85,33 +87,25 @@ const CreateGroupFormAddUser = () => {
         formState: { errors, isSubmitting, isSubmitSuccessful, isValid },
     } = methods;
 
-    const socket = getSocket(Cookies.get('userId'));
-
-
     //const onSubmit:SubmitHandler<TFormInputs> = async (data: TFormInputs) => {
     // would be easier if data has the same names with channels colums in apis side
     const onSubmit = async (data: any) => {
         try{
-
-            // send data to backend for update
-            // API CALL - post updated data to backend
-            // NOTE !!!
-            const newMembers = data.members.map((elt: {id: any, name: any }) => elt.id);
-            const formatedData = {
-                ...data,
-                members: newMembers
-            };
-            // new emit 'setAddUser' to be created in backend
-            //socket.emit('addUser', groupListPush);
-            
-            // update group members in store with new member of  type JoinGroup
+            socket.emit('addUsersToGroup', { group: chatStore.chatActiveGroup?.channelId, users: data });
+            // socket.on('newMembers', (data: any) => {
+            //     dispatch(updateChatGroupMembers(data.all));
+			// });
         }
         catch (error)
         {
             console.log("EEROR!", error);
         }
-        handleClose()
+        handleClose();
     }
+
+    useEffect(() => {
+
+    });
 
     return (
         <FormProvider {...methods} > 

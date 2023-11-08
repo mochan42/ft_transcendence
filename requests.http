@@ -18,7 +18,7 @@ DELETE  https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/channels
 GET https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/channels/members
 
 ### Delete a member
-DELETE  https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/channels/members/42
+DELETE  https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/channels/members/65
 
 ### Delete all members
 DELETE  https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/chanel-all-members
