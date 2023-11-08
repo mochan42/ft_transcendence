@@ -10,7 +10,7 @@ import { selectChatStore } from "../redux/store";
 import ChatUserProfile from "./ChatUserProfile";
 import { useDispatch } from "react-redux";
 import { selectConversation, updateChatActiveUser, updateStateUserFriendDialog} from "../redux/slices/chatSlice";
-import { enChatType } from "../enums";
+import { LOG_STATE, enChatType } from "../enums";
 import Cookies from 'js-cookie';
 import { fr } from "@faker-js/faker";
 import axios from 'axios';
@@ -41,7 +41,7 @@ export const fetchAllGroupMessages = (allMessages: Chat[], groupId: number): Cha
 
 const ChatElement = (user: User) => {
     const userId = Cookies.get('userId') ? Cookies.get('userId') : '';
-    console.log("Show userId", userId)
+    // console.log("Show userId", userId)
     const chatStore = useSelector(selectChatStore);
     const dispatch = useDispatch();
 
@@ -75,7 +75,7 @@ const ChatElement = (user: User) => {
                 justifyContent={"space-between"}
             >
                 <Stack direction="row" spacing={2}>
-                    {user.isLogged ? 
+                    {user.currentState != LOG_STATE.OFFLINE ? 
                     <Badge 
                         color="success" 
                         variant="dot" 
@@ -113,7 +113,7 @@ const  ChatPageUsers = (chatProp : ChatProps) => {
     // }
     useEffect(() => {
 
-    }, [chatStore.chatUserMessages, chatStore.chatUsers]);
+    }, [chatStore.chatUserMessages, chatStore.chatUsers, chatStore.chatUserFriends]);
     
     return (
     <>

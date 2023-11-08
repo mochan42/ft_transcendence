@@ -12,7 +12,7 @@ type User = {
   secret2Fa?: string;
   avatar?: string;
   xp: number;
-  isLogged: boolean;
+  currentState: 'ONLINE' | 'OFFLINE' | 'IN GAME';
   lastSeen?: string;
 };
 

@@ -12,7 +12,7 @@ import ChatGroupProfile from "./ChatGroupProfile";
 import { selectChatDialogStore, selectChatStore } from "../redux/store";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
-import { selectConversation, updateChatActiveGroup, updateChatGroupMembers } from "../redux/slices/chatSlice";
+import { selectConversation, toggleSidebar, updateChatActiveGroup, updateChatGroupMembers } from "../redux/slices/chatSlice";
 import { enChatPrivacy, enChatType } from "../enums";
 import Cookies from 'js-cookie';
 import { updateChatDialogGroupInvite, updateChatDialogInpPasswd } from "../redux/slices/chatDialogSlice";
@@ -170,7 +170,7 @@ const  ChatPageGroups = (chatProp : ChatProps) => {
                         spacing={0.5} 
                     >
                         { chatStore.chatGroupList.map((el) => {
-                            if (el)
+                            if (el) 
                                 return (<ChatGroupElement key={el.channelId} {...el} />) })}
                     </Stack>
                 </Stack>

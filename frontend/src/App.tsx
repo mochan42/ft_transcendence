@@ -62,6 +62,24 @@ const App: React.FC = () => {
 	//----------------------------CHAT---------------------------
 	useEffect(() => {
 		if (socket != null) {
+			socket.on('deleteGroupSucces', (data: any) => {
+				dispatch(updateChatGroups(data.all));
+			});
+			socket.on('groupPasswordChanged', (data: any) => {
+				dispatch(updateChatGroups(data.all));
+			});
+			socket.on('channelTitleChanged', (data: any) => {
+				dispatch(updateChatGroups(data.all));
+			});
+			socket.on('newMembers', (data: any) => {
+				dispatch(updateChatGroupMembers(data.all))
+			});
+			socket.on('exitGroupSuccess', (data: any) => {
+				dispatch(updateChatGroupMembers(data.all));
+			});
+			socket.on('BlockedFriendSucces', (data: any) => {
+				dispatch(updateChatUserFriends(data.all));
+			});
 			socket.on('newChannel', (data: any) => {
 				dispatch(updateChatGroups(data.groups));
 				dispatch(updateChatGroupMembers(data.members));

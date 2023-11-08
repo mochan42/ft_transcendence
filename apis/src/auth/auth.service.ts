@@ -6,6 +6,7 @@ import { Secret2faDTO } from '../users/dto/secret-2fa.dto';
 import { totp, authenticator } from 'otplib';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { StatService } from 'src/stat/stat.service';
+import { LOG_STATE } from 'src/APIS_CONSTS';
 
 @Injectable()
 export class AuthService {
@@ -34,7 +35,7 @@ export class AuthService {
     if (matchedUser) {
       signedUser = await this.usersService.updateLoginState(
         matchedUser.id,
-        true,
+        LOG_STATE.ONLINE,
       );
       logTimes = false;
     } else {
@@ -64,7 +65,7 @@ export class AuthService {
       secret2Fa: '',
       avatar: user42.image.link,
       xp: 0,
-      isLogged: true,
+      currentState: LOG_STATE.ONLINE,
       lastSeen: new Date().toISOString(),
     };
     return pongUser;

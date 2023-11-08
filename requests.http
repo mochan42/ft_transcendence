@@ -1,15 +1,24 @@
-https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev
+### Add a channel
+POST https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/channels
+Content-Type: application/json
+
+{
+	"password": "",
+    "title": "TESTING",
+    "privacy": "public",
+    "ownerId": 36
+}
 
 ### channels 
 GET https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/channels
-### ellete channels 
-DELETE  https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/channels/10
+### Delete channels 
+DELETE  https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/channels/16
 
 ### ALL members
 GET https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/channels/members
 
 ### Delete a member
-DELETE  https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/channels/members/42
+DELETE  https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/channels/members/65
 
 ### Delete all members
 DELETE  https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/chanel-all-members
@@ -35,12 +44,12 @@ Content-Type: application/json
 	"secret2Fa" : "",
 	"avatar" : "https://www.svgrepo.com/show/303599/spider-man-4-logo.svg",
 	"xp": 123456,
-	"isLogged": true,
+	"currentState": "ONLINE",
 	"lastSeen": "Hello"
 }
 
 ###  Edit user info
-PATCH  https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/2
+PATCH  https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/39
 Content-Type: application/json
 
 {
@@ -54,7 +63,7 @@ Content-Type: application/json
   "secret2Fa": "H4DHQUYSIY6XOJTP",
   "avatar": "https://cdn.intra.42.fr/users/19eaa22c691bc561cf527f09a094bbad/fakouyat.jpg",
   "xp": 0,
-  "isLogged": true,
+  "currentState": "ONLINE",
   "lastSeen": "2023-08-02T17:30:58.572Z"
 }
 
@@ -62,7 +71,7 @@ Content-Type: application/json
 PATCH   https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/2fa/30
 
 ###  delete user
-DELETE  https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/35
+DELETE  https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/39
 
 ### get user stat
 GET https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/2/stats
@@ -196,25 +205,25 @@ POST  https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/friends
 Content-Type: application/json
 
 {
-	"receiver": 9,
-	"sender": 12,
-	"relation": "PENDING",
+	"receiver": 36,
+	"sender": 34,
+	"relation": "ACCEPTED",
 	"createdAt": "27/07/2023"
 }
 
 ### update friend relation
-PATCH   https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/friends/3
+PATCH   https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/friends/9
 Content-Type: application/json
 
 {
     "sender": 34,
-    "receiver": 2,
+    "receiver": 36,
     "relation": "ACCEPTED",
-    "createdAt": "2023-11-02T11:45:51.329Z"
+    "createdAt": "2023-11-05T08:16:15.333Z"
 }
 
 ### delete friendship
-DELETE https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/friends/6
+DELETE https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/friends/2
 
 ### aut
 POST https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/auth

@@ -10,6 +10,7 @@ import { ACCEPTED, PENDING } from '../APP_CONSTS';
 import { fetchAllUsers, fetchAllFriends, fetchAllUsersFriends } from '../data/ChatData';
 import Cookies from 'js-cookie';
 import { getSocket } from '../utils/socketService';
+import { LOG_STATE } from '../enums';
 
 const StyledChatBox = styled(Box)(({ theme }) => ({
     "&:hover": {
@@ -76,7 +77,7 @@ const ChatUserComp = (userData : User) => {
             >
                 <Stack direction={"row"} alignItems={"center"} spacing={2}>
                     {" "}
-                    {userData.isLogged == true ? 
+                    {userData.currentState != LOG_STATE.OFFLINE ? 
                         (
                             <Badge
                                 variant='dot'
@@ -150,7 +151,7 @@ const ChatUserFriendComp = (userData : User) => {
             >
                 <Stack direction={"row"} alignItems={"center"} spacing={2}>
                     {" "}
-                    {userData.isLogged ? 
+                    {userData.currentState != LOG_STATE.OFFLINE ? 
                         (
                             <Badge
                                 variant='dot'

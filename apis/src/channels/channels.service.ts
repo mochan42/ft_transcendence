@@ -54,4 +54,8 @@ export class ChannelsService {
   ): Promise<boolean> {
     return await bcrypt.compare(userPasswd, dbPasswd);
   }
+
+  async updateByEntity(update: Channel) {
+    return await this.ChannelRepo.save(update);
+  }
 }

@@ -7,7 +7,7 @@ import { selectChatDialogStore, selectChatStore } from '../redux/store';
 import Cookies from 'js-cookie';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import { enChatMemberRank, enChatMemberRights, enChatPrivacy } from '../enums';
+import { LOG_STATE, enChatMemberRank, enChatMemberRights, enChatPrivacy } from '../enums';
 import { updateChatDialogProfileUserId, updateChatDialogShwProfile } from '../redux/slices/chatDialogSlice';
 import img42 from "../img/icon_42.png"
 import { getUserById } from './ChatConversation';
@@ -71,7 +71,7 @@ const ChatGroupMemberProfileComp = (user: IUserData) => {
                 >
                     {" "}
                     <Stack direction="row" spacing={2}>
-                        {user.memberUser.isLogged ? 
+                        {user.memberUser.currentState != LOG_STATE.OFFLINE ? 
                             (
                                 <Badge
                                     variant='dot'
@@ -134,7 +134,10 @@ const ChatGroupMemberProfileComp = (user: IUserData) => {
         </>
     )
 }
-export function IsUserInGroup (userId: string | undefined, group: Group) : boolean {
+export function IsUserInGroup (userId: string | undefined, group: Group | null) : boolean {
+    if (!group) {
+        return false;
+    }
     let result = false
     const chatStore = useSelector(selectChatStore)
     const groupMembers = chatStore.chatGroupMembers.filter(
