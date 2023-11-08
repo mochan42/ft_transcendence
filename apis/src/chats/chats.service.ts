@@ -18,9 +18,6 @@ export class ChatsService {
   async getUserFromSocket(socket: Socket) {
     const userId = socket.handshake.headers['x-custom-data'];
     const user = await this.usersService.findOne(+userId);
-    if (!user) {
-      throw new WsException('Invalid user');
-    }
     return user;
   }
 

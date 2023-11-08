@@ -140,7 +140,7 @@ const dummyUsers = [
     secret2Fa: "",
     avatar: faker.image.avatar(),
     xp: 4,
-    isLogged: true,
+    currentState: 'ONLINE',
   },
   {
     id: "3",
@@ -154,7 +154,7 @@ const dummyUsers = [
     secret2Fa: "",
     avatar: faker.image.avatar(),
     xp: 4,
-    isLogged: true,
+    currentState: 'ONLINE',
   },
   {
     id: "5",
@@ -168,7 +168,7 @@ const dummyUsers = [
     secret2Fa: "",
     avatar: faker.image.avatar(),
     xp: 4,
-    isLogged: true,
+    currentState: 'ONLINE',
   },
   {
     id: "8",
@@ -182,7 +182,7 @@ const dummyUsers = [
     secret2Fa: "",
     avatar: faker.image.avatar(),
     xp: 4,
-    isLogged: true,
+    currentState: 'ONLINE',
   },
   {
     id: "7",
@@ -196,7 +196,7 @@ const dummyUsers = [
     secret2Fa: "",
     avatar: faker.image.avatar(),
     xp: 4,
-    isLogged: true,
+    currentState: 'ONLINE',
   }
 ]
 

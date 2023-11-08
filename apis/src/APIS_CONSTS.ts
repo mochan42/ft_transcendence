@@ -35,3 +35,9 @@ export enum MEMBER_RIGHTS {
   PRIVILEDGED = 'priviledged',
   BANNED = 'banned', // same with muted
 }
+
+export enum LOG_STATE {
+  ONLINE = 'ONLINE',
+  OFFLINE = 'OFFLINE',
+  INGAME = 'IN GAME',
+}

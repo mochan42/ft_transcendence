@@ -43,8 +43,8 @@ export class CreateUserDto {
   @IsNumber()
   xp: number;
 
-  @IsBoolean()
-  isLogged: boolean;
+  @IsString()
+  currentState: string;
 
   @IsString()
   lastSeen?: string;

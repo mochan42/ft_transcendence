@@ -49,8 +49,16 @@ enum enChatGroupInviteStatus {
   ACCEPTED = "accepted",
   INVITE = "invited"
 }
+
+enum LOG_STATE {
+  ONLINE = 'ONLINE',
+  OFFLINE = 'OFFLINE',
+  INGAME = 'IN GAME',
+}
+
 export { HOME_SECTION, logStatus, enChatType, enChatMemberRank,
-enChatMemberRights, enChatPrivacy, 
-enGameDifficulty,
-enChatGroupInviteStatus,
+  enChatMemberRights, enChatPrivacy, 
+  enGameDifficulty,
+  enChatGroupInviteStatus,
+  LOG_STATE
 }

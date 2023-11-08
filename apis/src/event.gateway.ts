@@ -17,6 +17,7 @@ import { JoinchannelService } from './joinchannel/joinchannel/joinchannel.servic
 import { UsersService } from './users/users.service';
 import {
   ACCEPTED,
+  LOG_STATE,
   MEMBER_RANK,
   MEMBER_RIGHTS,
   MEMBER_STATUS,
@@ -28,6 +29,7 @@ import { CreateGameDto } from './games/dto/create-game.dto';
 import { Friend } from './friends/entities/friend.entity';
 import { MessageDto } from './chats/dto/message.dto';
 import { Game } from './games/entities/game.entity';
+import { promises } from 'dns';
 
 @WebSocketGateway({
   cors: {
@@ -58,7 +60,7 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   async handleDisconnect(@ConnectedSocket() socket: Socket) {
     const user = await this.chatsService.getUserFromSocket(socket);
-    const logoutUser = await this.userService.updateLoginState(+user.id, false);
+    const logoutUser = await this.userService.updateLoginState(+user.id, LOG_STATE.OFFLINE);
     const allUsers = await this.userService.findAll();
     this.server.emit('logout', { new: logoutUser, all: allUsers });
   }

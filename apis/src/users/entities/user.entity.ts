@@ -35,8 +35,8 @@ export class User {
   @Column()
   xp: number;
 
-  @Column()
-  isLogged: boolean;
+  @Column({nullable: true})
+  currentState: string;
 
   @Column()
   lastSeen?: string;

@@ -10,7 +10,7 @@ import { selectChatStore } from "../redux/store";
 import ChatUserProfile from "./ChatUserProfile";
 import { useDispatch } from "react-redux";
 import { selectConversation, updateChatActiveUser, updateStateUserFriendDialog} from "../redux/slices/chatSlice";
-import { enChatType } from "../enums";
+import { LOG_STATE, enChatType } from "../enums";
 import Cookies from 'js-cookie';
 import { fr } from "@faker-js/faker";
 import axios from 'axios';
@@ -75,7 +75,7 @@ const ChatElement = (user: User) => {
                 justifyContent={"space-between"}
             >
                 <Stack direction="row" spacing={2}>
-                    {user.isLogged ? 
+                    {user.currentState != LOG_STATE.OFFLINE ? 
                     <Badge 
                         color="success" 
                         variant="dot" 

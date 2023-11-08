@@ -11,8 +11,8 @@ Content-Type: application/json
 
 ### channels 
 GET https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/channels
-### ellete channels 
-DELETE  https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/channels/10
+### Delete channels 
+DELETE  https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/channels/16
 
 ### ALL members
 GET https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/channels/members
@@ -44,12 +44,12 @@ Content-Type: application/json
 	"secret2Fa" : "",
 	"avatar" : "https://www.svgrepo.com/show/303599/spider-man-4-logo.svg",
 	"xp": 123456,
-	"isLogged": true,
+	"currentState": "ONLINE",
 	"lastSeen": "Hello"
 }
 
 ###  Edit user info
-PATCH  https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/2
+PATCH  https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/39
 Content-Type: application/json
 
 {
@@ -63,7 +63,7 @@ Content-Type: application/json
   "secret2Fa": "H4DHQUYSIY6XOJTP",
   "avatar": "https://cdn.intra.42.fr/users/19eaa22c691bc561cf527f09a094bbad/fakouyat.jpg",
   "xp": 0,
-  "isLogged": true,
+  "currentState": "ONLINE",
   "lastSeen": "2023-08-02T17:30:58.572Z"
 }
 
@@ -71,7 +71,7 @@ Content-Type: application/json
 PATCH   https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/2fa/30
 
 ###  delete user
-DELETE  https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/35
+DELETE  https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/39
 
 ### get user stat
 GET https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/2/stats
@@ -223,7 +223,7 @@ Content-Type: application/json
 }
 
 ### delete friendship
-DELETE https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/friends/6
+DELETE https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/friends/2
 
 ### aut
 POST https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/auth

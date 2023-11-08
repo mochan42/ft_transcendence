@@ -61,9 +61,9 @@ export class UsersService {
     return await this.UserRepository.save(updateUser);
   }
 
-  async updateLoginState(id: number, isLogged: boolean) {
+  async updateLoginState(id: number, state: string) {
     const user = await this.findOne(id);
-    const updatedUser = { ...user, isLogged: isLogged };
+    const updatedUser = { ...user, currentState: state };
     return await this.UserRepository.save(updatedUser);
   }
 }
