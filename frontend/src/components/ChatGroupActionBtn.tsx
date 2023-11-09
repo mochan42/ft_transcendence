@@ -69,7 +69,6 @@ export default function ChatGroupActionBtn(privacy: string) {
     }
     handleClose();
   }
-
   
   return (
     <div>

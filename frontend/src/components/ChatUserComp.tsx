@@ -30,10 +30,6 @@ const ChatUserComp = (userData : User) => {
     const onSendRequest = () => {
 
         socket.emit('inviteFriend', userData.id);
-        socket.on('inviteFriendSucces', (friends: any) => {
-            const newFriendRequestList = fetchAllUsersFriends(PENDING, friends);
-            dispatch(updateChatUserFriendRequests(newFriendRequestList));
-        });
     }
 
     const isUserKnown = () => {
@@ -59,7 +55,7 @@ const ChatUserComp = (userData : User) => {
 
     useEffect(() => {
 
-    }, [chatStore.chatUserFriendRequests]);
+    }, [chatStore.chatUserFriendRequests, chatStore.chatUserFriends, chatStore.chatUserFriendDialogState]);
 
     return (
         <StyledChatBox sx={{
@@ -136,6 +132,11 @@ const ChatUserFriendComp = (userData : User) => {
         // close the dialog
         dispatch(updateStateUserFriendDialog(false)); 
     }
+
+    useEffect(() => {
+
+    }, [chatStore.chatUserFriendDialogState, chatStore.chatUserFriends, chatStore.chatUserFriends]);
+
     return (
         <StyledChatBox sx={{
             width : "100%",
@@ -221,7 +222,8 @@ const ChatUserFriendRequestComp = (reqData : User) => {
 
     useEffect(() => {
 
-    }, [chatStore.chatUserFriendDialogState]);
+    }, [chatStore.chatUserFriendDialogState, chatStore.chatUserFriendRequests, chatStore.chatUserFriends]);
+
     return (
         <StyledChatBox sx={{
             width : "100%",

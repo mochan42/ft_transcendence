@@ -92,11 +92,7 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const friendShip = await this.friendsService.create(friendDto);
     const friends = await this.friendsService.findAll();
 
-    socket.emit('inviteFriendSucces', friends);
-    this.server.emit('invitedByFriend', {
-      new: friendShip.receiver,
-      all: friends,
-    });
+    this.server.emit('inviteFriendSucces', { new: friendShip, all: friends });
   }
 
   @SubscribeMessage('acceptFriend')
@@ -272,6 +268,17 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
     });
   }
 
+  @SubscribeMessage('joinChannel')
+  async handleJoinChannel(
+    @ConnectedSocket() socket: Socket,
+    @MessageBody() payload: CreateJoinchannelDto
+  ) {
+    const newJoin = await this.joinchannelService.create(payload);
+    Promise.all([newJoin]);
+    const allMembers = await this.joinchannelService.findAll();
+
+    this.server.emit('joinChannelSucces', {new: newJoin, all: allMembers });
+  }
   /***********************GAME*********************** */
 
   @SubscribeMessage('acceptMatch')

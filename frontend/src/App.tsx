@@ -88,8 +88,8 @@ const App: React.FC = () => {
 				dispatch(updateChatUserMessages(data.all));
 			});
 
-			socket.on('invitedByFriend', (data: any) => {
-				if (data.new != userId) {
+			socket.on('inviteFriendSucces', (data: any) => {
+				if (data.new.sender != userId && data.new.receiver != userId) {
 					return ;
 				}
 				const newFriendRequestList = fetchAllUsersFriends(PENDING, data.all);
@@ -123,6 +123,10 @@ const App: React.FC = () => {
 
 			socket.on('connected', (data: any) => {
 				dispatch(updateChatUsers(data.all));
+			});
+
+			socket.on('joinChannelSucces', (data: any) => {
+				dispatch(updateChatGroupMembers(data.all));
 			});
 		}
 	});

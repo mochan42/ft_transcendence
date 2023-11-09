@@ -42,9 +42,23 @@ const ChatGroupProfile = () => {
     let actionBtnState = IsUserInGroup(userId, chatStore.chatActiveGroup) ? ((loggedUser.length > 0 && loggedUser[0].rank === enChatMemberRank.MEMBER) ? false : true): false
     const [ChangePasswdDialogState, setChangePasswdDialogState] = useState<Boolean>(false);
 
+    const canExit = (loggedUser: JoinGroup, groupMembers: JoinGroup[]): boolean => {
+        const role = loggedUser.rank;
+        if (role == enChatMemberRank.MEMBER || groupMembers.length < 2) {
+            return true;
+        } 
+        if (groupMembers.filter(el => el.rank != enChatMemberRank.MEMBER).length > 1) {
+            return true;
+        }
+        return false;
+    }
+    
     const exitGroup = () => {
-        socket.emit('exitGroup', chatStore.chatActiveGroup?.channelId);
-        dispatch(selectConversation({chatRoomId: null, chatType: enChatType.Group}))
+        
+        if (canExit(loggedUser[0], groupMembers)) {
+            socket.emit('exitGroup', chatStore.chatActiveGroup?.channelId);
+            dispatch(selectConversation({chatRoomId: null, chatType: enChatType.Group}));
+        }
         dispatch(toggleSidebar());
     }
     
