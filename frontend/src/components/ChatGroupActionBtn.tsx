@@ -36,7 +36,7 @@ export default function ChatGroupActionBtn(privacy: string) {
   };
 
   const OnChangePasswd = () => {
-    dispatch(updateChatDialogSetPasswd(true))
+    dispatch(updateChatDialogSetPasswd(true));
     handleClose()
   }
   const OnSetTitle = () => {
@@ -69,7 +69,7 @@ export default function ChatGroupActionBtn(privacy: string) {
     }
     handleClose();
   }
-  
+
   return (
     <div>
       <Button
