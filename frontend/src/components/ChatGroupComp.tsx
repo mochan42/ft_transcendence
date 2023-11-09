@@ -7,10 +7,11 @@ import { selectChatDialogStore, selectChatStore } from '../redux/store';
 import Cookies from 'js-cookie';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import { LOG_STATE, enChatMemberRank, enChatMemberRights, enChatPrivacy } from '../enums';
+import { LOG_STATE, enChatGroupInviteStatus, enChatMemberRank, enChatMemberRights, enChatPrivacy } from '../enums';
 import { updateChatDialogProfileUserId, updateChatDialogShwProfile } from '../redux/slices/chatDialogSlice';
 import img42 from "../img/icon_42.png"
 import { getUserById } from './ChatConversation';
+import { getSocket } from '../utils/socketService';
 
 
 const StyledChatBox = styled(Box)(({ theme }) => ({
@@ -258,13 +259,19 @@ const ChatGroupDialogInviteEntryComp = (group : Group) => {
 const ChatGroupDialogEntryComp = (group : Group) => {
     const btnText = ( group.privacy == enChatPrivacy.PUBLIC) ? "Join" : "Request"
     const loggedUserId = Cookies.get('userId') ? Cookies.get('userId') : '';
+    const socket = getSocket(loggedUserId);
+
     const handleRequest = () => {
-        // API call to backend
-        // Create joinGroup object for loggedInuser to join group
-        // Set status to pending or or accepted depending on channel privacy
-        // public - accepted
-        // private and protected - pending 
-        // Send to backend
+        if (loggedUserId) {
+            const joinGroup = {
+                userId: +loggedUserId,
+                channelId: group.channelId,
+                rank: enChatMemberRank.MEMBER,
+                rights: enChatMemberRights.PRIVILEDGED,
+                status: enChatGroupInviteStatus.ACCEPTED
+            };
+            socket.emit('joinChannel', joinGroup);
+        }
 
     }
 
@@ -307,9 +314,7 @@ const ChatGroupDialogEntryComp = (group : Group) => {
 const ChatGroupDialogRequestEntryComp = (group : Group) => {
     const loggedUserId = Cookies.get('userId') ? Cookies.get('userId') : '';
     const handleRequest = () => {
-        // API call to backend for update
-        // Send to backend
-
+        
     }
 
     return (

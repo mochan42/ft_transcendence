@@ -75,7 +75,7 @@ const ChatElement = (user: User) => {
                 justifyContent={"space-between"}
             >
                 <Stack direction="row" spacing={2}>
-                    {user.currentState != LOG_STATE.OFFLINE ? 
+                    {user.currentState !== LOG_STATE.OFFLINE ? 
                     <Badge 
                         color="success" 
                         variant="dot" 
@@ -84,7 +84,7 @@ const ChatElement = (user: User) => {
                     >
                     <Avatar src={ user.avatar }/>
                     </Badge>
-                    : <Avatar alt={ user.avatar }/>
+                    : <Avatar src={ user.avatar }/>
                     }
                     <Stack spacing={0.2}>
                         <Typography variant="subtitle2">{ user.userNameLoc }</Typography>

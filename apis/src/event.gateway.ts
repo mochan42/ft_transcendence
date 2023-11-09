@@ -17,6 +17,7 @@ import { JoinchannelService } from './joinchannel/joinchannel/joinchannel.servic
 import { UsersService } from './users/users.service';
 import {
   ACCEPTED,
+  CHANNEL_TYPE,
   LOG_STATE,
   MEMBER_RANK,
   MEMBER_RIGHTS,
@@ -64,11 +65,13 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   async handleDisconnect(@ConnectedSocket() socket: Socket) {
+    
+  }
+
+  @SubscribeMessage('userLogout')
+  async handleUserLogout(@ConnectedSocket() socket: Socket) {
     const user = await this.chatsService.getUserFromSocket(socket);
-    const logoutUser = await this.userService.updateLoginState(
-      +user.id,
-      LOG_STATE.OFFLINE,
-    );
+    const logoutUser = await this.userService.updateLoginState(+user.id, LOG_STATE.OFFLINE);
     const allUsers = await this.userService.findAll();
     this.server.emit('logout', { new: logoutUser, all: allUsers });
   }
@@ -89,11 +92,7 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const friendShip = await this.friendsService.create(friendDto);
     const friends = await this.friendsService.findAll();
 
-    socket.emit('inviteFriendSucces', friends);
-    this.server.emit('invitedByFriend', {
-      new: friendShip.receiver,
-      all: friends,
-    });
+    this.server.emit('inviteFriendSucces', { new: friendShip, all: friends });
   }
 
   @SubscribeMessage('acceptFriend')
@@ -207,9 +206,6 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @MessageBody() data: any,
   ) {
     if (data.group != null && data.users.length != 0) {
-      console.log('-------DATA--------\n');
-      console.log(data.users);
-      console.log('-------DATA--------\n');
       const joins = data.users.members.map(async (el) => {
         const newMember: CreateJoinchannelDto = {
           channelId: +data.group,
@@ -252,13 +248,7 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const updatedChannel = await this.channelsService.updateByEntity(update);
     await Promise.all([updatedChannel]);
     const allChannels = await this.channelsService.findAll();
-    console.log('----------ALL CHANNELS-------------\n');
-    console.log(allChannels);
-    console.log('-----------------------\n');
-    this.server.emit('groupPasswordChanged', {
-      new: updatedChannel,
-      all: allChannels,
-    });
+    this.server.emit('groupPasswordChanged', { new: updatedChannel, all: allChannels });
   }
 
   @SubscribeMessage('deleteGroup')
@@ -278,6 +268,17 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
     });
   }
 
+  @SubscribeMessage('joinChannel')
+  async handleJoinChannel(
+    @ConnectedSocket() socket: Socket,
+    @MessageBody() payload: CreateJoinchannelDto
+  ) {
+    const newJoin = await this.joinchannelService.create(payload);
+    Promise.all([newJoin]);
+    const allMembers = await this.joinchannelService.findAll();
+
+    this.server.emit('joinChannelSucces', {new: newJoin, all: allMembers });
+  }
   /***********************GAME*********************** */
 
   @SubscribeMessage('acceptMatch')

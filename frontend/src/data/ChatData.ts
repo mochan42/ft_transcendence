@@ -105,7 +105,7 @@ const fetchAllMembers = async (): Promise<JoinGroup[]> => {
 }
 
 export const getMembers = (members: JoinGroup[], group: number): JoinGroup[] => {
-  const allMembers: JoinGroup[] = members.filter((el: any) => el.channelId === group);
+  const allMembers: JoinGroup[] = members.filter((el: any) => el.channelId === group && el.status === enChatGroupInviteStatus.ACCEPTED);
   return allMembers ? allMembers: [];
 }
 
@@ -265,8 +265,8 @@ const ChatGameRequestList :GameType[] = [
 
   {
     id: 0,
-    player1: 7,
-    player2: 1,
+    player1: 40,
+    player2: 2,
     difficulty: enGameDifficulty.EXTREME,
     status: 'request',
 		includeBoost: false,
@@ -288,8 +288,8 @@ const ChatGameRequestList :GameType[] = [
   },
   {
     id: 1,
-    player1: 5,
-    player2: 1,
+    player1: 41,
+    player2: 40,
     difficulty: enGameDifficulty.HARD,
     isBoost: false,
     status: 'request',

@@ -29,7 +29,7 @@ const Navbar: React.FC<Props> = ({ setIsAuth, isAuth, setCode, setUserId }) => {
             // contact server to delete access token
 		if (isAuth) {
 			if (socket != null) {
-				socket.disconnect();
+				socket.emit('userLogout', {});
 			}
 			setIsAuth(false);
 			setCode(null);

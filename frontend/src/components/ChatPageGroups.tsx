@@ -65,11 +65,12 @@ const ChatGroupElement = (group : Group) => {
 
         }
 
-
     }, [chatStore.chatActiveGroup, 
         chatDialogStore.chatDialogInpPasswd,
-        chatStore.chatGroupUsrPassInp]);
-
+        chatStore.chatGroupUsrPassInp,
+        chatStore.chatActiveGroup,
+        chatStore.chatGroupMembers,
+        chatStore.chatGroupList]);
 
     return (
         <Box 
