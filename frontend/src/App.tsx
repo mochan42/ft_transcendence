@@ -116,6 +116,9 @@ const App: React.FC = () => {
 
 			socket.on('logout', (data: any) => {
 				dispatch(updateChatUsers(data.all));
+				if (data.new.userId == userId) {
+					socket.disconnect();
+				}
 			});
 
 			socket.on('connected', (data: any) => {

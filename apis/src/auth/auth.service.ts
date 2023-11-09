@@ -15,20 +15,15 @@ export class AuthService {
     private statService: StatService,
   ) {}
   async signin(authUserDto: AuthUserDto) {
-    console.log('---------------------\n');
-    console.log('CODE: ', authUserDto.token);
-    console.log('---------------------\n');
     const accessToken = await this.getFortyTwoAccessToken(authUserDto);
     if (!accessToken) {
-      console.log('----FAILLED ACCESS TOKEN--------\n');
       return { is2Fa: false, user: null };
     }
     const user42 = await this.getFortyTwoUserInfo(accessToken.access_token);
     const pongUser = this.createPongUser(user42);
 
-    const matchedUser = await this.usersService.findByUserName(
-      pongUser.userName,
-    );
+    const matchedUser = await this.usersService.findByUserName(pongUser.userName);
+
     var signedUser;
     var logTimes = true;
 
@@ -134,9 +129,7 @@ export class AuthService {
       const resp = await axios.post(urlAuth42, params42);
       return resp.data;
     } catch (error) {
-      console.log('*************WTF*****************\n');
       console.log(error);
-      console.log('*************WTF*****************\n');
     }
   }
 }
