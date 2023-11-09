@@ -135,11 +135,11 @@ const ChatGroupMemberProfileComp = (user: IUserData) => {
     )
 }
 export function IsUserInGroup (userId: string | undefined, group: Group | null) : boolean {
+    const chatStore = useSelector(selectChatStore)
     if (!group) {
         return false;
     }
     let result = false
-    const chatStore = useSelector(selectChatStore)
     const groupMembers = chatStore.chatGroupMembers.filter(
         el => el.channelId == group.channelId )
     

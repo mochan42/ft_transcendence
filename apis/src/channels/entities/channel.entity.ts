@@ -8,12 +8,12 @@ export class Channel {
   @Column({ nullable: true })
   password: string;
 
-  @Column()
+  @Column({ nullable: true })
   title: String;
 
-  @Column()
+  @Column({ nullable: true })
   privacy: String;
 
-  @Column()
+  @Column({ nullable: true })
   ownerId: number;
 }

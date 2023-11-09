@@ -5,18 +5,18 @@ export class Joinchannel {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ nullable: true })
   userId: number;
 
-  @Column()
+  @Column({ nullable: true })
   channelId: number;
 
-  @Column()
+  @Column({ nullable: true })
   rank: string;
 
-  @Column()
+  @Column({ nullable: true })
   rights: string;
 
-  @Column()
+  @Column({ nullable: true })
   status: string;
 }
