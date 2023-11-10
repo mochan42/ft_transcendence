@@ -74,6 +74,12 @@ npm cache clean --force                 : clear the cache
 
 
 ----
++ update the rank and score of user in profile.
++ handle playgame member action in group and oneone chat
+
+
+
+
 + Add dialog page to view profile from user list (friend dialog)
 
 

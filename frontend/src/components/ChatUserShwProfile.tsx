@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { toggleSidebar } from "../redux/slices/chatSlice";
 import { faker } from "@faker-js/faker"
 import { selectChatStore } from "../redux/store";
-import { fetchAllStats, friendToUserType } from "../data/ChatData";
+import { dummyUsers, fetchAllStats, friendToUserType } from "../data/ChatData";
 import Cookies from 'js-cookie';
 import Game from "./pages/Game";
 import { useEffect, useState } from "react";
@@ -26,14 +26,15 @@ const ChatUserShwProfile = ( otherUserId : TUserId) => {
 
     useEffect(() => {
     if (otherUserId.userId && userId != null) {
-        setUserSelect(getUserById(chatStore.chatUsers, otherUserId.userId))
-        //console.log ("show user in show profile - ", userSelect)
+        // setUserSelect(getUserById(dummyUsers, otherUserId.userId))       // for development only
+        setUserSelect(getUserById(chatStore.chatUsers, otherUserId.userId)) // uncomment for production
+        // console.log ("show user in show profile - ", userSelect)
     }
         (async() => {
             const updatedUserStats = await fetchAllStats(otherUserId.userId);
             setUserStats(updatedUserStats);
         })();
-    });
+    },[chatStore.chatGameRequest]);
 
     return ( 
         <Box sx={{

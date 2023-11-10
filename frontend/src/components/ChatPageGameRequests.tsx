@@ -11,11 +11,12 @@ import Cookies from 'js-cookie';
 import { faker } from "@faker-js/faker";
 import ChatDialogShwProfile from "./ChatDialogShwProfile";
 import ChatUserShwProfile from "./ChatUserShwProfile";
-import { GameDifficultyTxt } from "../data/ChatData";
+import { ChatGameRequestList, GameDifficultyTxt, dummyUsers } from "../data/ChatData";
 
 const GetUserById = (userId: string | number ): User | null => {
     const chatStore = useSelector(selectChatStore);
-    const users = chatStore.chatUsers.filter( (el) => {
+    // const users = dummyUsers.filter( (el) => {     // for development only
+    const users = chatStore.chatUsers.filter( (el) => {  // uncomment for production
         if (el.id == userId.toString())
             return el
     })
@@ -29,12 +30,13 @@ const GetUserById = (userId: string | number ): User | null => {
 
 const ChatGameRequestElement = (request: GameType) => {
     const userId = Cookies.get('userId') ? Cookies.get('userId') : '';
-    console.log("Show userId", userId)
+    // console.log("Show userId - game request - ", userId)
     const chatStore = useSelector(selectChatStore);
     const dispatch = useDispatch();
     let activeUser = {} as User | null
+    // console.log("request data - ", request)
     activeUser = GetUserById(request.player1);
-    //console.log("active_user - ", activeUser)
+    // console.log("active_user - ", activeUser)
 
     return (
         <Box 
@@ -116,7 +118,9 @@ const  ChatPageGameRequests = (chatProp : ChatProps) => {
                         sx={{flexGrow:1, overflowY:"scroll", height:"100%"}}
                         spacing={0.5} 
                     >
-                            {chatStore.chatGameRequests
+                            {
+                            chatStore.chatGameRequests // uncomment for production
+                            //  ChatGameRequestList            // comment for development
                                 .filter((request) => {
                                     if (request.player1.toString() == chatProp.userId || 
                                         request.player2.toString() == chatProp.userId) {

@@ -154,6 +154,7 @@ const  ChatPageGroups = (chatProp : ChatProps) => {
     useEffect(() => {
 
     }, [chatStore.chatActiveGroup, chatStore.chatGroupList, chatStore.chatGroupMembers]);
+    // console.log("counting list - ", chatStore.chatGroupList.length)
 
     return (
         <>

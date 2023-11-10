@@ -25,8 +25,8 @@ const initialState: IChatState = {
     open: false,
     type: CHAT_ACTION_TYPE.CHAT_CONTACT, // options: 'CONTACT' 'STARRED' 'SHARED'
   },
-  chatUsers: ChatUserList,  // uncomment for production
-  // chatUsers: dummyUsers, // dev purpose
+  // chatUsers: ChatUserList,  // uncomment for production
+  chatUsers: dummyUsers, // dev purpose
   chatUserFriends: ChatUserFriendsList,
   chatUserFriendRequests: ChatUserFriendRequestList,
   chatGroupList: ChatGroupList,  // uncomment for production

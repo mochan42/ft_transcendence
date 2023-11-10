@@ -277,8 +277,8 @@ const ChatGameRequestList :GameType[] = [
 
   {
     id: 0,
-    player1: 40,
-    player2: 2,
+    player1: 3,
+    player2: 1,
     difficulty: enGameDifficulty.EXTREME,
     status: 'request',
 		includeBoost: false,
@@ -324,8 +324,8 @@ const ChatGameRequestList :GameType[] = [
   },
   {
     id: 2,
-    player1: 7,
-    player2: 3,
+    player1: 5,
+    player2: 1,
     difficulty: enGameDifficulty.EASY,
     isBoost: true,
     status: 'request',

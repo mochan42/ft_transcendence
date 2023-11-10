@@ -12,6 +12,7 @@ import { useSelector } from "react-redux";
 import Cookies from 'js-cookie';
 import { toggleSidebar } from "../redux/slices/chatSlice";
 import { useDispatch } from "react-redux";
+import { ChatGameRequestList } from "../data/ChatData";
 
 
 const ChatBoardBtns = [
@@ -55,7 +56,8 @@ const HomeBoard = (select : ISelectSection) => {
 	const chatStore = useSelector(selectChatStore)
     const userId = Cookies.get('userId') ? Cookies.get('userId') : '';
 	// get number of incoming game request
-	const gameRequestCount = chatStore.chatGameRequests.filter(
+	// const gameRequestCount = chatStore.chatGameRequests.filter(
+	const gameRequestCount = ChatGameRequestList.filter(
 		(el) => el.player2.toString() == userId 
 	).length
 
