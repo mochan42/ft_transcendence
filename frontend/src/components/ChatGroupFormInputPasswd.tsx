@@ -12,7 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { selectChatDialogStore, selectChatStore } from "../redux/store";
 import { getSocket } from '../utils/socketService';
 import { enChatPrivacy } from '../enums';
-import { updateChatGroupUsrPassInp, updateChatGroups } from '../redux/slices/chatSlice';
+import { updateChatGroupChkPassInpState, updateChatGroupUsrPassInp, updateChatGroups } from '../redux/slices/chatSlice';
 import { updateChatDialogInpPasswd } from '../redux/slices/chatDialogSlice';
 import { Group } from '../types';
 
@@ -35,7 +35,7 @@ const CreateGroupFormInputPasswd = () => {
     const chatDialogStore = useSelector(selectChatDialogStore)
     const dispatch = useDispatch()
     const handleClose = () => { 
-        dispatch(updateChatDialogInpPasswd(false))
+        dispatch(updateChatDialogInpPasswd(false))     // close the form
     } 
 
     const groupSchema = Yup.object().shape(
@@ -69,6 +69,7 @@ const CreateGroupFormInputPasswd = () => {
         
         dispatch(updateChatGroupUsrPassInp(getValues("passwd")));
         handleClose();
+        dispatch(updateChatGroupChkPassInpState(true)) // trigger action to check password validity
     }
 
     return (
@@ -84,7 +85,7 @@ const CreateGroupFormInputPasswd = () => {
                     alignItems={"center"}
                     justifyContent={"end"}
                 >
-                    <Button onClick={()=>handleClose()}>Cancel </Button>
+                    <Button onClick={handleClose}>Cancel </Button>
                     <Button type="submit" variant='contained'>Enter</Button>
                 </Stack>
            </form>

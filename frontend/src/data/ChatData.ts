@@ -10,7 +10,7 @@ import {
 } from "../types";
 import axios from "axios";
 import { ACCEPTED, PENDING } from "../APP_CONSTS";
-import { enChatGroupInviteStatus, enChatMemberRank, enChatMemberRights, enGameDifficulty } from "../enums";
+import { enChatGroupInviteStatus, enChatMemberRank, enChatMemberRights, enChatPrivacy, enGameDifficulty } from "../enums";
 import { BACKEND_URL } from "./Global";
 
 const backendUrl = BACKEND_URL
@@ -95,7 +95,7 @@ const fetchAllGroups = async (): Promise<Group[]> => {
 }
 const ChatGroupList: Group[] = await fetchAllGroups();
 
-const fetchAllMembers = async (): Promise<JoinGroup[]> => {
+export const fetchAllMembers = async (): Promise<JoinGroup[]> => {
   let members: JoinGroup[] = [];
   const resp = await axios.get<JoinGroup[]>(`${BACKEND_URL}/pong/channels/members`);
   if (resp.status === 200) {
@@ -110,24 +110,31 @@ export const getMembers = (members: JoinGroup[], group: number): JoinGroup[] => 
 }
 
 const ChatGroupMemberList: JoinGroup[] = await fetchAllMembers();
-// const ChatGroupList = [
-//   {
-//     channelId: 3,
-//     password: "",
-//     title: "Revolution crew",
-//     privacy: "public",
-//     ownerId: 7,
-//   },
-//   {
-//     channelId: 2,
-//     password: "",
-//     title: "Trans_project_team",
-//     privacy: "public",
-//     ownerId: 5,
-//   },
-// ];
+const ChatGroupListDummy : Group[] = [
+  {
+    channelId: 3,
+    password: "",
+    title: "Revolution crew",
+    privacy: "public",
+    ownerId: 7,
+  },
+  {
+    channelId: 2,
+    password: "",
+    title: "Trans_project_team",
+    privacy: enChatPrivacy.PRIVATE,
+    ownerId: 5,
+  },
+  {
+    channelId: 4,
+    password: "password",
+    title: "Movie Night",
+    privacy: enChatPrivacy.PROTECTED,
+    ownerId: 5,
+  },
+];
 
-const dummyUsers = [
+const dummyUsers :User[]= [
   {
     id: "0",
     userName: "Facinet",
@@ -141,6 +148,7 @@ const dummyUsers = [
     avatar: faker.image.avatar(),
     xp: 4,
     currentState: 'ONLINE',
+    lastSeen: "today"
   },
   {
     id: "3",
@@ -155,6 +163,7 @@ const dummyUsers = [
     avatar: faker.image.avatar(),
     xp: 4,
     currentState: 'ONLINE',
+    lastSeen: "today"
   },
   {
     id: "5",
@@ -169,6 +178,7 @@ const dummyUsers = [
     avatar: faker.image.avatar(),
     xp: 4,
     currentState: 'ONLINE',
+    lastSeen: "today"
   },
   {
     id: "8",
@@ -183,6 +193,7 @@ const dummyUsers = [
     avatar: faker.image.avatar(),
     xp: 4,
     currentState: 'ONLINE',
+    lastSeen: "today"
   },
   {
     id: "7",
@@ -197,6 +208,7 @@ const dummyUsers = [
     avatar: faker.image.avatar(),
     xp: 4,
     currentState: 'ONLINE',
+    lastSeen: "today"
   }
 ]
 
@@ -373,6 +385,7 @@ export {
   ChatUserFriendsList,
   ChatUserFriendRequestList,
   ChatGroupList,
+  ChatGroupListDummy,
   ChatGroupMemberList,
   ChatUserMessages,
   dummyUsers,

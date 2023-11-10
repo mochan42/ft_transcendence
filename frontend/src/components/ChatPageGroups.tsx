@@ -1,25 +1,25 @@
 
-import { Box, Stack, IconButton, Typography, Divider, Avatar, Badge, Link, Icon} from "@mui/material";
+import { Box, Stack, IconButton, Typography, Divider, Avatar, Badge, Link } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import { Users, ChatCircleDots, Phone, Plus, Handshake} from "phosphor-react";
+import { Plus, Handshake} from "phosphor-react";
 import { useEffect, useState } from "react";
 import img42 from "../img/icon_42.png"
 import ChatPageGroupsCreate from "./ChatPageGroupsCreate";
 
-import { ChatProps, Group, User } from "../types";
+import { ChatProps, Group, JoinGroup } from "../types";
 import ChatConversation, { getUserById } from "./ChatConversation";
 import ChatGroupProfile from "./ChatGroupProfile";
 import { selectChatDialogStore, selectChatStore } from "../redux/store";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
-import { selectConversation, toggleSidebar, updateChatActiveGroup, updateChatGroupMembers } from "../redux/slices/chatSlice";
+import { selectConversation, updateChatActiveGroup, updateChatGroupChkPassInpState, updateChatPreActiveGroup } from "../redux/slices/chatSlice";
 import { enChatPrivacy, enChatType } from "../enums";
 import Cookies from 'js-cookie';
-import { updateChatDialogGroupInvite, updateChatDialogInpPasswd } from "../redux/slices/chatDialogSlice";
-import ChatFriends from "./ChatFriends";
+import { updateChatDialogGroupInvite, updateChatDialogInpPasswd, updateChatDialogShwMsg } from "../redux/slices/chatDialogSlice";
 import ChatDialogGroupInvite from "./ChatDialogGroupInvite";
-import { getMembers } from "../data/ChatData";
+import { fetchAllMembers, getMembers } from "../data/ChatData";
 import ChatGroupFormInputPasswd from "./ChatGroupFormInputPasswd";
+import ChatDialogShwMsg from "./ChatDialogShwMsg";
 
 
 const ChatGroupElement = (group : Group) => {
@@ -29,42 +29,46 @@ const ChatGroupElement = (group : Group) => {
     const chatDialogStore = useSelector(selectChatDialogStore)
     const groupOwnerUserData = getUserById(chatStore.chatUsers, group.ownerId)
 
-    const handleOnClick = () => {
-        if (group.privacy == enChatPrivacy.PROTECTED)
-        {
-            dispatch(updateChatDialogInpPasswd(true))
-        }
-        else if (group.privacy == enChatPrivacy.PRIVATE)
-        {
-            alert("This is a private group. Contact group owner (" + 
-                 groupOwnerUserData?.userName + 
-                 ") for access")
-        }
-        else
-        {
+
+    const joinChannel = () => {
+
             dispatch(selectConversation({chatRoomId: group.channelId, chatType: enChatType.Group}))
             dispatch(updateChatActiveGroup(chatStore.chatGroupList.filter((el: any) => {
                 if (el && (el.channelId == group.channelId)) {
                     return el;
                 }
             })[0]));
+    }
+    
+    
+
+    const HandleOnClick = async () => {
+        dispatch(updateChatPreActiveGroup(group));
+        if (group.privacy == enChatPrivacy.PROTECTED && group.channelId != chatStore.chatActiveGroup?.channelId)
+        {
+            dispatch(updateChatDialogInpPasswd(true))
+        }
+        else if (group.privacy == enChatPrivacy.PRIVATE && group.channelId != chatStore.chatActiveGroup?.channelId)
+        {
+            const allMembers =  await fetchAllMembers();
+            const groupMembers = getMembers(allMembers, group.channelId)
+            const userGroupData = groupMembers.filter((el) => { 
+                if (userId && parseInt(userId) == el.userId)
+                    return el;
+            })// uncomment for production
+            // const userGroupData : JoinGroup[] = []      // for dev purpose
+
+            userGroupData.length ? joinChannel() 
+            : dispatch(updateChatDialogShwMsg(true))
+        }
+        else // group channel is public
+        {
+            joinChannel()
         }
 
     }
 
     useEffect(() => {
-        if (chatDialogStore.chatDialogInpPasswd == false && 
-            chatStore.chatGroupUsrPassInp == group.password)
-        {
-        dispatch(selectConversation({chatRoomId: group.channelId, chatType: enChatType.Group}))
-        dispatch(updateChatActiveGroup(chatStore.chatGroupList.filter((el: any) => {
-            if (el && (el.channelId == group.channelId)) {
-                return el;
-            }
-        })[0]));
-
-        }
-
     }, [chatStore.chatActiveGroup, 
         chatDialogStore.chatDialogInpPasswd,
         chatStore.chatGroupUsrPassInp,
@@ -72,9 +76,35 @@ const ChatGroupElement = (group : Group) => {
         chatStore.chatGroupMembers,
         chatStore.chatGroupList]);
 
+    useEffect(()=> {
+        if (chatStore.chatGroupChkPassInpState)// true means that user have inputted passwd and submit form 
+        {
+            if (chatStore.chatGroupUsrPassInp == group.password)
+            {
+                dispatch(selectConversation({chatRoomId: group.channelId, chatType: enChatType.Group}))
+                dispatch(updateChatActiveGroup(chatStore.chatGroupList.filter((el: any) => {
+                    if (el && (el.channelId == group.channelId)) {
+                        return el;
+                }
+                })[0]));
+                dispatch(updateChatDialogShwMsg(false)) // Dont Show error message
+                
+            }
+            else
+            {
+                dispatch(updateChatDialogShwMsg(true))
+                console.log("dialog, error, ", chatStore.chatGroupChkPassInpState, chatDialogStore.chatDialogShwMsg)
+                // alert("wrong password! contact group owner (" + groupOwnerUserData?.userName + ") + " + chatStore.chatGroupChkPassInpState)
+            }
+            dispatch(updateChatGroupChkPassInpState(false));
+        }
+
+    // },[]) 
+    }, [chatStore.chatGroupChkPassInpState])
+
     return (
         <Box 
-            onClick={handleOnClick}
+            onClick={HandleOnClick}
             sx={{
                 width: "100%",
                 backgroundColor: "#ddd",
@@ -199,6 +229,7 @@ const  ChatPageGroups = (chatProp : ChatProps) => {
         { chatDialogStore.chatDialogGroupInvite && <ChatDialogGroupInvite />}
         {/* control user access */}
         { chatDialogStore.chatDialogInpPasswd && <ChatGroupFormInputPasswd />}
+        { chatDialogStore.chatDialogShwMsg && <ChatDialogShwMsg/> }
         </>
       );
 }

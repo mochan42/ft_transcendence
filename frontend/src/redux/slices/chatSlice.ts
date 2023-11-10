@@ -16,7 +16,8 @@ import {
   ChatGroupMemberList,
   ChatUserMessages,
   ChatGameRequestList,
-  dummyUsers
+  dummyUsers,
+  ChatGroupListDummy,
 } from "../../data/ChatData";
 
 const initialState: IChatState = {
@@ -24,11 +25,12 @@ const initialState: IChatState = {
     open: false,
     type: CHAT_ACTION_TYPE.CHAT_CONTACT, // options: 'CONTACT' 'STARRED' 'SHARED'
   },
-  chatUsers: ChatUserList,
+  chatUsers: ChatUserList,  // uncomment for production
   // chatUsers: dummyUsers, // dev purpose
   chatUserFriends: ChatUserFriendsList,
   chatUserFriendRequests: ChatUserFriendRequestList,
-  chatGroupList: ChatGroupList,
+  chatGroupList: ChatGroupList,  // uncomment for production
+  // chatGroupList: ChatGroupListDummy, //# for dev purpose
   chatGroupMembers: ChatGroupMemberList,
   chatType: null,
   chatRoomId: null,
@@ -41,6 +43,8 @@ const initialState: IChatState = {
   chatGameRequests: ChatGameRequestList,
   chatGameRequest: null,
   chatGroupUsrPassInp: "",
+  chatGroupChkPassInpState: false,
+  chatPreActiveGroup: null
 };
 
 //export default (state: ISidebarData, action: TAction) : ISidebarData => {}
@@ -99,6 +103,10 @@ const chatSlice = createSlice({
     updateChatActiveGroup: (state, action: PayloadAction<Group | null>) => {
       state.chatActiveGroup = action.payload;
     },
+    // onclick of chat group element, update chatGroupPreActiveGroup
+    updateChatPreActiveGroup: (state, action: PayloadAction<Group | null>) => {
+      state.chatPreActiveGroup = action.payload;
+    },
     // Disables and enables the password component on create group form
     updateChatGroupCreateFormPasswdState: (state, action: PayloadAction<boolean>) => {
       state.chatGroupCreateFormPasswdState = action.payload;
@@ -113,6 +121,10 @@ const chatSlice = createSlice({
     },
     updateChatGroupUsrPassInp: (state, action: PayloadAction<string>) => {
       state.chatGroupUsrPassInp = action.payload;
+    },
+    // triggers the check of password validity
+    updateChatGroupChkPassInpState: (state, action: PayloadAction<boolean>) => {
+      state.chatGroupChkPassInpState = action.payload;
     },
   },
 });
@@ -134,7 +146,9 @@ export const {
   updateChatGroupCreateFormPasswdState,
   updateChatGameRequests,
   updateChatGameRequest,
-  updateChatGroupUsrPassInp
+  updateChatGroupUsrPassInp,
+  updateChatGroupChkPassInpState,
+  updateChatPreActiveGroup
 } = chatSlice.actions;
 export default chatSlice;
 

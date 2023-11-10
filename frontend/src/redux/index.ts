@@ -31,6 +31,8 @@ export interface IChatState {
   chatGameRequests: GameType[];
   chatGameRequest: GameType | null,
   chatGroupUsrPassInp: string,
+  chatGroupChkPassInpState: boolean,
+  chatPreActiveGroup: Group | null
 }
 
 
