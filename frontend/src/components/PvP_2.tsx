@@ -74,29 +74,21 @@ const PvP_2: React.FC<PvP_2Props> = ({ playerPoint, opponentPoint, setReset, use
 		})
 	}
 
-	// useEffect(() => {
-		// const readLoop = setInterval(() => {
-	// 		socket.on('updatePaddle1', (data: paddle1Type) => {
-	// 			if (data.gameId == gameObj.id) {
-	// 				setPaddle1Y(data.paddlePos);
-	// 			}
-	// 		})
-	// 		socket.on('updateBallX', (data: ballXType) => {
-	// 			if (data.gameId == gameObj.id) {
-	// 				setBallX(data.ballPos);
-	// 			}
-	// 		})
-	// 		socket.on('updateBallY', (data: ballYType) => {
-	// 			if (data.gameId == gameObj.id) {
-	// 				setBallY(data.ballPos);
-	// 			}
-	// 		})
-	// 		socket.off('updatePaddle1');
-	// 		socket.off('updateBallX');
-	// 		socket.off('updateBallY');
-	// 	}, 10);
-	// return () => clearInterval(readLoop);
-	// })
+	useEffect(() => {
+		movePaddles();
+		if (socket != null) {
+			socket.on('gameUpdate', (data: GameType) =>  {
+				console.log("Receiving game update!\n");
+				setPaddle1Y(data.paddle1Y);
+				setPaddle2Y(data.paddle2Y);
+				setBallX(data.ballX);
+				setBallY(data.ballY);
+				setBoostX(data.boostX);
+				setBoostY(data.boostY);
+			})
+		}
+		socket.off('gameUpdate');
+	},)
 
 	useEffect(() => {
 		// const gameLoop = setInterval(() => {
@@ -106,7 +98,7 @@ const PvP_2: React.FC<PvP_2Props> = ({ playerPoint, opponentPoint, setReset, use
 		// }, 10);
 
 		// return () => clearInterval(gameLoop);
-	}, [isGameActive, isGameOver, includeBoost, startX, startY, difficulty, player2Score, player1Score, ballX, ballY, paddle1Y, paddle2Y, movePaddles]);
+	},)
 
 	useEffect(() => {
 		if (socket != null) {
@@ -122,7 +114,7 @@ const PvP_2: React.FC<PvP_2Props> = ({ playerPoint, opponentPoint, setReset, use
 		}
 		// Cleanup function
 		return () => socket.off('matchFound');
-	}, [socket]);
+	},);
 
 	// Track player key input
 	useEffect(() => {
@@ -151,7 +143,7 @@ const PvP_2: React.FC<PvP_2Props> = ({ playerPoint, opponentPoint, setReset, use
 			document.removeEventListener('keydown', handleKeyDown);
 			document.removeEventListener('keyup', handleKeyUp);
 		};
-	}, [isGameActive, isReset, ballX, ballY, paddle1Y]);
+	},);
 
 	return (
 		<div className="relative w-full h-full" ref={PvPRef}>

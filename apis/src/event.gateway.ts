@@ -157,16 +157,20 @@ const moveBall = (game) => {
   game.ballY = game.ballY + game.speedY;		
 };
 
-  startGameLoop = (game) => {
-  const gameInterval = setInterval(() => {
-    moveBall(game);
-    checkCollision(game);
-    this.server.gamesService.update(game);
-    this.server.to(game.id.toString()).emit('gameUpdate', game);
-    if (game.status === 'finished' || game.status === 'aborted') {
-      clearInterval(gameInterval);
-    }
-  }, 1000 / 60); // 60 FPS
+  function startGameLoop(game, server, gamesService) {
+    const gameInterval = setInterval(() => {
+      // console.log(game);
+      moveBall(game);
+      checkCollision(game);
+      gamesService.update(game);
+      // server.GamesService.update(game);
+      // server.to(game.id.toString()).emit('gameUpdate', game);
+      server.to(359).emit('gameUpdate', game);
+      if (game.status === 'finished' || game.status === 'aborted') {
+        clearInterval(gameInterval);
+      }
+    }, 1000); // 1000 / 60 60 FPS
+  }
 
 @WebSocketGateway({
   cors: {
@@ -409,7 +413,7 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
     // Check if both players are ready
     if (roomReadiness[roomId].player1Ready && roomReadiness[roomId].player2Ready) {
       console.log("\x1b[32m", "Starting Game Loop! \n", "\x1b[0m");
-        startGameLoop(data);
+      startGameLoop(data, this.server, this.gamesService);
     }
   }
 

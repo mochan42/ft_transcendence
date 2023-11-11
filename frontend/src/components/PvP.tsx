@@ -90,20 +90,19 @@ const PvP: React.FC<PvPProps> = ({ playerPoint, opponentPoint, setReset, userId,
 	}
 
 	useEffect(() => {
-		if (isGameActive && !isGameOver) {
-			movePaddles();
-			if (socket != null) {
-				socket.on('gameUpdate', (data: GameType) =>  {
-					setPaddle1Y(data.paddle1Y);
-					setPaddle2Y(data.paddle2Y);
-					setBallX(data.ballX);
-					setBallY(data.ballY);
-					setBoostX(data.boostX);
-					setBoostY(data.boostY);
-				})
-
-			}
+		movePaddles();
+		if (socket != null) {
+			socket.on('gameUpdate', (data: GameType) =>  {
+				console.log("Receiving game update!\n");
+				setPaddle1Y(data.paddle1Y);
+				setPaddle2Y(data.paddle2Y);
+				setBallX(data.ballX);
+				setBallY(data.ballY);
+				setBoostX(data.boostX);
+				setBoostY(data.boostY);
+			})
 		}
+		socket.off('gameUpdate');
 	},)
 
 	useEffect(() => {
