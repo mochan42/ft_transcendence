@@ -294,7 +294,23 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
     this.server.emit('declinedMemberSuccess', {new: declinedJoinGroup, all: allMembers });
   }
 
-  
+  @SubscribeMessage('acceptJoinGroup')
+  async handleAcceptJoinGroup(
+    @ConnectedSocket() socket: Socket,
+    @MessageBody() joinGroup: Joinchannel 
+  ) {
+
+    const newMember = { ...joinGroup, status: MEMBER_STATUS.ACCEPTED };
+      const declinedJoinGroup = await this.joinchannelService.update(newMember);
+      await Promise.all([declinedJoinGroup]);
+      const allMembers = await this.joinchannelService.findAll();
+
+      this.server.emit('acceptMemberSuccess', {
+        new: declinedJoinGroup,
+        all: allMembers,
+      });
+
+  }
   /***********************GAME*********************** */
 
   @SubscribeMessage('acceptMatch')

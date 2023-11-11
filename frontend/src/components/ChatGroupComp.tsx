@@ -193,8 +193,8 @@ const ChatGroupDialogInviteEntryComp = (group : Group) => {
     const chatStore = useSelector(selectChatStore)
     
     const onAccept = () => {
-        // API call to backend for update
-
+        const joinGroup = chatStore.chatGroupMembers.find((el) => el.userId.toString() == loggedUserId && el.channelId == group.channelId)
+        socket.emit('acceptJoinGroup', joinGroup);
     }
 
     const onDecline = () => {

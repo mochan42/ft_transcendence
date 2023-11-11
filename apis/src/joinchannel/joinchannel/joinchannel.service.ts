@@ -35,4 +35,8 @@ export class JoinchannelService {
       return this.delete(join[0].id);
     }
   }
+
+  async update(joinChannel: Joinchannel) {
+    return await this.JoinchannelRepo.save(joinChannel);
+  }
 }

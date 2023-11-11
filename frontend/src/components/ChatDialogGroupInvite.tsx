@@ -70,7 +70,6 @@ const ChatGroupInviteList = ()=> {
                 if (groups)
                 {
                     group = GetGroupDataById(groups, el.channelId)
-                    console.log("invite", "-", group)
                     if (group)
                         return <ChatGroupDialogInviteEntryComp 
                                     key={group.channelId} {...group}

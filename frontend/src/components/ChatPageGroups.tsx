@@ -97,7 +97,6 @@ const ChatGroupElement = (group : Group) => {
             {
                 dispatch(updateChatDialogShwMsg(true))
                 console.log("dialog, error, ", chatStore.chatGroupChkPassInpState, chatDialogStore.chatDialogShwMsg)
-                // alert("wrong password! contact group owner (" + groupOwnerUserData?.userName + ") + " + chatStore.chatGroupChkPassInpState)
             }
             dispatch(updateChatGroupChkPassInpState(false));
         }
