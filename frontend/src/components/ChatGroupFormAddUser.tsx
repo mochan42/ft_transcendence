@@ -36,16 +36,15 @@ const Transition = React.forwardRef(function Transition (
 
 const CreateGroupFormAddUser = () => {
     const chatStore = useSelector(selectChatStore);
+    const userId = Cookies.get('userId')
     const dispatch = useDispatch()
+    const socket = getSocket(userId); 
+
     const handleClose = () => { 
         dispatch(updateChatDialogAddUser(false))
     } 
-    const userId = Cookies.get('userId')
-    const socket = getSocket(userId); 
-    if (chatStore.chatActiveGroup == null) {
-        return; 
-    }
-    const groupMembers = getMembers(chatStore.chatGroupMembers, chatStore.chatActiveGroup.channelId);
+
+    const groupMembers = (chatStore.chatActiveGroup) ? getMembers(chatStore.chatGroupMembers, chatStore.chatActiveGroup.channelId): [];
     // fetch user data of all group members
     let memberUsers: User[] = [];
     groupMembers.forEach((member) => {
@@ -59,12 +58,7 @@ const CreateGroupFormAddUser = () => {
     let  nonMembers : TFormMember[] = [];
     nonMemberUsers.map((el) => {
         nonMembers.push({ id: el.id, name: el.userName })
-    })
-
-    console.log('--------nonmembers---------\n');
-    console.log(nonMemberUsers);
-    console.log('------MEMBERSUSERs---------\n');
-    console.log(memberUsers);
+    });
 
     const groupSchema = Yup.object().shape(
         {
