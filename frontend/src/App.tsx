@@ -25,6 +25,7 @@ import GameChallenge from './components/GameChallenge';
 import Game from './components/pages/Game';
 import { ACCEPTED, PENDING } from './APP_CONSTS';
 import Game_2 from './components/pages/Game_2';
+import { HOME_SECTION } from './enums';
 
 
 
@@ -164,6 +165,7 @@ const App: React.FC = () => {
 						userId={userId} state={state}
 						token2fa={token2fa}
 						setToken2fa={setToken2fa}
+						section={HOME_SECTION.PROFILE}
 					/>} />
 					<Route path='/login' element={<Login isAuth={isAuth} setIsAuth={setIsAuth} state={state} />} />
 					<Route path='/login2fa' element= {
@@ -176,6 +178,30 @@ const App: React.FC = () => {
 					<Route path='/game' element={<ProtectedRoute isAuth={isAuth} path='/game' element={<GameSelection userId={userId} />} />} />
 					<Route path='/game/pvp' element={<ProtectedRoute isAuth={isAuth} path='/game/pvp' element={<Game_2 difficulty={game ? game.difficulty : 0} userId={userId ? userId : "0"} includeBoost={game ? game.includeBoost : false} opponent={'player'} status={'found'} game={game ? game : undefined} />} />} />
 					<Route path='/profile' element={<ProtectedRoute isAuth={isAuth} path='/profile' element={<Profile userId={userId} isAuth={isAuth} />} />} />
+					<Route path='/chat' element={<Home
+						userCode={{ code: code, setCode: setCode }}
+						loginState={{ isLogin: isAuth, setIsLogin: setIsAuth }} setUserId={setUserId}
+						userId={userId} state={state}
+						token2fa={token2fa}
+						setToken2fa={setToken2fa}
+						section={HOME_SECTION.CHAT_USER}
+					/>} />
+					<Route path='/group' element={<Home
+						userCode={{ code: code, setCode: setCode }}
+						loginState={{ isLogin: isAuth, setIsLogin: setIsAuth }} setUserId={setUserId}
+						userId={userId} state={state}
+						token2fa={token2fa}
+						setToken2fa={setToken2fa}
+						section={HOME_SECTION.CHAT_GROUP}
+					/>} />
+					<Route path='/gamerequest' element={<Home
+						userCode={{ code: code, setCode: setCode }}
+						loginState={{ isLogin: isAuth, setIsLogin: setIsAuth }} setUserId={setUserId}
+						userId={userId} state={state}
+						token2fa={token2fa}
+						setToken2fa={setToken2fa}
+						section={HOME_SECTION.GAME_REQUEST}
+					/>} />
 					<Route path='/*' element={<PageNotFound />} />
 				</Routes>
 				<div className='shadow-xl flex backdrop-blur-sm bg-white/75 dark:bg-slate-900 h-11 border-t-4 border-slate-300 dark:border-slate-700 items-center justify-evenly'>

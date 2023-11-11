@@ -36,6 +36,7 @@ type TUserState = {
     state: string,
     token2fa: string,
     setToken2fa: React.Dispatch<React.SetStateAction<string>>,
+	section: Number,
 }
 
 
@@ -47,6 +48,7 @@ const Home = ({
 	state,
 	token2fa,
 	setToken2fa,
+	section
 }: TUserState) => {
 
 	const enum AuthResp {
@@ -63,7 +65,7 @@ const Home = ({
 	const [friends, setFriends] = useState<Friend[] | null>(null);
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
-	const [section, setSection] = useState<Number>(0);
+	const [selectSection, setSelectSection] = useState<Number>(section);
 	const [firstLogin, setFirstLogin] = useState<boolean>(false);
 	const [showScreen, setShowScreen] = useState<'default' | 'achievements' | 'friends' | 'stats' | 'userProfile'>('default');
 	const socket = getSocket(userId);
@@ -211,7 +213,7 @@ const Home = ({
 							justifyContent={"space-between"} alignItems={"centered"}
 						>
 							<Stack spacing={2} width={70}>
-								<HomeBoard section={section} setSection={setSection} />
+								<HomeBoard section={selectSection} setSection={setSelectSection} />
 							</Stack>
 							<Stack sx={{
 								gridGap: "0px",
@@ -220,7 +222,7 @@ const Home = ({
 							}}
 							>
 								{
-									(section === HOME_SECTION.PROFILE) ?
+									(selectSection === HOME_SECTION.PROFILE) ?
 										(
 											<Stack direction={"row"} justifyContent={"space-between"}
 												alignItems={"centered"}
@@ -247,9 +249,9 @@ const Home = ({
 										: null
 							
 								}
-								{section === HOME_SECTION.CHAT_USER ? <ChatPageUsers userId={userId} /> : null}
-								{section === HOME_SECTION.CHAT_GROUP ? <ChatPageGroups userId={userId}  /> : null}
-								{section === HOME_SECTION.GAME_REQUEST ? <ChatPageGameRequests userId={userId}  /> : null}
+								{selectSection === HOME_SECTION.CHAT_USER ? <ChatPageUsers userId={userId} /> : null}
+								{selectSection === HOME_SECTION.CHAT_GROUP ? <ChatPageGroups userId={userId}  /> : null}
+								{selectSection === HOME_SECTION.GAME_REQUEST ? <ChatPageGameRequests userId={userId}  /> : null}
 
 							</Stack>
 						</Stack>
