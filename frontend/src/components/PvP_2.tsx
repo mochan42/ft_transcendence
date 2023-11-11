@@ -75,20 +75,30 @@ const PvP_2: React.FC<PvP_2Props> = ({ playerPoint, opponentPoint, setReset, use
 	}
 
 	useEffect(() => {
-		movePaddles();
-		if (socket != null) {
-			socket.on('gameUpdate', (data: GameType) =>  {
-				console.log("Receiving game update!\n");
-				setPaddle1Y(data.paddle1Y);
-				setPaddle2Y(data.paddle2Y);
-				setBallX(data.ballX);
-				setBallY(data.ballY);
-				setBoostX(data.boostX);
-				setBoostY(data.boostY);
-			})
+		// This function will be called whenever the 'gameUpdate' event is emitted from the server
+		const handleGameUpdate = (data: GameType) => {
+		  console.log("Receiving game update!\n");
+		  setPaddle1Y(data.paddle1Y);
+		  setPaddle2Y(data.paddle2Y);
+		  setBallX(data.ballX);
+		  setBallY(data.ballY);
+		  setBoostX(data.boostX);
+		  setBoostY(data.boostY);
+		};
+	  
+		// Register the event listener
+		if (socket) {
+		  socket.on('gameUpdate', handleGameUpdate);
 		}
-		socket.off('gameUpdate');
-	},)
+	  
+		// The clean-up function to remove the event listener when the component is unmounted or dependencies change
+		return () => {
+		  if (socket) {
+			socket.off('gameUpdate', handleGameUpdate);
+		  }
+		};
+	  }, [socket]); // The effect depends on `socket` and will re-run only if `socket` changes
+	  
 
 	useEffect(() => {
 		// const gameLoop = setInterval(() => {
