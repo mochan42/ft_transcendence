@@ -12,7 +12,7 @@ import ChatGroupProfile from "./ChatGroupProfile";
 import { selectChatDialogStore, selectChatStore } from "../redux/store";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
-import { selectConversation, updateChatActiveGroup, updateChatGroupChkPassInpState, updateChatPreActiveGroup } from "../redux/slices/chatSlice";
+import { selectConversation, toggleSidebar, updateChatActiveGroup, updateChatGroupChkPassInpState, updateChatPreActiveGroup } from "../redux/slices/chatSlice";
 import { enChatPrivacy, enChatType } from "../enums";
 import Cookies from 'js-cookie';
 import { updateChatDialogGroupInvite, updateChatDialogInpPasswd, updateChatDialogShwMsg } from "../redux/slices/chatDialogSlice";
@@ -32,17 +32,20 @@ const ChatGroupElement = (group : Group) => {
 
     const joinChannel = () => {
 
-            dispatch(selectConversation({chatRoomId: group.channelId, chatType: enChatType.Group}))
-            dispatch(updateChatActiveGroup(chatStore.chatGroupList.filter((el: any) => {
-                if (el && (el.channelId == group.channelId)) {
-                    return el;
-                }
-            })[0]));
+        dispatch(selectConversation({chatRoomId: group.channelId, chatType: enChatType.Group}))
+        dispatch(updateChatActiveGroup(chatStore.chatGroupList.filter((el: any) => {
+            if (el && (el.channelId == group.channelId)) {
+                return el;
+            }
+        })[0]));
     }
     
     
 
     const HandleOnClick = async () => {
+        if (chatStore.chatSideBar.open) {
+            dispatch(toggleSidebar());
+        }
         dispatch(updateChatPreActiveGroup(group));
         if (group.privacy == enChatPrivacy.PROTECTED && group.channelId != chatStore.chatActiveGroup?.channelId)
         {
@@ -65,7 +68,7 @@ const ChatGroupElement = (group : Group) => {
         {
             joinChannel()
         }
-
+        
     }
 
     useEffect(() => {

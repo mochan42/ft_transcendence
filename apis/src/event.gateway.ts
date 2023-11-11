@@ -36,6 +36,7 @@ import { DatabaseModule } from './database/database.module';
 import { CreateJoinchannelDto } from './joinchannel/dto/create-joinchannel-dto';
 import { join } from 'path';
 import { Channel } from './channels/entities/channel.entity';
+import { Joinchannel } from './joinchannel/entities/joinchannel.entity';
 
 @WebSocketGateway({
   cors: {
@@ -279,6 +280,21 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     this.server.emit('joinChannelSucces', {new: newJoin, all: allMembers });
   }
+
+  @SubscribeMessage('declineJoinGroup')
+  async handleDeclineJoinGroup(
+    @ConnectedSocket() socket: Socket,
+    @MessageBody() joinGroup: Joinchannel
+  ) {
+
+    const declinedJoinGroup = await this.joinchannelService.delete(joinGroup.id);
+    await Promise.all([declinedJoinGroup]);
+    const allMembers = await this.joinchannelService.findAll();
+
+    this.server.emit('declinedMemberSuccess', {new: declinedJoinGroup, all: allMembers });
+  }
+
+  
   /***********************GAME*********************** */
 
   @SubscribeMessage('acceptMatch')

@@ -28,9 +28,10 @@ const ChatGroupList = ()=> {
 
 function GetJoinGroupListForLoggedUser () : JoinGroup[] {
     const userId = Cookies.get('userId') ? Cookies.get('userId') : '';
+    const chatStore = useSelector(selectChatStore);
 
     // api call to fetch all JoinGroup elements for filtering
-    const JoinGroupList = ChatGroupMemberList // use only for development, real data from api
+    const JoinGroupList = chatStore.chatGroupMembers
 
     const affiliatedJoinGroupList = JoinGroupList.filter(el => 
         (userId && (el.userId.toString()) == userId))

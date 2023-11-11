@@ -19,6 +19,7 @@ import { selectConversation, toggleSidebar, updateChatActiveGroup, updateChatGro
 import { TFormMember, User } from '../types';
 import { getUserById } from './ChatConversation';
 import { updateChatDialogAddUser } from '../redux/slices/chatDialogSlice';
+import { getMembers } from '../data/ChatData';
 
 
 /**
@@ -33,7 +34,6 @@ const Transition = React.forwardRef(function Transition (
     }
 );
 
-
 const CreateGroupFormAddUser = () => {
     const chatStore = useSelector(selectChatStore);
     const dispatch = useDispatch()
@@ -42,10 +42,13 @@ const CreateGroupFormAddUser = () => {
     } 
     const userId = Cookies.get('userId')
     const socket = getSocket(userId); 
-
+    if (chatStore.chatActiveGroup == null) {
+        return; 
+    }
+    const groupMembers = getMembers(chatStore.chatGroupMembers, chatStore.chatActiveGroup.channelId);
     // fetch user data of all group members
     let memberUsers: User[] = [];
-    chatStore.chatGroupMembers.forEach((member) => {
+    groupMembers.forEach((member) => {
         memberUsers.push(getUserById(chatStore.chatUsers, member.userId))
     })
 
@@ -58,6 +61,11 @@ const CreateGroupFormAddUser = () => {
         nonMembers.push({ id: el.id, name: el.userName })
     })
 
+    console.log('--------nonmembers---------\n');
+    console.log(nonMemberUsers);
+    console.log('------MEMBERSUSERs---------\n');
+    console.log(memberUsers);
+
     const groupSchema = Yup.object().shape(
         {
             members: Yup.array().min(1, "Must at least 1 member"),
@@ -67,7 +75,7 @@ const CreateGroupFormAddUser = () => {
     )
 
     const defaultValues = { 
-        members: [] ,
+        members: nonMembers ,
         // members: [], // to be replace with list of all users
         // privacy_state: enChatPrivacy.PUBLIC,
     }

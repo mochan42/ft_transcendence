@@ -47,6 +47,7 @@ export default function ChatGroupActionBtn(privacy: string) {
     dispatch(updateChatDialogAddUser(true))
     handleClose()
   }
+  
   const OnShwPasswd = () => {
     dispatch(updateChatDialogShwPasswd(true))
     handleClose()

@@ -131,6 +131,7 @@ const ChatGroupProfile = () => {
                     >
                         {
                             groupMembers.map( (member) => {
+                                console.log('------',member, '---------\n');
                                 const memberUser = (chatStore.chatUsers.filter(el => parseInt(el.id) === member.userId)[0])
                                 if (memberUser)
                                 {

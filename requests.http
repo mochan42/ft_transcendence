@@ -12,7 +12,7 @@ Content-Type: application/json
 ### channels 
 GET https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/channels
 ### Delete channels 
-DELETE  https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/channels/26
+DELETE  https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/channels/28
 
 
 ### ALL members

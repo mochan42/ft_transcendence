@@ -28,7 +28,6 @@ interface IUserData {
 const ChatGroupMemberProfileComp = (user: IUserData) => {
     const theme = useTheme();
     const chatStore = useSelector(selectChatStore);
-    const chatDialogStore = useSelector(selectChatDialogStore);
     const dispatch = useDispatch();
     const userId = Cookies.get('userId') ? Cookies.get('userId') : '';
     // const userId = '0' // for development and testing only
@@ -150,26 +149,10 @@ export function IsUserInGroup (userId: string | undefined, group: Group | null) 
     })
     result = (memberResult.length == 1)? true : false 
     return result
-    
-    // const srcFriendList = chatStore.chatUserFriends.find((el) => {
-    //     if (el.sender == userId && el.receiver == userData.id) {
-    //         return el;
-    //     }
-    //     if (el.sender == userData.id && el.receiver == userId) {
-    //         return el;
-    //     }
-    // });
-    // const srcFriendReqList = chatStore.chatUserFriendRequests.find((el: any) => {
-    //     if (el.sender == userId && el.receiver == userData.id) {
-    //         return el;
-    //     }
-    //     if (el.sender == userData.id && el.receiver == userId) {
-    //         return el;
-    //     }
-    // });
-    // const result: boolean = (srcFriendList || srcFriendReqList) ? true : false;
-    // return result;
 }
+
+const loggedUserId = Cookies.get('userId') ? Cookies.get('userId') : '';
+const socket = getSocket(loggedUserId);
 
 const ChatGroupInfoComp = (group: Group) => {
     const chatStore = useSelector(selectChatStore)
@@ -207,15 +190,16 @@ const ChatGroupInfoComp = (group: Group) => {
 }
 
 const ChatGroupDialogInviteEntryComp = (group : Group) => {
-    const loggedUserId = Cookies.get('userId') ? Cookies.get('userId') : '';
+    const chatStore = useSelector(selectChatStore)
+    
     const onAccept = () => {
         // API call to backend for update
 
     }
 
     const onDecline = () => {
-        // API call to backend for update
-
+        const joinGroup = chatStore.chatGroupMembers.find((el) => el.userId.toString() == loggedUserId && el.channelId == group.channelId)
+        socket.emit('declineJoinGroup', joinGroup);
     }
 
     return (
@@ -268,7 +252,7 @@ const ChatGroupDialogEntryComp = (group : Group) => {
                 channelId: group.channelId,
                 rank: enChatMemberRank.MEMBER,
                 rights: enChatMemberRights.PRIVILEDGED,
-                status: enChatGroupInviteStatus.ACCEPTED
+                status: (btnText == "Join") ? enChatGroupInviteStatus.ACCEPTED : enChatGroupInviteStatus.PENDING
             };
             socket.emit('joinChannel', joinGroup);
         }
