@@ -6,6 +6,8 @@ import Pong from '../Pong'
 import { GameType, User } from '../../types';
 import PvP from '../PvP';
 import { fetchUser } from '../../data/ChatData';
+import { Socket } from 'socket.io-client';
+import { getSocket } from '../../utils/socketService';
 
 
 interface GameProps {
@@ -20,6 +22,7 @@ interface GameProps {
 
 const Game:React.FC<GameProps> = ({ difficulty, userId, includeBoost, opponent, setState, status, game }) => {
 	
+	const socket = getSocket(userId);
 	const [gameActive, setGameActive] = useState(false)
 	const [reset, setReset] = useState(false)
 	const [isGameOver, setIsGameOver] = useState(false)

@@ -17,13 +17,13 @@ interface MatchMakingProps {
 const MatchMaking:React.FC<MatchMakingProps> =({ setGameObj, setMatchFound, socket, userId, setState, difficulty, includeBoost}) => {
 	const [searchingForMatch, setSearchingForMatch] = useState< boolean | undefined >(undefined);
 	const [opponentInfo, setOpponentInfo] = useState< User | null >(null);
-	const url_info = 'https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/users/';
-	const MatchMaking = 'MatchMaking';
+	// const url_info = 'https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/users/';
+	// const MatchMaking = 'MatchMaking';
 	const navigate = useNavigate();
 	let game: GameType = {
 		id: -1,
 		player1: userId ? +userId : 0,
-		player2: 3,
+		player2: 4,
 		difficulty: difficulty,
 		includeBoost: includeBoost,
 		status: 'request',
