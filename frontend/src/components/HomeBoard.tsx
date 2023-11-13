@@ -19,22 +19,26 @@ const ChatBoardBtns = [
     {
 		id:0,
         index: HOME_SECTION.PROFILE,
-        icon: <Browser />,
+		icon: <Browser />,
+		url: '/',
     },
     {
 		id: 1,
         index: HOME_SECTION.CHAT_USER,
-        icon: <ChatCircleDots/>,
+		icon: <ChatCircleDots />,
+		url: '/chat',
     },
     {
 		id: 2,
         index: HOME_SECTION.CHAT_GROUP,
-        icon: <Users/>,
+		icon: <Users />,
+		url: '/group',
     },
     {
 		id: 3,
         index: HOME_SECTION.GAME_REQUEST,
-        icon: <GameController/>,
+		icon: <GameController />,
+		url:'/gamerequest'
     },
     // {
     //     index: HOME_SECTION.GROUP_REQUEST,

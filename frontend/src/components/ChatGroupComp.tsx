@@ -1,7 +1,7 @@
 import React from 'react'
 import { styled, useTheme } from '@mui/material/styles'
 import { Stack, Avatar, Typography, Button, Box, Badge, Divider } from '@mui/material'
-import { Friend, Group, JoinGroup, User } from '../types';
+import { Friend, Group, JoinGroup, TGroupRequestArgs, User } from '../types';
 import { useSelector, useDispatch } from 'react-redux';
 import { selectChatDialogStore, selectChatStore } from '../redux/store';
 import Cookies from 'js-cookie';
@@ -180,7 +180,7 @@ const ChatGroupInfoComp = (group: Group) => {
                             { `Privacy: ${group.privacy }`} 
                         </Typography>
                         <Typography variant="caption"> 
-                            { `Owner: ${groupOwner?.userName}` } 
+                            { `Owner: ${groupOwner?.userNameLoc}` } 
                         </Typography>
                     </Stack>
                 </Stack>
@@ -295,8 +295,11 @@ const ChatGroupDialogEntryComp = (group : Group) => {
     )
 }
 
-const ChatGroupDialogRequestEntryComp = (group : Group) => {
+const ChatGroupDialogRequestEntryComp = (args: TGroupRequestArgs) => {
     const loggedUserId = Cookies.get('userId') ? Cookies.get('userId') : '';
+    const group = args.group;
+    const joinGroup = args.joinGroup;
+    const chatStore = useSelector(selectChatStore)
     const handleRequest = () => {
         
     }
@@ -319,13 +322,33 @@ const ChatGroupDialogRequestEntryComp = (group : Group) => {
             >
                 {/* general group info */}
                 <ChatGroupInfoComp {...group} />
-
+                <Typography variant="caption"> 
+                    { `User: ${getUserById(chatStore.chatUsers, joinGroup.userId)?.userNameLoc}` } 
+                </Typography>
                 {/* button */}
                 <Stack direction={"row"} alignItems={"center"} spacing={2}>
                     {/* join or request button  */}
                     
-                    <Button onClick={handleRequest} variant='contained' disabled > Pending
-                    </Button>
+                        {/* <Button onClick={handleRequest} variant='contained' disabled > Pending
+                        </Button> */}
+                    {
+                        (joinGroup.status == enChatGroupInviteStatus.PENDING) &&
+                        <Button onClick={() => {}} sx={{backgroundColor: "#af9"}}
+                        > Accept
+                        </Button>
+                    }
+                    {
+                        (joinGroup.status == enChatGroupInviteStatus.PENDING) &&
+                        <Button onClick={() => {}} sx={{backgroundColor: "#fa9"}}
+                        > Deny
+                        </Button>
+                    }
+                    {
+                        (joinGroup.status == enChatGroupInviteStatus.INVITE) &&
+                        <Button disabled sx={{backgroundColor: "#eee"}}
+                        > Pending
+                        </Button>
+                    }
                 </Stack>
             </Stack>
         </Box>

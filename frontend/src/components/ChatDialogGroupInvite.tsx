@@ -9,7 +9,7 @@ import { Group, JoinGroup, User } from "../types";
 import { updateChatDialogGroupInvite } from '../redux/slices/chatDialogSlice';
 import { ChatGroupDialogEntryComp, ChatGroupDialogInviteEntryComp, ChatGroupDialogRequestEntryComp } from './ChatGroupComp';
 import { ChatGroupMemberList } from '../data/ChatData';
-import { enChatGroupInviteStatus } from '../enums';
+import { enChatGroupInviteStatus, enChatMemberRank } from '../enums';
 
 const ChatGroupList = ()=> {
     const userId = Cookies.get('userId') ? Cookies.get('userId') : '';
@@ -55,6 +55,16 @@ function GetGroupDataById(groupList: (Group | null)[], groupId: number): Group |
     return group
 }
 
+const FindUserMemberShip = (userId: string | undefined, channelId: number) : JoinGroup | null => {
+    const chatStore = useSelector(selectChatStore)
+    const groupMembers = chatStore.chatGroupMembers.filter(el => el.channelId == channelId);
+    const userMemberShip = groupMembers.find(el => el.userId.toString() == userId);
+    if (!userMemberShip) {
+        return null;
+    }
+    return userMemberShip;
+}
+
 const ChatGroupInviteList = ()=> {
     const chatStore = useSelector(selectChatStore)
     const groups = chatStore.chatGroupList
@@ -83,24 +93,32 @@ const ChatGroupInviteList = ()=> {
 
 const ChatGroupRequestList = ()=> {
     const chatStore = useSelector(selectChatStore)
+    const userId = Cookies.get('userId') ? Cookies.get('userId') : '';
+
     const groups = chatStore.chatGroupList
-    const affliatedJoinGroupList = GetJoinGroupListForLoggedUser()
-    const requestList = affliatedJoinGroupList.filter(el => 
-        el.status == enChatGroupInviteStatus.PENDING
-        )
-    let group = {} as Group | null
+    // const affliatedJoinGroupList = GetJoinGroupListForLoggedUser()
+    // const requestList = affliatedJoinGroupList.filter(el =>
+    //     el.status == enChatGroupInviteStatus.PENDING
+    //     || el.status == enChatGroupInviteStatus.INVITE
+    //     )
+    // let group = {} as Group | null
+    const allRequests = chatStore.chatGroupMembers.filter(el => el.status == enChatGroupInviteStatus.PENDING || enChatGroupInviteStatus.INVITE);
+    const memberShipRequestList = allRequests.filter((el) => {
+        const memberShip = FindUserMemberShip(userId, el.channelId);
+        if (memberShip != null && memberShip.rank != enChatMemberRank.MEMBER) {
+            return el;
+        }
+    });
 
     return (
         <>
-            {requestList.map((el) => {
-                if (groups)
-                {
-                    group = GetGroupDataById(groups, el.channelId)
-                    if (group)
-                        return <ChatGroupDialogRequestEntryComp
-                                    key={group.channelId} {...group}
-                                />
-                }
+            {memberShipRequestList.map((el) => {
+                
+            const group = GetGroupDataById(chatStore.chatGroupList, el.channelId)
+                if (group)
+                    return <ChatGroupDialogRequestEntryComp
+                                key={group.channelId} group={group} joinGroup={el}
+        />
             }) 
             }
         </>

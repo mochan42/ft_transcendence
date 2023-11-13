@@ -19,7 +19,19 @@ DELETE  http://localhost:5000/pong/channels/13
 GET http://localhost:5000/pong/channels/members
 
 ### Delete a member
-DELETE  http://localhost:5000/pong/channels/members/65
+DELETE  http://localhost:5000/pong/channels/members/14
+
+### join channel
+POST http://localhost:5000/pong/joinchannel
+Content-Type: application/json
+
+{
+	"userId": 4,
+	"channelId": 16,
+	"rank": "member",
+	"rights": "priviledged",
+	"status": "pending"
+}
 
 ### Delete all members
 DELETE  http://localhost:5000/pong/chanel-all-members

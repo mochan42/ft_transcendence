@@ -47,7 +47,7 @@ enum enGameDifficulty {
 enum enChatGroupInviteStatus {
   PENDING = "pending",
   ACCEPTED = "accepted",
-  INVITE = "invited"
+  INVITE = "invited",
 }
 
 enum LOG_STATE {

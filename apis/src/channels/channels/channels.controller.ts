@@ -2,6 +2,7 @@ import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { ChannelsService } from '../channels.service';
 import { JoinchannelService } from 'src/joinchannel/joinchannel/joinchannel.service';
 import { CreateChannelDto } from '../dto/create-channel.dto';
+import { CreateJoinchannelDto } from '../../joinchannel/dto/create-joinchannel-dto';
 
 @Controller()
 export class ChannelsController {
@@ -38,5 +39,12 @@ export class ChannelsController {
   @Delete('pong/chanel-all-members')
   removeAll() {
     return this.joinChannelService.deleteAll();
+  }
+
+  @Post('pong/joinchannel')
+  async joinChannel(
+    @Body() joinChannel: CreateJoinchannelDto
+  ) {
+    return this.joinChannelService.create(joinChannel);
   }
 }

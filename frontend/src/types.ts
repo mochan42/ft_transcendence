@@ -16,6 +16,11 @@ type User = {
   lastSeen?: string;
 };
 
+type TGroupRequestArgs = {
+  group: Group,
+  joinGroup: JoinGroup
+};
+
 type UserStats = {
   id: string | null;
   userId: string | null;
@@ -207,4 +212,5 @@ export type {
   boostXType,
   boostYType,
   update,
+  TGroupRequestArgs
 };
