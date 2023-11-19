@@ -91,7 +91,7 @@ const PvP: React.FC<PvPProps> = ({ playerPoint, opponentPoint, setReset, userId,
 
 	useEffect(() => {
 		// This function will be called whenever the 'gameUpdate' event is emitted from the server
-		const handleGameUpdate = (data: GameType, ackFunction: Function) => {
+		const handleGameUpdate = (data: GameType, ack: (responseData: any) => void) => {
 			console.log("Receiving game update!\n");
 			setGameObj(data);
 			// if (data.paddle1Y == paddle1Y) {
@@ -109,7 +109,11 @@ const PvP: React.FC<PvPProps> = ({ playerPoint, opponentPoint, setReset, userId,
 				paddlePos: paddle1YRef.current,
 			}
 			console.log("\n", response.player," ", response.paddlePos);
-			ackFunction(response);
+			// ack(response);
+			ack({
+				player: 2,
+				paddlePos: 50
+			  });
 		};
 		// Register the event listener
 		if (socket) {

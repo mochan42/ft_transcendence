@@ -22,6 +22,7 @@ import { CreateGameDto } from './games/dto/create-game.dto';
 import { Friend } from './friends/entities/friend.entity';
 import { MessageDto } from './chats/dto/message.dto';
 import { Game } from './games/entities/game.entity';
+import { timeout } from 'rxjs';
 
 type update = {
   player: number,
@@ -250,10 +251,7 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
       moveBall(currentGame);
       checkCollision(currentGame);
       this.gamesService.update(currentGame); // You need to handle async/await properly
-      
-      // this.server.timeout(500).emit('gameUpdate', currentGame, (response) => {
-      this.server.to(currentGame.id.toString()).timeout(1000).emit('gameUpdate', currentGame, (response: update) => {
-      // this.server.to(currentGame.id.toString()).emit('gameUpdate', currentGame, (response) => {
+      this.server.to(currentGame.id.toString()).timeout(5000).emit('gameUpdate', currentGame, (response: any) => {
         console.log("Response: ", response);
         if (response === null) {
           console.log("Response empty!\n");
