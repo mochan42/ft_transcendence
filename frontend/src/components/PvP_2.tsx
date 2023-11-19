@@ -53,7 +53,8 @@ const PvP_2: React.FC<PvP_2Props> = ({ playerPoint, opponentPoint, setReset, use
 	const [paddle1Y, setPaddle1Y] = useState(0); // dynamic
 	const [paddle2Y, setPaddle2Y] = useState(0); // dynamic
 	const [paddle2Dir, setPaddle2Dir] = useState<number>(0); // dynamic
-	const [paddle2Speed, setPaddle2Speed] = useState((difficulty + 1) * 2); // dynamic
+	const [paddle2Speed, setPaddle2Speed] = useState(15); // dynamic
+	const paddle2YRef = useRef<number>(0);
 	
 	const movePaddles = () => {
 		setPaddle2Y((prevY) => {
@@ -63,52 +64,55 @@ const PvP_2: React.FC<PvP_2Props> = ({ playerPoint, opponentPoint, setReset, use
 			} else if (newY > (startY * 2) + 30 - paddleLengths[difficulty]) {
 				newY = (startY * 2) + 30 - paddleLengths[difficulty]; // Maximum paddle height is div height - paddle length
 			}
-			if (gameObj) {
-				const updatePaddle = {
-					gameId: gameObj.id,
-					paddlePos: newY,
-				}
-				socket.emit('updatePaddle2', updatePaddle)
-			}
+			// if (gameObj) {
+			// 	const updatePaddle = {
+			// 		gameId: gameObj.id,
+			// 		paddlePos: newY,
+			// 	}
+			// 	socket.emit('updatePaddle2', updatePaddle)
+			// }
+			paddle2YRef.current = newY;
 			return newY;
 		})
 	}
 
 	useEffect(() => {
 		// This function will be called whenever the 'gameUpdate' event is emitted from the server
-		const handleGameUpdate = (data: GameType) => {
-		  console.log("Receiving game update!\n");
-		  setPaddle1Y(data.paddle1Y);
-		  setPaddle2Y(data.paddle2Y);
-		  setBallX(data.ballX);
-		  setBallY(data.ballY);
-		  setBoostX(data.boostX);
-		  setBoostY(data.boostY);
+		const handleGameUpdate = (data: GameType, ackFunction: Function) => {
+			console.log("Receiving game update!\n");
+			setGameObj(data);
+			setPaddle1Y(data.paddle1Y);
+		//   setPaddle2Y(data.paddle2Y);
+			setBallX(data.ballX);
+			setBallY(data.ballY);
+			setBoostX(data.boostX);
+			setBoostY(data.boostY);
+			
+			console.log("Sending back: ", 2, " ", paddle2YRef.current);
+			const response = {
+				player: 2,
+				paddlePos: paddle2YRef.current,
+			}
+			console.log("\n", response.player," ", response.paddlePos);
+			ackFunction(response);
 		};
-	  
 		// Register the event listener
 		if (socket) {
-		  socket.on('gameUpdate', handleGameUpdate);
+			socket.on('gameUpdate', handleGameUpdate);
 		}
-	  
+		
 		// The clean-up function to remove the event listener when the component is unmounted or dependencies change
 		return () => {
-		  if (socket) {
-			socket.off('gameUpdate', handleGameUpdate);
-		  }
+			if (socket) {
+				socket.off('gameUpdate', handleGameUpdate);
+			}
 		};
 	  }, [socket]); // The effect depends on `socket` and will re-run only if `socket` changes
 	  
 
 	useEffect(() => {
-		// const gameLoop = setInterval(() => {
-			if (isGameActive && !isGameOver) {
-				movePaddles();
-			}
-		// }, 10);
-
-		// return () => clearInterval(gameLoop);
-	},)
+			movePaddles();
+	}, [paddle2Dir, paddle2Speed])
 
 	useEffect(() => {
 		if (socket != null) {
@@ -116,15 +120,18 @@ const PvP_2: React.FC<PvP_2Props> = ({ playerPoint, opponentPoint, setReset, use
 				console.log("A matchFound event is triggered for users ", data.player1, " and ", data.player2, "\n\n Current userId: ", userId);
 				if (userId && userId == data.player2.toString()) {
 					console.log("That is us! :D \n")
+					setGameObj(data);
 					setPlayer1Id(data.player1.toString());
 					setPlayer2Id(data.player2.toString());
-					setGameObj(data);
+					setDifficulty(data.difficulty);
+					setIncludeBoost(data.includeBoost);
+					setStartGame(false);
 				}
 			})
 		}
 		// Cleanup function
-		return () => socket.off('matchFound');
-	},);
+		return () => { if (socket) socket.off('matchFound'); };
+	}, [socket, userId]);
 
 	// Track player key input
 	useEffect(() => {

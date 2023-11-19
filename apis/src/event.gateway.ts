@@ -23,6 +23,51 @@ import { Friend } from './friends/entities/friend.entity';
 import { MessageDto } from './chats/dto/message.dto';
 import { Game } from './games/entities/game.entity';
 
+type update = {
+  player: number,
+  paddlePos: number,
+}
+
+class GameStateManager {
+  private games = new Map<number, Game>();
+
+  startGame(gameId: number, initialState: Game) {
+    this.games.set(gameId, initialState);
+  }
+
+  updateGame(gameId: number, updateFn: (game: Game) => void) {
+    const game = this.games.get(gameId);
+    if (game) {
+      updateFn(game);
+    }
+  }
+
+  getGameState(gameId: number): Game | undefined {
+    return this.games.get(gameId);
+  }
+
+  // paddle1Pos: number = 100;
+  // paddle2Pos: number =100;
+  // // New properties to store latest paddle positions from clients
+  // latestPaddle1Pos: number | null = null;
+  // latestPaddle2Pos: number | null = null;
+
+  // // Method to update paddle positions from client inputs
+  // setPaddlePosition(paddle: number, posY: number) {
+  //   if (paddle === 1) {
+  //     this.latestPaddle1Pos = posY;
+  //   } else if (paddle === 2) {
+  //     this.latestPaddle2Pos = posY;
+  //   }
+  // }
+
+  endGame(gameId: number) {
+    this.games.delete(gameId);
+  }
+}
+
+const gameStateManager = new GameStateManager();
+
 const roomReadiness = {};
 
 const paddleLengths = [200, 150, 100, 80, 50];
@@ -194,17 +239,44 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
   ) {}
 
   startGameLoop = (game: Game) => {
+    gameStateManager.startGame(game.id, game); // Initialize game state
+
     const gameInterval = setInterval(() => {
-      moveBall(game);
-      checkCollision(game);
-      this.gamesService.update(game);
-      this.server.to((game.id.toString())).emit('gameUpdate', game);
-      // this.server.emit('gameUpdate', game);
-      if (game.status === 'finished' || game.status === 'aborted') {
+      const currentGame = gameStateManager.getGameState(game.id);
+      if (!currentGame) {
         clearInterval(gameInterval);
+        return;
       }
-    }, 1000 / 60); // 60 FPS
+      moveBall(currentGame);
+      checkCollision(currentGame);
+      this.gamesService.update(currentGame); // You need to handle async/await properly
+      
+      // this.server.timeout(500).emit('gameUpdate', currentGame, (response) => {
+      this.server.to(currentGame.id.toString()).timeout(1000).emit('gameUpdate', currentGame, (response: update) => {
+      // this.server.to(currentGame.id.toString()).emit('gameUpdate', currentGame, (response) => {
+        console.log("Response: ", response);
+        if (response === null) {
+          console.log("Response empty!\n");
+        } else {
+          if (response.player == 1) {
+            currentGame.paddle1Y = response.paddlePos;
+          } else if (response.player == 2) {
+            currentGame.paddle2Y = response.paddlePos;
+          } else {
+            console.log("Error occurred passing through paddle position!\n", response);
+          }
+        }
+          
+        this.gamesService.update(game);
+      });
+
+      if (currentGame.status === 'finished' || currentGame.status === 'aborted') {
+        clearInterval(gameInterval);
+        gameStateManager.endGame(currentGame.id);
+      }
+    }, 1000 / 2); // 30 FPS
   }
+
 
   async handleConnection(@ConnectedSocket() socket: Socket, ...args: any[]) {
     const user = await this.chatsService.getUserFromSocket(socket);
@@ -430,27 +502,45 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
   }
 
-  @SubscribeMessage('updatePaddle1')
-  async handleUpdatePaddle1(
-    @ConnectedSocket() socket: Socket,
-    @MessageBody() data: { roomId: number, newY: number },
-  ){
-    const game = await this.gamesService.findOne(data.roomId); // Implement this function
-    if (game) {
-        game.paddle1Y = data.newY;
-    }
-    this.gamesService.update(game);
-  }
+//   @SubscribeMessage('updatePaddle1')
+//   async handleUpdatePaddle1(
+//   @ConnectedSocket() socket: Socket,
+//   @MessageBody() data: { gameId: number, newY: number },
+// ) {
+//   gameStateManager.setPaddlePosition(1, data.newY);
+//   // The updateGame method expects a function that updates the game state
+//   // gameStateManager.updateGame(data.gameId, (game) => {
+//   //   if (game) {
+//   //     game.paddle1Y = data.newY;
+//   //     // Emit the updated game state to all clients in the room
+//   //     this.server.to(data.gameId.toString()).emit('gameUpdate', game);
+//   //   }
+//   // });
 
-  @SubscribeMessage('updatePaddle2')
-  async handleUpdatePaddle2(
-    @ConnectedSocket() socket: Socket,
-    @MessageBody() data: { roomId: number, newY: number },
-  ){
-    const game = await this.gamesService.findOne(data.roomId); // Implement this function
-    if (game) {
-        game.paddle2Y = data.newY;
-    }
-    this.gamesService.update(game);
-  }
+//   // If you need to save the game state to the database, do it here
+//   // after the in-memory state has been updated
+//   // const game = gameStateManager.getGameState(data.gameId);
+//   // if (game) {
+//   //   await this.gamesService.update(game);
+//   // }
+// }
+
+  // @SubscribeMessage('updatePaddle2')
+  // async handleUpdatePaddle2(
+  //   @ConnectedSocket() socket: Socket,
+  //   @MessageBody() data: { roomId: number, newY: number },
+  // ) {
+  //   gameStateManager.setPaddlePosition(2, data.newY);
+  //   // gameStateManager.updateGame(data.roomId, (game) => {
+  //   //   game.paddle2Y = data.newY;
+  //   //   // Emit update immediately
+  //   //   this.server.to(data.roomId.toString()).emit('gameUpdate', game);
+  //   // });
+
+  //   // // Assuming gamesService.update is properly handling async operations
+  //   // const game = gameStateManager.getGameState(data.roomId);
+  //   // if (game) {
+  //   //   await this.gamesService.update(game);
+  //   // }
+  // }
 }
