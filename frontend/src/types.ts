@@ -134,7 +134,11 @@ type GameType = {
   boostY: number;
   ballX: number;
   ballY: number;
+  boostStartX?: number;
+  boostStartY?: number;
   isBoost?: boolean;
+  isReset?: boolean;
+  isGameOver?: boolean;
   gameMaker?: number;
   paddle1Speed?: number,
   paddle2Speed?: number;

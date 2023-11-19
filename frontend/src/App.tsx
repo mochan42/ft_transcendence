@@ -11,7 +11,6 @@ import Profile from './components/pages/Profile';
 import About from './components/pages/About';
 import PageNotFound from './components/pages/PageNotFound';
 import Footer from './components/Footer';
-import Layout from './components/pages/Layout';
 import GameSelection from './components/pages/GameSelection';
 import Cookies from 'js-cookie';
 import { Utils__isAPICodeAvailable } from './utils/utils__isAPICodeAvailable';
@@ -142,13 +141,13 @@ const App: React.FC = () => {
 	useEffect(() => {
 		if (socket != null) {
 			socket.on('invitedToMatch', (data: any) => {
-			console.log("Invitation received!", userId, "   ", data.player2, "\n\n");
-			if (data.player2 == userId) {
-				setChallenge(true);
-				console.log("I got invited to a game! \n\n");
-				setGame(data);
-			}
-			console.log("Match invitation received! \n\n", data);
+				console.log("Invitation received!", userId, "   ", data.player2, "\n\n");
+				if (data.player2 == userId) {
+					setChallenge(true);
+					console.log("I got invited to a game! \n\n");
+					setGame(data);
+					console.log("Match invitation received! \n\n", data);
+				}
 			});
 		} else {
 			console.log("Missing socket\n");

@@ -4,6 +4,7 @@ import SmallHeading from '../ui/SmallHeading'
 import { GameType, User } from '../../types';
 import { fetchUser } from '../../data/ChatData';
 import PvP_2 from '../PvP_2';
+import { getSocket } from '../../utils/socketService';
 
 
 interface GameProps {
@@ -16,8 +17,10 @@ interface GameProps {
 	game?: GameType;
 }
 
-const Game_2:React.FC<GameProps> = ({ difficulty, userId, includeBoost, opponent, setState, status, game }) => {
+const Game_2:React.FC<GameProps> = ({ difficulty, userId, includeBoost, opponent, setState, status }) => {
 	
+	const socket = getSocket(userId);
+	const [gameObj, setGameObj] = useState< GameType | undefined >(undefined);
 	const [gameActive, setGameActive] = useState(false)
 	const [reset, setReset] = useState(false)
 	const [isGameOver, setIsGameOver] = useState(false)
@@ -135,7 +138,7 @@ const Game_2:React.FC<GameProps> = ({ difficulty, userId, includeBoost, opponent
 				</div>
 			</div>
 			<div className='w-full h-5/6 border-t-2 border-l-2 border-r-2 border-slate-700 black:border-slate-200 bg-slate-400 dark:text-slate-200 text-center'>
-				<PvP_2 isReset={reset} setReset={setReset} userId={userId} isGameActive={gameActive} selectedDifficulty={difficulty} isGameOver={isGameOver} player1Score={player1Score} player2Score={player2Score} setIsGameOver={setIsGameOver} setState={setState} playerPoint={playerPoint} opponentPoint={opponentPoint} setPlayer1Id={setPlayer1Id} setPlayer2Id={setPlayer2Id} setPlayer1Info={setPlayer1Info} setPlayer2Info={setPlayer2Info} setPlayer1Score={setPlayer1Score} setPlayer2Score={setPlayer2Score} game={game}/>
+				<PvP_2 isReset={reset} setReset={setReset} userId={userId} isGameActive={gameActive} selectedDifficulty={difficulty} isGameOver={isGameOver} player1Score={player1Score} player2Score={player2Score} setIsGameOver={setIsGameOver} setState={setState} playerPoint={playerPoint} opponentPoint={opponentPoint} setPlayer1Id={setPlayer1Id} setPlayer2Id={setPlayer2Id} setPlayer1Info={setPlayer1Info} setPlayer2Info={setPlayer2Info} setPlayer1Score={setPlayer1Score} setPlayer2Score={setPlayer2Score} game={gameObj}/>
 			</div>
 		</div>
 	)
