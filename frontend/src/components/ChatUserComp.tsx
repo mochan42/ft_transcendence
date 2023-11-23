@@ -205,19 +205,33 @@ const ChatUserFriendRequestComp = (reqData : User) => {
             }
         })[0];
         socket.emit('acceptFriend', stranger.id);
+        socket.once('newFriend', (data: any) => {
+            if (data.new.id !== stranger.id) {
+                return ;
+            }
+            const newFriendRequestList = fetchAllUsersFriends(PENDING, data.all);
+            const newFriendList = fetchAllUsersFriends(ACCEPTED, data.all);
+            dispatch(updateChatUserFriendRequests(newFriendRequestList));
+            dispatch(updateChatUserFriends(newFriendList));
+		});
         dispatch(updateStateUserFriendDialog(false));
     }
 
     const onDeny = () => {
         // fetch user from user list
-        const stranger = chatStore.chatUserFriendRequests.filter((el: any) => {
+        const stranger = chatStore.chatUserFriendRequests.filter((el: Friend) => {
             if (el.sender == reqData.id && el.receiver == userId) {
                 return el;
             }
         })[0];
-        socket.emit('denyFriend', stranger.id);
+        if (stranger != null) {
+            socket.emit('denyFriend', stranger.id);
+            socket.once('deniedFriend', (data: any) => {
+                const newFriendRequestList = fetchAllUsersFriends(PENDING, data.all);
+                dispatch(updateChatUserFriendRequests(newFriendRequestList));
+            });
+        }
         dispatch(updateStateUserFriendDialog(false));
-
     }
 
     useEffect(() => {

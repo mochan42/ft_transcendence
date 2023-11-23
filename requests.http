@@ -12,25 +12,25 @@ Content-Type: application/json
 ### channels 
 GET http://localhost:5000/pong/channels
 ### Delete channels 
-DELETE  http://localhost:5000/pong/channels/13
+DELETE  http://localhost:5000/pong/channels/18
 
 
 ### ALL members
 GET http://localhost:5000/pong/channels/members
 
 ### Delete a member
-DELETE  http://localhost:5000/pong/channels/members/26
+DELETE  http://localhost:5000/pong/channels/members/40
 
 ### join channel
 POST http://localhost:5000/pong/joinchannel
 Content-Type: application/json
 
 {
-	"userId": 4,
-	"channelId": 16,
-	"rank": "member",
-	"rights": "priviledged",
-	"status": "accepted"
+    "userId": 13,
+    "channelId": 19,
+    "rank": "member",
+    "rights": "banned",
+    "status": "accepted"
 }
 
 ### Delete all members
@@ -225,7 +225,7 @@ Content-Type: application/json
 }
 
 ### update friend relation
-PATCH   http://localhost:5000/pong/friends/9
+PATCH   http://localhost:5000/pong/friends/
 Content-Type: application/json
 
 {
@@ -236,7 +236,7 @@ Content-Type: application/json
 }
 
 ### delete friendship
-DELETE http://localhost:5000/pong/friends/10
+DELETE http://localhost:5000/pong/friends/36
 
 ### aut
 POST http://localhost:5000/pong/users/auth

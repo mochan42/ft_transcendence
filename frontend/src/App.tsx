@@ -112,10 +112,7 @@ const App: React.FC = () => {
 				dispatch(updateChatUserFriends(newFriendList));
 			});
 			
-			socket.on('deniedFriend', async (data: any) => {
-				if (data.new.sender != userId && data.new.received != userId) {
-					return ;
-				}
+			socket.on('deniedFriend', (data: any) => {
 				const newFriendRequestList = fetchAllUsersFriends(PENDING, data.all);
 				dispatch(updateChatUserFriendRequests(newFriendRequestList));
 			});

@@ -194,6 +194,7 @@ const ChatGroupDialogInviteEntryComp = (group : Group) => {
     
     const onAccept = () => {
         const joinGroup = chatStore.chatGroupMembers.find((el) => el.userId.toString() == loggedUserId && el.channelId == group.channelId)
+        console.log('JoinGROUp', joinGroup);
         socket.emit('acceptJoinGroup', joinGroup);
     }
 

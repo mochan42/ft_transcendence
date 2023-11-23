@@ -361,7 +361,9 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @MessageBody() friendShip: number,
   ) {
     const isDelete = await this.friendsService.remove(friendShip);
-    socket.emit('deniedFriend', isDelete);
+    await Promise.all([isDelete]);
+    const allFriends = await this.friendsService.findAll();
+    this.server.emit('deniedFriend', { all: allFriends });
   }
 
   @SubscribeMessage('createChannel')
@@ -403,6 +405,7 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
       });
       await Promise.all(joints);
     }
+    
     const allMembers = await this.joinchannelService.findAll();
     const allChannels = await this.channelsService.findAll();
     this.server.emit('newChannel', {
@@ -460,7 +463,7 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
           rank: MEMBER_RANK.MEMBER,
           rights: MEMBER_RIGHTS.PRIVILEDGED,
           userId: el.id,
-          status: MEMBER_STATUS.PENDING,
+          status: MEMBER_STATUS.INVITE,
         };
         return await this.joinchannelService.create(newMember);
       });

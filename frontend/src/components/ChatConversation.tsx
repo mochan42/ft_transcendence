@@ -9,13 +9,14 @@ import { toggleSidebar, updateChatUserMessages, updateSidebarType } from "../red
 import { useDispatch, useSelector } from "react-redux";
 import { selectChatStore } from "../redux/store";
 import { ChatProps } from "../types";
-import { enChatType } from "../enums";
+import { enChatMemberRank, enChatMemberRights, enChatType } from "../enums";
 import { getSocket } from '../utils/socketService';
 import { PRIVATE, GROUP } from '../APP_CONSTS';
 import { fetchAllDirectMessages, fetchAllGroupMessages } from "./ChatPageUsers";
 import img42 from '../img/icon_42.png'
 import Cookies from "js-cookie";
 import { BACKEND_URL } from "../data/Global";
+import { FindUserMemberShip } from "./ChatDialogGroupInvite";
 
 export const getUserById = (users: User[], id: any) => {
     return users.filter((user: User) => id == user.id)[0];
@@ -48,7 +49,17 @@ const ChatConversation: React.FC<ChatProps> = ({ userId }) => {
     const [username, setUserName] = useState<string>('');
     const messageContainerRef = useRef<HTMLDivElement | null>(null);
     const url_info = `${BACKEND_URL}/pong/users/` + userId;
-	
+    
+    const IsPriviledged = (): boolean => {
+        const chatType = chatStore.chatType;
+        if (chatType === enChatType.Group) {
+            const memberShip = userId && FindUserMemberShip(userId, chatStore.chatActiveGroup!.channelId);
+            if (!memberShip) return false;
+            if (memberShip.rights !== enChatMemberRights.PRIVILEDGED) return false;
+        }
+        return true;
+    }
+
 	const scrollToBottom = () => {
 		if (messageContainerRef.current) {
             messageContainerRef.current.scrollIntoView()
@@ -71,10 +82,14 @@ const ChatConversation: React.FC<ChatProps> = ({ userId }) => {
         }
     };
 
+    const isPriviledged = IsPriviledged();
+    
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter') {
             e.preventDefault();
-            onMessageSubmit(e);
+            if (isPriviledged) {
+                onMessageSubmit(e);
+            }
         }
     }
     
@@ -186,14 +201,16 @@ const ChatConversation: React.FC<ChatProps> = ({ userId }) => {
 
 				<div className="h-1/6 bg-white">
 					<div className="flex items-center w-full">
-						<input
-							placeholder="Type here..."
-							className="flex-1 px-3 py-2 text-gray-800 rounded border border-gray-300 focus:outline-none focus:border-yellow-400"
-							value={userMessage}
-							onChange={(e) => setUserMessage(e.target.value)}
-							onKeyDown={handleKeyDown}
-						/>
-						<button
+                            <input
+                                disabled={isPriviledged === true ? false: true}
+                                placeholder="Type here..."
+                                className="flex-1 px-3 py-2 text-gray-800 rounded border border-gray-300 focus:outline-none focus:border-yellow-400"
+                                value={userMessage}
+                                onChange={(e) => setUserMessage(e.target.value)}
+                                onKeyDown={handleKeyDown}
+                            />
+                        <button 
+                            disabled={isPriviledged === true ? false: true}
 							onClick={onMessageSubmit}
 							className="bg-yellow-400 text-white px-4 py-2 rounded hover:bg-yellow-500"
 						>
