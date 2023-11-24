@@ -4,7 +4,7 @@ import { Stack, Avatar, Typography, Button, Box, Badge } from '@mui/material'
 import { Friend, User } from '../types';
 import { useSelector, useDispatch } from 'react-redux';
 import { selectChatStore } from '../redux/store';
-import { toggleSidebar, updateStateUserFriendDialog, updateChatUserFriendRequests } from '../redux/slices/chatSlice';
+import { toggleSidebar, updateStateUserFriendDialog, updateChatUserFriendRequests, updateChatBlockedUsers } from '../redux/slices/chatSlice';
 import { updateChatUserFriends, updateChatActiveUser } from '../redux/slices/chatSlice';
 import { ACCEPTED, PENDING } from '../APP_CONSTS';
 import { fetchAllUsers, fetchAllFriends, fetchAllUsersFriends } from '../data/ChatData';
@@ -275,4 +275,68 @@ const ChatUserFriendRequestComp = (reqData : User) => {
     )
 }
 
-export { ChatUserComp, ChatUserFriendComp, ChatUserFriendRequestComp } 
+const ChatUserBlockedComp = (userData : User) => {
+    const theme = useTheme()
+    const chatStore = useSelector(selectChatStore);
+    const dispatch = useDispatch()
+    const userId = Cookies.get('userId') ? Cookies.get('userId') : '';
+
+    const HandleUnblock = () => {
+        // filter out the user to unblock from block list
+        const loggedUserBlockList = chatStore.chatBlockedUsers
+            .filter((el)=> el!.blockerUserId.toString() === userId)
+            .filter((el)=> el!.blockeeUserId.toString() !== userData.id)
+
+        dispatch(updateChatBlockedUsers(loggedUserBlockList));
+        // API CALL
+        // update block list in backend
+    }
+    useEffect(() => {
+
+    }, [chatStore.chatUserFriendDialogState, chatStore.chatBlockedUsers]);
+
+    return (
+        <StyledChatBox sx={{
+            width : "100%",
+            borderRadius: 1,
+            backgroundColor: theme.palette.background.paper,
+            p: 2
+        }}
+        >
+            <Stack
+                direction={"row"} 
+                alignItems={"center"} 
+                justifyContent="space-between"
+            >
+                <Stack direction={"row"} alignItems={"center"} spacing={2}>
+                    {" "}
+                    {userData.currentState != LOG_STATE.OFFLINE ? 
+                        (
+                            <Badge
+                                variant='dot'
+                                anchorOrigin={{ vertical:"bottom", horizontal:"right"}}
+                                // overlap='cirular'
+                            >
+                                {/* <Avatar alt={userData.userName} src={userData.img} /> */}
+                                <Avatar alt="image" src={userData.avatar} />
+                            </Badge>
+                         )
+                         : (<Avatar alt="image" src={userData.avatar} />)
+                        //  : (<Avatar alt={userData.userName} src={userData.img} />)
+                    }
+                    <Stack>
+                        <Typography variant="subtitle2"> { userData.userNameLoc   }</Typography>
+                    </Stack>
+                </Stack>
+                <Stack direction={"row"} alignItems={"center"} spacing={2}>
+                    <Button 
+                        onClick={() => HandleUnblock()}
+                        sx={{backgroundColor: "#eee"}}
+                    > Unblock
+                    </Button>
+                </Stack>
+            </Stack>
+        </StyledChatBox>
+    )
+}
+export { ChatUserComp, ChatUserFriendComp, ChatUserFriendRequestComp, ChatUserBlockedComp } 

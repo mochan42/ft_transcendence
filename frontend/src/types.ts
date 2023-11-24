@@ -80,6 +80,12 @@ type JoinGroup = {
   status: string
 };
 
+type Block = {
+  id: number;
+  blockerUserId: number;
+  blockeeUserId: number;
+};
+
 type Message = {
   id: number;
   user: string;
@@ -212,5 +218,6 @@ export type {
   boostXType,
   boostYType,
   update,
-  TGroupRequestArgs
+  TGroupRequestArgs,
+  Block
 };
