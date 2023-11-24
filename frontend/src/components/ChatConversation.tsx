@@ -2,20 +2,21 @@ import { useRef, useState, useEffect } from "react";
 import { Box, Stack, IconButton, Typography, Divider, Avatar, Badge } from "@mui/material";
 import { CaretDown } from "phosphor-react";
 import { Socket } from "socket.io-client";
-import { ChatMessageProps, User, Chat } from "../types";
+import { ChatMessageProps, User, Chat, Block } from "../types";
 import ChatMessage from "./ChatMessage";
 import { friendToUserType, fetchAllMessages  } from "../data/ChatData";
 import { toggleSidebar, updateChatUserMessages, updateSidebarType } from "../redux/slices/chatSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { selectChatStore } from "../redux/store";
 import { ChatProps } from "../types";
-import { enChatType } from "../enums";
+import { enChatMemberRights, enChatType } from "../enums";
 import { getSocket } from '../utils/socketService';
 import { PRIVATE, GROUP } from '../APP_CONSTS';
 import { fetchAllDirectMessages, fetchAllGroupMessages } from "./ChatPageUsers";
 import img42 from '../img/icon_42.png'
 import Cookies from "js-cookie";
 import { BACKEND_URL } from "../data/Global";
+import { set } from "react-hook-form";
 
 export const getUserById = (users: User[], id: any) => {
     return users.filter((user: User) => id == user.id)[0];
@@ -47,6 +48,7 @@ const ChatConversation: React.FC<ChatProps> = ({ userId }) => {
     const [messages, setMessages] = useState<ChatMessageProps[]>([]);
     const [username, setUserName] = useState<string>('');
     const messageContainerRef = useRef<HTMLDivElement | null>(null);
+    const [blockState, setBlockState] = useState<boolean>(false);
     const url_info = `${BACKEND_URL}/pong/users/` + userId;
 	
 	const scrollToBottom = () => {
@@ -77,17 +79,45 @@ const ChatConversation: React.FC<ChatProps> = ({ userId }) => {
             onMessageSubmit(e);
         }
     }
+
+    const IsActiveUserBlocked = () => {
+
+        const blockEntity = chatStore.chatBlockedUsers
+            .filter((el) => el!.blockerUserId.toString() == userId)
+            .filter((el) => el!.blockeeUserId == chatStore.chatActiveUser!.id)
+        
+        if (blockEntity.length > 0) setBlockState(true);
+    }
+
+    const IsLoggedUserBlockedInGroup = () => {
+        const memberSearchResult = chatStore.chatGroupMembers!
+            .filter((el) => (el.channelId == chatStore.chatActiveGroup!.channelId))
+            .filter((el) => el.userId.toString() == userId)
+        
+        if (memberSearchResult.length > 0 &&
+            memberSearchResult[0].status != enChatMemberRights.PRIVILEDGED)
+        {
+            setBlockState(true);
+        }
+
+    }
     
     useEffect(() => {
         if (chatStore.chatType == enChatType.OneOnOne) {
             const newDirectMessages = fetchAllDirectMessages(chatStore.chatUserMessages, userId, chatStore.chatRoomId);
             setMessages(formatMessages(chatStore.chatUsers, newDirectMessages, userId));
+            IsActiveUserBlocked();
+        }
+        if (chatStore.chatType == enChatType.Group) {
+            IsLoggedUserBlockedInGroup();
         }
         else if (chatStore.chatRoomId != null) {
             const newGroupMessages = fetchAllGroupMessages(chatStore.chatUserMessages, +chatStore.chatRoomId);
             setMessages(formatMessages(chatStore.chatUsers, newGroupMessages, userId));
         }
-    }, [chatStore.chatUserMessages, chatStore.chatRoomId, chatStore.chatType]);
+    }, [chatStore.chatUserMessages, chatStore.chatRoomId,
+        chatStore.chatType, chatStore.chatBlockedUsers,
+        chatStore.chatGroupMembers]);
 
     useEffect(() => {
         scrollToBottom();
@@ -186,7 +216,8 @@ const ChatConversation: React.FC<ChatProps> = ({ userId }) => {
 
 				<div className="h-1/6 bg-white">
 					<div className="flex items-center w-full">
-						<input
+						<input 
+                            disabled = {blockState}
 							placeholder="Type here..."
 							className="flex-1 px-3 py-2 text-gray-800 rounded border border-gray-300 focus:outline-none focus:border-yellow-400"
 							value={userMessage}
@@ -194,6 +225,7 @@ const ChatConversation: React.FC<ChatProps> = ({ userId }) => {
 							onKeyDown={handleKeyDown}
 						/>
 						<button
+                            disabled = {blockState}
 							onClick={onMessageSubmit}
 							className="bg-yellow-400 text-white px-4 py-2 rounded hover:bg-yellow-500"
 						>
