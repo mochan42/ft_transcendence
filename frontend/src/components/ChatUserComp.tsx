@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { Dispatch, useEffect } from 'react'
 import { styled, useTheme } from '@mui/material/styles'
 import { Stack, Avatar, Typography, Button, Box, Badge } from '@mui/material'
 import { Friend, User } from '../types';
@@ -11,6 +11,8 @@ import { fetchAllUsers, fetchAllFriends, fetchAllUsersFriends } from '../data/Ch
 import Cookies from 'js-cookie';
 import { getSocket } from '../utils/socketService';
 import { LOG_STATE } from '../enums';
+import { IChatState } from '../redux';
+import { AnyAction } from 'redux';
 
 const StyledChatBox = styled(Box)(({ theme }) => ({
     "&:hover": {
@@ -19,11 +21,32 @@ const StyledChatBox = styled(Box)(({ theme }) => ({
 
 }));
 
+function HandleOnSendMsg(userData:User, chatStore:IChatState, dispatch:Dispatch<AnyAction>){
+    const userId = Cookies.get('userId') ? Cookies.get('userId') : '';
+    const user = chatStore.chatUserFriends.filter((el) => {
+        if (el.sender == userData.id && el.receiver == userId) {
+            return el;
+        }
+        if (el.receiver == userData.id && el.sender == userId) {
+            return el;
+        }
+    })[0];
+    // // Create new list which excludes found user
+    // const newFriendListExc = chatStore.chatUserFriends
+    //     .filter(el => el.sender != user.sender && el.receiver != user.receiver)
+    // // Add user to the top of the new friend list
+    // const newFriendListInc = [user, ...newFriendListExc]
+    // // update the store data for user friend list
+    // dispatch(updateChatUserFriends(newFriendListInc));
+    dispatch(updateChatActiveUser(user));
+    // close the dialog
+    dispatch(updateStateUserFriendDialog(false)); 
+}
 
 const ChatUserComp = (userData : User) => {
     const theme = useTheme();
     const chatStore = useSelector(selectChatStore);
-    const dispatch = useDispatch();
+    const dispatch = useDispatch()
     const userId = Cookies.get('userId') ? Cookies.get('userId') : '';
     const socket = getSocket(userId);
 
@@ -91,13 +114,19 @@ const ChatUserComp = (userData : User) => {
                         <Typography variant="subtitle2"> { userData.userNameLoc }</Typography>
                     </Stack>
                 </Stack>
-                <Stack direction={"row"} alignItems={"center"} spacing={2}>
-                    <Button
-                        disabled={isUserKnown()}
-                        onClick={() => onSendRequest()}
-                        sx={{backgroundColor: "#eee"}}
-                    > Send Request
-                    </Button>
+                {/* button */}
+                <Stack direction={"row"} spacing={2}>
+                        <Button 
+                            onClick={() => HandleOnSendMsg(userData, chatStore, dispatch)}
+                            sx={{backgroundColor: "#eee"}}
+                        > Send Msg
+                        </Button>
+                        <Button
+                            disabled={isUserKnown()}
+                            onClick={() => onSendRequest()}
+                            sx={{backgroundColor: "#eee"}}
+                        > Send Request
+                        </Button>
                 </Stack>
 
             </Stack>
@@ -109,29 +138,6 @@ const ChatUserFriendComp = (userData : User) => {
     const theme = useTheme()
     const chatStore = useSelector(selectChatStore);
     const dispatch = useDispatch()
-    const userId = Cookies.get('userId') ? Cookies.get('userId') : '';
-
-    const onSendMsg = ()=> {
-        const user = chatStore.chatUserFriends.filter((el) => {
-            if (el.sender == userData.id && el.receiver == userId) {
-                return el;
-            }
-            if (el.receiver == userData.id && el.sender == userId) {
-                return el;
-            }
-        })[0];
-
-        // // Create new list which excludes found user
-        // const newFriendListExc = chatStore.chatUserFriends
-        //     .filter(el => el.sender != user.sender && el.receiver != user.receiver)
-        // // Add user to the top of the new friend list
-        // const newFriendListInc = [user, ...newFriendListExc]
-        // // update the store data for user friend list
-        // dispatch(updateChatUserFriends(newFriendListInc));
-        dispatch(updateChatActiveUser(user));
-        // close the dialog
-        dispatch(updateStateUserFriendDialog(false)); 
-    }
 
     useEffect(() => {
 
@@ -172,7 +178,7 @@ const ChatUserFriendComp = (userData : User) => {
                 </Stack>
                 <Stack direction={"row"} alignItems={"center"} spacing={2}>
                     <Button 
-                        onClick={() => onSendMsg()}
+                        onClick={() => HandleOnSendMsg(userData, chatStore, dispatch)}
                         sx={{backgroundColor: "#eee"}}
                     > Send Msg
                     </Button>

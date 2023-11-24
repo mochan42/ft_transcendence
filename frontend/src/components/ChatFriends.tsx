@@ -8,26 +8,26 @@ import { ChatUserComp, ChatUserFriendComp, ChatUserFriendRequestComp } from './C
 import Cookies from 'js-cookie';
 import { User } from "../types";
 import { ACCEPTED, PENDING } from '../APP_CONSTS';
+import { dummyUsers } from '../data/ChatData';
 
 const ChatUsersList = ()=> {
-    const dispatch = useDispatch();
     const userId = Cookies.get('userId') ? Cookies.get('userId') : '';
     const chatStore = useSelector(selectChatStore)
 
     return (
         <>
-            {chatStore.chatUsers
-                .filter((user) => user.id != userId)
+            {/* {dummyUsers.filter((user) => user.id != userId) */} 
+            {chatStore.chatUsers .filter((user) => user.id != userId)
                 .map((el) => {
+                    // console.log(el);
                     return <ChatUserComp key={el.id} {...el} />
                 })
-            };
+            }
         </>
-    );
+    )
 }
 
 const ChatUserFriendsList = ()=> {
-    const dispatch = useDispatch();
     const userId = Cookies.get('userId') ? Cookies.get('userId') : '';
     const chatStore = useSelector(selectChatStore)
 
@@ -46,13 +46,12 @@ const ChatUserFriendsList = ()=> {
                         return <ChatUserFriendComp key={friend.id} {...friend} />
                     }
                 })
-            };
+            }
         </>
-    );
+    )
 }
 
 const ChatUserFriendRequestsList = ()=> {
-    const dispatch = useDispatch();
      const userId = Cookies.get('userId') ? Cookies.get('userId') : '';
     
     const chatStore = useSelector(selectChatStore)
@@ -71,7 +70,7 @@ const ChatUserFriendRequestsList = ()=> {
                         return <ChatUserFriendRequestComp key={friendReq.id} {...friendReq}/>
                     }
                  })
-            };
+            }
         </>
     );
 }
@@ -105,6 +104,7 @@ const ChatFriends = ()=>{
                     <Tab label={"Users"} />
                     <Tab label={"Friends"} />
                     <Tab label={"Requests"} />
+                    {/* <Tab label={"Blocked"} /> */}
                 </Tabs>
             </Stack>
             {/* Dialog content  */}
@@ -136,10 +136,5 @@ const ChatFriends = ()=>{
         </>
     )
 }
-
-
-
-
-
 
 export default ChatFriends
