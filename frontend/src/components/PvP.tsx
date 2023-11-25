@@ -111,7 +111,7 @@ const PvP: React.FC<PvPProps> = ({ playerPoint, opponentPoint, setReset, userId,
 			console.log("\n", response.player, " ", response.paddlePos);
 			
 			// ack(response);
-			socket.on('ackResponse', ({ player: 2, paddlePos: 50 }));
+			socket.emit('ackResponse', ({ player: 2, paddlePos: 50 }));
 		};
 		// Register the event listener
 		if (socket) {

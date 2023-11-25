@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { styled, useTheme } from '@mui/material/styles'
 import { Stack, Avatar, Typography, Button, Box, Badge, Divider } from '@mui/material'
 import { Friend, Group, JoinGroup, TGroupRequestArgs, User } from '../types';
@@ -30,9 +30,7 @@ const ChatGroupMemberProfileComp = (user: IUserData) => {
     const chatStore = useSelector(selectChatStore);
     const dispatch = useDispatch();
     const userId = Cookies.get('userId') ? Cookies.get('userId') : '';
-    // const userId = '0' // for development and testing only
     const loggedUser = chatStore.chatGroupMembers.filter(el => (el.userId.toString()) == userId)[0]
-    // console.log(loggedUser, 'id- ', userId)
 
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
@@ -144,7 +142,7 @@ export function IsUserInGroup (userId: string | undefined, group: Group | null) 
         el => el.channelId == group.channelId )
     
     const memberResult = groupMembers.filter(el => {
-        if (el.userId && userId && parseInt(userId) == el.userId)
+        if (el.userId && userId && +userId == el.userId)
             return el
     })
     result = (memberResult.length == 1)? true : false 
@@ -193,16 +191,17 @@ const ChatGroupDialogInviteEntryComp = (group : Group) => {
     const chatStore = useSelector(selectChatStore)
     
     const onAccept = () => {
-        const joinGroup = chatStore.chatGroupMembers.find((el) => el.userId.toString() == loggedUserId && el.channelId == group.channelId)
-        console.log('JoinGROUp', joinGroup);
+        const joinGroup = chatStore.chatGroupMembers.find((el: any) => el.userId.toString() == loggedUserId && el.channelId == group.channelId)
         socket.emit('acceptJoinGroup', joinGroup);
     }
 
     const onDecline = () => {
-        const joinGroup = chatStore.chatGroupMembers.find((el) => el.userId.toString() == loggedUserId && el.channelId == group.channelId)
+        const joinGroup = chatStore.chatGroupMembers.find((el: any) => el.userId.toString() == loggedUserId && el.channelId == group.channelId);
         socket.emit('declineJoinGroup', joinGroup);
     }
-
+    useEffect(() => {
+        
+    }, [chatStore.chatGroupList, chatStore.chatGroupMembers, chatStore.chatGroupDialogState]);
     return (
         <>
         <Box 
@@ -301,10 +300,24 @@ const ChatGroupDialogRequestEntryComp = (args: TGroupRequestArgs) => {
     const group = args.group;
     const joinGroup = args.joinGroup;
     const chatStore = useSelector(selectChatStore)
-    const handleRequest = () => {
-        
+    
+    const acceptRequest = (joinGroup: JoinGroup) => {
+        if (joinGroup) {
+            const newJoinGroup = { ...joinGroup, status: enChatGroupInviteStatus.ACCEPTED }
+            socket.emit('acceptJoinGroup', newJoinGroup);
+        }
     }
 
+    const denyRequest = (joinGroup: JoinGroup) => {
+        if (joinGroup) {
+            socket.emit('declineJoinGroup', joinGroup);
+        }
+    }
+    
+    useEffect(() => {
+        
+    }, [chatStore.chatGroupList, chatStore.chatGroupMembers]);
+    
     return (
         <>
         <Box 
@@ -333,19 +346,25 @@ const ChatGroupDialogRequestEntryComp = (args: TGroupRequestArgs) => {
                         {/* <Button onClick={handleRequest} variant='contained' disabled > Pending
                         </Button> */}
                     {
-                        (joinGroup.status == enChatGroupInviteStatus.PENDING) &&
-                        <Button onClick={() => {}} sx={{backgroundColor: "#af9"}}
+                        (joinGroup.status === enChatGroupInviteStatus.PENDING && joinGroup.userId.toString() != loggedUserId) &&
+                        <Button onClick={() => { acceptRequest(joinGroup) }} sx={{backgroundColor: "#af9"}}
                         > Accept
                         </Button>
                     }
                     {
-                        (joinGroup.status == enChatGroupInviteStatus.PENDING) &&
-                        <Button onClick={() => {}} sx={{backgroundColor: "#fa9"}}
+                        (joinGroup.status === enChatGroupInviteStatus.PENDING && joinGroup.userId.toString() != loggedUserId) &&
+                        <Button onClick={() => { denyRequest(joinGroup) }} sx={{backgroundColor: "#fa9"}}
                         > Deny
                         </Button>
                     }
                     {
-                        (joinGroup.status == enChatGroupInviteStatus.INVITE) &&
+                        (joinGroup.status === enChatGroupInviteStatus.INVITE && joinGroup.userId.toString() != loggedUserId) &&
+                        <Button disabled sx={{backgroundColor: "#eee"}}
+                        > Pending
+                        </Button>
+                    }
+                    {
+                        (joinGroup.status === enChatGroupInviteStatus.PENDING && joinGroup.userId.toString() == loggedUserId) &&
                         <Button disabled sx={{backgroundColor: "#eee"}}
                         > Pending
                         </Button>

@@ -274,27 +274,23 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
       const roomClients = Array.from(
         this.server.sockets.adapter.rooms.get(currentGame.id.toString()) || [],
       );
-      roomClients.forEach((clientId) => {
-        const socket = this.server.sockets.sockets.get(clientId);
-        // listening only once the custom event acknowledgement from the client
-        socket.once('ackResponse', (response: any) => {
-          if (response === null) {
-            console.log('Response empty!\n');
+      // listening only once the custom event acknowledgement from the client
+      this.server.once('ackResponse', (response: any) => {
+        if (response === null) console.log('Response empty!\n');
+        else {
+          if (response.player == currentGame.player1) {
+            currentGame.paddle1Y = response.paddlePos;
+          } else if (response.player == currentGame.player2) {
+            currentGame.paddle2Y = response.paddlePos;
           } else {
-            if (response.player == 1) {
-              currentGame.paddle1Y = response.paddlePos;
-            } else if (response.player == 2) {
-              currentGame.paddle2Y = response.paddlePos;
-            } else {
-              console.log(
-                'Error occurred passing through paddle position!\n',
-                response,
-              );
-            }
+            console.log(
+              'Error occurred passing through paddle position!\n',
+              response,
+            );
           }
-        });
-        this.gamesService.update(currentGame);
+        }
       });
+      this.gamesService.update(currentGame);
       if (
         currentGame.status === 'finished' ||
         currentGame.status === 'aborted'
@@ -405,7 +401,7 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
       });
       await Promise.all(joints);
     }
-    
+
     const allMembers = await this.joinchannelService.findAll();
     const allChannels = await this.channelsService.findAll();
     this.server.emit('newChannel', {
@@ -545,10 +541,7 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
     await Promise.all([declinedJoinGroup]);
     const allMembers = await this.joinchannelService.findAll();
 
-    this.server.emit('declinedMemberSuccess', {
-      new: declinedJoinGroup,
-      all: allMembers,
-    });
+    this.server.emit('declinedMemberSuccess', { all: allMembers });
   }
 
   @SubscribeMessage('acceptJoinGroup')

@@ -96,13 +96,7 @@ const ChatGroupRequestList = ()=> {
     const userId = Cookies.get('userId') ? Cookies.get('userId') : '';
 
     const groups = chatStore.chatGroupList
-    // const affliatedJoinGroupList = GetJoinGroupListForLoggedUser()
-    // const requestList = affliatedJoinGroupList.filter(el =>
-    //     el.status == enChatGroupInviteStatus.PENDING
-    //     || el.status == enChatGroupInviteStatus.INVITE
-    //     )
-    // let group = {} as Group | null
-    const allRequests = chatStore.chatGroupMembers.filter(el => el.status == enChatGroupInviteStatus.PENDING || enChatGroupInviteStatus.INVITE);
+    const allRequests = chatStore.chatGroupMembers.filter(el => el.status == enChatGroupInviteStatus.PENDING || el.status == enChatGroupInviteStatus.INVITE);
     const memberShipRequestList = allRequests.filter((el) => {
         const memberShip = FindUserMemberShip(userId, el.channelId);
         if (memberShip != null && memberShip.rank != enChatMemberRank.MEMBER) {
@@ -110,14 +104,18 @@ const ChatGroupRequestList = ()=> {
         }
     });
 
+    useEffect(() => {
+        
+    }, [chatStore.chatGroupList, chatStore.chatGroupMembers]);
+    
     return (
         <>
-            {memberShipRequestList.map((el) => {
+            {memberShipRequestList.map((el: any) => {
                 
             const group = GetGroupDataById(chatStore.chatGroupList, el.channelId)
                 if (group)
                     return <ChatGroupDialogRequestEntryComp
-                                key={group.channelId} group={group} joinGroup={el}
+                        key={el.id} group={group} joinGroup={el}
         />
             }) 
             }
