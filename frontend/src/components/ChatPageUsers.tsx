@@ -53,14 +53,7 @@ const ChatElement = (user: User) => {
         <Box 
             onClick={ () => {
                 dispatch(selectConversation({chatRoomId: user.id, chatType: enChatType.OneOnOne}))
-                dispatch(updateChatActiveUser(chatStore.chatUserFriends.filter((el) => {
-                    if (el.sender == user.id && el.receiver == userId) {
-                        return el;
-                    }
-                    if (el.receiver == user.id && el.sender == userId) {
-                        return el;
-                    }
-                })[0]));
+                dispatch(updateChatActiveUser(user));
             }}
             sx={{
                 width: "100%",
@@ -104,6 +97,7 @@ const ChatElement = (user: User) => {
 const  ChatPageUsers = (chatProp : ChatProps) => {
     const chatStore = useSelector(selectChatStore)
     const dispatch = useDispatch()
+    const userId = Cookies.get('userId') ? Cookies.get('userId') : '';
     const handleOpenDialog = ()=>{
         dispatch(updateStateUserFriendDialog(true));
     }
@@ -147,13 +141,20 @@ const  ChatPageUsers = (chatProp : ChatProps) => {
                         spacing={0.5} 
                     >
                             {
-                                chatStore.chatUserFriends
-                                .filter((user) => {
-                                    if (user.sender == chatProp.userId || user.receiver == chatProp.userId) {
-                                        return user;
-                                    }
+                                chatStore.chatUsers
+                                .filter((user: User) => {
+                                  if (user.id !== userId) {
+                                      const msgs = chatStore.chatUserMessages.filter((message: Chat) => {
+                                          if (message.type == PRIVATE
+                                              && ((message.author.toString() == userId && message.receiver == +user.id)
+                                              || (message.author === +user.id && message.receiver.toString() == userId)))
+                                          {
+                                              return message;
+                                          }
+                                      });
+                                      if (msgs.length != 0) return user;
+                                  }
                                 })
-                                .map((friend) => friendToUserType(chatProp.userId, friend, chatStore.chatUsers))
                                 .map((el) => {
                                     return (<ChatElement {...el} key={el.id} />)
                                 })

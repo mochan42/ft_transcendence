@@ -84,7 +84,7 @@ const chatSlice = createSlice({
       state.chatRoomId = action.payload.chatRoomId;
     },
     // onclick of chat item, update chatActiveUser
-    updateChatActiveUser: (state, action: PayloadAction<Friend>) => {
+    updateChatActiveUser: (state, action: PayloadAction<User>) => {
       state.chatActiveUser = action.payload;
     },
     updateStateUserFriendDialog: (state, action: PayloadAction<boolean>) => {

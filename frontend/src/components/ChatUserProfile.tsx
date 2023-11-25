@@ -25,7 +25,7 @@ const ChatUserProfile = () => {
     
     let userSelect =  {} as User
     if (chatStore.chatActiveUser && userId != null) {
-        userSelect = friendToUserType(userId, chatStore.chatActiveUser, chatStore.chatUsers)
+        userSelect = chatStore.chatActiveUser;
     }
 
     const onBlock = () => {

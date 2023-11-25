@@ -5,12 +5,12 @@ import { Friend, User } from '../types';
 import { useSelector, useDispatch } from 'react-redux';
 import { selectChatStore } from '../redux/store';
 import { toggleSidebar, updateStateUserFriendDialog, updateChatUserFriendRequests, updateChatBlockedUsers } from '../redux/slices/chatSlice';
-import { updateChatUserFriends, updateChatActiveUser } from '../redux/slices/chatSlice';
+import { updateChatUserFriends, updateChatActiveUser, selectConversation } from '../redux/slices/chatSlice';
 import { ACCEPTED, PENDING } from '../APP_CONSTS';
 import { fetchAllUsers, fetchAllFriends, fetchAllUsersFriends } from '../data/ChatData';
 import Cookies from 'js-cookie';
 import { getSocket } from '../utils/socketService';
-import { LOG_STATE } from '../enums';
+import { LOG_STATE, enChatType } from '../enums';
 import { IChatState } from '../redux';
 import { AnyAction } from 'redux';
 
@@ -23,14 +23,14 @@ const StyledChatBox = styled(Box)(({ theme }) => ({
 
 function HandleOnSendMsg(userData:User, chatStore:IChatState, dispatch:Dispatch<AnyAction>){
     const userId = Cookies.get('userId') ? Cookies.get('userId') : '';
-    const user = chatStore.chatUserFriends.filter((el) => {
-        if (el.sender == userData.id && el.receiver == userId) {
-            return el;
-        }
-        if (el.receiver == userData.id && el.sender == userId) {
-            return el;
-        }
-    })[0];
+    // const user = chatStore.chatUserFriends.filter((el) => {
+    //     if (el.sender == userData.id && el.receiver == userId) {
+    //         return el;
+    //     }
+    //     if (el.receiver == userData.id && el.sender == userId) {
+    //         return el;
+    //     }
+    // })[0];
     // // Create new list which excludes found user
     // const newFriendListExc = chatStore.chatUserFriends
     //     .filter(el => el.sender != user.sender && el.receiver != user.receiver)
@@ -38,9 +38,10 @@ function HandleOnSendMsg(userData:User, chatStore:IChatState, dispatch:Dispatch<
     // const newFriendListInc = [user, ...newFriendListExc]
     // // update the store data for user friend list
     // dispatch(updateChatUserFriends(newFriendListInc));
-    dispatch(updateChatActiveUser(user));
+    dispatch(updateChatActiveUser(userData));
     // close the dialog
     dispatch(updateStateUserFriendDialog(false)); 
+    dispatch(selectConversation({chatRoomId: userData.id, chatType: enChatType.OneOnOne}))
 }
 
 const ChatUserComp = (userData : User) => {

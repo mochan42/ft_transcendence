@@ -20,4 +20,9 @@ export class ChatsController {
   async removeMessage(@Param('id') id: string) {
     return this.chatsService.remove(+id);
   }
+
+  @Delete()
+  async removeAll() {
+    return this.chatsService.removeAll();
+  }
 }

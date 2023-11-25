@@ -17,6 +17,7 @@ import img42 from '../img/icon_42.png'
 import Cookies from "js-cookie";
 import { BACKEND_URL } from "../data/Global";
 import { set } from "react-hook-form";
+import { FindUserMemberShip } from './ChatDialogGroupInvite';
 
 export const getUserById = (users: User[], id: any) => {
     return users.filter((user: User) => id == user.id)[0];
@@ -84,19 +85,15 @@ const ChatConversation: React.FC<ChatProps> = ({ userId }) => {
 
         const blockEntity = chatStore.chatBlockedUsers
             .filter((el) => el!.blockerUserId.toString() == userId)
-            .filter((el) => el!.blockeeUserId == chatStore.chatActiveUser!.id)
+            .filter((el) => el!.blockeeUserId == +chatStore.chatActiveUser!.id)
         
         if (blockEntity.length > 0) setBlockState(true);
     }
 
     const IsLoggedUserBlockedInGroup = () => {
-        const memberSearchResult = chatStore.chatGroupMembers!
-            .filter((el) => (el.channelId == chatStore.chatActiveGroup!.channelId))
-            .filter((el) => el.userId.toString() == userId)
-        
-        if (memberSearchResult.length > 0 &&
-            memberSearchResult[0].status != enChatMemberRights.PRIVILEDGED)
-        {
+        const userId = Cookies.get('userId') ? Cookies.get('userId') : '';
+        const memberShip = FindUserMemberShip(userId, chatStore.chatActiveGroup!.channelId);
+        if (memberShip == null || (memberShip!.status != enChatMemberRights.PRIVILEDGED)) {
             setBlockState(true);
         }
 
@@ -106,12 +103,10 @@ const ChatConversation: React.FC<ChatProps> = ({ userId }) => {
         if (chatStore.chatType == enChatType.OneOnOne) {
             const newDirectMessages = fetchAllDirectMessages(chatStore.chatUserMessages, userId, chatStore.chatRoomId);
             setMessages(formatMessages(chatStore.chatUsers, newDirectMessages, userId));
-            IsActiveUserBlocked();
-        }
-        if (chatStore.chatType == enChatType.Group) {
+            //IsActiveUserBlocked();
+        }  
+        else if (chatStore.chatType == enChatType.Group && chatStore.chatRoomId != null) {
             IsLoggedUserBlockedInGroup();
-        }
-        else if (chatStore.chatRoomId != null) {
             const newGroupMessages = fetchAllGroupMessages(chatStore.chatUserMessages, +chatStore.chatRoomId);
             setMessages(formatMessages(chatStore.chatUsers, newGroupMessages, userId));
         }
@@ -151,7 +146,7 @@ const ChatConversation: React.FC<ChatProps> = ({ userId }) => {
                                 {/* update with user image or channel group image */}
                                 <Avatar alt={"image"} src={
                                         chatStore.chatType === enChatType.OneOnOne
-                                        ? (chatStore.chatActiveUser ? friendToUserType(userId, chatStore.chatActiveUser, chatStore.chatUsers).avatar : "")
+                                        ? (chatStore.chatActiveUser != null ? chatStore.chatActiveUser.avatar : "")
                                         : img42
                                     }
                                 />
@@ -162,7 +157,7 @@ const ChatConversation: React.FC<ChatProps> = ({ userId }) => {
                             <Typography variant="subtitle1"
                             > {
                                 chatStore.chatType === enChatType.OneOnOne
-                                ? (chatStore.chatActiveUser ? friendToUserType(userId, chatStore.chatActiveUser, chatStore.chatUsers).userNameLoc: "nog")
+                                ? (chatStore.chatActiveUser != null ? chatStore.chatActiveUser.userNameLoc: "")
                                 : (chatStore.chatActiveGroup ? chatStore.chatActiveGroup.title: null)
                               }
                             </Typography>
@@ -190,11 +185,12 @@ const ChatConversation: React.FC<ChatProps> = ({ userId }) => {
                             </div>
                         ))} */}
                         {/* <ChatMessage incoming={false} user="facinet" message="What ?" timeOfSend={new Date} id={1}/> */}
-					    {messages.map((message) => (
-						    <div key={message.id} className="mb-2">
-							    <ChatMessage incoming={message.incoming} user={message.user} message={message.message} timeOfSend={message.timeOfSend} id={message.id} />
-						    </div>
-					    ))}
+                        {messages.map((message) => {
+                            console.log('-------', message, '---\n');
+                            return (<div key={message.id} className="mb-2">
+                                <ChatMessage incoming={message.incoming} user={message.user} message={message.message} timeOfSend={message.timeOfSend} id={message.id} />
+                            </div>)
+                        })}
                     </div>
                 </div>
                 {/* Refer to div element for auto scroll to most recent message */}

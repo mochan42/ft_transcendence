@@ -55,7 +55,7 @@ function GetGroupDataById(groupList: (Group | null)[], groupId: number): Group |
     return group
 }
 
-const FindUserMemberShip = (userId: string | undefined, channelId: number) : JoinGroup | null => {
+export const FindUserMemberShip = (userId: string | undefined, channelId: number) : JoinGroup | null => {
     const chatStore = useSelector(selectChatStore)
     const groupMembers = chatStore.chatGroupMembers.filter(el => el.channelId == channelId);
     const userMemberShip = groupMembers.find(el => el.userId.toString() == userId);

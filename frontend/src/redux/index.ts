@@ -22,7 +22,7 @@ export interface IChatState {
   chatGroupMembers: JoinGroup[];
   chatType: String | null;
   chatRoomId: String | null;
-  chatActiveUser: Friend | null;
+  chatActiveUser: User | null;
   chatUserFriendDialogState: boolean;
   chatUserMessages: Chat[];
   chatActiveGroup: Group | null;
