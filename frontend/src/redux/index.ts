@@ -1,6 +1,6 @@
 //  chat action type and interface definition
 
-import { User, Friend, Group, JoinGroup, Chat, GameType } from "../types";
+import { User, Friend, Group, JoinGroup, Chat, GameType, Block } from "../types";
 
 export const enum CHAT_ACTION_TYPE {
   CHAT_CONTACT = "CHAT_CONTACT",
@@ -32,7 +32,8 @@ export interface IChatState {
   chatGameRequest: GameType | null,
   chatGroupUsrPassInp: string,
   chatGroupChkPassInpState: boolean,
-  chatPreActiveGroup: Group | null
+  chatPreActiveGroup: Group | null,
+  chatBlockedUsers: (Block | null)[],
 }
 
 
