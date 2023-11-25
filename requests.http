@@ -12,7 +12,7 @@ Content-Type: application/json
 ### channels 
 GET http://localhost:5000/pong/channels
 ### Delete channels 
-DELETE  http://localhost:5000/pong/channels/22
+DELETE  http://localhost:5000/pong/channels/29
 
 
 ### ALL members
@@ -27,7 +27,7 @@ Content-Type: application/json
 
 {
     "userId": 13,
-    "channelId": 19,
+    "channelId": 23,
     "rank": "member",
     "rights": "banned",
     "status": "accepted"

@@ -9,23 +9,15 @@ import { toggleSidebar, updateChatUserMessages, updateSidebarType } from "../red
 import { useDispatch, useSelector } from "react-redux";
 import { selectChatStore } from "../redux/store";
 import { ChatProps } from "../types";
-<<<<<<< HEAD
-import { enChatMemberRank, enChatMemberRights, enChatType } from "../enums";
-=======
-import { enChatMemberRights, enChatType } from "../enums";
->>>>>>> tmp
+import { enChatGroupInviteStatus, enChatMemberRights, enChatType } from "../enums";
 import { getSocket } from '../utils/socketService';
 import { PRIVATE, GROUP } from '../APP_CONSTS';
 import { fetchAllDirectMessages, fetchAllGroupMessages } from "./ChatPageUsers";
 import img42 from '../img/icon_42.png'
 import Cookies from "js-cookie";
 import { BACKEND_URL } from "../data/Global";
-<<<<<<< HEAD
-import { FindUserMemberShip } from "./ChatDialogGroupInvite";
-=======
 import { set } from "react-hook-form";
 import { FindUserMemberShip } from './ChatDialogGroupInvite';
->>>>>>> tmp
 
 export const getUserById = (users: User[], id: any) => {
     return users.filter((user: User) => id == user.id)[0];
@@ -70,6 +62,26 @@ const ChatConversation: React.FC<ChatProps> = ({ userId }) => {
         return true;
     }
 
+    const IsLoggedUserBlockedInGroup = (): boolean => {
+        if (!userId) {
+           console.log('USERID BLEM');
+            return true;
+        }
+        console.log('WHAT ARE YOU DOING ?');
+        const memberShip = userId ? FindUserMemberShip(userId, chatStore.chatActiveGroup!.channelId) : null;
+        console.log(memberShip);
+        if (memberShip != null && memberShip.rights == enChatMemberRights.PRIVILEDGED && memberShip.status == enChatGroupInviteStatus.ACCEPTED) {
+            console.log('FALSE');
+            return false;
+        }
+        else {
+            console.log('TRUE');
+        }
+        return true;
+    }
+
+    const isPriviledged = IsLoggedUserBlockedInGroup();
+
 	const scrollToBottom = () => {
 		if (messageContainerRef.current) {
             messageContainerRef.current.scrollIntoView()
@@ -91,13 +103,11 @@ const ChatConversation: React.FC<ChatProps> = ({ userId }) => {
             setUserMessage('');
         }
     };
-
-    const isPriviledged = IsPriviledged();
     
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter') {
             e.preventDefault();
-            if (isPriviledged) {
+            if (!isPriviledged) {
                 onMessageSubmit(e);
             }
         }
@@ -111,15 +121,6 @@ const ChatConversation: React.FC<ChatProps> = ({ userId }) => {
         
         if (blockEntity.length > 0) setBlockState(true);
     }
-
-    const IsLoggedUserBlockedInGroup = () => {
-        const userId = Cookies.get('userId') ? Cookies.get('userId') : '';
-        const memberShip = FindUserMemberShip(userId, chatStore.chatActiveGroup!.channelId);
-        if (memberShip == null || (memberShip!.status != enChatMemberRights.PRIVILEDGED)) {
-            setBlockState(true);
-        }
-
-    }
     
     useEffect(() => {
         if (chatStore.chatType == enChatType.OneOnOne) {
@@ -128,7 +129,7 @@ const ChatConversation: React.FC<ChatProps> = ({ userId }) => {
             //IsActiveUserBlocked();
         }  
         else if (chatStore.chatType == enChatType.Group && chatStore.chatRoomId != null) {
-            IsLoggedUserBlockedInGroup();
+            //IsLoggedUserBlockedInGroup();
             const newGroupMessages = fetchAllGroupMessages(chatStore.chatUserMessages, +chatStore.chatRoomId);
             setMessages(formatMessages(chatStore.chatUsers, newGroupMessages, userId));
         }
@@ -235,7 +236,7 @@ const ChatConversation: React.FC<ChatProps> = ({ userId }) => {
 				<div className="h-1/6 bg-white">
 					<div className="flex items-center w-full">
 						<input 
-                            disabled = {blockState}
+                            disabled = {isPriviledged}
 							placeholder="Type here..."
 							className="flex-1 px-3 py-2 text-gray-800 rounded border border-gray-300 focus:outline-none focus:border-yellow-400"
 							value={userMessage}
@@ -243,7 +244,7 @@ const ChatConversation: React.FC<ChatProps> = ({ userId }) => {
 							onKeyDown={handleKeyDown}
 						/>
 						<button
-                            disabled = {blockState}
+                            disabled = {isPriviledged}
 							onClick={onMessageSubmit}
 							className="bg-yellow-400 text-white px-4 py-2 rounded hover:bg-yellow-500"
 						>
