@@ -19,6 +19,7 @@ import EditProfile from '../EditProfile';
 import { getSocket } from '../../utils/socketService';
 import ChatPageGameRequests from '../ChatPageGameRequests';
 import { BACKEND_URL } from '../../data/Global';
+import { updateChatBlockedUsers } from '../../redux/slices/chatSlice';
 
 
 type TUserState = {
@@ -69,6 +70,7 @@ const Home = ({
 	const [firstLogin, setFirstLogin] = useState<boolean>(false);
 	const [showScreen, setShowScreen] = useState<'default' | 'achievements' | 'friends' | 'stats' | 'userProfile'>('default');
 	const socket = getSocket(userId);
+	const chatStore = useSelector(selectChatStore);
 
 	const authenticateToAPI = async (token: string, state: string): Promise<any> => {
 		if (token.length != 0 && state.length !== 0) {
@@ -172,9 +174,13 @@ const Home = ({
 	}, [userId, loginState.isLogin]);
 	
 	if (socket) {
-		socket.on('connected', (message: string) => {
-			console.log(message);
-		});
+		// socket.emit('allBlock', {});
+		// socket.once('allBlockSuccess', (data: any) => {
+		// 	console.log('-BLOCKES--\n');
+		// 	console.log(data);
+		// 	dispatch(updateChatBlockedUsers(data));
+		// 	console.log(chatStore.chatBlockedUsers);
+		// });
 		// ---new channel created---------------
 		socket.on('newChannel', (channel: any) => {
 			console.log('channel created successfully');

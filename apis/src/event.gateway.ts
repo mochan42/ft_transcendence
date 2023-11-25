@@ -304,7 +304,10 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
   async handleConnection(@ConnectedSocket() socket: Socket, ...args: any[]) {
     const user = await this.chatsService.getUserFromSocket(socket);
     const allUser = await this.userService.findAll();
-    this.server.emit('connected', { new: user, all: allUser });
+    this.server.emit('connected', {
+      new: user,
+      all: allUser,
+    });
   }
 
   async handleDisconnect(@ConnectedSocket() socket: Socket) {}
@@ -424,13 +427,16 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @SubscribeMessage('blockFriend')
   async blockFriend(
     @ConnectedSocket() socket: Socket,
-    @MessageBody() friendShip: any,
+    @MessageBody() block: any,
   ) {
-    const removeFriend = await this.friendsService.remove(+friendShip);
-    const allFriends = await this.friendsService.findAll();
+    const blockedUser = await this.friendsService.blockUser(
+      +block.blockerUserId,
+      +block.blockeeUserId,
+    );
+    const allBlock = await this.friendsService.findAllBlock();
     this.server.emit('BlockedFriendSucces', {
-      new: removeFriend,
-      all: allFriends,
+      new: blockedUser,
+      all: allBlock,
     });
   }
 
@@ -483,6 +489,12 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
     });
   }
 
+  @SubscribeMessage('allBlock')
+  async handleAllBlock() {
+    const allBlock = await this.friendsService.findAllBlock();
+    this.server.emit('allBlockSuccess', allBlock);
+  }
+  
   @SubscribeMessage('setGroupPassword')
   async handleSetGroupPassword(
     @ConnectedSocket() socket: Socket,
@@ -559,6 +571,7 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
       all: allMembers,
     });
   }
+
   /***********************GAME*********************** */
 
   @SubscribeMessage('requestMatch')

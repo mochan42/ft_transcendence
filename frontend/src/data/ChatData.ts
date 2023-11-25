@@ -42,6 +42,16 @@ const fetchAllFriends = async (): Promise<Friend[]> => {
   return friends;
 };
 
+const fetchAllBlockedUsers = async (): Promise<any[]> => {
+  let blockedUsers = [];
+  const urlFriend = backendUrl + "/pong/blocks";
+  const resp = await axios<any[]>(urlFriend);
+  if (resp.status === 200) {
+    blockedUsers = resp.data;
+  }
+  return blockedUsers;
+};
+
 const fetchAllMessages = async (): Promise<Chat[]> => {
   let messages: Chat[] = [];
   const resp = await axios.get<Chat[]>(backendUrl + "/pong/chats");
@@ -68,6 +78,7 @@ const fetchAllStats = async (userId: any) => {
 }
 
 const friends: Friend[] = await fetchAllFriends();
+const blockedUsersList = await fetchAllBlockedUsers();
 const ChatUserList = await fetchAllUsers();
 // will filters all pending|accepted users;
 const fetchAllUsersFriends = (relation: string, friendList: Friend[]): Friend[]  => {

@@ -19,7 +19,7 @@ DELETE  http://localhost:5000/pong/channels/29
 GET http://localhost:5000/pong/channels/members
 
 ### Delete a member
-DELETE  http://localhost:5000/pong/channels/members/42
+DELETE  http://localhost:5000/pong/channels/members/63
 
 ### join channel
 POST http://localhost:5000/pong/joinchannel
@@ -41,6 +41,9 @@ GET http://localhost:5000/pong/users/
 
 ### test
 GET http://localhost:5000/pong/friends
+
+### blocked users
+GET http://localhost:5000/pong/blocks
 
 #### add user
 POST http://localhost:5000/pong/users

@@ -3,12 +3,16 @@ import { CreateFriendDto } from './dto/create-friend.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Friend } from './entities/friend.entity';
+import { MEMBER_RIGHTS } from '../APIS_CONSTS';
+import { Block } from '../chats/entities/block.entity';
 
 @Injectable()
 export class FriendsService {
   constructor(
     @InjectRepository(Friend)
     private FriendRepo: Repository<Friend>,
+    @InjectRepository(Block)
+    private BlockingRepo: Repository<Block>,
   ) {}
 
   async create(createFriendDto: CreateFriendDto): Promise<Friend> {
@@ -39,5 +43,17 @@ export class FriendsService {
 
   async remove(id: number) {
     return await this.FriendRepo.delete(id);
+  }
+
+  async blockUser(blockerUserId: number, blockeeUserId: number) {
+    const blockedUser = {
+      blockerUserId: blockerUserId,
+      blockeeUserId: blockeeUserId,
+    };
+    return await this.BlockingRepo.save(blockedUser);
+  }
+
+  async findAllBlock() {
+    return await this.BlockingRepo.find();
   }
 }

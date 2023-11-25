@@ -29,11 +29,10 @@ const ChatUserProfile = () => {
     }
 
     const onBlock = () => {
-        if (!chatStore.chatActiveUser) {
-            return ;
+        if (chatStore.chatActiveUser) {
+            socket.emit('blockFriend', { blockerUserId: userId, blockeeUserId: chatStore.chatActiveUser.id });
+            dispatch(selectConversation({chatRoomId: null, chatType: enChatType.OneOnOne})) 
         }
-        socket.emit('blockFriend', chatStore.chatActiveUser.id);
-        dispatch(selectConversation({chatRoomId: null, chatType: enChatType.OneOnOne}))
         dispatch(toggleSidebar());
     }
 

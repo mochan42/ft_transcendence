@@ -45,4 +45,9 @@ export class FriendsController {
   remove(@Param('id') id: string) {
     return this.friendsService.remove(+id);
   }
+
+  @Get('blocks')
+  async findAllBlocked() {
+    return this.friendsService.findAllBlock();
+  }
 }

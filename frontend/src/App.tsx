@@ -16,7 +16,7 @@ import Cookies from 'js-cookie';
 import { Utils__isAPICodeAvailable } from './utils/utils__isAPICodeAvailable';
 import { getSocket } from './utils/socketService';
 import { GameType, Chat } from './types';
-import { updateChatUserMessages, updateChatUserFriendRequests, updateChatUserFriends, updateChatUsers, updateChatGroups, updateChatGroupMembers } from "./redux/slices/chatSlice";
+import { updateChatUserMessages, updateChatUserFriendRequests, updateChatUserFriends, updateChatUsers, updateChatGroups, updateChatGroupMembers, updateChatBlockedUsers } from "./redux/slices/chatSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { selectChatStore } from "./redux/store";
 import { fetchAllFriends, fetchAllMessages, fetchAllUsersFriends} from './data/ChatData';
@@ -84,7 +84,9 @@ const App: React.FC = () => {
 				dispatch(updateChatGroupMembers(data.all));
 			});
 			socket.on('BlockedFriendSucces', (data: any) => {
-				dispatch(updateChatUserFriends(data.all));
+				console.log('BLOCKUSER: ', data.new, '--\n');
+				console.log('BLOCKUSER: ', data.all, '--\n');
+				dispatch(updateChatBlockedUsers(data.all));
 			});
 			socket.on('newChannel', (data: any) => {
 				dispatch(updateChatGroups(data.groups));

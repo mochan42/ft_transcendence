@@ -80,7 +80,20 @@ const ChatConversation: React.FC<ChatProps> = ({ userId }) => {
         return true;
     }
 
-    const isPriviledged = IsLoggedUserBlockedInGroup();
+    const IsActiveUserBlocked = (): boolean => {
+
+        const blockEntity = chatStore.chatBlockedUsers
+            .filter((el) => {
+                if ((el!.blockerUserId.toString() == userId && el!.blockeeUserId == +chatStore.chatActiveUser!.id)
+                    || (el!.blockerUserId == +chatStore.chatActiveUser!.id && el!.blockeeUserId.toString() == userId)
+                    ) { return el }
+            })
+
+        if (blockEntity.length > 0) return true;
+        
+        return false;
+    }
+    const isPriviledged = chatStore.chatType == enChatType.OneOnOne ? false : IsLoggedUserBlockedInGroup();
 
 	const scrollToBottom = () => {
 		if (messageContainerRef.current) {
@@ -113,14 +126,6 @@ const ChatConversation: React.FC<ChatProps> = ({ userId }) => {
         }
     }
 
-    const IsActiveUserBlocked = () => {
-
-        const blockEntity = chatStore.chatBlockedUsers
-            .filter((el) => el!.blockerUserId.toString() == userId)
-            .filter((el) => el!.blockeeUserId == +chatStore.chatActiveUser!.id)
-        
-        if (blockEntity.length > 0) setBlockState(true);
-    }
     
     useEffect(() => {
         if (chatStore.chatType == enChatType.OneOnOne) {
