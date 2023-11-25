@@ -37,4 +37,8 @@ export class ChatsService {
   async remove(id: number) {
     return await this.MessageRepository.delete(id);
   }
+
+  async removeAll() {
+    return await this.MessageRepository.delete({});
+  }
 }

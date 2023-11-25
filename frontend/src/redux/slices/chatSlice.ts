@@ -4,7 +4,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 // import { ThunkAction } from "redux-thunk";
 // import { CHAT_ACTION_TYPE, IChatState } from "..";
 import { CHAT_ACTION_TYPE, IChatState, TAction } from "..";
-import { User, Friend, Group, JoinGroup, Chat, GameType } from "../../types";
+import { User, Friend, Group, JoinGroup, Chat, GameType, Block } from "../../types";
 // import axios from "axios";
 // import { io } from "socket.io-client";
 
@@ -18,6 +18,7 @@ import {
   ChatGameRequestList,
   dummyUsers,
   ChatGroupListDummy,
+  dummyBlockedUser,
 } from "../../data/ChatData";
 
 const initialState: IChatState = {
@@ -44,7 +45,9 @@ const initialState: IChatState = {
   chatGameRequest: null,
   chatGroupUsrPassInp: "",
   chatGroupChkPassInpState: false,
-  chatPreActiveGroup: null
+  chatPreActiveGroup: null,
+  chatBlockedUsers: [] // update this list upon user login
+  // chatBlockedUsers: dummyBlockedUser // use for dev:  update this list upon user login
 };
 
 //export default (state: ISidebarData, action: TAction) : ISidebarData => {}
@@ -81,7 +84,7 @@ const chatSlice = createSlice({
       state.chatRoomId = action.payload.chatRoomId;
     },
     // onclick of chat item, update chatActiveUser
-    updateChatActiveUser: (state, action: PayloadAction<Friend>) => {
+    updateChatActiveUser: (state, action: PayloadAction<User>) => {
       state.chatActiveUser = action.payload;
     },
     updateStateUserFriendDialog: (state, action: PayloadAction<boolean>) => {
@@ -126,6 +129,10 @@ const chatSlice = createSlice({
     updateChatGroupChkPassInpState: (state, action: PayloadAction<boolean>) => {
       state.chatGroupChkPassInpState = action.payload;
     },
+    // update the list of all blocks between users
+    updateChatBlockedUsers: (state, action: PayloadAction<(Block| null)[]>) => {
+      state.chatBlockedUsers = action.payload;
+    },
   },
 });
 
@@ -148,7 +155,8 @@ export const {
   updateChatGameRequest,
   updateChatGroupUsrPassInp,
   updateChatGroupChkPassInpState,
-  updateChatPreActiveGroup
+  updateChatPreActiveGroup,
+  updateChatBlockedUsers
 } = chatSlice.actions;
 export default chatSlice;
 

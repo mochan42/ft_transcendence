@@ -279,6 +279,9 @@ Content-Type: application/json
 ### Delete a message
 
 DELETE  http://localhost:5000/pong/chats/4
+
+### delete all messages
+DELETE http://localhost:5000/pong/chats
 ### get games
 GET http://localhost:5000/pong/games
 

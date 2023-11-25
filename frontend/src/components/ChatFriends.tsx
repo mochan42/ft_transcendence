@@ -4,30 +4,30 @@ import { useDispatch } from 'react-redux';
 import { updateStateUserFriendDialog } from '../redux/slices/chatSlice';
 import { useSelector } from 'react-redux';
 import { selectChatStore } from "../redux/store";
-import { ChatUserComp, ChatUserFriendComp, ChatUserFriendRequestComp } from './ChatUserComp';
+import { ChatUserBlockedComp, ChatUserComp, ChatUserFriendComp, ChatUserFriendRequestComp } from './ChatUserComp';
 import Cookies from 'js-cookie';
 import { User } from "../types";
 import { ACCEPTED, PENDING } from '../APP_CONSTS';
+import { dummyUsers } from '../data/ChatData';
 
 const ChatUsersList = ()=> {
-    const dispatch = useDispatch();
     const userId = Cookies.get('userId') ? Cookies.get('userId') : '';
     const chatStore = useSelector(selectChatStore)
 
     return (
         <>
-            {chatStore.chatUsers
-                .filter((user) => user.id != userId)
+            {/* {dummyUsers.filter((user) => user.id != userId) */} 
+            {chatStore.chatUsers .filter((user) => user.id != userId)
                 .map((el) => {
+                    // console.log(el);
                     return <ChatUserComp key={el.id} {...el} />
                 })
-            };
+            }
         </>
-    );
+    )
 }
 
 const ChatUserFriendsList = ()=> {
-    const dispatch = useDispatch();
     const userId = Cookies.get('userId') ? Cookies.get('userId') : '';
     const chatStore = useSelector(selectChatStore)
 
@@ -46,13 +46,12 @@ const ChatUserFriendsList = ()=> {
                         return <ChatUserFriendComp key={friend.id} {...friend} />
                     }
                 })
-            };
+            }
         </>
-    );
+    )
 }
 
 const ChatUserFriendRequestsList = ()=> {
-    const dispatch = useDispatch();
      const userId = Cookies.get('userId') ? Cookies.get('userId') : '';
     
     const chatStore = useSelector(selectChatStore)
@@ -71,9 +70,35 @@ const ChatUserFriendRequestsList = ()=> {
                         return <ChatUserFriendRequestComp key={friendReq.id} {...friendReq}/>
                     }
                  })
-            };
+            }
         </>
     );
+}
+
+
+const ChatUserBlockList = ()=> {
+    const userId = Cookies.get('userId') ? Cookies.get('userId') : '';
+    const chatStore = useSelector(selectChatStore)
+
+    return (
+        <>
+            {chatStore.chatBlockedUsers
+                .filter((el) => el!.blockerUserId.toString() == userId )
+                .map((el) => {
+                    // const user: User = dummyUsers       // used for dev only
+                    const user: User = chatStore.chatUsers
+                        .filter((user_el: any) => {
+                            if (user_el!.id == el!.blockeeUserId.toString()) {
+                                return user_el;
+                            }
+                        })[0];
+                    if (user) {
+                        return <ChatUserBlockedComp key={user.id} {...user} />
+                    }
+                })
+            }
+        </>
+    )
 }
 
 
@@ -105,6 +130,7 @@ const ChatFriends = ()=>{
                     <Tab label={"Users"} />
                     <Tab label={"Friends"} />
                     <Tab label={"Requests"} />
+                    <Tab label={"Blocked"} />
                 </Tabs>
             </Stack>
             {/* Dialog content  */}
@@ -125,6 +151,10 @@ const ChatFriends = ()=>{
                                 return (<>
                                 <ChatUserFriendRequestsList />
                                 </>);
+                            case 3:
+                                return (<>
+                                <ChatUserBlockList />
+                                </>);
                             default: break
                         }
                     })()}
@@ -136,10 +166,5 @@ const ChatFriends = ()=>{
         </>
     )
 }
-
-
-
-
-
 
 export default ChatFriends

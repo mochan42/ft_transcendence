@@ -212,6 +212,19 @@ const dummyUsers :User[]= [
   }
 ]
 
+
+const dummyBlockedUser = [
+  {
+    id: 1,
+    blockerUserId: 1,
+    blockeeUserId: 8,
+  },
+  {
+    id: 2,
+    blockerUserId: 1,
+    blockeeUserId: 5,
+  }
+]
 // const ChatGroupMemberList = [
 //   {
 //     id: 1,
@@ -389,6 +402,7 @@ export {
   ChatGroupMemberList,
   ChatUserMessages,
   dummyUsers,
+  dummyBlockedUser,
   ChatGameRequestList,
   GameDifficultyTxt,
   friendToUserType,

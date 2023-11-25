@@ -2,21 +2,30 @@ import { useRef, useState, useEffect } from "react";
 import { Box, Stack, IconButton, Typography, Divider, Avatar, Badge } from "@mui/material";
 import { CaretDown } from "phosphor-react";
 import { Socket } from "socket.io-client";
-import { ChatMessageProps, User, Chat } from "../types";
+import { ChatMessageProps, User, Chat, Block } from "../types";
 import ChatMessage from "./ChatMessage";
 import { friendToUserType, fetchAllMessages  } from "../data/ChatData";
 import { toggleSidebar, updateChatUserMessages, updateSidebarType } from "../redux/slices/chatSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { selectChatStore } from "../redux/store";
 import { ChatProps } from "../types";
+<<<<<<< HEAD
 import { enChatMemberRank, enChatMemberRights, enChatType } from "../enums";
+=======
+import { enChatMemberRights, enChatType } from "../enums";
+>>>>>>> tmp
 import { getSocket } from '../utils/socketService';
 import { PRIVATE, GROUP } from '../APP_CONSTS';
 import { fetchAllDirectMessages, fetchAllGroupMessages } from "./ChatPageUsers";
 import img42 from '../img/icon_42.png'
 import Cookies from "js-cookie";
 import { BACKEND_URL } from "../data/Global";
+<<<<<<< HEAD
 import { FindUserMemberShip } from "./ChatDialogGroupInvite";
+=======
+import { set } from "react-hook-form";
+import { FindUserMemberShip } from './ChatDialogGroupInvite';
+>>>>>>> tmp
 
 export const getUserById = (users: User[], id: any) => {
     return users.filter((user: User) => id == user.id)[0];
@@ -48,6 +57,7 @@ const ChatConversation: React.FC<ChatProps> = ({ userId }) => {
     const [messages, setMessages] = useState<ChatMessageProps[]>([]);
     const [username, setUserName] = useState<string>('');
     const messageContainerRef = useRef<HTMLDivElement | null>(null);
+    const [blockState, setBlockState] = useState<boolean>(false);
     const url_info = `${BACKEND_URL}/pong/users/` + userId;
     
     const IsPriviledged = (): boolean => {
@@ -92,17 +102,39 @@ const ChatConversation: React.FC<ChatProps> = ({ userId }) => {
             }
         }
     }
+
+    const IsActiveUserBlocked = () => {
+
+        const blockEntity = chatStore.chatBlockedUsers
+            .filter((el) => el!.blockerUserId.toString() == userId)
+            .filter((el) => el!.blockeeUserId == +chatStore.chatActiveUser!.id)
+        
+        if (blockEntity.length > 0) setBlockState(true);
+    }
+
+    const IsLoggedUserBlockedInGroup = () => {
+        const userId = Cookies.get('userId') ? Cookies.get('userId') : '';
+        const memberShip = FindUserMemberShip(userId, chatStore.chatActiveGroup!.channelId);
+        if (memberShip == null || (memberShip!.status != enChatMemberRights.PRIVILEDGED)) {
+            setBlockState(true);
+        }
+
+    }
     
     useEffect(() => {
         if (chatStore.chatType == enChatType.OneOnOne) {
             const newDirectMessages = fetchAllDirectMessages(chatStore.chatUserMessages, userId, chatStore.chatRoomId);
             setMessages(formatMessages(chatStore.chatUsers, newDirectMessages, userId));
-        }
-        else if (chatStore.chatRoomId != null) {
+            //IsActiveUserBlocked();
+        }  
+        else if (chatStore.chatType == enChatType.Group && chatStore.chatRoomId != null) {
+            IsLoggedUserBlockedInGroup();
             const newGroupMessages = fetchAllGroupMessages(chatStore.chatUserMessages, +chatStore.chatRoomId);
             setMessages(formatMessages(chatStore.chatUsers, newGroupMessages, userId));
         }
-    }, [chatStore.chatUserMessages, chatStore.chatRoomId, chatStore.chatType]);
+    }, [chatStore.chatUserMessages, chatStore.chatRoomId,
+        chatStore.chatType, chatStore.chatBlockedUsers,
+        chatStore.chatGroupMembers]);
 
     useEffect(() => {
         scrollToBottom();
@@ -136,7 +168,7 @@ const ChatConversation: React.FC<ChatProps> = ({ userId }) => {
                                 {/* update with user image or channel group image */}
                                 <Avatar alt={"image"} src={
                                         chatStore.chatType === enChatType.OneOnOne
-                                        ? (chatStore.chatActiveUser ? friendToUserType(userId, chatStore.chatActiveUser, chatStore.chatUsers).avatar : "")
+                                        ? (chatStore.chatActiveUser != null ? chatStore.chatActiveUser.avatar : "")
                                         : img42
                                     }
                                 />
@@ -147,7 +179,7 @@ const ChatConversation: React.FC<ChatProps> = ({ userId }) => {
                             <Typography variant="subtitle1"
                             > {
                                 chatStore.chatType === enChatType.OneOnOne
-                                ? (chatStore.chatActiveUser ? friendToUserType(userId, chatStore.chatActiveUser, chatStore.chatUsers).userNameLoc: "nog")
+                                ? (chatStore.chatActiveUser != null ? chatStore.chatActiveUser.userNameLoc: "")
                                 : (chatStore.chatActiveGroup ? chatStore.chatActiveGroup.title: null)
                               }
                             </Typography>
@@ -175,11 +207,12 @@ const ChatConversation: React.FC<ChatProps> = ({ userId }) => {
                             </div>
                         ))} */}
                         {/* <ChatMessage incoming={false} user="facinet" message="What ?" timeOfSend={new Date} id={1}/> */}
-					    {messages.map((message) => (
-						    <div key={message.id} className="mb-2">
-							    <ChatMessage incoming={message.incoming} user={message.user} message={message.message} timeOfSend={message.timeOfSend} id={message.id} />
-						    </div>
-					    ))}
+                        {messages.map((message) => {
+                            console.log('-------', message, '---\n');
+                            return (<div key={message.id} className="mb-2">
+                                <ChatMessage incoming={message.incoming} user={message.user} message={message.message} timeOfSend={message.timeOfSend} id={message.id} />
+                            </div>)
+                        })}
                     </div>
                 </div>
                 {/* Refer to div element for auto scroll to most recent message */}
@@ -201,16 +234,16 @@ const ChatConversation: React.FC<ChatProps> = ({ userId }) => {
 
 				<div className="h-1/6 bg-white">
 					<div className="flex items-center w-full">
-                            <input
-                                disabled={isPriviledged === true ? false: true}
-                                placeholder="Type here..."
-                                className="flex-1 px-3 py-2 text-gray-800 rounded border border-gray-300 focus:outline-none focus:border-yellow-400"
-                                value={userMessage}
-                                onChange={(e) => setUserMessage(e.target.value)}
-                                onKeyDown={handleKeyDown}
-                            />
-                        <button 
-                            disabled={isPriviledged === true ? false: true}
+						<input 
+                            disabled = {blockState}
+							placeholder="Type here..."
+							className="flex-1 px-3 py-2 text-gray-800 rounded border border-gray-300 focus:outline-none focus:border-yellow-400"
+							value={userMessage}
+							onChange={(e) => setUserMessage(e.target.value)}
+							onKeyDown={handleKeyDown}
+						/>
+						<button
+                            disabled = {blockState}
 							onClick={onMessageSubmit}
 							className="bg-yellow-400 text-white px-4 py-2 rounded hover:bg-yellow-500"
 						>
