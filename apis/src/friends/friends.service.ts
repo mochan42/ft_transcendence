@@ -56,4 +56,14 @@ export class FriendsService {
   async findAllBlock() {
     return await this.BlockingRepo.find();
   }
+
+  async unblock(blocker: number, blockee: number) {
+    const block = await this.BlockingRepo.find({
+      where: {
+        blockerUserId: blocker,
+        blockeeUserId: blockee,
+      },
+    });
+    return this.BlockingRepo.delete(block[0].id);
+  }
 }

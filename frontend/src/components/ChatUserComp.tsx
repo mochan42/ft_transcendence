@@ -1,7 +1,7 @@
 import React, { Dispatch, useEffect } from 'react'
 import { styled, useTheme } from '@mui/material/styles'
 import { Stack, Avatar, Typography, Button, Box, Badge } from '@mui/material'
-import { Friend, User } from '../types';
+import { Friend, User, Block } from '../types';
 import { useSelector, useDispatch } from 'react-redux';
 import { selectChatStore } from '../redux/store';
 import { toggleSidebar, updateStateUserFriendDialog, updateChatUserFriendRequests, updateChatBlockedUsers } from '../redux/slices/chatSlice';
@@ -291,18 +291,18 @@ const ChatUserFriendRequestComp = (reqData : User) => {
 }
 
 const ChatUserBlockedComp = (userData : User) => {
-    const theme = useTheme()
+    const theme = useTheme();
+    const userId = Cookies.get('userId') ? Cookies.get('userId') : '';
+    const socket = getSocket(userId);
     const chatStore = useSelector(selectChatStore);
     const dispatch = useDispatch()
-    const userId = Cookies.get('userId') ? Cookies.get('userId') : '';
 
     const HandleUnblock = () => {
-        // filter out the user to unblock from block list
-        const loggedUserBlockList = chatStore.chatBlockedUsers
-            .filter((el)=> el!.blockerUserId.toString() === userId)
-            .filter((el)=> el!.blockeeUserId.toString() !== userData.id)
-
-        dispatch(updateChatBlockedUsers(loggedUserBlockList));
+        socket.emit('unblockUser', { blocker: userId, blockee: userData.id });
+        socket.once('unblockSuccess', (blocks: Block[]) => {
+            dispatch(updateChatBlockedUsers(blocks));
+        });
+        dispatch(updateStateUserFriendDialog(false));
         // API CALL
         // update block list in backend
     }

@@ -412,6 +412,7 @@ export {
   ChatGroupListDummy,
   ChatGroupMemberList,
   ChatUserMessages,
+  blockedUsersList,
   dummyUsers,
   dummyBlockedUser,
   ChatGameRequestList,

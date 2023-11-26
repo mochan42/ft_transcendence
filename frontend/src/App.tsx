@@ -15,7 +15,7 @@ import GameSelection from './components/pages/GameSelection';
 import Cookies from 'js-cookie';
 import { Utils__isAPICodeAvailable } from './utils/utils__isAPICodeAvailable';
 import { getSocket } from './utils/socketService';
-import { GameType, Chat } from './types';
+import { GameType, Chat, Block } from './types';
 import { updateChatUserMessages, updateChatUserFriendRequests, updateChatUserFriends, updateChatUsers, updateChatGroups, updateChatGroupMembers, updateChatBlockedUsers } from "./redux/slices/chatSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { selectChatStore } from "./redux/store";
@@ -62,6 +62,9 @@ const App: React.FC = () => {
 	//----------------------------CHAT---------------------------
 	useEffect(() => {
 		if (socket != null) {
+			socket.on('unblockSuccess', (blocks: Block[]) => {
+				dispatch(updateChatBlockedUsers(blocks));
+        	});
 			socket.on('acceptMemberSuccess', (data: any) => {
 				dispatch(updateChatGroupMembers(data.all));
 			});

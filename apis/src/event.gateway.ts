@@ -34,6 +34,7 @@ import { timeout } from 'rxjs';
 import { CreateJoinchannelDto } from './joinchannel/dto/create-joinchannel-dto';
 import { Channel } from './channels/entities/channel.entity';
 import { Joinchannel } from './joinchannel/entities/joinchannel.entity';
+import { Block } from './chats/entities/block.entity';
 
 type update = {
   player: number;
@@ -494,7 +495,7 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const allBlock = await this.friendsService.findAllBlock();
     this.server.emit('allBlockSuccess', allBlock);
   }
-  
+
   @SubscribeMessage('setGroupPassword')
   async handleSetGroupPassword(
     @ConnectedSocket() socket: Socket,
@@ -572,6 +573,16 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
     });
   }
 
+  @SubscribeMessage('unblockUser')
+  async handleUnblockUser(@MessageBody() payload: any) {
+    const unblock = await this.friendsService.unblock(
+      +payload.blocker,
+      +payload.blockee,
+    );
+    await Promise.all([unblock]);
+    const allBlocks: Block[] = await this.friendsService.findAllBlock();
+    this.server.emit('unblockSuccess', allBlocks);
+  }
   /***********************GAME*********************** */
 
   @SubscribeMessage('requestMatch')

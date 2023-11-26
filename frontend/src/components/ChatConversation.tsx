@@ -82,7 +82,7 @@ const ChatConversation: React.FC<ChatProps> = ({ userId }) => {
 
     const IsActiveUserBlocked = (): boolean => {
 
-        const blockEntity = chatStore.chatBlockedUsers
+        const blockEntity = chatStore.chatBlockedUsers!
             .filter((el) => {
                 if ((el!.blockerUserId.toString() == userId && el!.blockeeUserId == +chatStore.chatActiveUser!.id)
                     || (el!.blockerUserId == +chatStore.chatActiveUser!.id && el!.blockeeUserId.toString() == userId)
@@ -93,7 +93,7 @@ const ChatConversation: React.FC<ChatProps> = ({ userId }) => {
         
         return false;
     }
-    const isPriviledged = chatStore.chatType == enChatType.OneOnOne ? false : IsLoggedUserBlockedInGroup();
+    const isPriviledged = chatStore.chatType == enChatType.OneOnOne ? IsActiveUserBlocked() : IsLoggedUserBlockedInGroup();
 
 	const scrollToBottom = () => {
 		if (messageContainerRef.current) {

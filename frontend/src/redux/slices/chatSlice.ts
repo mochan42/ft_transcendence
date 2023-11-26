@@ -19,6 +19,7 @@ import {
   dummyUsers,
   ChatGroupListDummy,
   dummyBlockedUser,
+  blockedUsersList,
 } from "../../data/ChatData";
 
 const initialState: IChatState = {
@@ -46,7 +47,7 @@ const initialState: IChatState = {
   chatGroupUsrPassInp: "",
   chatGroupChkPassInpState: false,
   chatPreActiveGroup: null,
-  chatBlockedUsers: [] // update this list upon user login
+  chatBlockedUsers: blockedUsersList // update this list upon user login
   // chatBlockedUsers: dummyBlockedUser // use for dev:  update this list upon user login
 };
 
