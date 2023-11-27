@@ -42,6 +42,9 @@ GET http://localhost:5000/pong/users/
 ### test
 GET http://localhost:5000/pong/friends
 
+### delete all friends
+DELETE http://localhost:5000/pong/friends/74
+
 ### blocked users
 GET http://localhost:5000/pong/blocks
 

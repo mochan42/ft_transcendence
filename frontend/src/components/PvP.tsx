@@ -89,30 +89,31 @@ const PvP: React.FC<PvPProps> = ({ playerPoint, opponentPoint, setReset, userId,
 		})
 	}
 
+	const handleGameUpdate = (data: GameType) => {
+		console.log("Receiving game update!\n");
+		console.log(data);
+		setGameObj(data);
+		// if (data.paddle1Y == paddle1Y) {
+		// 	setPaddle1Y(data.paddle1Y);
+		// }
+		setPaddle2Y(data.paddle2Y);
+		setBallX(data.ballX);
+		setBallY(data.ballY);
+		setBoostX(data.boostX);
+		setBoostY(data.boostY);
+
+		console.log("Sending back: ", 1, " ", paddle1YRef.current);
+		const response = {
+			player: data.player1,
+			paddlePos: paddle1YRef.current,
+		}
+		console.log("\n", response.player, " ", response.paddlePos);
+		
+		// ack(response);
+		socket.emit(`ackResponse-G${data.id}P${data.player1}`, response);
+	};
 	useEffect(() => {
 		// This function will be called whenever the 'gameUpdate' event is emitted from the server
-		const handleGameUpdate = (data: GameType) => {
-			console.log("Receiving game update!\n");
-			setGameObj(data);
-			// if (data.paddle1Y == paddle1Y) {
-			// 	setPaddle1Y(data.paddle1Y);
-			// }
-			setPaddle2Y(data.paddle2Y);
-			setBallX(data.ballX);
-			setBallY(data.ballY);
-			setBoostX(data.boostX);
-			setBoostY(data.boostY);
-
-			console.log("Sending back: ", 1, " ", paddle1YRef.current);
-			const response = {
-				player: 1,
-				paddlePos: paddle1YRef.current,
-			}
-			console.log("\n", response.player, " ", response.paddlePos);
-			
-			// ack(response);
-			socket.emit('ackResponse', ({ player: 2, paddlePos: 50 }));
-		};
 		// Register the event listener
 		if (socket) {
 			socket.on('gameUpdate', handleGameUpdate);
@@ -124,7 +125,7 @@ const PvP: React.FC<PvPProps> = ({ playerPoint, opponentPoint, setReset, userId,
 				socket.off('gameUpdate', handleGameUpdate);
 			}
 		};
-	}, [socket]); // The effect depends on `socket` and will re-run only if `socket` changes
+	},); // The effect depends on `socket` and will re-run only if `socket` changes
 	  
 
 	useEffect(() => {

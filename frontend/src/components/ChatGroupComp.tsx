@@ -35,10 +35,10 @@ const ChatGroupMemberProfileComp = (user: IUserData) => {
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-      setAnchorEl(event.currentTarget);
+        setAnchorEl(event.currentTarget);
     };
     const handleClose = () => {
-      setAnchorEl(null);
+        setAnchorEl(null);
     };
     const onShwProfile = () => {
         dispatch(updateChatDialogShwProfile(true))
@@ -47,105 +47,105 @@ const ChatGroupMemberProfileComp = (user: IUserData) => {
     }
     return (
         <>
-        <StyledChatBox sx={{
-            width : "100%",
-            biorderRadius: 1,
-            backgroundColor: theme.palette.background.paper,
-            p: 2
-        }}
-        id="basic-button"
-        aria-controls={open ? 'basic-menu' : undefined}
-        aria-haspopup="true"
-        aria-expanded={open ? 'true' : undefined}
-            onClick={handleClick}
-        >
-            <Stack
-                direction={"row"} 
-                alignItems={"center"} 
-                justifyContent={"space-between"}
+            <StyledChatBox sx={{
+                width: "100%",
+                biorderRadius: 1,
+                backgroundColor: theme.palette.background.paper,
+                p: 2
+            }}
+                id="basic-button"
+                aria-controls={open ? 'basic-menu' : undefined}
+                aria-haspopup="true"
+                aria-expanded={open ? 'true' : undefined}
+                onClick={handleClick}
             >
-                <Stack direction={"row"} alignItems={"center"} 
-                    spacing={2}
+                <Stack
+                    direction={"row"}
+                    alignItems={"center"}
+                    justifyContent={"space-between"}
                 >
-                    {" "}
-                    <Stack direction="row" spacing={2}>
-                        {user.memberUser.currentState != LOG_STATE.OFFLINE ? 
-                            (
-                                <Badge
-                                    variant='dot'
-                                    anchorOrigin={{ vertical:"bottom", horizontal:"right"}}
+                    <Stack direction={"row"} alignItems={"center"}
+                        spacing={2}
+                    >
+                        {" "}
+                        <Stack direction="row" spacing={2}>
+                            {user.memberUser.currentState != LOG_STATE.OFFLINE ?
+                                (
+                                    <Badge
+                                        variant='dot'
+                                        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
                                     // overlap='cirular'
-                                >
-                                    {/* <Avatar alt={member.user.userName} src={member.user.img} /> */}
-                                    <Avatar alt="image" src={user.memberUser.avatar} />
-                                </Badge>
-                             )
-                             : (<Avatar alt={user.memberUser.userNameLoc} src={user.memberUser.avatar} />)
-                            //  : (<Avatar alt={member.user.userName} src={member.user.img} />)
-                        }
-                        <Stack direction={"row"} alignItems={"center"} spacing={2}>
-                            <Typography variant="subtitle2"> { user.memberUser.userName }</Typography>
+                                    >
+                                        {/* <Avatar alt={member.user.userName} src={member.user.img} /> */}
+                                        <Avatar alt="image" src={user.memberUser.avatar} />
+                                    </Badge>
+                                )
+                                : (<Avatar alt={user.memberUser.userNameLoc} src={user.memberUser.avatar} />)
+                                //  : (<Avatar alt={member.user.userName} src={member.user.img} />)
+                            }
+                            <Stack direction={"row"} alignItems={"center"} spacing={2}>
+                                <Typography variant="subtitle2"> {user.memberUser.userName}</Typography>
+                            </Stack>
                         </Stack>
                     </Stack>
+                    <Stack direction={"row"} alignItems={"center"} spacing={2}>
+                        <Typography variant="subtitle2">
+                            {user.memberJoin.rank} | {user.memberJoin.rights}
+                        </Typography>
+                    </Stack>
+
                 </Stack>
-                <Stack direction={"row"} alignItems={"center"} spacing={2}>
-                    <Typography variant="subtitle2"> 
-                        { user.memberJoin.rank } | { user.memberJoin.rights}
-                    </Typography>
-                </Stack>
+            </StyledChatBox>
+            <Menu
+                id="basic-menu"
+                anchorEl={anchorEl}
+                open={open}
+                onClose={handleClose}
+                MenuListProps={{
+                    'aria-labelledby': 'basic-button',
+                }}
+            >
+                <MenuItem onClick={onShwProfile}>View profile</MenuItem>
+                <MenuItem onClick={handleClose}>Play game</MenuItem>
+                {loggedUser.rank != enChatMemberRank.MEMBER &&
+                    user.memberJoin.rank != enChatMemberRank.OWNER && <Divider />}
 
-            </Stack>
-        </StyledChatBox>
-        <Menu
-          id="basic-menu"
-          anchorEl={anchorEl}
-          open={open}
-          onClose={handleClose}
-          MenuListProps={{
-            'aria-labelledby': 'basic-button',
-          }}
-        >
-            <MenuItem onClick={onShwProfile}>View profile</MenuItem>
-            <MenuItem onClick={handleClose}>Play game</MenuItem>
-            { loggedUser.rank != enChatMemberRank.MEMBER &&
-              user.memberJoin.rank != enChatMemberRank.OWNER &&  <Divider/> }
+                {loggedUser.rank != enChatMemberRank.MEMBER &&
+                    user.memberJoin.rank != enChatMemberRank.OWNER &&
+                    user.memberJoin.rights != enChatMemberRights.BANNED && <MenuItem onClick={handleClose}>Mute</MenuItem>}
 
-            { loggedUser.rank != enChatMemberRank.MEMBER && 
-              user.memberJoin.rank != enChatMemberRank.OWNER &&  
-              user.memberJoin.rights != enChatMemberRights.BANNED && <MenuItem onClick={handleClose}>Mute</MenuItem> }
+                {loggedUser.rank != enChatMemberRank.MEMBER &&
+                    user.memberJoin.rank != enChatMemberRank.OWNER &&
+                    user.memberJoin.rights != enChatMemberRights.PRIVILEDGED && <MenuItem onClick={handleClose}>Unmute</MenuItem>}
 
-            { loggedUser.rank != enChatMemberRank.MEMBER && 
-              user.memberJoin.rank != enChatMemberRank.OWNER && 
-              user.memberJoin.rights != enChatMemberRights.PRIVILEDGED && <MenuItem onClick={handleClose}>Unmute</MenuItem> }
+                {loggedUser.rank != enChatMemberRank.MEMBER &&
+                    user.memberJoin.rank != enChatMemberRank.OWNER && <MenuItem onClick={handleClose}>Kick</MenuItem>}
 
-            { loggedUser.rank != enChatMemberRank.MEMBER && 
-              user.memberJoin.rank != enChatMemberRank.OWNER &&   <MenuItem onClick={handleClose}>Kick</MenuItem> }
+                {loggedUser.rank != enChatMemberRank.MEMBER &&
+                    user.memberJoin.rank != enChatMemberRank.OWNER &&
+                    user.memberJoin.rank == enChatMemberRank.ADMIN && <MenuItem onClick={handleClose}>Demote</MenuItem>}
 
-            { loggedUser.rank != enChatMemberRank.MEMBER && 
-              user.memberJoin.rank != enChatMemberRank.OWNER &&   
-              user.memberJoin.rank == enChatMemberRank.ADMIN && <MenuItem onClick={handleClose}>Demote</MenuItem> }
-
-            { loggedUser.rank != enChatMemberRank.MEMBER && 
-              user.memberJoin.rank != enChatMemberRank.OWNER && 
-              user.memberJoin.rank == enChatMemberRank.MEMBER && <MenuItem onClick={handleClose}>Promote</MenuItem> }
-        </Menu>
+                {loggedUser.rank != enChatMemberRank.MEMBER &&
+                    user.memberJoin.rank != enChatMemberRank.OWNER &&
+                    user.memberJoin.rank == enChatMemberRank.MEMBER && <MenuItem onClick={handleClose}>Promote</MenuItem>}
+            </Menu>
         </>
     )
 }
-export function IsUserInGroup (userId: string | undefined, group: Group | null) : boolean {
+export function IsUserInGroup(userId: string | undefined, group: Group | null): boolean {
     const chatStore = useSelector(selectChatStore)
     if (!group) {
         return false;
     }
     let result = false
     const groupMembers = chatStore.chatGroupMembers.filter(
-        el => el.channelId == group.channelId )
-    
+        el => el.channelId == group.channelId)
+
     const memberResult = groupMembers.filter(el => {
         if (el.userId && userId && +userId == el.userId)
             return el
     })
-    result = (memberResult.length == 1)? true : false 
+    result = (memberResult.length == 1) ? true : false
     return result
 }
 
@@ -158,27 +158,27 @@ const ChatGroupInfoComp = (group: Group) => {
 
     return (
         <>
-            <Stack 
+            <Stack
                 direction={"row"}
-                alignItems={"center"} 
+                alignItems={"center"}
                 position={"relative"}
                 justifyContent={"space-between"}
                 width={"100%"}
             >
                 <Stack direction={"row"} spacing={1}>
                     <Stack direction="row" spacing={2} position={"relative"}>
-                        <Avatar alt={ group.title } src={ img42 }
+                        <Avatar alt={group.title} src={img42}
                         />
                     </Stack>
                     <Stack spacing={1} alignItems={"start"} >
-                        <Typography variant="subtitle2"> 
-                        { `Channel Title: ${ group.title } `}
+                        <Typography variant="subtitle2">
+                            {`Channel Title: ${group.title} `}
                         </Typography>
-                        <Typography variant="caption"> 
-                            { `Privacy: ${group.privacy }`} 
+                        <Typography variant="caption">
+                            {`Privacy: ${group.privacy}`}
                         </Typography>
-                        <Typography variant="caption"> 
-                            { `Owner: ${groupOwner?.userNameLoc}` } 
+                        <Typography variant="caption">
+                            {`Owner: ${groupOwner?.userNameLoc}`}
                         </Typography>
                     </Stack>
                 </Stack>
@@ -187,9 +187,9 @@ const ChatGroupInfoComp = (group: Group) => {
     )
 }
 
-const ChatGroupDialogInviteEntryComp = (group : Group) => {
+const ChatGroupDialogInviteEntryComp = (group: Group) => {
     const chatStore = useSelector(selectChatStore)
-    
+
     const onAccept = () => {
         const joinGroup = chatStore.chatGroupMembers.find((el: any) => el.userId.toString() == loggedUserId && el.channelId == group.channelId)
         socket.emit('acceptJoinGroup', joinGroup);
@@ -199,49 +199,50 @@ const ChatGroupDialogInviteEntryComp = (group : Group) => {
         const joinGroup = chatStore.chatGroupMembers.find((el: any) => el.userId.toString() == loggedUserId && el.channelId == group.channelId);
         socket.emit('declineJoinGroup', joinGroup);
     }
+
     useEffect(() => {
-        
+
     }, [chatStore.chatGroupList, chatStore.chatGroupMembers, chatStore.chatGroupDialogState]);
     return (
         <>
-        <Box 
-            sx={{
-                width: "100%",
-                backgroundColor: "#ddd",
-                borderRadius: 1
-            }}
-            p={2}
-        >
-            <Stack 
-                direction={"row"}
-                alignItems={"center"} 
-                justifyContent={"space-between"}
-                spacing={2}
+            <Box
+                sx={{
+                    width: "100%",
+                    backgroundColor: "#ddd",
+                    borderRadius: 1
+                }}
+                p={2}
             >
-                {/* general group info */}
-                <ChatGroupInfoComp {...group} />
+                <Stack
+                    direction={"row"}
+                    alignItems={"center"}
+                    justifyContent={"space-between"}
+                    spacing={2}
+                >
+                    {/* general group info */}
+                    <ChatGroupInfoComp {...group} />
 
-                {/* button */}
-                <Stack direction={"row"} alignItems={"center"} spacing={2}>
-                    {/* join or request button  */}
-                    
-                    <Button onClick={onAccept} variant='contained'
-                    >Accept
-                    </Button>
-                    <Button onClick={onDecline} variant='contained'
-                    >Decline
-                    </Button>
+                    {/* button */}
+                    <Stack direction={"row"} alignItems={"center"} spacing={2}>
+                        {/* join or request button  */}
+
+                        <Button onClick={onAccept} variant='contained'
+                        >Accept
+                        </Button>
+                        <Button onClick={onDecline} variant='contained'
+                        >Decline
+                        </Button>
+                    </Stack>
+
                 </Stack>
-
-            </Stack>
-        </Box>
+            </Box>
         </>
 
     )
 }
 
-const ChatGroupDialogEntryComp = (group : Group) => {
-    const btnText = ( group.privacy == enChatPrivacy.PUBLIC) ? "Join" : "Request"
+const ChatGroupDialogEntryComp = (group: Group) => {
+    const btnText = (group.privacy == enChatPrivacy.PUBLIC) ? "Join" : "Request"
     const loggedUserId = Cookies.get('userId') ? Cookies.get('userId') : '';
     const socket = getSocket(loggedUserId);
 
@@ -261,35 +262,35 @@ const ChatGroupDialogEntryComp = (group : Group) => {
 
     return (
         <>
-        <Box 
-            sx={{
-                width: "100%",
-                backgroundColor: "#ddd",
-                borderRadius: 1
-            }}
-            p={2}
-        >
-            <Stack 
-                direction={"row"}
-                alignItems={"center"} 
-                justifyContent={"space-between"}
-                spacing={2}
+            <Box
+                sx={{
+                    width: "100%",
+                    backgroundColor: "#ddd",
+                    borderRadius: 1
+                }}
+                p={2}
             >
-                {/* general group info */}
-                <ChatGroupInfoComp {...group} />
+                <Stack
+                    direction={"row"}
+                    alignItems={"center"}
+                    justifyContent={"space-between"}
+                    spacing={2}
+                >
+                    {/* general group info */}
+                    <ChatGroupInfoComp {...group} />
 
-                {/* button */}
-                <Stack direction={"row"} alignItems={"center"} spacing={2}>
-                    {/* join or request button  */}
-                    
-                    <Button onClick={handleRequest} variant='contained'
-                        disabled = { IsUserInGroup(loggedUserId, group)} 
-                    > {btnText}
-                    </Button>
+                    {/* button */}
+                    <Stack direction={"row"} alignItems={"center"} spacing={2}>
+                        {/* join or request button  */}
+
+                        <Button onClick={handleRequest} variant='contained'
+                            disabled={IsUserInGroup(loggedUserId, group)}
+                        > {btnText}
+                        </Button>
+                    </Stack>
+
                 </Stack>
-
-            </Stack>
-        </Box>
+            </Box>
         </>
 
     )
@@ -300,7 +301,7 @@ const ChatGroupDialogRequestEntryComp = (args: TGroupRequestArgs) => {
     const group = args.group;
     const joinGroup = args.joinGroup;
     const chatStore = useSelector(selectChatStore)
-    
+
     const acceptRequest = (joinGroup: JoinGroup) => {
         if (joinGroup) {
             const newJoinGroup = { ...joinGroup, status: enChatGroupInviteStatus.ACCEPTED }
@@ -313,70 +314,71 @@ const ChatGroupDialogRequestEntryComp = (args: TGroupRequestArgs) => {
             socket.emit('declineJoinGroup', joinGroup);
         }
     }
-    
+
     useEffect(() => {
-        
+
     }, [chatStore.chatGroupList, chatStore.chatGroupMembers]);
-    
+
     return (
         <>
-        <Box 
-            sx={{
-                width: "100%",
-                backgroundColor: "#ddd",
-                borderRadius: 1
-            }}
-            p={2}
-        >
-            <Stack 
-                direction={"row"}
-                alignItems={"center"} 
-                justifyContent={"space-between"}
-                spacing={2}
+            <Box
+                sx={{
+                    width: "100%",
+                    backgroundColor: "#ddd",
+                    borderRadius: 1
+                }}
+                p={2}
             >
-                {/* general group info */}
-                <ChatGroupInfoComp {...group} />
-                <Typography variant="caption"> 
-                    { `User: ${getUserById(chatStore.chatUsers, joinGroup.userId)?.userNameLoc}` } 
-                </Typography>
-                {/* button */}
-                <Stack direction={"row"} alignItems={"center"} spacing={2}>
-                    {/* join or request button  */}
-                    
+                <Stack
+                    direction={"row"}
+                    alignItems={"center"}
+                    justifyContent={"space-between"}
+                    spacing={2}
+                >
+                    {/* general group info */}
+                    <ChatGroupInfoComp {...group} />
+                    <Typography variant="caption">
+                        {`User: ${getUserById(chatStore.chatUsers, joinGroup.userId)?.userNameLoc}`}
+                    </Typography>
+                    {/* button */}
+                    <Stack direction={"row"} alignItems={"center"} spacing={2}>
+                        {/* join or request button  */}
+
                         {/* <Button onClick={handleRequest} variant='contained' disabled > Pending
                         </Button> */}
-                    {
-                        (joinGroup.status === enChatGroupInviteStatus.PENDING && joinGroup.userId.toString() != loggedUserId) &&
-                        <Button onClick={() => { acceptRequest(joinGroup) }} sx={{backgroundColor: "#af9"}}
-                        > Accept
-                        </Button>
-                    }
-                    {
-                        (joinGroup.status === enChatGroupInviteStatus.PENDING && joinGroup.userId.toString() != loggedUserId) &&
-                        <Button onClick={() => { denyRequest(joinGroup) }} sx={{backgroundColor: "#fa9"}}
-                        > Deny
-                        </Button>
-                    }
-                    {
-                        (joinGroup.status === enChatGroupInviteStatus.INVITE && joinGroup.userId.toString() != loggedUserId) &&
-                        <Button disabled sx={{backgroundColor: "#eee"}}
-                        > Pending
-                        </Button>
-                    }
-                    {
-                        (joinGroup.status === enChatGroupInviteStatus.PENDING && joinGroup.userId.toString() == loggedUserId) &&
-                        <Button disabled sx={{backgroundColor: "#eee"}}
-                        > Pending
-                        </Button>
-                    }
+                        {
+                            (joinGroup.status === enChatGroupInviteStatus.PENDING && joinGroup.userId.toString() != loggedUserId) &&
+                            <Button onClick={() => { acceptRequest(joinGroup) }} sx={{ backgroundColor: "#af9" }}
+                            > Accept
+                            </Button>
+                        }
+                        {
+                            (joinGroup.status === enChatGroupInviteStatus.PENDING && joinGroup.userId.toString() != loggedUserId) &&
+                            <Button onClick={() => { denyRequest(joinGroup) }} sx={{ backgroundColor: "#fa9" }}
+                            > Deny
+                            </Button>
+                        }
+                        {
+                            (joinGroup.status === enChatGroupInviteStatus.INVITE && joinGroup.userId.toString() != loggedUserId) &&
+                            <Button disabled sx={{ backgroundColor: "#eee" }}
+                            > Pending
+                            </Button>
+                        }
+                        {
+                            (joinGroup.status === enChatGroupInviteStatus.PENDING && joinGroup.userId.toString() == loggedUserId) &&
+                            <Button disabled sx={{ backgroundColor: "#eee" }}
+                            > Pending
+                            </Button>
+                        }
+                    </Stack>
                 </Stack>
-            </Stack>
-        </Box>
+            </Box>
         </>
     )
 }
-export { ChatGroupMemberProfileComp,
+export {
+    ChatGroupMemberProfileComp,
     ChatGroupDialogEntryComp,
     ChatGroupDialogInviteEntryComp,
-    ChatGroupDialogRequestEntryComp 
+    ChatGroupDialogRequestEntryComp
 }

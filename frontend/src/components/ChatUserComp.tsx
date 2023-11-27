@@ -21,30 +21,14 @@ const StyledChatBox = styled(Box)(({ theme }) => ({
 
 }));
 
-function HandleOnSendMsg(userData:User, chatStore:IChatState, dispatch:Dispatch<AnyAction>){
+function HandleOnSendMsg(userData: User, chatStore: IChatState, dispatch: Dispatch<AnyAction>) {
     const userId = Cookies.get('userId') ? Cookies.get('userId') : '';
-    // const user = chatStore.chatUserFriends.filter((el) => {
-    //     if (el.sender == userData.id && el.receiver == userId) {
-    //         return el;
-    //     }
-    //     if (el.receiver == userData.id && el.sender == userId) {
-    //         return el;
-    //     }
-    // })[0];
-    // // Create new list which excludes found user
-    // const newFriendListExc = chatStore.chatUserFriends
-    //     .filter(el => el.sender != user.sender && el.receiver != user.receiver)
-    // // Add user to the top of the new friend list
-    // const newFriendListInc = [user, ...newFriendListExc]
-    // // update the store data for user friend list
-    // dispatch(updateChatUserFriends(newFriendListInc));
     dispatch(updateChatActiveUser(userData));
-    // close the dialog
-    dispatch(updateStateUserFriendDialog(false)); 
-    dispatch(selectConversation({chatRoomId: userData.id, chatType: enChatType.OneOnOne}))
+    dispatch(updateStateUserFriendDialog(false));
+    dispatch(selectConversation({ chatRoomId: userData.id, chatType: enChatType.OneOnOne }))
 }
 
-const ChatUserComp = (userData : User) => {
+const ChatUserComp = (userData: User) => {
     const theme = useTheme();
     const chatStore = useSelector(selectChatStore);
     const dispatch = useDispatch()
@@ -83,7 +67,7 @@ const ChatUserComp = (userData : User) => {
 
     return (
         <StyledChatBox sx={{
-            width : "100%",
+            width: "100%",
             biorderRadius: 1,
             backgroundColor: theme.palette.background.paper,
             p: 2
@@ -91,43 +75,43 @@ const ChatUserComp = (userData : User) => {
         >
 
             <Stack
-                direction={"row"} 
-                alignItems={"center"} 
+                direction={"row"}
+                alignItems={"center"}
                 justifyContent="space-between"
             >
                 <Stack direction={"row"} alignItems={"center"} spacing={2}>
                     {" "}
-                    {userData.currentState != LOG_STATE.OFFLINE ? 
+                    {userData.currentState != LOG_STATE.OFFLINE ?
                         (
                             <Badge
                                 variant='dot'
-                                anchorOrigin={{ vertical:"bottom", horizontal:"right"}}
-                                // overlap='cirular'
+                                anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                            // overlap='cirular'
                             >
                                 {/* <Avatar alt={userData.userName} src={userData.img} /> */}
                                 <Avatar alt="image" src={userData.avatar} />
                             </Badge>
-                         )
-                         : (<Avatar alt={userData.userNameLoc} src={userData.avatar} />)
+                        )
+                        : (<Avatar alt={userData.userNameLoc} src={userData.avatar} />)
                         //  : (<Avatar alt={userData.userName} src={userData.img} />)
                     }
                     <Stack>
-                        <Typography variant="subtitle2"> { userData.userNameLoc }</Typography>
+                        <Typography variant="subtitle2"> {userData.userNameLoc}</Typography>
                     </Stack>
                 </Stack>
                 {/* button */}
                 <Stack direction={"row"} spacing={2}>
-                        <Button 
-                            onClick={() => HandleOnSendMsg(userData, chatStore, dispatch)}
-                            sx={{backgroundColor: "#eee"}}
-                        > Send Msg
-                        </Button>
-                        <Button
-                            disabled={isUserKnown()}
-                            onClick={() => onSendRequest()}
-                            sx={{backgroundColor: "#eee"}}
-                        > Send Request
-                        </Button>
+                    <Button
+                        onClick={() => HandleOnSendMsg(userData, chatStore, dispatch)}
+                        sx={{ backgroundColor: "#eee" }}
+                    > Send Msg
+                    </Button>
+                    <Button
+                        disabled={isUserKnown()}
+                        onClick={() => onSendRequest()}
+                        sx={{ backgroundColor: "#eee" }}
+                    > Send Request
+                    </Button>
                 </Stack>
 
             </Stack>
@@ -135,52 +119,52 @@ const ChatUserComp = (userData : User) => {
     )
 }
 
-const ChatUserFriendComp = (userData : User) => {
+const ChatUserFriendComp = (userData: User) => {
     const theme = useTheme()
     const chatStore = useSelector(selectChatStore);
     const dispatch = useDispatch()
 
     useEffect(() => {
 
-    }, [chatStore.chatUserFriendDialogState, chatStore.chatUserFriends, chatStore.chatUserFriends]);
+    }, [chatStore.chatUserFriendDialogState, chatStore.chatUserFriends, chatStore.chatUserFriendRequests]);
 
     return (
         <StyledChatBox sx={{
-            width : "100%",
+            width: "100%",
             borderRadius: 1,
             backgroundColor: theme.palette.background.paper,
             p: 2
         }}
         >
             <Stack
-                direction={"row"} 
-                alignItems={"center"} 
+                direction={"row"}
+                alignItems={"center"}
                 justifyContent="space-between"
             >
                 <Stack direction={"row"} alignItems={"center"} spacing={2}>
                     {" "}
-                    {userData.currentState != LOG_STATE.OFFLINE ? 
+                    {userData.currentState != LOG_STATE.OFFLINE ?
                         (
                             <Badge
                                 variant='dot'
-                                anchorOrigin={{ vertical:"bottom", horizontal:"right"}}
-                                // overlap='cirular'
+                                anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                            // overlap='cirular'
                             >
                                 {/* <Avatar alt={userData.userName} src={userData.img} /> */}
                                 <Avatar alt="image" src={userData.avatar} />
                             </Badge>
-                         )
-                         : (<Avatar alt="image" src={userData.avatar} />)
+                        )
+                        : (<Avatar alt="image" src={userData.avatar} />)
                         //  : (<Avatar alt={userData.userName} src={userData.img} />)
                     }
                     <Stack>
-                        <Typography variant="subtitle2"> { userData.userNameLoc   }</Typography>
+                        <Typography variant="subtitle2"> {userData.userNameLoc}</Typography>
                     </Stack>
                 </Stack>
                 <Stack direction={"row"} alignItems={"center"} spacing={2}>
-                    <Button 
+                    <Button
                         onClick={() => HandleOnSendMsg(userData, chatStore, dispatch)}
-                        sx={{backgroundColor: "#eee"}}
+                        sx={{ backgroundColor: "#eee" }}
                     > Send Msg
                     </Button>
                 </Stack>
@@ -189,7 +173,7 @@ const ChatUserFriendComp = (userData : User) => {
     )
 }
 
-const ChatUserFriendRequestComp = (reqData : User) => {
+const ChatUserFriendRequestComp = (reqData: User) => {
     const theme = useTheme()
     const chatStore = useSelector(selectChatStore);
     const userId = Cookies.get('userId') ? Cookies.get('userId') : '';
@@ -198,9 +182,9 @@ const ChatUserFriendRequestComp = (reqData : User) => {
 
     const isSender = (reqData: User): boolean => {
         const friend = chatStore.chatUserFriendRequests.find((el: any) => {
-           if (reqData.id == el.sender && el.receiver == userId) {
-              return el;
-           }
+            if (reqData.id == el.sender && el.receiver == userId) {
+                return el;
+            }
         });
         return (friend) ? true : false;
     }
@@ -214,18 +198,17 @@ const ChatUserFriendRequestComp = (reqData : User) => {
         socket.emit('acceptFriend', stranger.id);
         socket.once('newFriend', (data: any) => {
             if (data.new.id !== stranger.id) {
-                return ;
+                return;
             }
             const newFriendRequestList = fetchAllUsersFriends(PENDING, data.all);
             const newFriendList = fetchAllUsersFriends(ACCEPTED, data.all);
             dispatch(updateChatUserFriendRequests(newFriendRequestList));
             dispatch(updateChatUserFriends(newFriendList));
-		});
+        });
         dispatch(updateStateUserFriendDialog(false));
     }
 
     const onDeny = () => {
-        // fetch user from user list
         const stranger = chatStore.chatUserFriendRequests.filter((el: Friend) => {
             if (el.sender == reqData.id && el.receiver == userId) {
                 return el;
@@ -235,7 +218,9 @@ const ChatUserFriendRequestComp = (reqData : User) => {
             socket.emit('denyFriend', stranger.id);
             socket.once('deniedFriend', (data: any) => {
                 const newFriendRequestList = fetchAllUsersFriends(PENDING, data.all);
+                const newFriendList = fetchAllUsersFriends(ACCEPTED, data.all);
                 dispatch(updateChatUserFriendRequests(newFriendRequestList));
+                dispatch(updateChatUserFriends(newFriendList));
             });
         }
         dispatch(updateStateUserFriendDialog(false));
@@ -247,40 +232,40 @@ const ChatUserFriendRequestComp = (reqData : User) => {
 
     return (
         <StyledChatBox sx={{
-            width : "100%",
+            width: "100%",
             biorderRadius: 1,
             backgroundColor: theme.palette.background.paper,
             p: 2
         }}
         >
             <Stack
-                direction={"row"} 
-                alignItems={"center"} 
+                direction={"row"}
+                alignItems={"center"}
                 justifyContent="space-between"
             >
                 <Stack direction={"row"} alignItems={"center"} spacing={2}>
                     {" "}
                     <Avatar alt={reqData.userNameLoc} src={reqData.avatar} />
                     <Stack>
-                        <Typography variant="subtitle2"> { reqData.userNameLoc }</Typography>
+                        <Typography variant="subtitle2"> {reqData.userNameLoc}</Typography>
                     </Stack>
                 </Stack>
                 <Stack direction={"row"} alignItems={"center"} spacing={2}>
                     {
                         (isSender(reqData)) &&
-                        <Button onClick={() => onAccept()} sx={{backgroundColor: "#af9"}}
+                        <Button onClick={() => onAccept()} sx={{ backgroundColor: "#af9" }}
                         > Accept
                         </Button>
                     }
                     {
                         (isSender(reqData)) &&
-                        <Button onClick={() => onDeny()} sx={{backgroundColor: "#fa9"}}
+                        <Button onClick={() => onDeny()} sx={{ backgroundColor: "#fa9" }}
                         > Deny
                         </Button>
                     }
                     {
                         (!isSender(reqData)) &&
-                        <Button disabled sx={{backgroundColor: "#eee"}}
+                        <Button disabled sx={{ backgroundColor: "#eee" }}
                         > Pending
                         </Button>
                     }
@@ -290,7 +275,7 @@ const ChatUserFriendRequestComp = (reqData : User) => {
     )
 }
 
-const ChatUserBlockedComp = (userData : User) => {
+const ChatUserBlockedComp = (userData: User) => {
     const theme = useTheme();
     const userId = Cookies.get('userId') ? Cookies.get('userId') : '';
     const socket = getSocket(userId);
@@ -312,41 +297,41 @@ const ChatUserBlockedComp = (userData : User) => {
 
     return (
         <StyledChatBox sx={{
-            width : "100%",
+            width: "100%",
             borderRadius: 1,
             backgroundColor: theme.palette.background.paper,
             p: 2
         }}
         >
             <Stack
-                direction={"row"} 
-                alignItems={"center"} 
+                direction={"row"}
+                alignItems={"center"}
                 justifyContent="space-between"
             >
                 <Stack direction={"row"} alignItems={"center"} spacing={2}>
                     {" "}
-                    {userData.currentState != LOG_STATE.OFFLINE ? 
+                    {userData.currentState != LOG_STATE.OFFLINE ?
                         (
                             <Badge
                                 variant='dot'
-                                anchorOrigin={{ vertical:"bottom", horizontal:"right"}}
-                                // overlap='cirular'
+                                anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                            // overlap='cirular'
                             >
                                 {/* <Avatar alt={userData.userName} src={userData.img} /> */}
                                 <Avatar alt="image" src={userData.avatar} />
                             </Badge>
-                         )
-                         : (<Avatar alt="image" src={userData.avatar} />)
+                        )
+                        : (<Avatar alt="image" src={userData.avatar} />)
                         //  : (<Avatar alt={userData.userName} src={userData.img} />)
                     }
                     <Stack>
-                        <Typography variant="subtitle2"> { userData.userNameLoc   }</Typography>
+                        <Typography variant="subtitle2"> {userData.userNameLoc}</Typography>
                     </Stack>
                 </Stack>
                 <Stack direction={"row"} alignItems={"center"} spacing={2}>
-                    <Button 
+                    <Button
                         onClick={() => HandleUnblock()}
-                        sx={{backgroundColor: "#eee"}}
+                        sx={{ backgroundColor: "#eee" }}
                     > Unblock
                     </Button>
                 </Stack>

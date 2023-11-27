@@ -259,7 +259,7 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
   startGameLoop = (game: Game) => {
     gameStateManager.startGame(game.id, game); // Initialize game state
 
-    const gameInterval = setInterval(() => {
+    const gameInterval = setInterval(async () => {
       const currentGame = gameStateManager.getGameState(game.id);
       if (!currentGame) {
         clearInterval(gameInterval);
@@ -267,31 +267,32 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
       }
       moveBall(currentGame);
       checkCollision(currentGame);
-      this.gamesService.update(currentGame); // You need to handle async/await properly
+      // this.gamesService.update(currentGame); // You need to handle async/await properly
       this.server
         .to(currentGame.id.toString())
         .timeout(5000)
         .emit('gameUpdate', currentGame);
-      const roomClients = Array.from(
-        this.server.sockets.adapter.rooms.get(currentGame.id.toString()) || [],
-      );
+      
       // listening only once the custom event acknowledgement from the client
-      this.server.once('ackResponse', (response: any) => {
+      const ackPlayer1 = `ackResponse-G${currentGame.id}P${currentGame.player1}`;
+      const ackPlayer2 = `ackResponse-G${currentGame.id}P${currentGame.player2}`;
+
+      roomReadiness[currentGame.id].player1Ready.once(ackPlayer1, (response: any) => {
         if (response === null) console.log('Response empty!\n');
         else {
-          if (response.player == currentGame.player1) {
             currentGame.paddle1Y = response.paddlePos;
-          } else if (response.player == currentGame.player2) {
-            currentGame.paddle2Y = response.paddlePos;
-          } else {
-            console.log(
-              'Error occurred passing through paddle position!\n',
-              response,
-            );
           }
-        }
       });
-      this.gamesService.update(currentGame);
+      
+      roomReadiness[currentGame.id].player2Ready.once(ackPlayer2, (response: any) => {
+        if (response === null) console.log('Response empty!\n');
+        else {
+            currentGame.paddle2Y = response.paddlePos;
+          }
+      });
+      
+      //await this.gamesService.update(currentGame);
+      
       if (
         currentGame.status === 'finished' ||
         currentGame.status === 'aborted'
@@ -552,7 +553,7 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
       joinGroup.id,
     );
     await Promise.all([declinedJoinGroup]);
-    const allMembers = await this.joinchannelService.findAll();
+    const allMembers: Joinchannel[] = await this.joinchannelService.findAll();
 
     this.server.emit('declinedMemberSuccess', { all: allMembers });
   }
@@ -694,24 +695,24 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const roomId = data.id;
     console.log('\nGameLoop event read!\n');
     if (!roomReadiness[roomId]) {
-      roomReadiness[roomId] = { player1Ready: false, player2Ready: false };
+      roomReadiness[roomId] = { player1Ready: null, player2Ready: null };
     }
     const user = await this.chatsService.getUserFromSocket(socket);
     console.log('user id: ', user.id);
     console.log('player id: ', data.player1);
     // Update readiness based on which player sent the event
     if (user.id == data.player1) {
-      roomReadiness[roomId].player1Ready = true;
+      roomReadiness[roomId].player1Ready = socket;
       console.log('Player 1 is ready for the match!\n');
     } else if (user.id == data.player2) {
-      roomReadiness[roomId].player2Ready = true;
+      roomReadiness[roomId].player2Ready = socket;
       console.log('Player 2 is ready for the match!\n');
     }
 
     // Check if both players are ready
     if (
-      roomReadiness[roomId].player1Ready &&
-      roomReadiness[roomId].player2Ready
+      roomReadiness[roomId].player1Ready != null &&
+      roomReadiness[roomId].player2Ready != null
     ) {
       console.log('\x1b[32m', 'Starting Game Loop! \n', '\x1b[0m');
       this.startGameLoop(data);

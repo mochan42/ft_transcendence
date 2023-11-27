@@ -29,7 +29,7 @@ interface PvP_2Props {
 	game?: GameType;
 }
 
-const PvP_2: React.FC<PvP_2Props> = ({ playerPoint, opponentPoint, setReset, userId, player1Score, player2Score, isGameActive, isReset, isGameOver, setIsGameOver, setState, setPlayer1Id, setPlayer2Id, setPlayer1Score, setPlayer2Score, setPlayer1Info, setPlayer2Info, game}) => {
+const PvP_2: React.FC<PvP_2Props> = ({ playerPoint, opponentPoint, setReset, userId, player1Score, player2Score, isGameActive, isReset, isGameOver, setIsGameOver, setState, setPlayer1Id, setPlayer2Id, setPlayer1Score, setPlayer2Score, setPlayer1Info, setPlayer2Info, game }) => {
 
 	const socket = getSocket(userId);
 	const [startGame, setStartGame] = useState(false);
@@ -55,7 +55,7 @@ const PvP_2: React.FC<PvP_2Props> = ({ playerPoint, opponentPoint, setReset, use
 	const [paddle2Dir, setPaddle2Dir] = useState<number>(0); // dynamic
 	const [paddle2Speed, setPaddle2Speed] = useState(15); // dynamic
 	const paddle2YRef = useRef<number>(0);
-	
+
 	const movePaddles = () => {
 		setPaddle2Y((prevY) => {
 			let newY = prevY + paddle2Dir * paddle2Speed;
@@ -76,45 +76,43 @@ const PvP_2: React.FC<PvP_2Props> = ({ playerPoint, opponentPoint, setReset, use
 		})
 	}
 
+	const handleGameUpdate = (data: GameType) => {
+		console.log("Receiving game update!\n");
+		setGameObj(data);
+		setPaddle1Y(data.paddle1Y);
+		//   setPaddle2Y(data.paddle2Y);
+		setBallX(data.ballX);
+		setBallY(data.ballY);
+		setBoostX(data.boostX);
+		setBoostY(data.boostY);
+
+		console.log("Sending back: ", 2, " ", paddle2YRef.current);
+		const response = {
+			player: data.player2,
+			paddlePos: paddle2YRef.current,
+		}
+		console.log("\n", response.player, " ", response.paddlePos);
+
+		socket.emit(`ackResponse-G${data.id}P${data.player2}`, response);
+	};
 	useEffect(() => {
 		// This function will be called whenever the 'gameUpdate' event is emitted from the server
-		const handleGameUpdate = (data: GameType, ack: (responseData: any) => void) => {
-			console.log("Receiving game update!\n");
-			setGameObj(data);
-			setPaddle1Y(data.paddle1Y);
-		//   setPaddle2Y(data.paddle2Y);
-			setBallX(data.ballX);
-			setBallY(data.ballY);
-			setBoostX(data.boostX);
-			setBoostY(data.boostY);
-			
-			console.log("Sending back: ", 2, " ", paddle2YRef.current);
-			const response = {
-				player: 2,
-				paddlePos: paddle2YRef.current,
-			}
-			console.log("\n", response.player," ", response.paddlePos);
-			ack({
-				player: 2,
-				paddlePos: 50
-			  });
-		};
 		// Register the event listener
 		if (socket) {
 			socket.on('gameUpdate', handleGameUpdate);
 		}
-		
+
 		// The clean-up function to remove the event listener when the component is unmounted or dependencies change
 		return () => {
 			if (socket) {
 				socket.off('gameUpdate', handleGameUpdate);
 			}
 		};
-	  }, [socket]); // The effect depends on `socket` and will re-run only if `socket` changes
-	  
+	}, [socket]); // The effect depends on `socket` and will re-run only if `socket` changes
+
 
 	useEffect(() => {
-			movePaddles();
+		movePaddles();
 	}, [paddle2Dir, paddle2Speed])
 
 	useEffect(() => {
@@ -149,16 +147,16 @@ const PvP_2: React.FC<PvP_2Props> = ({ playerPoint, opponentPoint, setReset, use
 				console.log("Going down!\n");
 			}
 		};
-	  
+
 		const handleKeyUp = (event: KeyboardEvent) => {
 			if (event.key === 'w' || event.key === 'ArrowUp' || event.key === 's' || event.key === 'ArrowDown') {
 				setPaddle2Dir(0); // Stop paddle movement
 			}
 		};
-	  
+
 		document.addEventListener('keydown', handleKeyDown);
 		document.addEventListener('keyup', handleKeyUp);
-	  
+
 		return () => {
 			document.removeEventListener('keydown', handleKeyDown);
 			document.removeEventListener('keyup', handleKeyUp);
@@ -167,19 +165,19 @@ const PvP_2: React.FC<PvP_2Props> = ({ playerPoint, opponentPoint, setReset, use
 
 	return (
 		<div className="relative w-full h-full" ref={PvPRef}>
-			<Paddle yPosition={paddle1Y} paddleHeight={paddleLengths[difficulty]} style={{ left: 0 }}/>
-			<Paddle yPosition={paddle2Y} paddleHeight={paddleLengths[difficulty]} style={{ right: 0 }}/>
+			<Paddle yPosition={paddle1Y} paddleHeight={paddleLengths[difficulty]} style={{ left: 0 }} />
+			<Paddle yPosition={paddle2Y} paddleHeight={paddleLengths[difficulty]} style={{ right: 0 }} />
 			<div className="relative bg-slate-900">
-				<Ball  xPosition={ballX} yPosition={ballY} />
+				<Ball xPosition={ballX} yPosition={ballY} />
 			</div>
 			{includeBoost && (gameObj ? !gameObj.isBoost : false) ? <Boost x={boostX} y={boostY} width={boostWidth} height={boostWidth} /> : null}
 			{isGameOver ? (
 				<div className="absolute inset-0 bg-black bg-opacity-80">
-						<VictoryLoss userId={userId} isVictory={player1Score == 1} difficulty={difficulty} />
-					</div>
-				) : null
+					<VictoryLoss userId={userId} isVictory={player1Score == 1} difficulty={difficulty} />
+				</div>
+			) : null
 			}
-			{startGame ? null : <StartGame userId={userId} setStartGame={setStartGame} game={gameObj ? gameObj : null}/> }
+			{startGame ? null : <StartGame userId={userId} setStartGame={setStartGame} game={gameObj ? gameObj : null} />}
 		</div>
 	)
 }

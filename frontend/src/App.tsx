@@ -117,7 +117,9 @@ const App: React.FC = () => {
 			
 			socket.on('deniedFriend', (data: any) => {
 				const newFriendRequestList = fetchAllUsersFriends(PENDING, data.all);
+				const newFriendList = fetchAllUsersFriends(ACCEPTED, data.all);
 				dispatch(updateChatUserFriendRequests(newFriendRequestList));
+				dispatch(updateChatUserFriends(newFriendList));
 			});
 
 			socket.on('logout', (data: any) => {
