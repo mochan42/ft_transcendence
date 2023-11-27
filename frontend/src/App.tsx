@@ -87,8 +87,6 @@ const App: React.FC = () => {
 				dispatch(updateChatGroupMembers(data.all));
 			});
 			socket.on('BlockedFriendSucces', (data: any) => {
-				console.log('BLOCKUSER: ', data.new, '--\n');
-				console.log('BLOCKUSER: ', data.all, '--\n');
 				dispatch(updateChatBlockedUsers(data.all));
 			});
 			socket.on('newChannel', (data: any) => {

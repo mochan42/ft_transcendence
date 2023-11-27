@@ -12,6 +12,7 @@ import { useEffect, useState } from "react";
 import { User, UserStats } from "../types";
 import { getSocket } from "../utils/socketService";
 import { enChatType } from "../enums";
+import { IsActiveUserBlocked } from './ChatConversation';
 
 /* component to show contact profile */
 
@@ -43,6 +44,8 @@ const ChatUserProfile = () => {
         })();
     });
 
+    const isBlock = userId ? IsActiveUserBlocked(userId, chatStore.chatBlockedUsers, chatStore.chatActiveUser) : false;
+    
     return ( 
         <Box sx={{
                 width:"550px", backgroundColor: "white",
@@ -118,7 +121,7 @@ const ChatUserProfile = () => {
                     </Stack>
                     <Divider />
                     <Stack alignItems={"center"} direction={"row"} spacing={2}>
-                        <Button startIcon={ <Prohibit/>} fullWidth variant="outlined" onClick={() => { onBlock() }}> BLock </Button>
+                        <Button startIcon={<Prohibit />} fullWidth variant="outlined" onClick={() => { onBlock() }} disabled={ isBlock }> BLock </Button>
                         <Button startIcon={ <GameController/>} fullWidth variant="outlined"> Play game </Button>
                     </Stack>
 
