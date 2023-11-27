@@ -144,7 +144,7 @@ const checkCollision = (game) => {
       game.isGameOver = true;
       game.status = 'finished';
     } else {
-      game.isReset(true);
+      game.isReset = true;
       if (game.isBoost) {
         game.speedX = game.speedX * 0.66;
         game.isBoost(false);
@@ -220,21 +220,6 @@ const moveBall = (game) => {
   game.ballY = game.ballY + game.speedY;
 };
 
-// function startGameLoop(game,) {
-//   const gameInterval = setInterval(() => {
-//     console.log(game);
-//     moveBall(game);
-//     checkCollision(game);
-//     this.GamesService.update(game);
-//     this.gamesService.update(game);
-//     // server.GamesService.update(game);
-//     this.server.to(game.id.toString()).emit('gameUpdate', game);
-//     if (game.status === 'finished' || game.status === 'aborted') {
-//       clearInterval(gameInterval);
-//     }
-//   }, 1000); // 1000 / 60 60 FPS
-// }
-
 @WebSocketGateway({
   cors: {
     origin: `${process.env.FRONTEND_URL}`,
@@ -259,7 +244,7 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
   startGameLoop = (game: Game) => {
     gameStateManager.startGame(game.id, game); // Initialize game state
 
-    const gameInterval = setInterval(async () => {
+    const gameInterval = setInterval(() => {
       const currentGame = gameStateManager.getGameState(game.id);
       if (!currentGame) {
         clearInterval(gameInterval);
@@ -273,7 +258,7 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
         .timeout(5000)
         .emit('gameUpdate', currentGame);
       
-      // listening only once the custom event acknowledgement from the client
+      //listening only once the custom event acknowledgement from the client
       const ackPlayer1 = `ackResponse-G${currentGame.id}P${currentGame.player1}`;
       const ackPlayer2 = `ackResponse-G${currentGame.id}P${currentGame.player2}`;
 
@@ -290,9 +275,7 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
             currentGame.paddle2Y = response.paddlePos;
           }
       });
-      
-      //await this.gamesService.update(currentGame);
-      
+            
       if (
         currentGame.status === 'finished' ||
         currentGame.status === 'aborted'

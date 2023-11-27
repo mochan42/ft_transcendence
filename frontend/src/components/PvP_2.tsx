@@ -64,38 +64,26 @@ const PvP_2: React.FC<PvP_2Props> = ({ playerPoint, opponentPoint, setReset, use
 			} else if (newY > (startY * 2) + 30 - paddleLengths[difficulty]) {
 				newY = (startY * 2) + 30 - paddleLengths[difficulty]; // Maximum paddle height is div height - paddle length
 			}
-			// if (gameObj) {
-			// 	const updatePaddle = {
-			// 		gameId: gameObj.id,
-			// 		paddlePos: newY,
-			// 	}
-			// 	socket.emit('updatePaddle2', updatePaddle)
-			// }
 			paddle2YRef.current = newY;
 			return newY;
-		})
+		});
 	}
 
 	const handleGameUpdate = (data: GameType) => {
-		console.log("Receiving game update!\n");
 		setGameObj(data);
 		setPaddle1Y(data.paddle1Y);
-		//   setPaddle2Y(data.paddle2Y);
 		setBallX(data.ballX);
 		setBallY(data.ballY);
 		setBoostX(data.boostX);
 		setBoostY(data.boostY);
 
-		console.log("Sending back: ", 2, " ", paddle2YRef.current);
 		const response = {
 			player: data.player2,
 			paddlePos: paddle2YRef.current,
 		}
-		console.log("\n", response.player, " ", response.paddlePos);
-
 		socket.emit(`ackResponse-G${data.id}P${data.player2}`, response);
 	};
-	useEffect(() => {
+	useEffect(() => {  
 		// This function will be called whenever the 'gameUpdate' event is emitted from the server
 		// Register the event listener
 		if (socket) {
@@ -108,7 +96,7 @@ const PvP_2: React.FC<PvP_2Props> = ({ playerPoint, opponentPoint, setReset, use
 				socket.off('gameUpdate', handleGameUpdate);
 			}
 		};
-	}, [socket]); // The effect depends on `socket` and will re-run only if `socket` changes
+	});
 
 
 	useEffect(() => {
@@ -118,9 +106,7 @@ const PvP_2: React.FC<PvP_2Props> = ({ playerPoint, opponentPoint, setReset, use
 	useEffect(() => {
 		if (socket != null) {
 			socket.on('matchFound', (data: GameType) => {
-				console.log("A matchFound event is triggered for users ", data.player1, " and ", data.player2, "\n\n Current userId: ", userId);
 				if (userId && userId == data.player2.toString()) {
-					console.log("That is us! :D \n")
 					setGameObj(data);
 					setPlayer1Id(data.player1.toString());
 					setPlayer2Id(data.player2.toString());
@@ -132,7 +118,7 @@ const PvP_2: React.FC<PvP_2Props> = ({ playerPoint, opponentPoint, setReset, use
 		}
 		// Cleanup function
 		return () => { if (socket) socket.off('matchFound'); };
-	}, [socket, userId]);
+	});
 
 	// Track player key input
 	useEffect(() => {
@@ -140,11 +126,9 @@ const PvP_2: React.FC<PvP_2Props> = ({ playerPoint, opponentPoint, setReset, use
 			if (event.key === 'w' || event.key === 'ArrowUp') {
 				event.preventDefault();
 				setPaddle2Dir(-1); // Move paddle up
-				console.log("Going up!\n");
 			} else if (event.key === 's' || event.key === 'ArrowDown') {
 				event.preventDefault();
 				setPaddle2Dir(1); // Move paddle down
-				console.log("Going down!\n");
 			}
 		};
 
@@ -161,7 +145,7 @@ const PvP_2: React.FC<PvP_2Props> = ({ playerPoint, opponentPoint, setReset, use
 			document.removeEventListener('keydown', handleKeyDown);
 			document.removeEventListener('keyup', handleKeyUp);
 		};
-	},);
+	});
 
 	return (
 		<div className="relative w-full h-full" ref={PvPRef}>

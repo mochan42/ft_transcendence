@@ -71,7 +71,6 @@ const Game_2:React.FC<GameProps> = ({ difficulty, userId, includeBoost, opponent
 	useEffect(() => {
 			(async() => {
 				if (player1Id && player2Id) {
-					console.log("player1Id: ", player1Id, "player2ID :", player2Id, "\n");
 					const ply1 = await fetchUser(player1Id);
 					const ply2 = await fetchUser(player2Id);
 					setPlayer1Info(ply1);

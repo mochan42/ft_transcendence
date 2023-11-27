@@ -10,10 +10,10 @@ interface StartGameProps {
 
 const StartGame: React.FC<StartGameProps> = ({ userId, setStartGame, game }) => {
 
-    const socket = getSocket(userId);
+	const socket = getSocket(userId);
+	
 	function letsGo() {
 		setStartGame(true)
-		console.log("Emitting gameLoop event!", game);
 		socket.emit('gameLoop', game);
 	}
     
