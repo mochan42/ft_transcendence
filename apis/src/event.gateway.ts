@@ -433,8 +433,12 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const user = await this.chatsService.getUserFromSocket(socket);
     if (user) {
       const join = await this.joinchannelService.deleteJoin(user.id, +group);
+//       const remainMembers = await this.joinchannelService.findAGroupMembers(+group);
+//       if (!remainMembers) {
+//          await this.chatsService.remove(+group);
+//       }
       const allMembers = await this.joinchannelService.findAll();
-      socket.emit('exitGroupSuccess', { new: join, all: allMembers });
+      this.server.emit('exitGroupSuccess', { new: join, all: allMembers });
     }
   }
 
@@ -566,6 +570,31 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
     await Promise.all([unblock]);
     const allBlocks: Block[] = await this.friendsService.findAllBlock();
     this.server.emit('unblockSuccess', allBlocks);
+  }
+
+  async updateMemberShip(joinChannel: Joinchannel) {
+    const mutedUser = await this.joinchannelService.update(joinChannel);
+    await Promise.all([mutedUser]);
+    const allMembers = await this.joinchannelService.findAll();
+    this.server.emit('memberMuteToggleSuccess', { new: mutedUser, all: allMembers });
+  }
+  
+  @SubscribeMessage('memberPromoteToggle')
+  async handlePromote(@MessageBody() payload: Joinchannel) {
+    return await this.updateMemberShip(payload);
+  }
+  
+  @SubscribeMessage('memberMuteToggle')
+  async handleMute(@MessageBody() payload: Joinchannel) {
+    return await this.updateMemberShip(payload);
+  }
+
+  @SubscribeMessage('kickMember')
+  async handleKickMember(@MessageBody() payload: Joinchannel) {
+    const kicked = await this.joinchannelService.delete(payload.id);
+    await Promise.all([kicked]);
+    const allMembers = await this.joinchannelService.findAll();
+    this.server.emit('memberMuteToggleSuccess', { new: payload, all: allMembers });
   }
   /***********************GAME*********************** */
 

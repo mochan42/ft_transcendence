@@ -8,10 +8,11 @@ import Cookies from 'js-cookie';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import { LOG_STATE, enChatGroupInviteStatus, enChatMemberRank, enChatMemberRights, enChatPrivacy } from '../enums';
-import { updateChatDialogProfileUserId, updateChatDialogShwProfile } from '../redux/slices/chatDialogSlice';
+import { updateChatDialogProfileUserId, updateChatDialogShwProfile, updateChatDialogGroupInvite } from '../redux/slices/chatDialogSlice';
 import img42 from "../img/icon_42.png"
 import { getUserById } from './ChatConversation';
 import { getSocket } from '../utils/socketService';
+import { updateChatGroupMembers } from '../redux/slices/chatSlice';
 
 
 const StyledChatBox = styled(Box)(({ theme }) => ({
@@ -45,6 +46,24 @@ const ChatGroupMemberProfileComp = (user: IUserData) => {
         dispatch(updateChatDialogProfileUserId(user.memberUser.id))
         handleClose()
     }
+
+    const handleMute = (rights: string) => {
+        const joinGroup = { ...user.memberJoin, rights: rights }
+        socket.emit('memberMuteToggle', joinGroup);
+        handleClose();
+    }
+
+    const handlePromote = (rank: string) => {
+        const joinGroup = { ...user.memberJoin, rank: rank }
+        socket.emit('memberPromoteToggle', joinGroup);
+        handleClose();
+    }
+
+    const handleKick = () => {
+        socket.emit('kickMember', user.memberJoin);
+        handleClose();
+    }
+
     return (
         <>
             <StyledChatBox sx={{
@@ -84,7 +103,7 @@ const ChatGroupMemberProfileComp = (user: IUserData) => {
                                 //  : (<Avatar alt={member.user.userName} src={member.user.img} />)
                             }
                             <Stack direction={"row"} alignItems={"center"} spacing={2}>
-                                <Typography variant="subtitle2"> {user.memberUser.userName}</Typography>
+                                <Typography variant="subtitle2"> {user.memberUser.userNameLoc}</Typography>
                             </Stack>
                         </Stack>
                     </Stack>
@@ -106,28 +125,28 @@ const ChatGroupMemberProfileComp = (user: IUserData) => {
                 }}
             >
                 <MenuItem onClick={onShwProfile}>View profile</MenuItem>
-                <MenuItem onClick={handleClose}>Play game</MenuItem>
+                {loggedUser.userId != +user.memberUser.id && <MenuItem onClick={handleClose}>Play game</MenuItem>}
                 {loggedUser.rank != enChatMemberRank.MEMBER &&
                     user.memberJoin.rank != enChatMemberRank.OWNER && <Divider />}
 
                 {loggedUser.rank != enChatMemberRank.MEMBER &&
                     user.memberJoin.rank != enChatMemberRank.OWNER &&
-                    user.memberJoin.rights != enChatMemberRights.BANNED && <MenuItem onClick={handleClose}>Mute</MenuItem>}
+                    user.memberJoin.rights != enChatMemberRights.BANNED && loggedUser.userId != +user.memberUser.id && <MenuItem onClick={() => handleMute(enChatMemberRights.BANNED)}>Mute</MenuItem>}
 
                 {loggedUser.rank != enChatMemberRank.MEMBER &&
                     user.memberJoin.rank != enChatMemberRank.OWNER &&
-                    user.memberJoin.rights != enChatMemberRights.PRIVILEDGED && <MenuItem onClick={handleClose}>Unmute</MenuItem>}
+                    user.memberJoin.rights != enChatMemberRights.PRIVILEDGED && loggedUser.userId != +user.memberUser.id && <MenuItem onClick={() => handleMute(enChatMemberRights.PRIVILEDGED)}>Unmute</MenuItem>}
 
                 {loggedUser.rank != enChatMemberRank.MEMBER &&
-                    user.memberJoin.rank != enChatMemberRank.OWNER && <MenuItem onClick={handleClose}>Kick</MenuItem>}
-
-                {loggedUser.rank != enChatMemberRank.MEMBER &&
-                    user.memberJoin.rank != enChatMemberRank.OWNER &&
-                    user.memberJoin.rank == enChatMemberRank.ADMIN && <MenuItem onClick={handleClose}>Demote</MenuItem>}
+                    user.memberJoin.rank != enChatMemberRank.OWNER && loggedUser.userId != +user.memberUser.id && <MenuItem onClick={handleKick}>Kick</MenuItem>}
 
                 {loggedUser.rank != enChatMemberRank.MEMBER &&
                     user.memberJoin.rank != enChatMemberRank.OWNER &&
-                    user.memberJoin.rank == enChatMemberRank.MEMBER && <MenuItem onClick={handleClose}>Promote</MenuItem>}
+                    user.memberJoin.rank == enChatMemberRank.ADMIN && loggedUser.userId != +user.memberUser.id && <MenuItem onClick={() => handlePromote(enChatMemberRank.MEMBER)}>Demote</MenuItem>}
+
+                {loggedUser.rank != enChatMemberRank.MEMBER &&
+                    user.memberJoin.rank != enChatMemberRank.OWNER &&
+                    user.memberJoin.rank == enChatMemberRank.MEMBER && loggedUser.userId != +user.memberUser.id && <MenuItem onClick={() => handlePromote(enChatMemberRank.ADMIN)}>Promote</MenuItem>}
             </Menu>
         </>
     )
@@ -300,18 +319,24 @@ const ChatGroupDialogRequestEntryComp = (args: TGroupRequestArgs) => {
     const loggedUserId = Cookies.get('userId') ? Cookies.get('userId') : '';
     const group = args.group;
     const joinGroup = args.joinGroup;
-    const chatStore = useSelector(selectChatStore)
+    const chatStore = useSelector(selectChatStore);
+    const dispatch = useDispatch();
 
     const acceptRequest = (joinGroup: JoinGroup) => {
         if (joinGroup) {
             const newJoinGroup = { ...joinGroup, status: enChatGroupInviteStatus.ACCEPTED }
             socket.emit('acceptJoinGroup', newJoinGroup);
+            dispatch(updateChatDialogGroupInvite(false));
         }
     }
 
     const denyRequest = (joinGroup: JoinGroup) => {
         if (joinGroup) {
             socket.emit('declineJoinGroup', joinGroup);
+            socket.once('declinedMemberSuccess', (data: any) => {
+                dispatch(updateChatGroupMembers(data.all));
+            });
+            dispatch(updateChatDialogGroupInvite(false));
         }
     }
 
@@ -344,8 +369,19 @@ const ChatGroupDialogRequestEntryComp = (args: TGroupRequestArgs) => {
                     <Stack direction={"row"} alignItems={"center"} spacing={2}>
                         {/* join or request button  */}
 
-                        {/* <Button onClick={handleRequest} variant='contained' disabled > Pending
-                        </Button> */}
+
+                        {
+                            (joinGroup.status === enChatGroupInviteStatus.INVITE) &&
+                            <Button disabled sx={{ backgroundColor: "#eee" }}
+                            > Pending
+                            </Button>
+                        }
+                        {
+                            (joinGroup.status === enChatGroupInviteStatus.PENDING && joinGroup.userId.toString() == loggedUserId) &&
+                            <Button disabled sx={{ backgroundColor: "#eee" }}
+                            > Pending
+                            </Button>
+                        }
                         {
                             (joinGroup.status === enChatGroupInviteStatus.PENDING && joinGroup.userId.toString() != loggedUserId) &&
                             <Button onClick={() => { acceptRequest(joinGroup) }} sx={{ backgroundColor: "#af9" }}
@@ -356,18 +392,6 @@ const ChatGroupDialogRequestEntryComp = (args: TGroupRequestArgs) => {
                             (joinGroup.status === enChatGroupInviteStatus.PENDING && joinGroup.userId.toString() != loggedUserId) &&
                             <Button onClick={() => { denyRequest(joinGroup) }} sx={{ backgroundColor: "#fa9" }}
                             > Deny
-                            </Button>
-                        }
-                        {
-                            (joinGroup.status === enChatGroupInviteStatus.INVITE && joinGroup.userId.toString() != loggedUserId) &&
-                            <Button disabled sx={{ backgroundColor: "#eee" }}
-                            > Pending
-                            </Button>
-                        }
-                        {
-                            (joinGroup.status === enChatGroupInviteStatus.PENDING && joinGroup.userId.toString() == loggedUserId) &&
-                            <Button disabled sx={{ backgroundColor: "#eee" }}
-                            > Pending
                             </Button>
                         }
                     </Stack>

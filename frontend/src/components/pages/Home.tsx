@@ -23,20 +23,20 @@ import { updateChatBlockedUsers } from '../../redux/slices/chatSlice';
 
 
 type TUserState = {
-    userCode : {
-        code: (string | null )
-        setCode: React.Dispatch<React.SetStateAction<string | null>>
-    },
-    loginState : {
-        isLogin: boolean
-        setIsLogin: React.Dispatch<React.SetStateAction<boolean>>
+	userCode: {
+		code: (string | null)
+		setCode: React.Dispatch<React.SetStateAction<string | null>>
+	},
+	loginState: {
+		isLogin: boolean
+		setIsLogin: React.Dispatch<React.SetStateAction<boolean>>
 	},
 	userId: string | null,
 	setUserId: React.Dispatch<React.SetStateAction<string | null>>,
 	// is2faEnabled: boolean,
-    state: string,
-    token2fa: string,
-    setToken2fa: React.Dispatch<React.SetStateAction<string>>,
+	state: string,
+	token2fa: string,
+	setToken2fa: React.Dispatch<React.SetStateAction<string>>,
 	section: Number,
 }
 
@@ -57,7 +57,7 @@ const Home = ({
 		IS2FA,
 		ISNOT2FA
 	}
-	
+
 	const [usersInfo, setUsersInfo] = useState<User[] | null>(null);
 	const [authCount, setAuthCount] = useState<number>(0);
 	const id = userId;
@@ -76,7 +76,7 @@ const Home = ({
 		if (token.length != 0 && state.length !== 0) {
 			try {
 				const resp = await axios.post(`${BACKEND_URL}/pong/users/auth`, { token, state },
-				{withCredentials: true}
+					{ withCredentials: true }
 				);
 				if (resp.status === 200) {
 					const userData = resp.data;
@@ -108,7 +108,7 @@ const Home = ({
 			}
 		}
 	}
-	
+
 	const getUsersInfo = async () => {
 		try {
 			const response = await axios.get<User[]>(`${BACKEND_URL}/pong/users/`);
@@ -172,7 +172,7 @@ const Home = ({
 			}
 		})();
 	}, [userId, loginState.isLogin]);
-	
+
 	if (socket) {
 		// socket.emit('allBlock', {});
 		// socket.once('allBlockSuccess', (data: any) => {
@@ -188,7 +188,7 @@ const Home = ({
 		});
 		// --friend invitation sent ------
 		socket.on('invitedByFriend', (receiver: any) => {
-			
+
 			console.log('friend invited successfully', receiver);
 		});
 
@@ -209,7 +209,7 @@ const Home = ({
 			</>
 		);
 	}
-  	else {
+	else {
 		return (
 			<>
 				<div className='h-5/6'>
@@ -248,22 +248,22 @@ const Home = ({
 													</div>
 												</Stack>
 												<Stack width={1440} paddingLeft={1} >
-													{(socket !== null) ? (<Leaderboard userId={userId}/>) : (<></>)}
+													{(socket !== null) ? (<Leaderboard userId={userId} />) : (<></>)}
 												</Stack>
 											</Stack>
 										)
 										: null
-							
+
 								}
 								{selectSection === HOME_SECTION.CHAT_USER ? <ChatPageUsers userId={userId} /> : null}
-								{selectSection === HOME_SECTION.CHAT_GROUP ? <ChatPageGroups userId={userId}  /> : null}
-								{selectSection === HOME_SECTION.GAME_REQUEST ? <ChatPageGameRequests userId={userId}  /> : null}
+								{selectSection === HOME_SECTION.CHAT_GROUP ? <ChatPageGroups userId={userId} /> : null}
+								{/* {selectSection === HOME_SECTION.GAME_REQUEST ? <ChatPageGameRequests userId={userId}  /> : null} */}
 
 							</Stack>
 						</Stack>
 					</div>
 				</div>
-				{showScreen === 'userProfile' ? <EditProfile setShowScreen={setShowScreen} userId={userId}/> : null}
+				{showScreen === 'userProfile' ? <EditProfile setShowScreen={setShowScreen} userId={userId} /> : null}
 			</>
 		);
 	}

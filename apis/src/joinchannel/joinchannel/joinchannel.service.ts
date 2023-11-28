@@ -36,6 +36,9 @@ export class JoinchannelService {
     }
   }
 
+  async findAGroupMembers(channelId: number) {
+    return await this.JoinchannelRepo.find({ where: { channelId } });
+  }
   async update(joinChannel: Joinchannel) {
     return await this.JoinchannelRepo.save(joinChannel);
   }

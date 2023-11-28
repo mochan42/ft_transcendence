@@ -17,9 +17,14 @@ const backendUrl = BACKEND_URL
 
 const fetchAllUsers = async (): Promise<User[]> => {
   let users: User[] = [];
-  const resp = await axios.get<User[]>(backendUrl + "/pong/users");
-  if (resp.status === 200) {
-    users = resp.data;
+  try {
+    const resp = await axios.get<User[]>(backendUrl + "/pong/users");
+    if (resp.status === 200) {
+      users = resp.data;
+    }
+  }
+  catch (error) {
+    console.log('Error fetching users :', error);
   }
   return users;
 };
@@ -34,11 +39,16 @@ const fetchUser = async (userId: string): Promise<User | undefined> => {
 
 const fetchAllFriends = async (): Promise<Friend[]> => {
   let friends: Friend[] = [];
-  const urlFriend = backendUrl + "/pong/friends";
-  const resp = await axios<Friend[]>(urlFriend);
-  if (resp.status === 200) {
-    friends = resp.data;
+  try {
+    const urlFriend = backendUrl + "/pong/friends";
+    const resp = await axios<Friend[]>(urlFriend);
+    if (resp.status === 200) {
+      friends = resp.data;
+    }
   }
+	catch (error) {
+    console.log('Error fetching all friends: ', error);
+	}
   return friends;
 };
 

@@ -19,7 +19,7 @@ import { GameType, Chat, Block } from './types';
 import { updateChatUserMessages, updateChatUserFriendRequests, updateChatUserFriends, updateChatUsers, updateChatGroups, updateChatGroupMembers, updateChatBlockedUsers } from "./redux/slices/chatSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { selectChatStore } from "./redux/store";
-import { fetchAllFriends, fetchAllMessages, fetchAllUsersFriends} from './data/ChatData';
+import { fetchAllFriends, fetchAllMessages, fetchAllUsersFriends } from './data/ChatData';
 import GameChallenge from './components/GameChallenge';
 import Game from './components/pages/Game';
 import { ACCEPTED, PENDING } from './APP_CONSTS';
@@ -30,7 +30,7 @@ import { HOME_SECTION } from './enums';
 
 const App: React.FC = () => {
 
-	const generateStrState = (): string  => {
+	const generateStrState = (): string => {
 		var token = '';
 		const letters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@&#*./\\%!?_';
 		for (let i = 0; i < 10; i++) {
@@ -43,28 +43,34 @@ const App: React.FC = () => {
 	}
 	const authSession: boolean = Cookies.get('isAuth') ? true : false;
 	const userCookie = Cookies.get('userId');
-	const idSession: string | null =  userCookie ? userCookie : null ;
+	const idSession: string | null = userCookie ? userCookie : null;
 	const [isAuth, setIsAuth] = useState<boolean>(authSession);
 	const [userId, setUserId] = useState<string | null>(idSession);
 	const [code, setCode] = useState<string | null>(null);
 	const [state, setState] = useState<string>(generateStrState());
 	const [token2fa, setToken2fa] = useState<string>('');
 	const [challenge, setChallenge] = useState<boolean>(false);
-	const [game, setGame] = useState< GameType >();
+	const [game, setGame] = useState<GameType>();
 	const socket = getSocket(userId);
 	const dispatch = useDispatch();
-    const chatStore = useSelector(selectChatStore);
+	const chatStore = useSelector(selectChatStore);
 
-    // check if code available for backend to exchange for token
+	// check if code available for backend to exchange for token
 	Utils__isAPICodeAvailable({ setIsAuth, isAuth, setCode, code })
 
 
 	//----------------------------CHAT---------------------------
 	useEffect(() => {
 		if (socket != null) {
+			socket.on('kickMemberSucces', (data: any) => {
+				dispatch(updateChatGroupMembers(data.all));
+			});
+			socket.on('memberMuteToggleSuccess', (data: any) => {
+				dispatch(updateChatGroupMembers(data.all));
+			});
 			socket.on('unblockSuccess', (blocks: Block[]) => {
 				dispatch(updateChatBlockedUsers(blocks));
-        	});
+			});
 			socket.on('acceptMemberSuccess', (data: any) => {
 				dispatch(updateChatGroupMembers(data.all));
 			});
@@ -99,7 +105,7 @@ const App: React.FC = () => {
 
 			socket.on('inviteFriendSucces', (data: any) => {
 				if (data.new.sender != userId && data.new.receiver != userId) {
-					return ;
+					return;
 				}
 				const newFriendRequestList = fetchAllUsersFriends(PENDING, data.all);
 				dispatch(updateChatUserFriendRequests(newFriendRequestList));
@@ -107,14 +113,14 @@ const App: React.FC = () => {
 
 			socket.on('newFriend', (data: any) => {
 				if (data.new.sender != userId && data.new.received != userId) {
-					return ;
+					return;
 				}
 				const newFriendRequestList = fetchAllUsersFriends(PENDING, data.all);
 				const newFriendList = fetchAllUsersFriends(ACCEPTED, data.all);
 				dispatch(updateChatUserFriendRequests(newFriendRequestList));
 				dispatch(updateChatUserFriends(newFriendList));
 			});
-			
+
 			socket.on('deniedFriend', (data: any) => {
 				const newFriendRequestList = fetchAllUsersFriends(PENDING, data.all);
 				const newFriendList = fetchAllUsersFriends(ACCEPTED, data.all);
@@ -155,14 +161,14 @@ const App: React.FC = () => {
 			console.log("Missing socket\n");
 		}
 	});
-    
+
 	const title = document.getElementsByTagName('title');
 	title[0].innerHTML = 'Transcendance App';
 	return (
 		<div className='flex-cols font-mono dark:bg-white/75 bg-slate-900 bg-opacity-80 h-screen'>
 			<Router>
 				<div className='h-20 flex backdrop-blur-sm bg-white/75 dark:bg-slate-900 border-b-4 border-white/75 dark:border-slate-600 item-center justify-between'>
-					<Navbar setIsAuth={setIsAuth} isAuth={isAuth} setCode={setCode} setUserId={setUserId}/>
+					<Navbar setIsAuth={setIsAuth} isAuth={isAuth} setCode={setCode} setUserId={setUserId} />
 				</div>
 				<Routes>
 					<Route path='about' element={<About isAuth={isAuth} />} />
@@ -175,13 +181,13 @@ const App: React.FC = () => {
 						section={HOME_SECTION.PROFILE}
 					/>} />
 					<Route path='/login' element={<Login isAuth={isAuth} setIsAuth={setIsAuth} state={state} />} />
-					<Route path='/login2fa' element= {
+					<Route path='/login2fa' element={
 						<Login2fa isAuth={isAuth}
 							setIsAuth={setIsAuth}
 							setUserId={setUserId}
 							token2fa={token2fa}
 							setToken2fa={setToken2fa}
-					/>} />
+						/>} />
 					<Route path='/game' element={<ProtectedRoute isAuth={isAuth} path='/game' element={<GameSelection userId={userId} />} />} />
 					<Route path='/game/pvp' element={<ProtectedRoute isAuth={isAuth} path='/game/pvp' element={<Game_2 difficulty={game ? game.difficulty : 0} userId={userId ? userId : "0"} includeBoost={game ? game.includeBoost : false} opponent={'player'} status={'found'} game={game ? game : undefined} />} />} />
 					<Route path='/profile' element={<ProtectedRoute isAuth={isAuth} path='/profile' element={<Profile userId={userId} isAuth={isAuth} />} />} />
@@ -201,22 +207,22 @@ const App: React.FC = () => {
 						setToken2fa={setToken2fa}
 						section={HOME_SECTION.CHAT_GROUP}
 					/>} />
-					<Route path='/gamerequest' element={<Home
+					{/* <Route path='/gamerequest' element={<Home
 						userCode={{ code: code, setCode: setCode }}
 						loginState={{ isLogin: isAuth, setIsLogin: setIsAuth }} setUserId={setUserId}
 						userId={userId} state={state}
 						token2fa={token2fa}
 						setToken2fa={setToken2fa}
 						section={HOME_SECTION.GAME_REQUEST}
-					/>} />
+					/>} /> */}
 					<Route path='/*' element={<PageNotFound />} />
 				</Routes>
 				<div className='shadow-xl flex backdrop-blur-sm bg-white/75 dark:bg-slate-900 h-11 border-t-4 border-slate-300 dark:border-slate-700 items-center justify-evenly'>
 					<Footer />
 				</div>
-				{ challenge ? <GameChallenge userId={userId} game={game} setChallenge={setChallenge} /> : null}
+				{challenge ? <GameChallenge userId={userId} game={game} setChallenge={setChallenge} /> : null}
 			</Router>
-			
+
 		</div>
 	)
 }
