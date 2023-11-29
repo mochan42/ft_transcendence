@@ -518,6 +518,12 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
       all: allChannels,
     });
   }
+  
+  @SubscribeMessage('verifyGroupPassword')
+  async handleVerifyGroupPassword(@ConnectedSocket() socket: Socket, @MessageBody() data: any) {
+    const verify = await this.channelsService.verifyPasswd(data.input, data.group);
+    socket.emit('verifyGroupPasswdSuccess', verify);
+  }
 
   @SubscribeMessage('joinChannel')
   async handleJoinChannel(

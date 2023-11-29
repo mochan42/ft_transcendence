@@ -5,7 +5,7 @@ import { Dialog, Slide, DialogTitle, DialogContent, RadioGroup, FormLabel } from
 import { TransitionProps } from '@mui/material/transitions';
 import * as Yup from 'yup';
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Button, Stack } from "@mui/material";  
+import { Button, Stack } from "@mui/material";
 import RHF_TextField from './ui/RHF_TextField';
 import Cookies from 'js-cookie';
 import { useDispatch, useSelector } from "react-redux";
@@ -21,12 +21,11 @@ import { Group } from '../types';
  * See vide0 12 form creation
  * See video 9 for custom textfield creation
  */
-const Transition = React.forwardRef(function Transition (
-    props: TransitionProps & { children: React.ReactElement<any, any>;},
-    ref: React.Ref<unknown>)
-    {
-        return <Slide direction="up" ref={ref} {...props} />;
-    }
+const Transition = React.forwardRef(function Transition(
+    props: TransitionProps & { children: React.ReactElement<any, any>; },
+    ref: React.Ref<unknown>) {
+    return <Slide direction="up" ref={ref} {...props} />;
+}
 );
 
 
@@ -34,9 +33,9 @@ const CreateGroupFormInputPasswd = () => {
     const chatStore = useSelector(selectChatStore);
     const chatDialogStore = useSelector(selectChatDialogStore)
     const dispatch = useDispatch()
-    const handleClose = () => { 
+    const handleClose = () => {
         dispatch(updateChatDialogInpPasswd(false))     // close the form
-    } 
+    }
 
     const groupSchema = Yup.object().shape(
         {
@@ -45,14 +44,14 @@ const CreateGroupFormInputPasswd = () => {
         }
     )
 
-    const defaultValues = { 
-        passwd: "" ,
+    const defaultValues = {
+        passwd: "",
     }
 
     const methods = useForm({
         resolver: yupResolver(groupSchema),
         defaultValues,
-    }) 
+    })
 
     const {
         reset,
@@ -66,29 +65,29 @@ const CreateGroupFormInputPasswd = () => {
 
 
     const onSubmit = async (data: any) => {
-        
+
         dispatch(updateChatGroupUsrPassInp(getValues("passwd")));
         handleClose();
         dispatch(updateChatGroupChkPassInpState(true)) // trigger action to check password validity
     }
 
     return (
-        <FormProvider {...methods} > 
+        <FormProvider {...methods} >
             <form onSubmit={methods.handleSubmit(onSubmit)}>
                 <Stack spacing={3} padding={2}>
-                    <RHF_TextField name="passwd" 
-                        label="Password" 
-                        type="password" 
+                    <RHF_TextField name="passwd"
+                        label="Password"
+                        type="password"
                     />
                 </Stack>
-                <Stack spacing={2} direction={"row"} 
+                <Stack spacing={2} direction={"row"}
                     alignItems={"center"}
                     justifyContent={"end"}
                 >
                     <Button onClick={handleClose}>Cancel </Button>
                     <Button type="submit" variant='contained'>Enter</Button>
                 </Stack>
-           </form>
+            </form>
         </FormProvider>
     )
 }
@@ -97,10 +96,10 @@ const ChatGroupFormInputPasswd = () => {
     const chatDialogStore = useSelector(selectChatDialogStore)
     const open = chatDialogStore.chatDialogInpPasswd
     return (
-        <Dialog fullWidth maxWidth="xs" 
+        <Dialog fullWidth maxWidth="xs"
             open={open} TransitionComponent={Transition}
             keepMounted
-            sx={{p: 4}}
+            sx={{ p: 4 }}
         >
             {/* Title */}
             <DialogTitle> Input Access Password</DialogTitle>

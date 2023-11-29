@@ -58,4 +58,10 @@ export class ChannelsService {
   async updateByEntity(update: Channel) {
     return await this.ChannelRepo.save(update);
   }
+  
+  async verifyPasswd(input: string, group: number) {
+    const channel = await this.findOne(group);
+    if (!group) return false;
+    return this.comparePassword(input, channel.password);
+  }
 }
