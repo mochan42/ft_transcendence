@@ -110,75 +110,75 @@ const  ChatPageUsers = (chatProp : ChatProps) => {
     }, [chatStore.chatUserMessages, chatStore.chatUsers, chatStore.chatUserFriends]);
     
     return (
-    <>
-        <Stack direction={"row"} sx={{ width: "95vw"}}>
-        <Box 
-          sx={{
-            position:"relative",
-            height: "100%",
-            minWidth: "350px",
-            backgroundColor: "white",
-            boxShadow: "0px 0px 2px rgba(0, 0, 0, 0.25)"
-          }}>
-                <Stack p={3} spacing={1} sx={{height:"75vh"}} >
+        <>
+            <Stack direction={"row"} sx={{ width: "95vw"}}>
+            <Box 
+            sx={{
+                position:"relative",
+                height: "100%",
+                minWidth: "350px",
+                backgroundColor: "white",
+                boxShadow: "0px 0px 2px rgba(0, 0, 0, 0.25)"
+            }}>
+                    <Stack p={3} spacing={1} sx={{height:"75vh"}} >
 
-                    {/* Chatuserlist */}
-                    <Stack 
-                        direction={"row"} 
-                        alignItems={"centered"} 
-                        justifyContent={"space-between"}
-                    >
-                        <Typography variant='h5'>Chats</Typography>
-                        <Stack direction={"row"} alignItems={"centered"} spacing={1}>
-                            <IconButton onClick={()=>{handleOpenDialog()}}>
-                                <Handshake/>
-                            </IconButton>
+                        {/* Chatuserlist */}
+                        <Stack 
+                            direction={"row"} 
+                            alignItems={"centered"} 
+                            justifyContent={"space-between"}
+                        >
+                            <Typography variant='h5'>Chats</Typography>
+                            <Stack direction={"row"} alignItems={"centered"} spacing={1}>
+                                <IconButton onClick={()=>{handleOpenDialog()}}>
+                                    <Handshake/>
+                                </IconButton>
+                            </Stack>
+                        </Stack>
+                        <Divider/>
+                        <Stack 
+                            sx={{flexGrow:1, overflowY:"scroll", height:"100%"}}
+                            spacing={0.5} 
+                        >
+                                {
+                                    chatStore.chatUsers
+                                    .filter((user: User) => {
+                                    if (user.id !== userId) {
+                                        const msgs = chatStore.chatUserMessages.filter((message: Chat) => {
+                                            if (message.type == PRIVATE
+                                                && ((message.author.toString() == userId && message.receiver == +user.id)
+                                                || (message.author === +user.id && message.receiver.toString() == userId)))
+                                            {
+                                                return message;
+                                            }
+                                        });
+                                        if (msgs.length != 0) return user;
+                                    }
+                                    })
+                                    .map((el) => {
+                                        return (<ChatElement {...el} key={el.id} />)
+                                    })
+                                }
                         </Stack>
                     </Stack>
-                    <Divider/>
-                    <Stack 
-                        sx={{flexGrow:1, overflowY:"scroll", height:"100%"}}
-                        spacing={0.5} 
-                    >
-                            {
-                                chatStore.chatUsers
-                                .filter((user: User) => {
-                                  if (user.id !== userId) {
-                                      const msgs = chatStore.chatUserMessages.filter((message: Chat) => {
-                                          if (message.type == PRIVATE
-                                              && ((message.author.toString() == userId && message.receiver == +user.id)
-                                              || (message.author === +user.id && message.receiver.toString() == userId)))
-                                          {
-                                              return message;
-                                          }
-                                      });
-                                      if (msgs.length != 0) return user;
-                                  }
-                                })
-                                .map((el) => {
-                                    return (<ChatElement {...el} key={el.id} />)
-                                })
-                            }
+            </Box>
+
+                    {/* conversation panel */}
+                    <Stack sx={{ width: "100%" }} alignItems={"center"} justifyContent={"center"}>
+                        {chatStore.chatRoomId !== null && chatStore.chatType === enChatType.OneOnOne 
+                            ? <ChatConversation userId={chatProp.userId} />
+                            : <Typography variant="subtitle2">Select chat or create new</Typography>
+                        }
                     </Stack>
-                </Stack>
-        </Box>
 
-                {/* conversation panel */}
-                <Stack sx={{ width: "100%" }} alignItems={"center"} justifyContent={"center"}>
-                    {chatStore.chatRoomId !== null && chatStore.chatType === enChatType.OneOnOne 
-                        ? <ChatConversation userId={chatProp.userId} />
-                        : <Typography variant="subtitle2">Select chat or create new</Typography>
-                    }
-                </Stack>
-
-                {/* show profile for user or group on toggle. it depends on which chat is selected */}
-                <Stack>
-    			{ chatStore.chatSideBar.open && <ChatUserProfile /> }
-                </Stack>
-        </Stack>
-        {/* handle friend request dialog panel */}
-        { chatStore.chatUserFriendDialogState && <ChatFriends />}
-    </>
+                    {/* show profile for user or group on toggle. it depends on which chat is selected */}
+                    <Stack>
+                    { chatStore.chatSideBar.open && <ChatUserProfile /> }
+                    </Stack>
+            </Stack>
+            {/* handle friend request dialog panel */}
+            { chatStore.chatUserFriendDialogState && <ChatFriends />}
+        </>
       );
 }
  

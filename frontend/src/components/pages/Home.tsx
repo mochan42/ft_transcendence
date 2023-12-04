@@ -258,7 +258,7 @@ const Home = ({
 											)}
 										</div>
 									</div>
-									<div className='w-2/3 h-2/3'>
+									<div className='w-2/3 h-5/6'>
 										{socket !== null && <Leaderboard userId={userId} />}
 									</div>
 								</div>

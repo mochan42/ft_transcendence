@@ -1,7 +1,7 @@
 # Use an official Node.js runtime as a parent image
 FROM node:18
 
-COPY ./src/img ./
+# COPY ./src/img ./
 
 # Create app directory
 # Set the working directory in the container

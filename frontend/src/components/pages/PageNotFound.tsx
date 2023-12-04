@@ -5,6 +5,7 @@ import imgNotFound from "../../img/looking_for_page.png"
 
 const PageNotFound = () => {
 	const navigate = useNavigate()
+	const imagePath = "./42Schools.jpg"
 	return (
 		<div className='h-5/6 flex flex-col flex-wrap justify-start backdrop-blur-sm bg-slate-200 bg-white/75 dark:bg-slate-900 border-b border-slate-300 dark:border-slate-700'>
 			<div className='h-1/6 flex justify-around items-center'>
