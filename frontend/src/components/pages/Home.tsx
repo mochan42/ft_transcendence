@@ -212,59 +212,95 @@ const Home = ({
 	else {
 		return (
 			<>
-				<div className='h-5/6'>
-					<div className="flex flex-wrap h-full">
-						<Stack
-							direction={"row"} height={"100%"} p={1} bgcolor={"#eee"}
-							justifyContent={"space-between"} alignItems={"centered"}
-						>
-							<Stack spacing={2} width={70}>
-								<HomeBoard section={selectSection} setSection={setSelectSection} />
-							</Stack>
-							<Stack sx={{
-								gridGap: "0px",
-								height: "100%",
-								width: "100%",
-							}}
-							>
-								{
-									(selectSection === HOME_SECTION.PROFILE) ?
-										(
-											<Stack direction={"row"} justifyContent={"space-between"}
-												alignItems={"centered"}
-											>
-												<Stack width={400} spacing={2} justifyContent={"space-between"}>
-													<UserCard userId={userId}></UserCard>
-													<div className="flex flex-row justify-between items-center min-w-[200px] min-h-[200px] bg-slate-900 text-center rounded-lg">
-														{userFriends != null ? userFriends.map((user, index) => (
-															<div key={index}>
-																<img
-																	className="h-6 w-6 dark:bg-slate-200 rounded-full"
-																	src={user.avatar}
-																	alt="Achievement badge"
-																/> {user.userNameLoc}
-															</div>
-														)) : <img className='h-full w-full rounded-lg' src='https://media0.giphy.com/media/KG4ST0tXOrt1yQRsv0/200.webp?cid=ecf05e4732is65t7ah6nvhvwst9hkjqv0c52bhfnilk0b9g0&ep=v1_stickers_search&rid=200.webp&ct=s' />}
-													</div>
-												</Stack>
-												<Stack width={1440} paddingLeft={1} >
-													{(socket !== null) ? (<Leaderboard userId={userId} />) : (<></>)}
-												</Stack>
-											</Stack>
-										)
-										: null
-
-								}
-								{selectSection === HOME_SECTION.CHAT_USER ? <ChatPageUsers userId={userId} /> : null}
-								{selectSection === HOME_SECTION.CHAT_GROUP ? <ChatPageGroups userId={userId} /> : null}
-								{/* {selectSection === HOME_SECTION.GAME_REQUEST ? <ChatPageGameRequests userId={userId}  /> : null} */}
-
-							</Stack>
-						</Stack>
+				<div className='h-5/6 w-full relative'>
+					<div className="flex h-full p-1 bg-gray-200 justify-between">
+						<div className="space-y-8 min-w-[70px]">
+							<HomeBoard section={selectSection} setSection={setSelectSection} />
+						</div>
+						<div className="flex w-full">
+							{selectSection === HOME_SECTION.PROFILE && (
+								<div className="flex justify-evenly space-y-8 items-center h-full w-full">
+									<div className="flex flex-col space-y-2">
+										<UserCard userId={userId} />
+										<div className="flex justify-between items-center min-w-[200px] bg-slate-900 text-center rounded-lg">
+											{userFriends ? userFriends.map((user, index) => (
+												<div key={index} className="flex items-center">
+													<img className="h-6 w-6 dark:bg-slate-200 rounded-full" src={user.avatar} alt="User avatar" />
+													{user.userNameLoc}
+												</div>
+											)) : (
+												<img className='h-full w-full rounded-lg' src='https://media0.giphy.com/media/KG4ST0tXOrt1yQRsv0/200.webp?cid=ecf05e4732is65t7ah6nvhvwst9hkjqv0c52bhfnilk0b9g0&ep=v1_stickers_search&rid=200.webp&ct=s' />
+											)}
+										</div>
+									</div>
+									<div className='w-2/3 h-2/3'>
+										{socket !== null && <Leaderboard userId={userId} />}
+									</div>
+								</div>
+							)}
+							{selectSection === HOME_SECTION.CHAT_USER && <ChatPageUsers userId={userId} />}
+							{selectSection === HOME_SECTION.CHAT_GROUP && <ChatPageGroups userId={userId} />}
+						</div>
 					</div>
 				</div>
-				{showScreen === 'userProfile' ? <EditProfile setShowScreen={setShowScreen} userId={userId} /> : null}
+				{showScreen === 'userProfile' && <EditProfile setShowScreen={setShowScreen} userId={userId} />}
 			</>
+
+		// return (
+		// 	<>
+		// 		<div className='h-5/6 w-5/6'>
+		// 			<div className="flex flex-wrap h-full">
+		// 				<Stack
+		// 					direction={"row"} height={"80%"} p={1} bgcolor={"#eee"}
+		// 					justifyContent={"space-between"} alignItems={"centered"}
+		// 				>
+		// 					<Stack spacing={2} minWidth={70}>
+		// 						<HomeBoard section={selectSection} setSection={setSelectSection} />
+		// 					</Stack>
+		// 					<Stack sx={{
+		// 						gridGap: "0px",
+		// 						height: "100%",
+		// 						width: "100%",
+		// 					}}
+		// 					>
+		// 						{
+		// 							(selectSection === HOME_SECTION.PROFILE) ?
+		// 								(
+		// 									<Stack direction={"row"} justifyContent={"space-between"}
+		// 										alignItems={"centered"}
+		// 									>
+		// 										<Stack minWidth={400} spacing={2} justifyContent={"space-between"}>
+		// 											<UserCard userId={userId}></UserCard>
+		// 											<div className="flex flex-row justify-between items-center min-w-[200px] min-h-[200px] bg-slate-900 text-center rounded-lg">
+		// 												{userFriends != null ? userFriends.map((user, index) => (
+		// 													<div key={index}>
+		// 														<img
+		// 															className="h-6 w-6 dark:bg-slate-200 rounded-full"
+		// 															src={user.avatar}
+		// 															alt="Achievement badge"
+		// 														/> {user.userNameLoc}
+		// 													</div>
+		// 												)) : <img className='h-full w-full rounded-lg' src='https://media0.giphy.com/media/KG4ST0tXOrt1yQRsv0/200.webp?cid=ecf05e4732is65t7ah6nvhvwst9hkjqv0c52bhfnilk0b9g0&ep=v1_stickers_search&rid=200.webp&ct=s' />}
+		// 											</div>
+		// 										</Stack>
+		// 										<Stack paddingLeft={1}>
+		// 											{(socket !== null) ? (<Leaderboard userId={userId} />) : (<></>)}
+		// 										</Stack>
+		// 									</Stack>
+		// 								)
+		// 								: null
+
+		// 						}
+		// 						{selectSection === HOME_SECTION.CHAT_USER ? <ChatPageUsers userId={userId} /> : null}
+		// 						{selectSection === HOME_SECTION.CHAT_GROUP ? <ChatPageGroups userId={userId} /> : null}
+		// 						{/* {selectSection === HOME_SECTION.GAME_REQUEST ? <ChatPageGameRequests userId={userId}  /> : null} */}
+
+		// 					</Stack>
+		// 				</Stack>
+		// 			</div>
+		// 		</div>
+		// 		{showScreen === 'userProfile' ? <EditProfile setShowScreen={setShowScreen} userId={userId} /> : null}
+		// 	</>
 		);
 	}
 }
