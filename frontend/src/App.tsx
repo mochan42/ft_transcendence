@@ -217,7 +217,7 @@ const App: React.FC = () => {
 					/>} /> */}
 					<Route path='/*' element={<PageNotFound />} />
 				</Routes>
-				<div className='shadow-xl flex backdrop-blur-sm bg-white/75 dark:bg-slate-900 h-11 border-t-4 border-slate-300 dark:border-slate-700 items-center justify-evenly'>
+				<div className='h-20 shadow-xl flex backdrop-blur-sm bg-white/75 dark:bg-slate-900 border-t-4 border-slate-300 dark:border-slate-700 items-center justify-evenly'>
 					<Footer />
 				</div>
 				{challenge ? <GameChallenge userId={userId} game={game} setChallenge={setChallenge} /> : null}

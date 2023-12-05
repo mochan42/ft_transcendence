@@ -2,6 +2,8 @@ import { useEffect, useState } from "react"
 import { Button } from "../ui/Button"
 import Game from "./Game";
 import { cn } from "../../lib/utils";
+import imgBot from "../../img/SinglePlay.png"
+import imgCommunity from "../../img/CommunityPlay.png"
 
 interface GameSelectionProps {
 	userId: string | null;
@@ -62,24 +64,26 @@ const GameSelection:React.FC<GameSelectionProps> =({ userId }) => {
 			{state === 'select' ?
 				<div className='h-full w-full relative'>
 					<Button
-						className={'border-r-4 border-slate-200 dark:border-slate-900 h-full w-1/2 text-slate-200 text-2xl font-extrabold z-0 bg-center bg-[url(https://wallpaperaccess.com/full/2019427.jpg)]'}
+						className={'border-r-4 border-slate-200 dark:border-slate-900 h-full w-1/2 text-slate-200 text-2xl font-extrabold z-0 bg-center'}
 						variant={'link'}
 						onClick={() => setState('bot')}
 						onMouseEnter={() => handleMouseEnterBot()}
 						onMouseLeave={() => handleMouseLeaveBot()}
 						style={{
+							backgroundImage: `url(${imgBot})`,
 							opacity: isHoveredBot ? 0.9 : 0.6,
 						}}
 					>
 						Play Bot
 					</Button>
 					<Button
-						className={'border-l-4 border-slate-200 dark:border-slate-900 h-full w-1/2 text-slate-200 text-2xl font-extrabold z-0 bg-cover bg-right bg-[url(https://wallpaperaccess.com/full/2019544.jpg)]'}
+						className={'border-l-4 border-slate-200 dark:border-slate-900 h-full w-1/2 text-slate-200 text-2xl font-extrabold z-0 bg-cover bg-right'}
 						onClick={() => setState('player')}
 						variant={'link'}
 						onMouseEnter={() => handleMouseEnterPlayer()}
 						onMouseLeave={() => handleMouseLeavePlayer()}
 						style={{
+							backgroundImage: `url(${imgCommunity})`,
 							opacity: isHoveredPlayer ? 0.9 : 0.6,
 						}}
 					>

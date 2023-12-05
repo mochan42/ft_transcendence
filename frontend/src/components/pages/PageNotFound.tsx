@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom"
 import { Button } from "../ui/Button"
 import SmallHeading from "../ui/SmallHeading"
+import imgNotFound from "../../img/looking_for_page.png"
 
 const PageNotFound = () => {
 	const navigate = useNavigate()
@@ -12,10 +13,11 @@ const PageNotFound = () => {
 				</h1>
 			</div>
 			<div className='overflow-hidden mx-auto rounded-3xl object-scale-down w-2/3 h-2/3 bg-cover bg-center'
-				style={{
-					backgroundImage: "url('https://wallpaperaccess.com/full/2019411.jpg')",
-				}}
+				// style={{
+				// 	backgroundImage: "url('https://wallpaperaccess.com/full/2019411.jpg')",
+				// }}
 				>
+				<img src={imgNotFound}/>
 				{/* <img src='https://wallpaperaccess.com/full/2019411.jpg' alt='A cartoon character is looking for something in the dark with a torch.'></img> */}
 			</div>
 			<div className='h-1/6 flex flex-wrap justify-around items-center'>
