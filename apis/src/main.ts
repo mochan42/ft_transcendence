@@ -4,6 +4,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { join } from 'path';
 import * as express from 'express';
 import { IoAdapter } from '@nestjs/platform-socket.io';
+//import { AuthGuard }  from './auth/auth.guard';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);

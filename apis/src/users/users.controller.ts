@@ -51,8 +51,6 @@ export class UsersController {
             createdAt.getMonth() +
             createdAt.getFullYear() +
             createdAt.getMilliseconds();
-          console.log(avatar);
-
           //Calling the callback to rename the image
           cb(null, `${avatar}${extname(file.originalname)}`);
         },
