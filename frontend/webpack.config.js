@@ -8,7 +8,8 @@ module.exports = {
   },
   resolve: {
     fallback: {
-      "crypto": require.resolve("crypto-browserify")
+      "crypto": require.resolve("crypto-browserify"),
+      "buffer": require.resolve("buffer/")
     },
   },
 };

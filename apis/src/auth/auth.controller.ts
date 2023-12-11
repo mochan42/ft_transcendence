@@ -23,4 +23,10 @@ export class AuthController {
   validateSecret(@Body() secret: Secret2faDTO) {
     return this.authService.verify(secret);
   }
+
+  @Post('token')
+  @HttpCode(200)
+  verifyToken(@Body() token: any) {
+    return this.authService.verifyAuthToken(token);
+  }
 }

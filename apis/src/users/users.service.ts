@@ -28,7 +28,7 @@ export class UsersService {
     const toUpdate = await this.UserRepository.findOne({ where: { id } });
     if (avatar) {
       avatar =
-        'https://special-dollop-r6jj956gq9xf5r9-5000.app.github.dev/pong/users/avatar/' +
+        process.env.BACKEND_URL + '/users/avatar/' +
         avatar;
     } else {
       avatar = toUpdate.avatar;

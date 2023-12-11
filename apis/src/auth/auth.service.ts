@@ -7,12 +7,14 @@ import { totp, authenticator } from 'otplib';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { StatService } from 'src/stat/stat.service';
 import { LOG_STATE } from 'src/APIS_CONSTS';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
   constructor(
     private usersService: UsersService,
     private statService: StatService,
+    private jwtService: JwtService,
   ) {}
   async signin(authUserDto: AuthUserDto) {
     const accessToken = await this.getFortyTwoAccessToken(authUserDto);
@@ -41,7 +43,7 @@ export class AuthService {
     }
 
     if (!signedUser.is2Fa) {
-      return { is2Fa: false, user: signedUser, isFirstLogin: logTimes };
+      return { is2Fa: false, access_token: await this.jwtService.signAsync(signedUser), isFirstLogin: logTimes };
     }
     const token2fa = await this.generateSecret(signedUser.id.toString());
     return { is2Fa: true, token2fa, isFirstLogin: false };
@@ -131,5 +133,11 @@ export class AuthService {
     } catch (error) {
       console.log(error);
     }
+  }
+
+  verifyAuthToken(token: any) {
+    const user = this.jwtService.decode(token);
+    console.log(user);
+    return user;
   }
 }
