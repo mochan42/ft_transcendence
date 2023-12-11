@@ -245,7 +245,7 @@ Content-Type: application/json
 DELETE http://localhost:5000/pong/friends/36
 
 ### aut
-POST http://localhost:5000/pong/users/auth
+POST http://localhost:5000/pong/users/auth/
 Content-Type: application/json
 
 {

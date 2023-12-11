@@ -26,7 +26,7 @@ export class AuthController {
 
   @Post('token')
   @HttpCode(200)
-  verifyToken(@Body() token: any) {
-    return this.authService.verifyAuthToken(token);
+  verifyToken(@Body() payload: any) {
+    return this.authService.verifyAuthToken(payload.token);
   }
 }

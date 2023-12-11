@@ -92,7 +92,6 @@ const Home = ({
 				if (resp.status === 200) {
 					const userAccessToken = resp.data;
 					const userData = { ...userAccessToken, user: await verifyToken(userAccessToken.access_token) };
-					console.log(userData);
 					if (userData.is2Fa === true) {
 						loginState.setIsLogin(false);
 						setToken2fa(userData.token2fa);
@@ -102,7 +101,7 @@ const Home = ({
 					}
 					else {
 						loginState.setIsLogin(true);
-						console.log(resp.data);
+						console.log(userData);
 						if (userData.user === null) {
 							return;
 						}

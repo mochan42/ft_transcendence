@@ -43,7 +43,8 @@ export class AuthService {
     }
 
     if (!signedUser.is2Fa) {
-      return { is2Fa: false, access_token: await this.jwtService.signAsync(signedUser), isFirstLogin: logTimes };
+      const userAccessToken = await this.jwtService.signAsync(signedUser);
+      return { is2Fa: false, access_token: userAccessToken, isFirstLogin: logTimes };
     }
     const token2fa = await this.generateSecret(signedUser.id.toString());
     return { is2Fa: true, token2fa, isFirstLogin: false };
@@ -135,7 +136,7 @@ export class AuthService {
     }
   }
 
-  verifyAuthToken(token: any) {
+  verifyAuthToken(token: string) {
     const user = this.jwtService.decode(token);
     console.log(user);
     return user;
