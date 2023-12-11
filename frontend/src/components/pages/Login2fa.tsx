@@ -25,8 +25,12 @@ const Login2fa: React.FC<Props> = ({ setIsAuth, isAuth, setUserId, token2fa }) =
 
   const generateSecret = async () => {
     try {
+      const headers = {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${process.env.REACT_APP_SECRET}`
+      };
       const url2Fa = `${BACKEND_URL}/pong/users/auth/2fa/` + id;
-      const secret = await axios.get<string>(url2Fa);
+      const secret = await axios.get<string>(url2Fa, { headers });
       if (secret.status === 200) {
         return secret.data;
       }
@@ -38,8 +42,12 @@ const Login2fa: React.FC<Props> = ({ setIsAuth, isAuth, setUserId, token2fa }) =
 
   const handle2fa = async () => {
     // send code to backend for verification
+    const headers = {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${process.env.REACT_APP_SECRET}`
+    };
     try {
-      const validate = await axios.post(`${BACKEND_URL}/pong/users/auth/2fa`, { token: otp, userId: id + '' });
+      const validate = await axios.post(`${BACKEND_URL}/pong/users/auth/2fa`, { token: otp, userId: id + '' }, { headers });
       if (validate.status === 200) {
         if (validate.data === 'OK') {
           Cookies.set('userId', id + '', { expires: 7 });

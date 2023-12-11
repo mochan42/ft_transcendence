@@ -36,8 +36,12 @@ const Chat: React.FC<ChatProps> = ({ userId, socket }) => {
     }, []);
 
     const getUserInfo = async () => {
+        const headers = {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${process.env.REACT_APP_SECRET}`
+        };
         try {
-            const response = await axios.get<User>(url_info);
+            const response = await axios.get<User>(url_info, { headers });
             if (response.status === 200) {
                 setUserInfo(response.data);
                 setUserName(response.data.userName); // Set the username from user info

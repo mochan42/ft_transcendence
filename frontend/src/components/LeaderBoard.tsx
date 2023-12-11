@@ -23,8 +23,12 @@ const Leaderboard:React.FC<LeaderboardProps> =({ userId }) => {
 	const socket = getSocket(userId);
 	
 	const getUsersInfo = async () => { 
+		const headers = {
+			'Content-Type': 'application/json',
+			'Authorization': `Bearer ${process.env.REACT_APP_SECRET}`
+		};
 		try {
-			const response = await axios.get< User[] >(`${BACKEND_URL}/pong/users/`);
+			const response = await axios.get< User[] >(`${BACKEND_URL}/pong/users/`, { headers });
 			if (response.status === 200) {
 				setUsersInfo(response.data);
 				// console.log('Received Users Info: ', response.data)
@@ -36,11 +40,14 @@ const Leaderboard:React.FC<LeaderboardProps> =({ userId }) => {
 	}
 
 	const getFriends = async () => {
+		const headers = {
+			'Content-Type': 'application/json',
+			'Authorization': `Bearer ${process.env.REACT_APP_SECRET}`
+		};
 		try {
-			const response = await axios.get< Friend [] >(urlFriends);
+			const response = await axios.get< Friend [] >(urlFriends, { headers });
 			if (response.status === 200) {
 				setFriends(response.data);
-				// console.log('Received Friends data', response.data);
 			}
 		}
 		catch (error) {

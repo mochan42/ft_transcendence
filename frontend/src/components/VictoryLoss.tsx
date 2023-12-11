@@ -19,8 +19,12 @@ const VictoryLoss: React.FC<VictoryLossProps> = ({ isVictory, userId, difficulty
 	const url_achievements = `${BACKEND_URL}/pong/users/` + userId + '/achievements';
 	
 	const getUserStats = async () => {
+		const headers = {
+			'Content-Type': 'application/json',
+			'Authorization': `Bearer ${process.env.REACT_APP_SECRET}`
+		};
 		try {
-			const response = await axios.get<UserStats>(url_stats);
+			const response = await axios.get<UserStats>(url_stats, { headers });
 			if (response.status === 200) {
 				setUserStats(response.data);
 				// console.log('Received User Stats: ', response.data);
@@ -32,13 +36,17 @@ const VictoryLoss: React.FC<VictoryLossProps> = ({ isVictory, userId, difficulty
 
 	const updateUserStats = async ( isVictory: boolean ) => {
 		if (userStats) {
+			const headers = {
+				'Content-Type': 'application/json',
+				'Authorization': `Bearer ${process.env.REACT_APP_SECRET}`
+			};
 			try {
 				console.log('In try block')
 				const updatedStats = {
 					wins: isVictory ? userStats.wins + 1 : userStats.wins,
 					losses: isVictory ? userStats.losses : userStats.losses + 1,
 				}
-				const response = await axios.patch(url_stats, updatedStats);
+				const response = await axios.patch(url_stats, updatedStats, { headers });
 				if (response.status === 200) {
 					console.log('UserStats updated:', response.data);
 					setUpdatedStats(true);
@@ -51,8 +59,12 @@ const VictoryLoss: React.FC<VictoryLossProps> = ({ isVictory, userId, difficulty
 	};
 
 	const getUserAchievements = async () => {
+		const headers = {
+			'Content-Type': 'application/json',
+			'Authorization': `Bearer ${process.env.REACT_APP_SECRET}`
+		};
 		try {
-			const response: AxiosResponse<UserAchievements[]> = await axios.get(url_achievements);
+			const response: AxiosResponse<UserAchievements[]> = await axios.get(url_achievements, { headers });
 			if (response.status === 200) {
 				setUserAchievements(response.data);
 				// console.log('Received User Achievements: ', response.data);
@@ -67,13 +79,17 @@ const VictoryLoss: React.FC<VictoryLossProps> = ({ isVictory, userId, difficulty
 			const achievementExists = UserAchievements.some((achievement) => achievement.goalId === (difficulty + 2).toString());
 			console.log("Achievement exists: ", achievementExists);
 			if (!achievementExists) {
+				const headers = {
+					'Content-Type': 'application/json',
+					'Authorization': `Bearer ${process.env.REACT_APP_SECRET}`
+				};
 				try {
 					const Achievement = 
 					{
 						"goalId": (difficulty + 2),
 						"createdAt": Date.now().toLocaleString(),
 					}
-					const response = await axios.post(url_achievements, Achievement);
+					const response = await axios.post(url_achievements, Achievement, { headers });
 					if (response.status === 201) {
 						console.log('Added Achievement Successfully');
 						setUpdatedAchievements(true);

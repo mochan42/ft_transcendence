@@ -25,11 +25,14 @@ const EditProfile:React.FC<EditProfileProps> = ({ setShowScreen, userId }) => {
     });
 
     const getUserInfo = async () => {
+        const headers = {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${process.env.REACT_APP_SECRET}`
+        };
         try {
-            const response = await axios.get<User>(url_info);
+            const response = await axios.get<User>(url_info, { headers });
             if (response.status === 200) {
                 setUserInfo(response.data);
-                // console.log('Received User Info: ', response.data)
             }
         }
         catch (error) {
@@ -60,7 +63,11 @@ const EditProfile:React.FC<EditProfileProps> = ({ setShowScreen, userId }) => {
 
     const updateUser = async (updatedUser: FormData) => {
         if (userInfo) {
-            const verifyUserName = await axios.get(`${BACKEND_URL}/pong/users/exist/` + updatedUser.get('name'));
+            const headers = {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${process.env.REACT_APP_SECRET}`
+            };
+            const verifyUserName = await axios.get(`${BACKEND_URL}/pong/users/exist/` + updatedUser.get('name'), { headers });
             if (verifyUserName.status === 200) {
                 if (verifyUserName.data) {
                     alert('username already exists');
@@ -68,13 +75,11 @@ const EditProfile:React.FC<EditProfileProps> = ({ setShowScreen, userId }) => {
                 }
             }
             try {
-				console.log('In try block')
-                //console.log(userInfo);
-                const response = await axios.patch(url_info, updatedUser, {
-                     headers: {
-                        'Content-Type': 'multipart/form-data',
-                    },
-                });
+                const headers = {
+                    'Content-Type': 'multipart/form-data',
+                    'Authorization': `Bearer ${process.env.REACT_APP_SECRET}`
+                };
+                const response = await axios.patch(url_info, updatedUser, { headers });
 				if (response.status === 200) {
                     console.log("Updated user information");
 				}

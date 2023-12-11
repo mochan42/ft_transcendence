@@ -16,9 +16,13 @@ import { BACKEND_URL } from "./Global";
 const backendUrl = BACKEND_URL
 
 const fetchAllUsers = async (): Promise<User[]> => {
+  const headers = {
+			'Content-Type': 'application/json',
+			'Authorization': `Bearer ${process.env.REACT_APP_SECRET}`
+	};
   let users: User[] = [];
   try {
-    const resp = await axios.get<User[]>(backendUrl + "/pong/users");
+    const resp = await axios.get<User[]>(backendUrl + "/pong/users", { headers });
     if (resp.status === 200) {
       users = resp.data;
     }
@@ -30,7 +34,12 @@ const fetchAllUsers = async (): Promise<User[]> => {
 };
 
 const fetchUser = async (userId: string): Promise<User | undefined> => {
-  const resp = await axios.get<User>(backendUrl + "/pong/users/" + userId);
+  const headers = {
+			'Content-Type': 'application/json',
+			'Authorization': `Bearer ${process.env.REACT_APP_SECRET}`
+  };
+  
+  const resp = await axios.get<User>(backendUrl + "/pong/users/" + userId, { headers });
   if (resp.status === 200) {
     return resp.data;
   }
@@ -39,9 +48,13 @@ const fetchUser = async (userId: string): Promise<User | undefined> => {
 
 const fetchAllFriends = async (): Promise<Friend[]> => {
   let friends: Friend[] = [];
+  const headers = {
+			'Content-Type': 'application/json',
+			'Authorization': `Bearer ${process.env.REACT_APP_SECRET}`
+	};
   try {
     const urlFriend = backendUrl + "/pong/friends";
-    const resp = await axios<Friend[]>(urlFriend);
+    const resp = await axios<Friend[]>(urlFriend, { headers });
     if (resp.status === 200) {
       friends = resp.data;
     }
@@ -53,9 +66,13 @@ const fetchAllFriends = async (): Promise<Friend[]> => {
 };
 
 const fetchAllBlockedUsers = async (): Promise<any[]> => {
+  const headers = {
+			'Content-Type': 'application/json',
+			'Authorization': `Bearer ${process.env.REACT_APP_SECRET}`
+		};
   let blockedUsers = [];
   const urlFriend = backendUrl + "/pong/blocks";
-  const resp = await axios<any[]>(urlFriend);
+  const resp = await axios<any[]>(urlFriend, { headers });
   if (resp.status === 200) {
     blockedUsers = resp.data;
   }
@@ -64,7 +81,11 @@ const fetchAllBlockedUsers = async (): Promise<any[]> => {
 
 const fetchAllMessages = async (): Promise<Chat[]> => {
   let messages: Chat[] = [];
-  const resp = await axios.get<Chat[]>(backendUrl + "/pong/chats");
+  const headers = {
+			'Content-Type': 'application/json',
+			'Authorization': `Bearer ${process.env.REACT_APP_SECRET}`
+	};
+  const resp = await axios.get<Chat[]>(backendUrl + "/pong/chats", { headers });
   if (resp.status === 200) {
     messages = resp.data;
   }
@@ -79,8 +100,12 @@ const fetchAllStats = async (userId: any) => {
     losses: 0,
     draws: 0
   }
+  const headers = {
+			'Content-Type': 'application/json',
+			'Authorization': `Bearer ${process.env.REACT_APP_SECRET}`
+	};
   const userStatUrl = backendUrl + `/pong/users/${userId}/stats`;
-  const resp = await axios.get<UserStats>(userStatUrl);
+  const resp = await axios.get<UserStats>(userStatUrl, { headers });
   if (resp.status === 200) {
     stats = {...resp.data, userId: resp.data.userId }
   } 
@@ -107,8 +132,12 @@ const friendToUserType = (user: string | null, friend: Friend, userList: User[])
 } 
 
 const fetchAllGroups = async (): Promise<Group[]> => {
+  const headers = {
+			'Content-Type': 'application/json',
+			'Authorization': `Bearer ${process.env.REACT_APP_SECRET}`
+		};
   let groups: Group[] = [];
-  const resp = await axios.get<Group[]>(`${BACKEND_URL}/pong/channels`);
+  const resp = await axios.get<Group[]>(`${BACKEND_URL}/pong/channels`, { headers });
   if (resp.status === 200) {
     groups = resp.data;
   }
@@ -118,7 +147,11 @@ const ChatGroupList: Group[] = await fetchAllGroups();
 
 export const fetchAllMembers = async (): Promise<JoinGroup[]> => {
   let members: JoinGroup[] = [];
-  const resp = await axios.get<JoinGroup[]>(`${BACKEND_URL}/pong/channels/members`);
+  const headers = {
+			'Content-Type': 'application/json',
+			'Authorization': `Bearer ${process.env.REACT_APP_SECRET}`
+	};
+  const resp = await axios.get<JoinGroup[]>(`${BACKEND_URL}/pong/channels/members`, { headers });
   if (resp.status === 200) {
     members = resp.data;
   }

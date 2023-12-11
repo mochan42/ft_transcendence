@@ -20,8 +20,12 @@ const Achievements:React.FC<AchievementsProps> =({ userId, setShowScreen }) => {
 	const [notAchievedGoals, setNotAchievedGoals] = useState<Goal[]>();
 
 	const getUserAchievements = async () => {
+		const headers = {
+			'Content-Type': 'application/json',
+			'Authorization': `Bearer ${process.env.REACT_APP_SECRET}`
+		};
 		try {
-			const response: AxiosResponse<UserAchievements[]> = await axios.get(url_achievements);
+			const response: AxiosResponse<UserAchievements[]> = await axios.get(url_achievements,{ headers });
 			if (response.status === 200) {
 				setUserAchievements(response.data);
 				// console.log('Received User Achievements: ', response.data);
@@ -32,11 +36,14 @@ const Achievements:React.FC<AchievementsProps> =({ userId, setShowScreen }) => {
 	};
 
 	const getAllGoals = async () => {
+		const headers = {
+			'Content-Type': 'application/json',
+			'Authorization': `Bearer ${process.env.REACT_APP_SECRET}`
+		};
 		try {
-			const response: AxiosResponse<Goal[] | null> = await axios.get(url_goals);
+			const response: AxiosResponse<Goal[] | null> = await axios.get(url_goals, { headers });
 			if (response.status === 200) {
 				setAllGoals(response.data);
-				// console.log('Received Goals: ', response.data);
 			}
 		} catch (error) {
 			console.log('Error fetching Goals:', error);

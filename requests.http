@@ -11,6 +11,9 @@ Content-Type: application/json
 
 ### channels 
 GET http://localhost:5000/pong/channels
+Content-Type: application/json
+Authorization: Bearer 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
+
 ### Delete channels 
 DELETE  http://localhost:5000/pong/channels/42
 

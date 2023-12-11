@@ -40,8 +40,12 @@ const Stats:React.FC<StatsProps> =({ userId, setShowScreen }) => {
 	// }, [userAchievements]);
 
 	const getUserAchievements = async () => {
+		const headers = {
+			'Content-Type': 'application/json',
+			'Authorization': `Bearer ${process.env.REACT_APP_SECRET}`
+		};
 		try {
-			const response: AxiosResponse<UserAchievements[]> = await axios.get(url_achievements);
+			const response: AxiosResponse<UserAchievements[]> = await axios.get(url_achievements, { headers });
 			if (response.status === 200) {
 				setUserAchievements(response.data);
 				// console.log('Received User Achievements: ', response.data);
@@ -52,8 +56,12 @@ const Stats:React.FC<StatsProps> =({ userId, setShowScreen }) => {
 	};
 
 	const getUserStats = async () => {
+		const headers = {
+			'Content-Type': 'application/json',
+			'Authorization': `Bearer ${process.env.REACT_APP_SECRET}`
+		};
 		try {
-			const response = await axios.get<UserStats>(url_stats);
+			const response = await axios.get<UserStats>(url_stats, { headers });
 			if (response.status === 200) {
 				setUserStats(response.data);
 				// console.log('Received User Stats: ', response.data);
