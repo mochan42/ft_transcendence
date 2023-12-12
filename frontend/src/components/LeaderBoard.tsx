@@ -90,7 +90,7 @@ const Leaderboard:React.FC<LeaderboardProps> =({ userId }) => {
 					className="flex items-center justify-around py-2 border-b border-slate-900"
 				>
 					<div className='flex justify-between gap-x-6 items-center'>
-						<Button variant={'ghost'} onClick={
+						{/* <Button variant={'ghost'} onClick={
 							(() => {
 									if (!(friends?.some((friend) => friend.receiver === user.id || friends?.some((friend) => friend.sender === user.id)))) {
 										return addFriend(user.id);
@@ -113,7 +113,7 @@ const Leaderboard:React.FC<LeaderboardProps> =({ userId }) => {
 								  })()
 								}
 							/>
-						</Button>
+						</Button> */}
 						<img className='h-6 w-6 rounded-full' src={user.avatar != "" ? user.avatar : 'https://www.svgrepo.com/show/170615/robot.svg'}/>
 							<button className="text-lg mr-2 hover:underline" onClick={() => { alert('QUOI ?') }} >{user.userNameLoc}</button>
 					</div>

@@ -5,14 +5,14 @@ import { join } from 'path';
 import * as express from 'express';
 import { IoAdapter } from '@nestjs/platform-socket.io';
 import { AuthGuard }  from './auth/auth.guard';
-import { JwtService } from '@nestjs/jwt';
+// import { JwtService } from '@nestjs/jwt';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   app.enableCors({
-    // origin: `${process.env.FRONTEND_URL}`,
-    origin: '*',
+    origin: `${process.env.FRONTEND_URL}`,
+    // origin: '*',
     methods: 'GET,HEAD,PUT,PATCH,POST',
     credentials: true,
   });

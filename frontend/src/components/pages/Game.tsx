@@ -6,12 +6,12 @@ import Pong from '../Pong'
 import { GameType, User } from '../../types';
 import PvP from '../PvP';
 import { fetchUser } from '../../data/ChatData';
-import { Socket } from 'socket.io-client';
+// import { Socket } from 'socket.io-client';
 import { getSocket } from '../../utils/socketService';
 
 
 interface GameProps {
-	difficulty: number;
+	difficulty: number | undefined;
 	userId: string | null;
 	includeBoost: boolean;
 	opponent: string;
@@ -22,7 +22,7 @@ interface GameProps {
 
 const Game:React.FC<GameProps> = ({ difficulty, userId, includeBoost, opponent, setState, status, game }) => {
 	
-	const socket = getSocket(userId);
+	// const socket = getSocket(userId);
 	const [gameActive, setGameActive] = useState(false)
 	const [reset, setReset] = useState(false)
 	const [isGameOver, setIsGameOver] = useState(false)
@@ -95,7 +95,7 @@ const Game:React.FC<GameProps> = ({ difficulty, userId, includeBoost, opponent, 
 	}, [userId, player1Id, player2Id, gameActive]);
 
 	return (
-		<div className='h-full w-full flex flex-col items-center justify-between bg-gray-200 dark:bg-slate-900 border-t-8 dark:border-slate-900'>
+		<div className='h-full w-full flex flex-col items-center justify-between bg-gray-200 dark:bg-slate-900 border-t-8 dark:border-slate-900 z-50'>
 			<div className='h-1/6 gap-6 items-center justify-between flex'>
 				<div className='left-10'>
 					<Button variant={'link'} onClick={() => setState?('select') : null}>
@@ -141,7 +141,7 @@ const Game:React.FC<GameProps> = ({ difficulty, userId, includeBoost, opponent, 
 			</div>
 			<div className='w-full h-5/6 border-t-2 border-l-2 border-r-2 border-slate-700 black:border-slate-200 bg-slate-400 dark:text-slate-200 text-center'>
 				{(opponent === 'bot') ? <Pong userId={userId} difficulty={difficulty} isGameActive={gameActive} isReset={reset} isGameOver={isGameOver} player1Score={player1Score} opponentScore={player2Score} includeBoost={includeBoost} setIsGameOver={setIsGameOver} playerPoint={playerPoint} opponentPoint={opponentPoint} setReset={setReset}/> : null }
-				{(opponent === 'player') ? <PvP isReset={reset} setReset={setReset} userId={userId} isGameActive={gameActive} selectedDifficulty={difficulty} isGameOver={isGameOver} player1Score={player1Score} player2Score={player2Score} setIsGameOver={setIsGameOver} setState={setState} playerPoint={playerPoint} opponentPoint={opponentPoint} setPlayer1Id={setPlayer1Id} setPlayer2Id={setPlayer2Id} setPlayer1Info={setPlayer1Info} setPlayer2Info={setPlayer2Info} setPlayer1Score={setPlayer1Score} setPlayer2Score={setPlayer2Score} game={game}/> : null}
+				{(opponent === 'player') ? <PvP isReset={reset} setReset={setReset} userId={userId} isGameActive={gameActive} selectedDifficulty={difficulty ? difficulty : 1} isGameOver={isGameOver} player1Score={player1Score} player2Score={player2Score} setIsGameOver={setIsGameOver} setState={setState} playerPoint={playerPoint} opponentPoint={opponentPoint} setPlayer1Id={setPlayer1Id} setPlayer2Id={setPlayer2Id} setPlayer1Info={setPlayer1Info} setPlayer2Info={setPlayer2Info} setPlayer1Score={setPlayer1Score} setPlayer2Score={setPlayer2Score} game={game}/> : null}
 			</div>
 		</div>
 	)

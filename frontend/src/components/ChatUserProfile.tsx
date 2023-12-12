@@ -13,6 +13,7 @@ import { User, UserStats, GameType } from "../types";
 import { getSocket } from "../utils/socketService";
 import { enChatType } from "../enums";
 import { IsActiveUserBlocked } from './ChatConversation';
+import { useNavigate } from "react-router-dom";
 
 /* component to show contact profile */
 
@@ -28,6 +29,7 @@ const ChatUserProfile = () => {
     if (chatStore.chatActiveUser && userId != null) {
         userSelect = chatStore.chatActiveUser;
     }
+
 
     const onBlock = () => {
         if (chatStore.chatActiveUser) {

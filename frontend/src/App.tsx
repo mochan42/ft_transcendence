@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import { useState } from 'react';
 import './App.css';
 import Login from './components/pages/Login';
@@ -41,6 +41,8 @@ const App: React.FC = () => {
 		}
 		return token;
 	}
+	const [gameObj, setGameObj] = useState<GameType | undefined>(undefined);
+	const [letsPlay, setLetsPlay] = useState<boolean>(false);
 	const authSession: boolean = Cookies.get('isAuth') ? true : false;
 	const userCookie = Cookies.get('userId');
 	const idSession: string | null = userCookie ? userCookie : null;
@@ -162,8 +164,38 @@ const App: React.FC = () => {
 		}
 	});
 
+	useEffect(() => {
+		if (socket != null) {
+			socket.on('matchFound', (data: GameType) => {
+				console.log("Match found Event triggered! Player receiving the matchFound: ", data.player1,)
+				if (userId && userId == data.player1.toString()) {
+					console.log("My game challenge was accepted! \n");
+					setGameObj(data);
+					setLetsPlay(true);
+				}
+			});
+		} else {
+			console.log("Missing socket\n");
+		}
+		// Cleanup function
+		// return () => { if (socket) socket.off('matchFound'); };
+	});
+
 	const title = document.getElementsByTagName('title');
 	title[0].innerHTML = 'Transcendance App';
+	
+	// if (letsPlay == true) return(
+	// 	<> 
+	// 		<div className='h-20 flex backdrop-blur-sm bg-white/75 dark:bg-slate-900 border-b-4 border-white/75 dark:border-slate-600 item-center justify-between'>
+	// 			<Navbar setIsAuth={setIsAuth} isAuth={isAuth} setCode={setCode} setUserId={setUserId} />
+	// 		</div>
+	// 		<Game difficulty={gameObj ? gameObj?.difficulty : 1} userId={gameObj ? gameObj.player1.toString() : userId} includeBoost={gameObj ? gameObj.includeBoost : false} opponent={gameObj ? gameObj.player2.toString() : "-1"} game={gameObj} />
+	// 		<div className='h-20 shadow-xl flex backdrop-blur-sm bg-white/75 dark:bg-slate-900 border-t-4 border-slate-300 dark:border-slate-700 items-center justify-evenly'>
+	// 			<Footer />
+	// 		</div>
+	// 	</>
+	// )
+
 	return (
 		<div className='flex-cols font-mono dark:bg-white/75 bg-slate-900 bg-opacity-80 h-screen'>
 			<Router>
@@ -221,6 +253,7 @@ const App: React.FC = () => {
 					<Footer />
 				</div>
 				{challenge ? <GameChallenge userId={userId} game={game} setChallenge={setChallenge} /> : null}
+				{letsPlay ? <Game difficulty={gameObj ? gameObj?.difficulty : 1} userId={gameObj ? gameObj.player1.toString() : userId} includeBoost={gameObj ? gameObj.includeBoost : false} opponent={gameObj ? gameObj.player2.toString() : "-1"} game={gameObj} /> : null}
 			</Router>
 
 		</div>

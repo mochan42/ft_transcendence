@@ -6,7 +6,7 @@ import Boost from './Boost';
 
 interface PongProps {
 	userId: string | null;
-	difficulty: number;
+	difficulty: number | undefined;
 	isGameActive: boolean;
 	isReset: boolean;
 	player1Score: number;
@@ -21,7 +21,8 @@ interface PongProps {
 
 const Pong: React.FC<PongProps> = ({ userId, difficulty, isGameActive, isGameOver, isReset, player1Score, opponentScore, includeBoost, playerPoint, opponentPoint, setIsGameOver, setReset }) => {
 
-	const itsdifficult = (difficulty + 2) * 2
+	const itsdifficult = difficulty ? (difficulty + 2) * 2 : 1;
+	const realDifficulty = difficulty ? difficulty : 1;
 	const PongRef = useRef<HTMLDivElement>(null);
 	const paddleLengths = [200, 150, 100, 80, 50]
 	const botpaddleLengths = [50, 60, 70, 80, 90]
@@ -31,8 +32,8 @@ const Pong: React.FC<PongProps> = ({ userId, difficulty, isGameActive, isGameOve
 	const [isBoost, setIsBoost] = useState(false);
 	const [boostWidth, setBoostWidth] = useState(80);
 	const [playerPaddleDirection, setPlayerPaddleDirection] = useState<number>(0);
-	const [playerPaddleSpeed, setPlayerPaddleSpeed] = useState(18 - (difficulty * 2));
-	const [botPaddleSpeed, setBotPaddleSpeed] = useState(0.5 + (difficulty));
+	const [playerPaddleSpeed, setPlayerPaddleSpeed] = useState(18 - (realDifficulty * 2));
+	const [botPaddleSpeed, setBotPaddleSpeed] = useState(0.5 + (realDifficulty));
 	const [leftPaddleY, setLeftPaddleY] = useState(0);
 	const [rightPaddleY, setRightPaddleY] = useState(0);
 	var startX = 50;
@@ -61,7 +62,7 @@ const Pong: React.FC<PongProps> = ({ userId, difficulty, isGameActive, isGameOve
 		// Left Paddle boundaries
 		const leftPaddleRight = 10; // Paddle width is 10 pixels
 		const leftPaddleTop = leftPaddleY;
-		const leftPaddleBottom = leftPaddleY + paddleLengths[difficulty];
+		const leftPaddleBottom = leftPaddleY + paddleLengths[realDifficulty];
 	  
 		// Container boundaries
 		const containerTop = 0;
@@ -74,10 +75,10 @@ const Pong: React.FC<PongProps> = ({ userId, difficulty, isGameActive, isGameOve
 			containerBottom = PongRef.current?.clientHeight - 30;
 		}
 		const rightPaddleTop = rightPaddleY;
-		const rightPaddleBottom = rightPaddleY + botpaddleLengths[difficulty];
+		const rightPaddleBottom = rightPaddleY + botpaddleLengths[realDifficulty];
 
 		// Calculate relative position of ball within the left paddle
-		const relativePosition = (ballCenter - leftPaddleTop) / (paddleLengths[difficulty]);
+		const relativePosition = (ballCenter - leftPaddleTop) / (paddleLengths[realDifficulty]);
 
 		// Map relative position to an angle between -45 and +45 degrees
 		const mappedAngle = (relativePosition * 45) / 2;
@@ -85,7 +86,7 @@ const Pong: React.FC<PongProps> = ({ userId, difficulty, isGameActive, isGameOve
 		// Calculate the new Y-velocity component based on the mapped angle
 		const newSpeedY = speedX < 0 ? -itsdifficult * Math.sin((mappedAngle * Math.PI) / 180) : itsdifficult * Math.sin((mappedAngle * Math.PI) / 180);
 	
-		const randomnessFactor = (difficulty / 4); // You can adjust this value to control the amount of randomness
+		const randomnessFactor = (realDifficulty / 4); // You can adjust this value to control the amount of randomness
     	const randomSpeedY = newSpeedY * (1 + Math.random() * randomnessFactor);
 
 		// Check collision with left paddle
@@ -186,8 +187,8 @@ const Pong: React.FC<PongProps> = ({ userId, difficulty, isGameActive, isGameOve
 		  // Ensure the paddle stays within the valid range
 		  if (newY < 0) {
 			newY = 0;
-		  } else if (newY > (startY * 2) + 30 - paddleLengths[difficulty]) {
-			newY = (startY * 2) + 30 - paddleLengths[difficulty]; // Maximum paddle height is div height - paddle length
+		  } else if (newY > (startY * 2) + 30 - paddleLengths[realDifficulty]) {
+			newY = (startY * 2) + 30 - paddleLengths[realDifficulty]; // Maximum paddle height is div height - paddle length
 		  }
 	  
 		  return newY;
@@ -198,23 +199,23 @@ const Pong: React.FC<PongProps> = ({ userId, difficulty, isGameActive, isGameOve
 			const ballCenter = ballY + 4; // half the diameter = radius
 		
 			// Calculate the difference between the current position and the target position (the ball's center)
-			const diff = ballCenter - (prevY + botpaddleLengths[difficulty] / 2);
+			const diff = ballCenter - (prevY + botpaddleLengths[realDifficulty] / 2);
 		
-			// Adjust the paddle's movement speed based on difficulty (higher difficulty = faster movement)
-			const adjustedPaddleSpeed = botPaddleSpeed + difficulty;
+			// Adjust the paddle's movement speed based on realDifficulty (higher realDifficulty = faster movement)
+			const adjustedPaddleSpeed = botPaddleSpeed + realDifficulty;
 		
 			// Move the paddle towards the ball's position
 
 			var newY = prevY;
-			if (Math.abs(diff) > (botpaddleLengths[difficulty] - difficulty * 18)) {
+			if (Math.abs(diff) > (botpaddleLengths[realDifficulty] - realDifficulty * 18)) {
 				newY = prevY + Math.sign(diff) * Math.min(Math.abs(diff), adjustedPaddleSpeed);
 			}
 		
 			// Ensure the paddle stays within the valid range
 			if (newY < 0) {
 			  newY = 0;
-			} else if (newY > (startY * 2) + 30 - paddleLengths[difficulty]) {
-			  newY = (startY * 2) + 30 - paddleLengths[difficulty];
+			} else if (newY > (startY * 2) + 30 - paddleLengths[realDifficulty]) {
+			  newY = (startY * 2) + 30 - paddleLengths[realDifficulty];
 			}
 		
 			return newY;
@@ -254,7 +255,7 @@ const Pong: React.FC<PongProps> = ({ userId, difficulty, isGameActive, isGameOve
 		}, 1000 / 60);
 
 		return () => clearInterval(gameLoop);
-	}, [isGameActive, isGameOver, isReset, includeBoost, startX, startY, isBoost, boostStartX, boostStartY, difficulty, playerScore2, ballX, ballY, speedX, speedY, leftPaddleY, rightPaddleY, checkCollision, moveBall, movePaddles]);
+	}, [isGameActive, isGameOver, isReset, includeBoost, startX, startY, isBoost, boostStartX, boostStartY, realDifficulty, playerScore2, ballX, ballY, speedX, speedY, leftPaddleY, rightPaddleY, checkCollision, moveBall, movePaddles]);
 
 	// Track player key input
 	useEffect(() => {
@@ -286,15 +287,15 @@ const Pong: React.FC<PongProps> = ({ userId, difficulty, isGameActive, isGameOve
 	return (
 		<div className='w-full h-full border-t-2 border-l-2 border-r-2 border-slate-700 black:border-slate-200 dark:text-slate-200 text-center'>
 			<div className="relative w-full h-full" ref={PongRef}>
-				<Paddle yPosition={leftPaddleY} paddleHeight={paddleLengths[difficulty]} style={{ left: 0 }}/>
-				<Paddle yPosition={rightPaddleY} paddleHeight={botpaddleLengths[difficulty]} style={{ right: 0 }}/>
+				<Paddle yPosition={leftPaddleY} paddleHeight={paddleLengths[realDifficulty]} style={{ left: 0 }}/>
+				<Paddle yPosition={rightPaddleY} paddleHeight={botpaddleLengths[realDifficulty]} style={{ right: 0 }}/>
 				<div className="relative bg-slate-900">
 					<Ball xPosition={ballX} yPosition={ballY} />
 				</div>
 				{includeBoost && !isBoost ? <Boost x={boostStartX} y={boostStartY} width={boostWidth} height={boostWidth} /> : null}
 				{isGameOver ? (
 						<div className="absolute inset-0 bg-black bg-opacity-80">
-							<VictoryLoss userId={userId} isVictory={player1Score === 10} difficulty={difficulty} />
+							<VictoryLoss userId={userId} isVictory={player1Score === 10} difficulty={realDifficulty} />
 						</div>
 					) : null
 				}
