@@ -631,17 +631,18 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
     } else {
       const opponent = this.gameQueueService.findOpponent(socket);
       if (opponent) {
-        const player2 = await this.chatsService.getUserFromSocket(socket);
+        const player2 = await this.chatsService.getUserFromSocket(opponent);
         const makeGame = await this.gamesService.makeMatch(
           +player1,
-          +player2,
+          +player2.id,
           data.difficulty,
           data.isBoost,
         );
 
         if (makeGame) {
-          socket.emit('matchFound', makeGame);
-          opponent.emit('matchFound', makeGame);
+          const roomId = makeGame.id;
+          socket.join(roomId.toString());
+          opponent.emit('invitedToMatch', makeGame);
         }
       }
     }

@@ -9,7 +9,7 @@ import { fetchAllStats, friendToUserType } from "../data/ChatData";
 import Cookies from 'js-cookie';
 import Game from "./pages/Game";
 import { useEffect, useState } from "react";
-import { User, UserStats } from "../types";
+import { User, UserStats, GameType } from "../types";
 import { getSocket } from "../utils/socketService";
 import { enChatType } from "../enums";
 import { IsActiveUserBlocked } from './ChatConversation';
@@ -18,13 +18,13 @@ import { IsActiveUserBlocked } from './ChatConversation';
 
 const ChatUserProfile = () => {
     const userId = Cookies.get('userId') ? Cookies.get('userId') : '';
-    const [userStats, setUserStats] = useState<UserStats | null >(null);
+    const [userStats, setUserStats] = useState<UserStats | null>(null);
     const theme = useTheme()
     const dispatch = useDispatch();
     const chatStore = useSelector(selectChatStore);
     const socket = getSocket(userId)
-    
-    let userSelect =  {} as User
+
+    let userSelect = {} as User
     if (chatStore.chatActiveUser && userId != null) {
         userSelect = chatStore.chatActiveUser;
     }
@@ -32,67 +32,89 @@ const ChatUserProfile = () => {
     const onBlock = () => {
         if (chatStore.chatActiveUser) {
             socket.emit('blockFriend', { blockerUserId: userId, blockeeUserId: chatStore.chatActiveUser.id });
-            dispatch(selectConversation({chatRoomId: null, chatType: enChatType.OneOnOne})) 
+            dispatch(selectConversation({ chatRoomId: null, chatType: enChatType.OneOnOne }))
         }
         dispatch(toggleSidebar());
     }
 
+    const challengeToPlay = () => {
+        if (chatStore.chatActiveUser) {
+            const game: GameType = {
+                id: -1,
+                player1: userId ? +userId : 0,
+                player2: +chatStore.chatActiveUser.id,
+                difficulty: 0,
+                includeBoost: false,
+                status: 'request',
+                score1: 0,
+                score2: 0,
+                paddle1Y: 0,
+                paddle2Y: 0,
+                boostX: 0,
+                boostY: 0,
+                ballX: 0,
+                ballY: 0,
+            }
+            socket.emit('requestMatch', game);
+        }
+    }
+
     useEffect(() => {
-        (async() => {
+        (async () => {
             const updatedUserStats = await fetchAllStats(userId);
             setUserStats(updatedUserStats);
         })();
     });
 
     const isBlock = userId ? IsActiveUserBlocked(userId, chatStore.chatBlockedUsers, chatStore.chatActiveUser) : false;
-    
-    return ( 
+
+    return (
         <Box sx={{
-                width:"550px", backgroundColor: "white",
-                boxShadow: "0px 0px 2px rgba(0, 0, 0, 0.25)",
-                height: "100%"
-            }}
+            width: "550px", backgroundColor: "white",
+            boxShadow: "0px 0px 2px rgba(0, 0, 0, 0.25)",
+            height: "100%"
+        }}
         >
-            <Stack sx={{ height: "100%"}}>
+            <Stack sx={{ height: "100%" }}>
                 {/* header */}
                 <Box sx={{
-                        width:"100%",
-                        boxShadow: "0px 0px 2px rgba(0, 0, 0, 0.25)",
-                    }}
+                    width: "100%",
+                    boxShadow: "0px 0px 2px rgba(0, 0, 0, 0.25)",
+                }}
                 >
-                    <Stack sx={{ p:2, height:"100%" }} 
-                            direction={"row"}
-                            alignItems={"center"}
-                            justifyContent={"space-between"}
-                            spacing={3}
+                    <Stack sx={{ p: 2, height: "100%" }}
+                        direction={"row"}
+                        alignItems={"center"}
+                        justifyContent={"space-between"}
+                        spacing={3}
                     >
                         <Typography variant="subtitle2">Profile</Typography>
-                        <IconButton onClick={ ()=> dispatch(toggleSidebar())}>
-                            <X/>
+                        <IconButton onClick={() => dispatch(toggleSidebar())}>
+                            <X />
                         </IconButton>
                     </Stack>
                 </Box>
 
                 {/* body */}
-                <Stack sx={{ height:"100%", position:"relative", flexGrow:1, overflowY:"scroll", }}
-                        p={3} spacing={3}
+                <Stack sx={{ height: "100%", position: "relative", flexGrow: 1, overflowY: "scroll", }}
+                    p={3} spacing={3}
                 >
                     <Stack alignItems={"center"} direction={"row"} spacing={2}>
-                        <Avatar 
-                            src={ userSelect ? userSelect.avatar : faker.image.avatar()} 
-                            alt={ userSelect ? userSelect.userNameLoc : faker.name.firstName()}
-                            sx={{ height:80, width:80 }}
-                        /> 
+                        <Avatar
+                            src={userSelect ? userSelect.avatar : faker.image.avatar()}
+                            alt={userSelect ? userSelect.userNameLoc : faker.name.firstName()}
+                            sx={{ height: 80, width: 80 }}
+                        />
                         <Stack spacing={2}
                         >
                             <Typography variant="subtitle2" fontWeight={600}>
-                                { userSelect ? userSelect.userName : faker.name.firstName() } 
+                                {userSelect ? userSelect.userName : faker.name.firstName()}
                             </Typography>
                             <Typography variant="subtitle2" fontWeight={400}>
-                                { userSelect ? userSelect.email : faker.internet.email() } 
+                                {userSelect ? userSelect.email : faker.internet.email()}
                             </Typography>
                             <Typography variant="subtitle2" fontWeight={400}>
-                                { userSelect ? userSelect.lastSeen : "06:35pm" } 
+                                {userSelect ? userSelect.lastSeen : "06:35pm"}
                             </Typography>
                         </Stack>
                     </Stack>
@@ -101,28 +123,28 @@ const ChatUserProfile = () => {
                     {/* information : total number of wins, loses*/}
                     <Stack alignItems={"center"} spacing={2}>
                         <Typography variant="subtitle2" fontWeight={600}>
-                            { `XP :  ${ userSelect?.xp }  `}
+                            {`XP :  ${userSelect?.xp}  `}
                         </Typography>
                         <Typography variant="subtitle2" fontWeight={600}>
-                            { `Total Played :  ${(userStats != null) ? userStats.wins + userStats.losses + userStats.draws : 0 } `}
+                            {`Total Played :  ${(userStats != null) ? userStats.wins + userStats.losses + userStats.draws : 0} `}
                         </Typography>
                         <Typography variant="subtitle2" fontWeight={600}>
-                            { `Victories :  ${(userStats != null) ? userStats.wins : 0 }  `}
+                            {`Victories :  ${(userStats != null) ? userStats.wins : 0}  `}
                         </Typography>
                         <Typography variant="subtitle2" fontWeight={600}>
-                            { `Defeats :  ${(userStats != null) ? userStats.losses : 0 } `}
+                            {`Defeats :  ${(userStats != null) ? userStats.losses : 0} `}
                         </Typography>
                         <Typography variant="subtitle2" fontWeight={600}>
-                            { `Score :  100  `} {/** update with real value from backend */}
+                            {`Score :  100  `} {/** update with real value from backend */}
                         </Typography>
                         <Typography variant="subtitle2" fontWeight={600}>
-                            { `Rank :  100  `} {/** update with real value from backend */}
+                            {`Rank :  100  `} {/** update with real value from backend */}
                         </Typography>
                     </Stack>
                     <Divider />
                     <Stack alignItems={"center"} direction={"row"} spacing={2}>
-                        <Button startIcon={<Prohibit />} fullWidth variant="outlined" onClick={() => { onBlock() }} disabled={ isBlock }> BLock </Button>
-                        <Button startIcon={ <GameController/>} fullWidth variant="outlined"> Play game </Button>
+                        <Button startIcon={<Prohibit />} fullWidth variant="outlined" onClick={() => { onBlock() }} disabled={isBlock}> BLock </Button>
+                        <Button startIcon={<GameController />} fullWidth variant="outlined" onClick={() => { challengeToPlay() }}> Play game </Button>
                     </Stack>
 
                 </Stack>
@@ -130,7 +152,7 @@ const ChatUserProfile = () => {
             </Stack>
 
         </Box>
-     );
+    );
 }
- 
+
 export default ChatUserProfile;

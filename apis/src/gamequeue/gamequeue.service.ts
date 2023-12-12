@@ -7,7 +7,7 @@ import { Socket } from 'socket.io';
 
 @Injectable()
 export class GamequeueService {
-  private waintingList: Socket[] = [];
+  private static waitingList: Socket[] = [];
 
   constructor(
     @InjectRepository(GameQueue)
@@ -16,10 +16,10 @@ export class GamequeueService {
   ) {}
 
   findOpponent(socket: Socket) {
-    if (this.waintingList.length != 1) {
-      this.waintingList.push(socket);
+    if (GamequeueService.waitingList.length != 1) {
+      GamequeueService.waitingList.push(socket);
       return null;
     }
-    return this.waintingList.pop();
+    return GamequeueService.waitingList.pop();
   }
 }
