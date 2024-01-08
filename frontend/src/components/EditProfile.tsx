@@ -5,7 +5,7 @@ import axios from 'axios';
 import { BACKEND_URL } from '../data/Global';
 
 interface EditProfileProps {
-    setShowScreen: React.Dispatch<React.SetStateAction< 'default' | 'achievements' | 'friends' | 'stats' | 'userProfile' >>;
+    setShowScreen: React.Dispatch<React.SetStateAction<'default' | 'achievements' | 'friends' | 'stats' | 'userProfile'>>;
     userId: string | null;
 }
 
@@ -14,7 +14,7 @@ interface FormDataLoc {
     image: any;
 }
 
-const EditProfile:React.FC<EditProfileProps> = ({ setShowScreen, userId }) => {
+const EditProfile: React.FC<EditProfileProps> = ({ setShowScreen, userId }) => {
 
     const [userInfo, setUserInfo] = useState<User | null>(null);
     const [errors, setErrors] = useState<Partial<FormDataLoc>>({});
@@ -52,26 +52,29 @@ const EditProfile:React.FC<EditProfileProps> = ({ setShowScreen, userId }) => {
         //---------------------------------------------------
 
         if (userInfo && (formData.name || formData.image)) {
+            const isNameChanged = (formData.name) ? true : false;
             const updatedUser = new FormData();
             updatedUser.append('id', userInfo.id);
             updatedUser.append('name', formData.name || userInfo.userNameLoc);
             updatedUser.append('avatar', formData.image);
-
-            await updateUser(updatedUser);
+            await updateUser(updatedUser, isNameChanged);
         }
     };
 
-    const updateUser = async (updatedUser: FormData) => {
+    const updateUser = async (updatedUser: FormData, isNameChanged: boolean) => {
         if (userInfo) {
             const headers = {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${process.env.REACT_APP_SECRET}`
             };
-            const verifyUserName = await axios.get(`${BACKEND_URL}/pong/users/exist/` + updatedUser.get('name'), { headers });
-            if (verifyUserName.status === 200) {
-                if (verifyUserName.data) {
-                    alert('username already exists');
-                    return;
+
+            if (isNameChanged) {
+                const verifyUserName = await axios.get(`${BACKEND_URL}/pong/users/exist/` + updatedUser.get('name'), { headers });
+                if (verifyUserName.status === 200) {
+                    if (verifyUserName.data) {
+                        alert('username already exists');
+                        return;
+                    }
                 }
             }
             try {
@@ -80,42 +83,42 @@ const EditProfile:React.FC<EditProfileProps> = ({ setShowScreen, userId }) => {
                     'Authorization': `Bearer ${process.env.REACT_APP_SECRET}`
                 };
                 const response = await axios.patch(url_info, updatedUser, { headers });
-				if (response.status === 200) {
+                if (response.status === 200) {
                     console.log("Updated user information");
-				}
+                }
 
-			} catch (error) {
-				console.log('Error updating userInfo:', error);
-			}
+            } catch (error) {
+                console.log('Error updating userInfo:', error);
+            }
         }
         setShowScreen('default');
         // This is a temporary solution, better would be to affecte trigger useEffect hook
-        window.location.reload(); 
-	};
+        window.location.reload();
+    };
 
     useEffect(() => {
-		if (userInfo === null) {
-			getUserInfo();
-		}
+        if (userInfo === null) {
+            getUserInfo();
+        }
     })
-    
+
     return (
         <div className='h-full w-full absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 bg-slate-900 bg-opacity-70'>
-			<div className='rounded h-2/3 w-full absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 bg-slate-900 dark:bg-slate-200'>
-				<div className="h-full p-4 flex-cols text-center justify-between space-y-4">
-					<Button variant={'link'} onClick={() => {setShowScreen('default')}}>
-						<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8 text-slate-200 dark:text-slate-900">
-							<path strokeLinecap="round" strokeLinejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" />
-						</svg>
-					</Button>
-					<div className="h-4/5 overflow-y-auto p-4 flex-cols text-center justify-between space-y-4">
+            <div className='rounded h-2/3 w-full absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 bg-slate-900 dark:bg-slate-200'>
+                <div className="h-full p-4 flex-cols text-center justify-between space-y-4">
+                    <Button variant={'link'} onClick={() => { setShowScreen('default') }}>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8 text-slate-200 dark:text-slate-900">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" />
+                        </svg>
+                    </Button>
+                    <div className="h-4/5 overflow-y-auto p-4 flex-cols text-center justify-between space-y-4">
                         <div className="container mx-auto p-4">
                             <form onSubmit={handleSubmit} className="space-y-8 w-full" encType="multipart/form-data">
                                 <div className='text-slate-200 dark:text-black'>
                                     Name
                                 </div>
                                 <div className='text-slate-400'>
-                                   {userInfo?.firstName}
+                                    {userInfo?.firstName}
                                 </div>
                                 <div>
                                     <label className="block text-slate-200 dark:text-black">Username</label>
@@ -156,10 +159,10 @@ const EditProfile:React.FC<EditProfileProps> = ({ setShowScreen, userId }) => {
                                 </div>
                             </form>
                         </div>
-					</div>
-				</div>
-			</div>
-		</div>
+                    </div>
+                </div>
+            </div>
+        </div>
     )
 }
 

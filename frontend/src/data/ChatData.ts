@@ -10,7 +10,7 @@ import {
 } from "../types";
 import axios from "axios";
 import { ACCEPTED, PENDING } from "../APP_CONSTS";
-import { enChatGroupInviteStatus, enChatMemberRank, enChatMemberRights, enChatPrivacy, enGameDifficulty } from "../enums";
+import { enChatGroupInviteStatus, enChatPrivacy, enGameDifficulty } from "../enums";
 import { BACKEND_URL } from "./Global";
 
 const backendUrl = BACKEND_URL
@@ -117,7 +117,7 @@ const blockedUsersList = await fetchAllBlockedUsers();
 const ChatUserList = await fetchAllUsers();
 // will filters all pending|accepted users;
 const fetchAllUsersFriends = (relation: string, friendList: Friend[]): Friend[]  => {
-  return friendList.filter((el: any) => el.relation == relation);
+  return friendList.filter((el: Friend) => el.relation === relation);
 };
 
 const ChatUserFriendsList: Friend[] = fetchAllUsersFriends(ACCEPTED, friends);
@@ -125,10 +125,10 @@ const ChatUserFriendRequestList: Friend[] = fetchAllUsersFriends(PENDING, friend
 const ChatUserMessages: Chat[] = await fetchAllMessages();
 
 const friendToUserType = (user: string | null, friend: Friend, userList: User[]) => {
-  if (user != friend.sender) {
-    return userList.filter(el => friend.sender == el.id)[0];
+  if (user !== friend.sender) {
+    return userList.filter(el => friend.sender === el.id)[0];
   }
-  return userList.filter((el) => friend.receiver == el.id)[0];
+  return userList.filter((el) => friend.receiver === el.id)[0];
 } 
 
 const fetchAllGroups = async (): Promise<Group[]> => {

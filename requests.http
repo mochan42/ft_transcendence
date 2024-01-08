@@ -93,7 +93,7 @@ Content-Type: application/json
 PATCH   http://localhost:5000/pong/users/2fa/30
 
 ###  delete user
-DELETE  http://localhost:5000/pong/users/39
+DELETE  http://localhost:5000/pong/users/4
 
 ### get user stat
 GET http://localhost:5000/pong/users/2/stats

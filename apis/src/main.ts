@@ -17,7 +17,7 @@ async function bootstrap() {
     credentials: true,
   });
 
-  app.useGlobalGuards(new AuthGuard());
+  //app.useGlobalGuards(new AuthGuard());
   const imgServer = express();
   imgServer.use('/avatars', express.static(join(__dirname, '..', 'avatars')));
 

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { Button } from '../ui/Button'
 import axios, { AxiosResponse } from 'axios';
 import Achievements from '../Achievements';
@@ -30,19 +30,12 @@ const Profile: React.FC<ProfileProps> = ({ userId, isAuth }) => {
     const [userFriends, setUserFriends] = useState<User[] | null>(null)
     const [state2fa, setState2fa] = useState<boolean>(false);
     const [btnTxt2fa, setBtnTxt2fa] = useState<string>("2FA: disabled");
-    const [btnStyle, setBtnStyle] = useState<string>('default');
+    //const [btnStyle, setBtnStyle] = useState<string>('default');
 
-    const ConfigureBtn2fa = (updated2faState: boolean) => {
-        if (!updated2faState) {
-            setBtnTxt2fa(" 2FA: disabled ");
-            //setBtnStyle('profile_btn disabled');
-        }
-        else {
-            setBtnTxt2fa(" 2FA: active ");
-            //setBtnStyle('profile_btn active');
-        }
-
-    }
+    const ConfigureBtn2fa = useCallback((updated2faState: boolean) => {
+        if (!updated2faState) setBtnTxt2fa(" 2FA: disabled ");
+        else setBtnTxt2fa(" 2FA: active ");
+    }, []);
 
     const Handle2faBtnClick = async () => {
         const headers = {
@@ -172,7 +165,6 @@ const Profile: React.FC<ProfileProps> = ({ userId, isAuth }) => {
                     <img
                         className="h-2/5 w-2/5 rounded-full object-cover"
                         src={(userInfo?.avatar) ?? 'https://www.svgrepo.com/show/170615/robot.svg'}
-                        alt='Your Profile Picture'
                     />
                     <h1 className='text-2xl text-slate-900 font-extrabold dark:text-amber-300 drop-shadow-lg'>
                         {userInfo?.userNameLoc ?? 'unknown'}
