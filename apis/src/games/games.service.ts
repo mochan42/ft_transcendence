@@ -29,6 +29,13 @@ export class GamesService {
     return this.gameRepo.find();
   }
 
+  async findUsersGame(userId: number) {
+    return this.gameRepo.find({
+      where: [{ player1: userId }, { player2: userId }],
+      order: { id: 'DESC' }
+    });
+  }
+
   async findOne(id: number) {
     return await this.gameRepo.findOne({ where: { id } });
   }

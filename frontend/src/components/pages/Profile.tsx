@@ -9,12 +9,14 @@ import EditProfile from '../EditProfile';
 
 import '../../css/profile.css';
 import { BACKEND_URL } from '../../data/Global';
+import { GameType } from '../../types'
 
 const Profile: React.FC<ProfileProps> = ({ userId, isAuth }) => {
 
     const [userInfo, setUserInfo] = useState<User | null>(null);
     const [usersInfo, setUsersInfo] = useState<User[] | null>(null);
     const [userStats, setUserStats] = useState<UserStats | null>(null);
+    const [userMatchStories, setUserMatchStories] = useState<GameType[]>([]);
     const [showScreen, setShowScreen] = useState<'default' | 'achievements' | 'friends' | 'stats' | 'userProfile'>('default');
     const [userAchievements, setUserAchievements] = useState<UserAchievements[] | null>(null);
     const [allGoals, setAllGoals] = useState<Goal[] | null>(null);
@@ -25,6 +27,8 @@ const Profile: React.FC<ProfileProps> = ({ userId, isAuth }) => {
     const url_stats = `${BACKEND_URL}/pong/users/` + id + '/stats'
     const url_achievements = `${BACKEND_URL}/pong/users/` + id + '/achievements';
     const url_goals = `${BACKEND_URL}/pong/goals`;
+    const url_games = `${BACKEND_URL}/pong/users/` + id + '/games';
+
     const [achievedGoals, setAchievedGoals] = useState<Goal[]>();
     const [notAchievedGoals, setNotAchievedGoals] = useState<Goal[]>();
     const [userFriends, setUserFriends] = useState<User[] | null>(null)
@@ -88,6 +92,10 @@ const Profile: React.FC<ProfileProps> = ({ userId, isAuth }) => {
                     if (response.status === 200) {
                         setUserStats(response.data);
                         // console.log('Received User Stats: ', response.data);
+                    }
+                    const respUserGames = await axios.get<GameType[]>(url_games, { headers });
+                    if (respUserGames.status === 200) {
+                        setUserMatchStories(respUserGames.data.slice(0, 5));
                     }
                 } catch (error) {
                     console.log('Error fetching user stats:', error);
@@ -214,22 +222,27 @@ const Profile: React.FC<ProfileProps> = ({ userId, isAuth }) => {
                             <div className='flex flex-wrap items-center justify-around gap-8'>
                                 <div>
                                     <div className='space-y-2 flex flex-col justify-between gap-4'>
-                                        <div className='flex flex-row justify-between'>
-                                            Total Games Played: {(userStats?.wins ?? 0) + (userStats?.losses ?? 0)}
-                                        </div>
-                                        <div className='flex flex-row justify-between'>
-                                            Total Victories: {(userStats?.wins) ?? 0}
-                                        </div>
-                                        <div className='flex flex-row justify-between'>
-                                            Total Defeats: {(userStats?.losses) ?? 0}
-                                        </div>
+                                        {
+                                            userMatchStories.map((match) => {
+                                                return (
+                                                    <>
+                                                        <div className='flex flex-row justify-between'>
+                                                            {
+                                                                (userId && +userId === match.player1) ? userInfo?.userNameLoc : (match.player1 > 0) ? usersInfo?.filter((el: User | null) => (el && +el.id == match.player1))[0].userNameLoc : "Bot"
+                                                            }
+                                                            <span className={(match.score1 > match.score2) ? 'text-green-500' : 'text-red-500'}>&nbsp;{match.score1}&nbsp;</span>
+                                                            <span>-</span>
+                                                            <span className={(match.score2 > match.score1) ? 'text-green-500' : 'text-red-500'}>&nbsp;{match.score2}&nbsp;</span>
+                                                            {
+                                                                (userId && +userId === match.player2) ? userInfo?.userNameLoc : (match.player2 > 0) ? usersInfo?.filter((el: User | null) => (el && +el.id == match.player2))[0].userNameLoc : "Bot"
+                                                            }
+                                                        </div>
+                                                    </>
+                                                );
+                                            })
+                                        }
                                     </div>
                                 </div>
-                            </div>
-                            <div>
-                                <Button variant={'link'} onClick={() => setShowScreen('stats')}>
-                                    more
-                                </Button>
                             </div>
                         </div>
                     </div>
