@@ -96,7 +96,7 @@ PATCH   http://localhost:5000/pong/users/2fa/30
 DELETE  http://localhost:5000/pong/users/4
 
 ### get user stat
-GET http://localhost:5000/pong/users/2/stats
+GET http://localhost:5000/pong/users/9/stats
 
 ### creat user stat
 POST http://localhost:5000/pong/users/2/stats
@@ -291,8 +291,12 @@ DELETE  http://localhost:5000/pong/chats/4
 
 ### delete all messages
 DELETE http://localhost:5000/pong/chats
+
 ### get games
 GET http://localhost:5000/pong/games
+
+### delete all games
+DELETE http://localhost:5000/pong/games
 
 ### game making
 GET http://localhost:5000/gamequeue/12

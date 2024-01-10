@@ -26,7 +26,7 @@ export class GamesService {
   }
 
   async findAll() {
-    return await this.gameRepo.find();
+    return this.gameRepo.find();
   }
 
   async findOne(id: number) {
@@ -38,9 +38,12 @@ export class GamesService {
   }
 
   async remove(id: number) {
-    return `This action removes a #${id} game`;
+    return await this.gameRepo.delete(id);
   }
 
+  async removeAll() {
+    return await this.gameRepo.delete({});
+  }
   async makeMatch(
     player1: number,
     player2: number,

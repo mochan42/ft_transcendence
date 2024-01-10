@@ -44,4 +44,9 @@ export class GamesController {
   remove(@Param('id') id: string) {
     return this.gamesService.remove(+id);
   }
+
+  @Delete()
+  removeAll() {
+    return this.gamesService.removeAll();
+  }
 }

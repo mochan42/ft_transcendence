@@ -181,29 +181,56 @@ const Profile: React.FC<ProfileProps> = ({ userId, isAuth }) => {
                     </div>
                 </div>
                 <div className='w-2/3 flex flex-col justify-around items-center text-center z-0'>
-                    <div className='flex flex-col items-center gap-y-4'>
-                        <h3 className='text-center w-[300px] bg-slate-900 text-lg font-bold mb-4 border-slate-900 border-2 rounded-lg text-white dark:bg-slate-200 dark:text-slate-900'>
-                            Stats and numbers
-                        </h3>
-                        <div className='flex flex-wrap items-center justify-around gap-8'>
-                            <div>
-                                <div className='space-y-2 flex flex-col justify-between gap-4'>
-                                    <div className='flex flex-row justify-between'>
-                                        Total Games Played: {(userStats?.wins ?? 0) + (userStats?.losses ?? 0)}
-                                    </div>
-                                    <div className='flex flex-row justify-between'>
-                                        Total Victories: {(userStats?.wins) ?? 0}
-                                    </div>
-                                    <div className='flex flex-row justify-between'>
-                                        Total Defeats: {(userStats?.losses) ?? 0}
+                    <div className='flex flex-wrap justify-around z-0 w-full items-baseline'>
+                        <div className='w-1/2 h-full text-center space-y-8 flex flex-col items-center'>
+                            <h3 className='text-center w-[300px] bg-slate-900 text-lg font-bold mb-4 border-slate-900 border-2 rounded-lg text-white dark:bg-slate-200 dark:text-slate-900'>
+                                Stats and numbers
+                            </h3>
+                            <div className='flex flex-wrap items-center justify-around gap-8'>
+                                <div>
+                                    <div className='space-y-2 flex flex-col justify-between gap-4'>
+                                        <div className='flex flex-row justify-between'>
+                                            Total Games Played: {(userStats?.wins ?? 0) + (userStats?.losses ?? 0)}
+                                        </div>
+                                        <div className='flex flex-row justify-between'>
+                                            Total Victories: {(userStats?.wins) ?? 0}
+                                        </div>
+                                        <div className='flex flex-row justify-between'>
+                                            Total Defeats: {(userStats?.losses) ?? 0}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
+                            <div>
+                                <Button variant={'link'} onClick={() => setShowScreen('stats')}>
+                                    more
+                                </Button>
+                            </div>
                         </div>
-                        <div>
-                            <Button variant={'link'} onClick={() => setShowScreen('stats')}>
-                                more
-                            </Button>
+                        <div className='w-1/2 h-full text-center space-y-8 flex flex-col items-center'>
+                            <h3 className='text-center w-[300px] bg-slate-900 text-lg font-bold mb-4 border-slate-900 border-2 rounded-lg text-white dark:bg-slate-200 dark:text-slate-900'>
+                                Last 5 Games
+                            </h3>
+                            <div className='flex flex-wrap items-center justify-around gap-8'>
+                                <div>
+                                    <div className='space-y-2 flex flex-col justify-between gap-4'>
+                                        <div className='flex flex-row justify-between'>
+                                            Total Games Played: {(userStats?.wins ?? 0) + (userStats?.losses ?? 0)}
+                                        </div>
+                                        <div className='flex flex-row justify-between'>
+                                            Total Victories: {(userStats?.wins) ?? 0}
+                                        </div>
+                                        <div className='flex flex-row justify-between'>
+                                            Total Defeats: {(userStats?.losses) ?? 0}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <Button variant={'link'} onClick={() => setShowScreen('stats')}>
+                                    more
+                                </Button>
+                            </div>
                         </div>
                     </div>
                     <div className='flex flex-wrap justify-around z-0 w-full items-baseline'>

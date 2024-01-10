@@ -35,6 +35,10 @@ import { CreateJoinchannelDto } from './joinchannel/dto/create-joinchannel-dto';
 import { Channel } from './channels/entities/channel.entity';
 import { Joinchannel } from './joinchannel/entities/joinchannel.entity';
 import { Block } from './chats/entities/block.entity';
+import { StatService } from './stat/stat.service';
+import { UpdateGameDto } from './games/dto/update-game.dto';
+import { UpdateStatDto } from './stat/dto/update-stat.dto';
+import { CreateStatDto } from './stat/dto/create-stat.dto';
 
 type update = {
   player: number;
@@ -239,6 +243,7 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
     private readonly joinchannelService: JoinchannelService,
     private readonly gameQueueService: GamequeueService,
     private readonly gamesService: GamesService,
+    private readonly userStats: StatService
   ) {}
 
   startGameLoop = (game: Game) => {
@@ -433,10 +438,10 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const user = await this.chatsService.getUserFromSocket(socket);
     if (user) {
       const join = await this.joinchannelService.deleteJoin(user.id, +group);
-//       const remainMembers = await this.joinchannelService.findAGroupMembers(+group);
-//       if (!remainMembers) {
-//          await this.chatsService.remove(+group);
-//       }
+      //const remainMembers = await this.joinchannelService.findAGroupMembers(+group);
+      // if (!remainMembers) {
+      //    await this.chatsService.remove(+group);
+      // }
       const allMembers = await this.joinchannelService.findAll();
       this.server.emit('exitGroupSuccess', { new: join, all: allMembers });
     }
@@ -603,6 +608,65 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
     this.server.emit('memberMuteToggleSuccess', { new: payload, all: allMembers });
   }
   /***********************GAME*********************** */
+
+  @SubscribeMessage('saveOverGameVsBot')
+  async handleSaveOverGame(
+    @ConnectedSocket() socket: Socket,
+    @MessageBody() payload: {
+      player1: number,
+      player2: number,
+      difficulty: number,
+      score1: number,
+      score2: number,
+      includeBoost: boolean
+    }
+  ) {
+    const gameDto: CreateGameDto = {
+      id: -1,
+      player1: payload.player1,
+      player2: payload.player2,
+      difficulty: payload.difficulty,
+      includeBoost: payload.includeBoost,
+      status: 'finished',
+      score1: payload.score1,
+      score2: payload.score2,
+      paddle1Y: 0,
+      paddle2Y: 0,
+      boostX: 0,
+      boostY: 0,
+      ballX: 0,
+      ballY: 0,
+      gameMaker: 0,
+      paddle1Speed: 0,
+      paddle2Speed: 0,
+      paddle1Dir: 0,
+      paddle2Dir: 0,
+      speedX: 0,
+      speedY: 0
+    }
+    const game = await this.gamesService.create(gameDto);
+    const oldStats = await this.userStats.findOne(payload.player1);
+    if (!oldStats)
+    {
+      const createStatDto: CreateStatDto = {
+        wins: (payload.score1 > payload.score2) ? 1 : 0,
+        losses: (payload.score1 < payload.score2) ? 1 : 0,
+        draws: (payload.score1 == payload.score2) ? 1 : 0,
+        userId: payload.player1,
+      };
+      const newStats = await this.userStats.create(payload.player1.toString(), createStatDto);
+      socket.emit('gameBotSuccess', newStats);
+      return;
+    }
+    const newStats: UpdateStatDto = {
+      wins: (payload.score1 > payload.score2) ? oldStats.wins + 1 : oldStats.wins,
+      losses: (payload.score1 < payload.score2) ? oldStats.losses + 1 : oldStats.losses,
+      draws: (payload.score1 == payload.score2) ? oldStats.draws + 1 : oldStats.draws,
+      userId: +oldStats.userId
+    };
+    const updatedStats = await this.userStats.update(oldStats.userId, newStats); 
+    socket.emit('gameBotSuccess', updatedStats);
+  }
 
   @SubscribeMessage('requestMatch')
   async handleRequestMatch(
