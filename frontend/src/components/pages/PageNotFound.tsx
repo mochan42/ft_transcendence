@@ -14,9 +14,6 @@ const PageNotFound = () => {
 				</h1>
 			</div>
 			<div className='overflow-hidden mx-auto rounded-3xl object-scale-down w-2/3 h-2/3 bg-cover bg-center'
-				// style={{
-				// 	backgroundImage: "url('https://wallpaperaccess.com/full/2019411.jpg')",
-				// }}
 				>
 				<img src={imgNotFound}/>
 				{/* <img src='https://wallpaperaccess.com/full/2019411.jpg' alt='A cartoon character is looking for something in the dark with a torch.'></img> */}

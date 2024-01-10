@@ -119,7 +119,7 @@ Content-Type: application/json
 }
 
 ### delete user stat
-DELETE  http://localhost:5000/pong/users/1/stats
+DELETE  http://localhost:5000/pong/users/13/stats
 
 ### get user achievement
 GET http://localhost:5000/pong/users/2/achievements/

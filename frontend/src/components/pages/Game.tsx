@@ -8,6 +8,7 @@ import PvP from '../PvP';
 import { fetchUser } from '../../data/ChatData';
 // import { Socket } from 'socket.io-client';
 import { getSocket } from '../../utils/socketService';
+import { MAX_SCORE } from '../../APP_CONSTS';
 
 
 interface GameProps {
@@ -36,14 +37,14 @@ const Game:React.FC<GameProps> = ({ difficulty, userId, includeBoost, opponent, 
 
 	const playerPoint = () => {
 		setPlayer1Score(player1Score + 1);
-		if (player1Score === 10) {
+		if (player1Score === MAX_SCORE) {
 			setIsGameOver(true);
 		}
 	}
 
 	const opponentPoint = () => {
 		setPlayer2Score(player2Score + 1);
-		if (player2Score === 10) {
+		if (player2Score === MAX_SCORE) {
 			setIsGameOver(true);
 		}
 	}

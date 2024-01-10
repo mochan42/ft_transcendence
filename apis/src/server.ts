@@ -2,7 +2,6 @@ const http = require('http').createServer();
 
 const io = require('socket.io')(http, {
   cors: { origin: `${process.env.FRONTEND_URL}` },
-  //cors: { origin: '*'},
 });
 
 io.on('connection', (socket) => {

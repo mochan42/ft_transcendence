@@ -188,7 +188,7 @@ const Home = ({
 				}
 				if (userFriends === null && usersInfo) {
 					const usersFriends = usersInfo?.filter((user) =>
-						friends?.some((friend) => friend.sender === user.id || friend.receiver === user.id && user.id != userId)
+						friends?.some((friend) => friend.sender == user.id || friend.receiver == user.id && user.id != userId)
 					);
 					if (userFriends !== null) {
 						setUserFriends(usersFriends);
@@ -199,13 +199,6 @@ const Home = ({
 	}, [userId, loginState.isLogin]);
 
 	if (socket) {
-		// socket.emit('allBlock', {});
-		// socket.once('allBlockSuccess', (data: any) => {
-		// 	console.log('-BLOCKES--\n');
-		// 	console.log(data);
-		// 	dispatch(updateChatBlockedUsers(data));
-		// 	console.log(chatStore.chatBlockedUsers);
-		// });
 		// ---new channel created---------------
 		socket.on('newChannel', (channel: any) => {
 			console.log('channel created successfully');
@@ -223,10 +216,7 @@ const Home = ({
 		});
 		/******************************* */
 	}
-	// // hack for access
-	// // to be removed later
-	// loginState.setIsLogin(true)
-	// setUserId('1');
+
 	if (!userId && !loginState.isLogin) {
 		return (
 			<>

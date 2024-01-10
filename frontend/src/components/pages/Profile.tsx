@@ -147,12 +147,12 @@ const Profile: React.FC<ProfileProps> = ({ userId, isAuth }) => {
             }
             if (userFriends === null && usersInfo) {
                 const usersFriends = usersInfo?.filter((user) =>
-                    friends?.some((friend) => (friend.sender === user.id || friend.receiver === user.id) && user.id !== userId)
+                    friends?.some((friend) => (friend.sender == user.id || friend.receiver == user.id) && user.id != userId)
                 );
                 setUserFriends(usersFriends);
             }
             if (userInfo) {
-                setState2fa(userInfo.is2Fa)// should be substituted with getuserinfo for latest 2fa status
+                setState2fa(userInfo.is2Fa); // should be substituted with getuserinfo for latest 2fa status
                 ConfigureBtn2fa(userInfo.is2Fa);
             }
         })();
