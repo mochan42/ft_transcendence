@@ -21,6 +21,7 @@ const Profile: React.FC<ProfileProps> = ({ userId, isAuth }) => {
     const [userAchievements, setUserAchievements] = useState<UserAchievements[] | null>(null);
     const [allGoals, setAllGoals] = useState<Goal[] | null>(null);
     const [friends, setFriends] = useState<Friend[] | null>(null)
+    const [userFriends, setUserFriends] = useState<User[] | null>(null)
     const id = userId;
     const urlFriends = `${BACKEND_URL}/pong/users/` + id + '/friends';
     const url_info = `${BACKEND_URL}/pong/users/` + id;
@@ -31,7 +32,6 @@ const Profile: React.FC<ProfileProps> = ({ userId, isAuth }) => {
 
     const [achievedGoals, setAchievedGoals] = useState<Goal[]>();
     const [notAchievedGoals, setNotAchievedGoals] = useState<Goal[]>();
-    const [userFriends, setUserFriends] = useState<User[] | null>(null)
     const [state2fa, setState2fa] = useState<boolean>(false);
     const [btnTxt2fa, setBtnTxt2fa] = useState<string>("2FA: disabled");
     //const [btnStyle, setBtnStyle] = useState<string>('default');
