@@ -63,6 +63,7 @@ export class GamesService {
       player2: player2,
       difficulty: difficulty,
       includeBoost: false,
+      isReset: false,
       status: 'request',
       score1: 0,
       score2: 0,

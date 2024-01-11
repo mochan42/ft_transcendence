@@ -60,8 +60,8 @@ const PvP: React.FC<PvPProps> = ({ playerPoint, opponentPoint, setReset, userId,
 	const [paddle2Y, setPaddle2Y] = useState(0); // dynamic
 	const [paddle1Dir, setPaddle1Dir] = useState<number>(0); // dynamic
 	// const [paddle2Dir, setPaddle2Dir] = useState<number>(0); // dynamic
-	const [speedX, setSpeedX] = useState(-20); // dynamic
-	const [speedY, setSpeedY] = useState(-20); // dynamic
+	// const [speedX, setSpeedX] = useState(-20); // dynamic
+	// const [speedY, setSpeedY] = useState(-20); // dynamic
 	const [paddle1Speed, setPaddle1Speed] = useState(15); // dynamic
 	const paddle1YRef = useRef<number>(0);
 	// const [paddle2Speed, setPaddle2Speed] = useState((difficulty + 1) * 2); // dynamic
@@ -170,21 +170,23 @@ const PvP: React.FC<PvPProps> = ({ playerPoint, opponentPoint, setReset, userId,
 	});
 
 	return (
-		<div className="relative w-full h-full" ref={PvPRef}>
-			<Paddle yPosition={paddle1Y} paddleHeight={paddleLengths[difficulty]} style={{ left: 0 }} />
-			<Paddle yPosition={paddle2Y} paddleHeight={paddleLengths[difficulty]} style={{ right: 0 }} />
-			<div className="relative bg-slate-900">
-				<Ball xPosition={ballX} yPosition={ballY} />
-			</div>
-			{includeBoost && !isBoost ? <Boost x={boostX} y={boostY} width={boostWidth} height={boostWidth} /> : null}
-			{isGameOver ? (
-				<div className="absolute inset-0 bg-black bg-opacity-80">
-					<VictoryLoss userId={userId} isVictory={player1Score == 1} difficulty={difficulty} />
+		<div className="relative w-full h-full">
+			<div className='flex rounded min-w-[350px] h-[700px] w-[1400px] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 bg-slate-900 text-slate-200' ref={PvPRef}>
+				<Paddle yPosition={paddle1Y} paddleHeight={paddleLengths[difficulty]} style={{ left: 0 }} />
+				<Paddle yPosition={paddle2Y} paddleHeight={paddleLengths[difficulty]} style={{ right: 0 }} />
+				<div className="relative bg-slate-900">
+					<Ball xPosition={ballX} yPosition={ballY} />
 				</div>
-			) : null
-			}
-			{!matchFound ? <MatchMaking setGameObj={setGameObj} difficulty={difficulty} includeBoost={includeBoost} socket={socket} setMatchFound={setMatchFound} userId={userId} setState={setState} setOpponentId={setOpponentId} /> : null}
-			{startGame == false ? <StartGame userId={userId} setStartGame={setStartGame} game={gameObj ? gameObj : null} /> : null}
+				{includeBoost && !isBoost ? <Boost x={boostX} y={boostY} width={boostWidth} height={boostWidth} /> : null}
+				{!matchFound ? <MatchMaking setGameObj={setGameObj} difficulty={difficulty} includeBoost={includeBoost} socket={socket} setMatchFound={setMatchFound} userId={userId} setState={setState} setOpponentId={setOpponentId} /> : null}
+				{startGame == false ? <StartGame userId={userId} setStartGame={setStartGame} game={gameObj ? gameObj : null} /> : null}
+				{gameObj?.isGameOver ? (
+						<div className="absolute inset-0 bg-black bg-opacity-80">
+							<VictoryLoss userId={userId} isVictory={gameObj ? ((gameObj?.score1 > gameObj?.score2) ? true : false) : false} difficulty={gameObj?.difficulty ? gameObj?.difficulty : 1} />
+						</div>
+					) : null
+				}
+			</div>
 		</div>
 	)
 }

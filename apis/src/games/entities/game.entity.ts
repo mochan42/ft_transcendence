@@ -16,6 +16,21 @@ export class Game {
 
   @Column({ nullable: true })
   includeBoost: boolean;
+  
+  @Column({ nullable: true})
+  isBoost: boolean;
+
+  @Column({ nullable: true})
+  isReset: boolean;
+
+  @Column({ nullable: true})
+  isGameOver: boolean;
+
+  @Column({ nullable: true})
+  boostStartX: number;
+
+  @Column({ nullable: true})
+  boostStartY: number;
 
   @Column()
   status: string;

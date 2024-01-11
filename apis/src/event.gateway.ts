@@ -89,14 +89,15 @@ const roomReadiness = {};
 
 const paddleLengths = [200, 150, 100, 80, 50];
 const boostWidth = 80;
-const victoryThreshold = 10;
+const victoryThreshold = 1;
 const containerTop = 0;
-const containerBottom = 500;
-const rightPaddleLeft = 800;
-const leftPaddleRight = 10; // Paddle width is 10 pixels
+const paddleThickness = 10;
+const containerBottom = 700;
+const rightPaddleLeft = 1400 - paddleThickness;
+const leftPaddleRight = paddleThickness;
 
-const checkCollision = (game) => {
-  let margin = (game.difficulty + 2) * 2 * 3;
+const checkCollision = (game: Game) => {
+  let margin = (game.difficulty + 2) * 2;
   if (game.isBoost && game.includeBoost) {
     margin = margin * 2.5;
   }
@@ -129,29 +130,29 @@ const checkCollision = (game) => {
   // Check collision with left paddle
   // Check whether Bot made a point
   if (
-    ballLeft <= leftPaddleRight + margin &&
-    ballLeft >= leftPaddleRight - margin &&
-    game.speedX < 0 &&
-    ballCenter >= leftPaddleTop - (game.difficulty + 2) * 2 &&
-    ballCenter <= leftPaddleBottom + (game.difficulty + 2) * 2
+    (ballLeft <= (leftPaddleRight + margin)) &&
+    (ballLeft >= (leftPaddleRight - margin)) &&
+    (game.speedX < 0) &&
+    (ballCenter >= (leftPaddleTop - 5)) &&
+    (ballCenter <= (leftPaddleBottom + 5))
   ) {
     if (game.isBoost) {
       const prevSpeedX = game.speedX;
       game.speedX = prevSpeedX * 0.66;
-      game.isBoost(false);
+      game.isBoost = false;
     }
-    game.speedX = -game.speedX * 1.2;
-    game.speedY = randomSpeedY * 1.2;
-  } else if (ballRight < leftPaddleRight && !game.isReset) {
+    game.speedX = -game.speedX * 1.05;
+    game.speedY = randomSpeedY * 1.05;
+  } else if ((ballRight < leftPaddleRight) && !game.isReset) {
     game.score2 = game.score2 + 1;
-    if (game.score2 > victoryThreshold) {
+    if (game.score2 >= victoryThreshold) {
       game.isGameOver = true;
       game.status = 'finished';
     } else {
       game.isReset = true;
       if (game.isBoost) {
         game.speedX = game.speedX * 0.66;
-        game.isBoost(false);
+        game.isBoost = false;
       }
     }
     game.speedX = -game.speedX;
@@ -160,21 +161,21 @@ const checkCollision = (game) => {
   // Check collision with right paddle
   // Check whether Player made a point
   if (
-    ballRight >= rightPaddleLeft - margin &&
-    ballRight <= rightPaddleLeft + margin &&
-    game.speedX > 0 &&
-    ballCenter >= rightPaddleTop - (game.difficulty + 2) * 2 &&
-    ballCenter <= rightPaddleBottom + (game.difficulty + 2) * 2
+    (ballRight >= (rightPaddleLeft - margin)) &&
+    (ballRight <= (rightPaddleLeft + margin)) &&
+    (game.speedX > 0) &&
+    (ballCenter >= (rightPaddleTop - 5)) &&
+    (ballCenter <= (rightPaddleBottom + 5))
   ) {
     if (game.isBoost) {
       game.speedX = game.speedX * 0.66;
       game.isBoost = false;
     }
-    game.speedX = -game.speedX * 0.82;
-    game.speedY = newSpeedY * 0.82;
-  } else if (ballLeft > rightPaddleLeft && !game.isReset) {
+    game.speedX = -game.speedX * 1.05;
+    game.speedY = newSpeedY * 1.05;
+  } else if ((ballLeft > rightPaddleLeft) && !game.isReset) {
     game.score1 = game.score1 + 1;
-    if (game.score1 > victoryThreshold) {
+    if (game.score1 >= victoryThreshold) {
       game.isGameOver = true;
       game.status = 'finished';
     }
@@ -187,19 +188,19 @@ const checkCollision = (game) => {
   }
 
   // collision with container top
-  if (game.ballY < 0 && game.speedY < 0) {
+  if (game.ballY <= 0 && game.speedY < 0) {
     game.speedY = -game.speedY;
   }
 
   // collision with container bottom
-  if (game.ballY > containerBottom && game.speedY > 0) {
+  if ((game.ballY + 8) >= containerBottom && game.speedY > 0) { // game.ballY is the upper side of the ball. 8 is the diameter
     game.speedY = -game.speedY;
   }
 };
 
-const moveBall = (game) => {
-  game.startX = rightPaddleLeft / 2;
-  game.startY = containerBottom / 2;
+const moveBall = (game: Game) => {
+  // game.startX = rightPaddleLeft / 2;
+  // game.startY = containerBottom / 2;
 
   const boostEndX = game.boostStartX + boostWidth;
   const boostEndY = game.boostStartY + boostWidth;
@@ -223,6 +224,10 @@ const moveBall = (game) => {
   game.ballX = game.ballX + game.speedX;
   game.ballY = game.ballY + game.speedY;
 };
+
+const handleReset = (game: Game) => {
+  game.speedX = -game.speedX;
+}
 
 @WebSocketGateway({
   cors: {
@@ -257,6 +262,9 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
       }
       moveBall(currentGame);
       checkCollision(currentGame);
+      if (currentGame.isReset) {
+        handleReset(currentGame);
+      }
       // this.gamesService.update(currentGame); // You need to handle async/await properly
       this.server
         .to(currentGame.id.toString())
@@ -288,7 +296,7 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
         clearInterval(gameInterval);
         gameStateManager.endGame(currentGame.id);
       }
-    }, 1000 / 2); // 30 FPS
+    }, 1000 / 30); // 30 FPS
   };
 
   async handleConnection(@ConnectedSocket() socket: Socket, ...args: any[]) {
@@ -627,6 +635,7 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
       player2: payload.player2,
       difficulty: payload.difficulty,
       includeBoost: payload.includeBoost,
+      isReset: false,
       status: 'finished',
       score1: payload.score1,
       score2: payload.score2,

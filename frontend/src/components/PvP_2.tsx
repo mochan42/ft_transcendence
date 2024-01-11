@@ -148,20 +148,22 @@ const PvP_2: React.FC<PvP_2Props> = ({ playerPoint, opponentPoint, setReset, use
 	});
 
 	return (
-		<div className="relative w-full h-full" ref={PvPRef}>
-			<Paddle yPosition={paddle1Y} paddleHeight={paddleLengths[difficulty]} style={{ left: 0 }} />
-			<Paddle yPosition={paddle2Y} paddleHeight={paddleLengths[difficulty]} style={{ right: 0 }} />
-			<div className="relative bg-slate-900">
-				<Ball xPosition={ballX} yPosition={ballY} />
-			</div>
-			{includeBoost && (gameObj ? !gameObj.isBoost : false) ? <Boost x={boostX} y={boostY} width={boostWidth} height={boostWidth} /> : null}
-			{isGameOver ? (
-				<div className="absolute inset-0 bg-black bg-opacity-80">
-					<VictoryLoss userId={userId} isVictory={player1Score == 1} difficulty={difficulty} />
+		<div className="relative w-full h-full">
+			<div className='flex rounded min-w-[350px] h-[700px] w-[1400px] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 bg-slate-900 text-slate-200' ref={PvPRef}>
+				<Paddle yPosition={paddle1Y} paddleHeight={paddleLengths[difficulty]} style={{ left: 0 }} />
+				<Paddle yPosition={paddle2Y} paddleHeight={paddleLengths[difficulty]} style={{ right: 0 }} />
+				<div className="relative bg-slate-900">
+					<Ball xPosition={ballX} yPosition={ballY} />
 				</div>
-			) : null
-			}
-			{startGame ? null : <StartGame userId={userId} setStartGame={setStartGame} game={gameObj ? gameObj : null} />}
+				{includeBoost && (gameObj ? !gameObj.isBoost : false) ? <Boost x={boostX} y={boostY} width={boostWidth} height={boostWidth} /> : null}
+				{gameObj?.isGameOver ? (
+						<div className="absolute inset-0 bg-black bg-opacity-80">
+							<VictoryLoss userId={userId} isVictory={gameObj ? ((gameObj?.score2 > gameObj?.score1) ? true : false) : false} difficulty={gameObj?.difficulty ? gameObj?.difficulty : 1} />
+						</div>
+					) : null
+				}
+				{startGame ? null : <StartGame userId={userId} setStartGame={setStartGame} game={gameObj ? gameObj : null} />}
+			</div>
 		</div>
 	)
 }
