@@ -59,14 +59,8 @@ const PvP: React.FC<PvPProps> = ({ playerPoint, opponentPoint, setReset, userId,
 	const [paddle1Y, setPaddle1Y] = useState(0); // dynamic
 	const [paddle2Y, setPaddle2Y] = useState(0); // dynamic
 	const [paddle1Dir, setPaddle1Dir] = useState<number>(0); // dynamic
-	// const [paddle2Dir, setPaddle2Dir] = useState<number>(0); // dynamic
-	// const [speedX, setSpeedX] = useState(-20); // dynamic
-	// const [speedY, setSpeedY] = useState(-20); // dynamic
 	const [paddle1Speed, setPaddle1Speed] = useState(15); // dynamic
 	const paddle1YRef = useRef<number>(0);
-	// const [paddle2Speed, setPaddle2Speed] = useState((difficulty + 1) * 2); // dynamic
-	// const [boostStartX, setBoostStartX] = useState(200);
-	// const [boostStartY, setBoostStartY] = useState(200);
 
 	const movePaddles = () => {
 		setPaddle1Y((prevY) => {
@@ -89,6 +83,8 @@ const PvP: React.FC<PvPProps> = ({ playerPoint, opponentPoint, setReset, userId,
 		setBallY(data.ballY);
 		setBoostX(data.boostX);
 		setBoostY(data.boostY);
+		setPlayer1Score(data.score1);
+		setPlayer2Score(data.score2);
 
 		const response = {
 			player: data.player1,
@@ -98,8 +94,6 @@ const PvP: React.FC<PvPProps> = ({ playerPoint, opponentPoint, setReset, userId,
 	}
 
 	useEffect(() => {
-		// This function will be called whenever the 'gameUpdate' event is emitted from the server
-		// Register the event listener
 		if (socket) {
 			socket.on('gameUpdate', handleGameUpdate);
 		}

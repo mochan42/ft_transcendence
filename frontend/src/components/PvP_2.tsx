@@ -76,6 +76,8 @@ const PvP_2: React.FC<PvP_2Props> = ({ playerPoint, opponentPoint, setReset, use
 		setBallY(data.ballY);
 		setBoostX(data.boostX);
 		setBoostY(data.boostY);
+		setPlayer1Score(data.score1);
+		setPlayer2Score(data.score2);
 
 		const response = {
 			player: data.player2,
@@ -83,9 +85,7 @@ const PvP_2: React.FC<PvP_2Props> = ({ playerPoint, opponentPoint, setReset, use
 		}
 		socket.emit(`ackResponse-G${data.id}P${data.player2}`, response);
 	};
-	useEffect(() => {  
-		// This function will be called whenever the 'gameUpdate' event is emitted from the server
-		// Register the event listener
+	useEffect(() => {
 		if (socket) {
 			socket.on('gameUpdate', handleGameUpdate);
 		}

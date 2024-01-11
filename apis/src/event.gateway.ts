@@ -87,13 +87,15 @@ const gameStateManager = new GameStateManager();
 
 const roomReadiness = {};
 
+const conHeight = 700;
+const conWidth = 1400;
 const paddleLengths = [200, 150, 100, 80, 50];
 const boostWidth = 80;
-const victoryThreshold = 1;
+const victoryThreshold = 5;
 const containerTop = 0;
 const paddleThickness = 10;
-const containerBottom = 700;
-const rightPaddleLeft = 1400 - paddleThickness;
+const containerBottom = conHeight;
+const rightPaddleLeft = conWidth - paddleThickness;
 const leftPaddleRight = paddleThickness;
 
 const checkCollision = (game: Game) => {
@@ -128,10 +130,9 @@ const checkCollision = (game: Game) => {
   const randomSpeedY = newSpeedY * (1 + Math.random() * randomnessFactor);
 
   // Check collision with left paddle
-  // Check whether Bot made a point
   if (
-    (ballLeft <= (leftPaddleRight + margin)) &&
-    (ballLeft >= (leftPaddleRight - margin)) &&
+    (ballLeft <= (leftPaddleRight)) &&
+    // (ballLeft >= (leftPaddleRight - margin)) &&
     (game.speedX < 0) &&
     (ballCenter >= (leftPaddleTop - 5)) &&
     (ballCenter <= (leftPaddleBottom + 5))
@@ -159,10 +160,9 @@ const checkCollision = (game: Game) => {
   }
 
   // Check collision with right paddle
-  // Check whether Player made a point
   if (
-    (ballRight >= (rightPaddleLeft - margin)) &&
-    (ballRight <= (rightPaddleLeft + margin)) &&
+    (ballRight >= (rightPaddleLeft - 25)) &&
+    // (ballRight <= (rightPaddleLeft + margin)) &&
     (game.speedX > 0) &&
     (ballCenter >= (rightPaddleTop - 5)) &&
     (ballCenter <= (rightPaddleBottom + 5))
@@ -193,7 +193,7 @@ const checkCollision = (game: Game) => {
   }
 
   // collision with container bottom
-  if ((game.ballY + 8) >= containerBottom && game.speedY > 0) { // game.ballY is the upper side of the ball. 8 is the diameter
+  if ((game.ballY + 8) >= (containerBottom - 25)) { // game.ballY is the upper side of the ball. 8 is the diameter
     game.speedY = -game.speedY;
   }
 };
@@ -227,6 +227,10 @@ const moveBall = (game: Game) => {
 
 const handleReset = (game: Game) => {
   game.speedX = -game.speedX;
+  game.speedY = -game.speedY;
+  game.ballX = conWidth / 2;
+  game.ballY = conHeight / 2;
+  game.isReset = false;
 }
 
 @WebSocketGateway({
