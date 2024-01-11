@@ -22,4 +22,10 @@ export class GamequeueService {
     }
     return GamequeueService.waitingList.pop();
   }
+
+  playerAlreadyWaiting(): Socket | null {
+    if (GamequeueService.waitingList.length == 0) {return null;}
+    console.log("Returning user");
+    return GamequeueService.waitingList.pop();
+  }
 }

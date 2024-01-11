@@ -39,6 +39,7 @@ import { StatService } from './stat/stat.service';
 import { UpdateGameDto } from './games/dto/update-game.dto';
 import { UpdateStatDto } from './stat/dto/update-stat.dto';
 import { CreateStatDto } from './stat/dto/create-stat.dto';
+import { log } from 'console';
 
 type update = {
   player: number;
@@ -226,8 +227,8 @@ const moveBall = (game: Game) => {
 };
 
 const handleReset = (game: Game) => {
-  game.speedX = -game.speedX;
-  game.speedY = -game.speedY;
+  game.speedX = game.speedX * -1;
+  game.speedY = game.speedY * -1;
   game.ballX = conWidth / 2;
   game.ballY = conHeight / 2;
   game.isReset = false;
@@ -269,7 +270,6 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
       if (currentGame.isReset) {
         handleReset(currentGame);
       }
-      // this.gamesService.update(currentGame); // You need to handle async/await properly
       this.server
         .to(currentGame.id.toString())
         .timeout(5000)
@@ -297,10 +297,11 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
         currentGame.status === 'finished' ||
         currentGame.status === 'aborted'
       ) {
+        this.gamesService.update(currentGame); // You need to handle async/await properly
         clearInterval(gameInterval);
         gameStateManager.endGame(currentGame.id);
       }
-    }, 1000 / 30); // 30 FPS
+    }, 1000 / 15); // 30 FPS
   };
 
   async handleConnection(@ConnectedSocket() socket: Socket, ...args: any[]) {
@@ -706,21 +707,44 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
         console.log('Broadcasting invitedToMatch\n');
       }
     } else {
-      const opponent = this.gameQueueService.findOpponent(socket);
-      if (opponent) {
-        const player2 = await this.chatsService.getUserFromSocket(opponent);
-        const makeGame = await this.gamesService.makeMatch(
-          +player1,
-          +player2.id,
-          data.difficulty,
-          data.isBoost,
-        );
-
-        if (makeGame) {
-          const roomId = makeGame.id;
-          socket.join(roomId.toString());
-          opponent.emit('invitedToMatch', makeGame);
+      const playerWaiting = this.gameQueueService.playerAlreadyWaiting();
+      if (!playerWaiting) {
+        const opponent = this.gameQueueService.findOpponent(socket);
+        if (opponent) {
+          const player2 = await this.chatsService.getUserFromSocket(opponent);
+          const makeGame = await this.gamesService.makeMatch(
+            +player1,
+            +player2.id,
+            data.difficulty,
+            data.isBoost,
+          );
+  
+          if (makeGame) {
+            const roomId = makeGame.id;
+            socket.join(roomId.toString());
+            opponent.emit('invitedToMatch', makeGame);
+          }
         }
+      }
+      else {
+        console.log("entering")
+        const opponent = await this.chatsService.getUserFromSocket(playerWaiting);
+        const player1 = await this.chatsService.getUserFromSocket(socket);
+        console.log(player1.id, opponent.id)
+        console.log(data.difficulty, data.includeBoost)
+        const makeGame = await this.gamesService.makeMatch(
+            +opponent.id,
+            +player1.id,
+            data.difficulty,
+            data.includeBoost,
+          );
+          
+          if (makeGame) {
+            console.log(makeGame)
+            const roomId = makeGame.id;
+            socket.join(roomId.toString());
+            socket.emit('invitedToMatch', makeGame);
+          }
       }
     }
   }
@@ -788,7 +812,9 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @ConnectedSocket() socket: Socket,
     @MessageBody() data: any,
   ) {
-    const roomId = data.id;
+    var roomId = 0;
+    if (data.id)
+      roomId = data.id;
     console.log('\nGameLoop event read!\n');
     if (!roomReadiness[roomId]) {
       roomReadiness[roomId] = { player1Ready: null, player2Ready: null };

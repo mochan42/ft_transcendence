@@ -9,15 +9,16 @@ interface MatchMakingProps {
 	socket: any;
 	difficulty: number;
 	includeBoost: boolean;
+	opponentId: number;
 	setOpponentId: (number: number) => void;
 	setMatchFound: (boolean: boolean) => void;
 	setGameObj: (GameType: GameType) => void;
 	setState?: React.Dispatch<React.SetStateAction<'select' | 'bot' | 'player'>>;
 }
 
-const MatchMaking: React.FC<MatchMakingProps> = ({ setGameObj, setMatchFound, socket, userId, setState, difficulty, includeBoost }) => {
+const MatchMaking: React.FC<MatchMakingProps> = ({ setGameObj, setMatchFound, socket, userId, setState, difficulty, includeBoost, opponentId, setOpponentId }) => {
 	const [searchingForMatch, setSearchingForMatch] = useState<boolean | undefined>(undefined);
-	const [opponentInfo, setOpponentInfo] = useState<User | null>(null);
+	// const [opponentInfo, setOpponentInfo] = useState<User | null>(null);
 	// const url_info = 'https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/users/';
 	// const MatchMaking = 'MatchMaking';
 	const navigate = useNavigate();
@@ -50,6 +51,20 @@ const MatchMaking: React.FC<MatchMakingProps> = ({ setGameObj, setMatchFound, so
 		}
 	});
 
+	useEffect(() => {
+		if (socket != null) {
+			socket.on('invitedToMatch', (data: any) => {
+				console.log("Invitation received!", userId, "   ", data.player2, "\n\n");
+				if (userId == data.player1)
+					setOpponentId(data.player2);
+				else if (userId == data.player2)
+					setOpponentId(data.player1);
+			});
+		} else {
+			console.log("Missing socket\n");
+		}
+	});
+
 	return (
 		<div className='h-full w-full absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 bg-slate-400 bg-opacity-70'>
 			<div className='flex rounded min-w-[350px] h-4/5 w-3/5 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 bg-slate-900 text-slate-200'>
@@ -60,7 +75,7 @@ const MatchMaking: React.FC<MatchMakingProps> = ({ setGameObj, setMatchFound, so
 				</div>
 				<div className={'border-l-4 border-amber-400 h-full w-1/2 z-0'}>
 					<div className={'h-4/5'} >
-						<UserCard userId={opponentInfo ? opponentInfo.id : userId} />
+						<UserCard userId={opponentId ? opponentId.toString() : userId} />
 					</div>
 				</div>
 				<button

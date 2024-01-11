@@ -47,6 +47,7 @@ const PvP_2: React.FC<PvP_2Props> = ({ playerPoint, opponentPoint, setReset, use
 	}
 	const [ballX, setBallX] = useState<number>(400); // dynamic
 	const [ballY, setBallY] = useState<number>(400); // dynamic
+	const [isBoost, setIsBoost] = useState<boolean | undefined>(false); // dynamic
 	const [difficulty, setDifficulty] = useState(0);
 	const [boostX, setBoostX] = useState(200); // dynamic
 	const [boostY, setBoostY] = useState(200); // dynamic
@@ -78,15 +79,20 @@ const PvP_2: React.FC<PvP_2Props> = ({ playerPoint, opponentPoint, setReset, use
 		setBoostY(data.boostY);
 		setPlayer1Score(data.score1);
 		setPlayer2Score(data.score2);
-
-		const response = {
-			player: data.player2,
-			paddlePos: paddle2YRef.current,
+		setIsBoost(data.isBoost)
+		if (data.status == 'finished' || data.status == 'aborted')
+			setIsGameOver(true);
+		else {
+			const response = {
+				player: data.player1,
+				paddlePos: paddle2YRef.current,
+			}
+			socket.emit(`ackResponse-G${data.id}P${data.player1}`, response);
 		}
-		socket.emit(`ackResponse-G${data.id}P${data.player2}`, response);
 	};
+
 	useEffect(() => {
-		if (socket) {
+		if (socket && !isGameOver) {
 			socket.on('gameUpdate', handleGameUpdate);
 		}
 
@@ -155,7 +161,7 @@ const PvP_2: React.FC<PvP_2Props> = ({ playerPoint, opponentPoint, setReset, use
 				<div className="relative bg-slate-900">
 					<Ball xPosition={ballX} yPosition={ballY} />
 				</div>
-				{includeBoost && (gameObj ? !gameObj.isBoost : false) ? <Boost x={boostX} y={boostY} width={boostWidth} height={boostWidth} /> : null}
+				{includeBoost && !isBoost ? <Boost x={boostX} y={boostY} width={boostWidth} height={boostWidth} /> : null}
 				{gameObj?.isGameOver ? (
 						<div className="absolute inset-0 bg-black bg-opacity-80">
 							<VictoryLoss userId={userId} isVictory={gameObj ? ((gameObj?.score2 > gameObj?.score1) ? true : false) : false} difficulty={gameObj?.difficulty ? gameObj?.difficulty : 1} />

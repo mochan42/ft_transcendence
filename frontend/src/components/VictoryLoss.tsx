@@ -4,6 +4,7 @@ import { UserAchievements, UserStats } from "../types";
 import { BACKEND_URL } from "../data/Global";
 
 interface VictoryLossProps {
+	// game: Game
 	isVictory: boolean;
 	userId: string | null | undefined;
 	difficulty: number;

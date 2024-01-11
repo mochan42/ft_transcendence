@@ -15,6 +15,7 @@ interface PvPProps {
 	isGameOver: boolean;
 	selectedDifficulty: number;
 	isGameActive: boolean;
+	includeBoost: boolean;
 	isReset: boolean;
 	playerPoint: () => void;
 	opponentPoint: () => void;
@@ -30,7 +31,7 @@ interface PvPProps {
 	game?: GameType;
 }
 
-const PvP: React.FC<PvPProps> = ({ playerPoint, opponentPoint, setReset, userId, player1Score, player2Score, isGameActive, isReset, isGameOver, selectedDifficulty, setIsGameOver, setState, setPlayer1Id, setPlayer2Id, setPlayer1Score, setPlayer2Score, setPlayer1Info, setPlayer2Info, game }) => {
+const PvP: React.FC<PvPProps> = ({ includeBoost, playerPoint, opponentPoint, setReset, userId, player1Score, player2Score, isGameActive, isReset, isGameOver, selectedDifficulty, setIsGameOver, setState, setPlayer1Id, setPlayer2Id, setPlayer1Score, setPlayer2Score, setPlayer1Info, setPlayer2Info, game }) => {
 
 	const socket = getSocket(userId);
 	const [gameObj, setGameObj] = useState<GameType | undefined>(undefined);
@@ -43,7 +44,7 @@ const PvP: React.FC<PvPProps> = ({ playerPoint, opponentPoint, setReset, userId,
 	const [matchFound, setMatchFound] = useState<true | false | undefined>(false); // static
 	const PvPRef = useRef<HTMLDivElement>(null);
 	const paddleLengths = [200, 150, 100, 80, 50] // static
-	const [includeBoost, setIncludeBoost] = useState(false);
+	// const [includeBoost, setIncludeBoost] = useState(false);
 	const boostWidth = 80; //static
 	var startX = 50; // static
 	var startY = 50; // static
@@ -53,7 +54,7 @@ const PvP: React.FC<PvPProps> = ({ playerPoint, opponentPoint, setReset, userId,
 	}
 	const [ballX, setBallX] = useState<number>(400); // dynamic
 	const [ballY, setBallY] = useState<number>(400); // dynamic
-	const [isBoost, setIsBoost] = useState(false); // dynamic
+	const [isBoost, setIsBoost] = useState<boolean | undefined>(false); // dynamic
 	const [boostX, setBoostX] = useState(200); // dynamic
 	const [boostY, setBoostY] = useState(200); // dynamic
 	const [paddle1Y, setPaddle1Y] = useState(0); // dynamic
@@ -85,16 +86,21 @@ const PvP: React.FC<PvPProps> = ({ playerPoint, opponentPoint, setReset, userId,
 		setBoostY(data.boostY);
 		setPlayer1Score(data.score1);
 		setPlayer2Score(data.score2);
-
-		const response = {
-			player: data.player1,
-			paddlePos: paddle1YRef.current,
+		setIsBoost(data.isBoost);
+		if (data.status == 'finished' || data.status == 'aborted')
+			setIsGameOver(true);
+		else {
+			const response = {
+				player: data.player1,
+				paddlePos: paddle1YRef.current,
+			}
+			socket.emit(`ackResponse-G${data.id}P${data.player1}`, response);
 		}
-		socket.emit(`ackResponse-G${data.id}P${data.player1}`, response);
-	}
+		
+	};
 
 	useEffect(() => {
-		if (socket) {
+		if (socket && !isGameOver) {
 			socket.on('gameUpdate', handleGameUpdate);
 		}
 
@@ -120,7 +126,6 @@ const PvP: React.FC<PvPProps> = ({ playerPoint, opponentPoint, setReset, userId,
 					setPlayer1Id(data.player1.toString());
 					setPlayer2Id(data.player2.toString());
 					setDifficulty(data.difficulty);
-					setIncludeBoost(data.includeBoost);
 					setStartGame(false);
 					setMatchFound(true);
 				}
@@ -172,7 +177,7 @@ const PvP: React.FC<PvPProps> = ({ playerPoint, opponentPoint, setReset, userId,
 					<Ball xPosition={ballX} yPosition={ballY} />
 				</div>
 				{includeBoost && !isBoost ? <Boost x={boostX} y={boostY} width={boostWidth} height={boostWidth} /> : null}
-				{!matchFound ? <MatchMaking setGameObj={setGameObj} difficulty={difficulty} includeBoost={includeBoost} socket={socket} setMatchFound={setMatchFound} userId={userId} setState={setState} setOpponentId={setOpponentId} /> : null}
+				{!matchFound ? <MatchMaking setGameObj={setGameObj} difficulty={selectedDifficulty} includeBoost={includeBoost} socket={socket} setMatchFound={setMatchFound} userId={userId} setState={setState} setOpponentId={setOpponentId} opponentId={3}/> : null}
 				{startGame == false ? <StartGame userId={userId} setStartGame={setStartGame} game={gameObj ? gameObj : null} /> : null}
 				{gameObj?.isGameOver ? (
 						<div className="absolute inset-0 bg-black bg-opacity-80">
