@@ -283,6 +283,8 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
         if (response === null) console.log('Response empty!\n');
         else {
             currentGame.paddle1Y = response.paddlePos;
+            if (!response.playerActive)
+              currentGame.status == 'aborted';
           }
       });
       
@@ -290,6 +292,8 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
         if (response === null) console.log('Response empty!\n');
         else {
             currentGame.paddle2Y = response.paddlePos;
+            if (!response.playerActive)
+              currentGame.status == 'aborted';
           }
       });
             

@@ -34,6 +34,7 @@ const Game:React.FC<GameProps> = ({ difficulty, userId, includeBoost, opponent, 
 	const [userInfo, setUserInfo] = useState< User | null | undefined >(null);
 	const [player1Score, setPlayer1Score] = useState(0)
 	const [player2Score, setPlayer2Score] = useState(0)
+	const [isActive, setIsActive] = useState(true);
 
 	const playerPoint = () => {
 		setPlayer1Score(player1Score + 1);
@@ -99,7 +100,7 @@ const Game:React.FC<GameProps> = ({ difficulty, userId, includeBoost, opponent, 
 		<div className='h-full w-full flex flex-col items-center justify-between bg-gray-200 dark:bg-slate-900 border-t-8 dark:border-slate-900 z-50'>
 			<div className='h-1/6 gap-6 items-center justify-between flex'>
 				<div className='left-10'>
-					<Button variant={'link'} onClick={() => setState?('select') : null}>
+					<Button variant={'link'} onClick={() => setState?('select') && setIsActive(false) : null}>
 						<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
 							<path strokeLinecap="round" strokeLinejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" />
 						</svg>
@@ -142,7 +143,7 @@ const Game:React.FC<GameProps> = ({ difficulty, userId, includeBoost, opponent, 
 			</div>
 			<div className='w-full h-5/6 border-t-2 border-l-2 border-r-2 border-slate-700 black:border-slate-200 bg-slate-400 dark:text-slate-200 text-center'>
 				{(opponent === 'bot') ? <Pong userId={userId} difficulty={difficulty} isGameActive={gameActive} isReset={reset} isGameOver={isGameOver} player1Score={player1Score} opponentScore={player2Score} includeBoost={includeBoost} setIsGameOver={setIsGameOver} playerPoint={playerPoint} opponentPoint={opponentPoint} setReset={setReset}/> : null }
-				{(opponent === 'player') ? <PvP includeBoost={includeBoost} isReset={reset} setReset={setReset} userId={userId} isGameActive={gameActive} selectedDifficulty={difficulty ? difficulty : 1} isGameOver={isGameOver} player1Score={player1Score} player2Score={player2Score} setIsGameOver={setIsGameOver} setState={setState} playerPoint={playerPoint} opponentPoint={opponentPoint} setPlayer1Id={setPlayer1Id} setPlayer2Id={setPlayer2Id} setPlayer1Info={setPlayer1Info} setPlayer2Info={setPlayer2Info} setPlayer1Score={setPlayer1Score} setPlayer2Score={setPlayer2Score} game={game}/> : null}
+				{(opponent === 'player') ? <PvP isActive={isActive} setIsActive={setIsActive} includeBoost={includeBoost} isReset={reset} setReset={setReset} userId={userId} isGameActive={gameActive} selectedDifficulty={difficulty ? difficulty : 1} isGameOver={isGameOver} player1Score={player1Score} player2Score={player2Score} setIsGameOver={setIsGameOver} setState={setState} playerPoint={playerPoint} opponentPoint={opponentPoint} setPlayer1Id={setPlayer1Id} setPlayer2Id={setPlayer2Id} setPlayer1Info={setPlayer1Info} setPlayer2Info={setPlayer2Info} setPlayer1Score={setPlayer1Score} setPlayer2Score={setPlayer2Score} game={game}/> : null}
 			</div>
 		</div>
 	)

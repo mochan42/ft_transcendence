@@ -9,6 +9,8 @@ import { getSocket } from '../utils/socketService';
 import StartGame from './StartGame';
 
 interface PvPProps {
+	isActive: boolean;
+	setIsActive: (boolean: boolean) => void;
 	userId: string | null | undefined;
 	player1Score: number;
 	player2Score: number;
@@ -31,7 +33,7 @@ interface PvPProps {
 	game?: GameType;
 }
 
-const PvP: React.FC<PvPProps> = ({ includeBoost, playerPoint, opponentPoint, setReset, userId, player1Score, player2Score, isGameActive, isReset, isGameOver, selectedDifficulty, setIsGameOver, setState, setPlayer1Id, setPlayer2Id, setPlayer1Score, setPlayer2Score, setPlayer1Info, setPlayer2Info, game }) => {
+const PvP: React.FC<PvPProps> = ({ includeBoost, isActive, setIsActive, playerPoint, opponentPoint, setReset, userId, player1Score, player2Score, isGameActive, isReset, isGameOver, selectedDifficulty, setIsGameOver, setState, setPlayer1Id, setPlayer2Id, setPlayer1Score, setPlayer2Score, setPlayer1Info, setPlayer2Info, game }) => {
 
 	const socket = getSocket(userId);
 	const [gameObj, setGameObj] = useState<GameType | undefined>(undefined);
@@ -93,6 +95,7 @@ const PvP: React.FC<PvPProps> = ({ includeBoost, playerPoint, opponentPoint, set
 			const response = {
 				player: data.player1,
 				paddlePos: paddle1YRef.current,
+				playerActive: isActive,
 			}
 			socket.emit(`ackResponse-G${data.id}P${data.player1}`, response);
 		}
