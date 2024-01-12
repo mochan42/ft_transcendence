@@ -3,6 +3,7 @@ import { User, GameType } from "../types";
 import UserCard from './UserCard';
 import { useNavigate } from 'react-router-dom';
 import { BACKEND_URL } from '../data/Global';
+import { getUserById } from './ChatConversation';
 
 interface MatchMakingProps {
 	userId: string | undefined | null;
@@ -17,11 +18,10 @@ interface MatchMakingProps {
 }
 
 const MatchMaking: React.FC<MatchMakingProps> = ({ setGameObj, setMatchFound, socket, userId, setState, difficulty, includeBoost, opponentId, setOpponentId }) => {
+	
 	const [searchingForMatch, setSearchingForMatch] = useState<boolean | undefined>(undefined);
 	const [matched, setMatched] = useState<boolean>(false);
-	// const [opponentInfo, setOpponentInfo] = useState<User | null>(null);
-	// const url_info = 'https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/users/';
-	// const MatchMaking = 'MatchMaking';
+	const [oId, setOId] = useState<string>("2");
 	const navigate = useNavigate();
 	let game: GameType = {
 		id: -1,
@@ -56,9 +56,10 @@ const MatchMaking: React.FC<MatchMakingProps> = ({ setGameObj, setMatchFound, so
 		if (socket != null) {
 			if (!matched) {
 				socket.once('matchedToGame', (data: any) => {
-					console.log("Matched to game !", data.player1, "   ", data.player2, "\n\n");
-					if (userId == data.player2) {
-						setOpponentId(data.player1);
+					if (userId == data.player1) {
+						console.log("Matched to game !", data.player1, "   ", data.player2, "\n\n");
+						setOpponentId(data.player2);
+						setOId(data.player2.toString());
 						setMatched(true);
 					}
 				});
@@ -78,7 +79,7 @@ const MatchMaking: React.FC<MatchMakingProps> = ({ setGameObj, setMatchFound, so
 				</div>
 				<div className={'border-l-4 border-amber-400 h-full w-1/2 z-0'}>
 					<div className={'h-4/5'} >
-						<UserCard userId={opponentId ? opponentId.toString() : userId} />
+						<UserCard userId={oId} />
 					</div>
 				</div>
 				<button

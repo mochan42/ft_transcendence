@@ -53,7 +53,7 @@ const GameSelection: React.FC<GameSelectionProps> = ({ userId }) => {
 
 	const handleDifficulty = () => {
 		if (difficulty === 4) {
-			setDifficulty(1);
+			setDifficulty(0);
 		} else {
 			setDifficulty(difficulty + 1);
 		}
