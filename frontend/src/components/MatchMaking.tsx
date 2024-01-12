@@ -18,6 +18,7 @@ interface MatchMakingProps {
 
 const MatchMaking: React.FC<MatchMakingProps> = ({ setGameObj, setMatchFound, socket, userId, setState, difficulty, includeBoost, opponentId, setOpponentId }) => {
 	const [searchingForMatch, setSearchingForMatch] = useState<boolean | undefined>(undefined);
+	const [matched, setMatched] = useState<boolean>(false);
 	// const [opponentInfo, setOpponentInfo] = useState<User | null>(null);
 	// const url_info = 'https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/users/';
 	// const MatchMaking = 'MatchMaking';
@@ -53,13 +54,15 @@ const MatchMaking: React.FC<MatchMakingProps> = ({ setGameObj, setMatchFound, so
 
 	useEffect(() => {
 		if (socket != null) {
-			socket.on('invitedToMatch', (data: any) => {
-				console.log("Invitation received!", userId, "   ", data.player2, "\n\n");
-				if (userId == data.player1)
-					setOpponentId(data.player2);
-				else if (userId == data.player2)
-					setOpponentId(data.player1);
-			});
+			if (!matched) {
+				socket.once('matchedToGame', (data: any) => {
+					console.log("Matched to game !", data.player1, "   ", data.player2, "\n\n");
+					if (userId == data.player2) {
+						setOpponentId(data.player1);
+						setMatched(true);
+					}
+				});
+			}
 		} else {
 			console.log("Missing socket\n");
 		}
@@ -87,6 +90,7 @@ const MatchMaking: React.FC<MatchMakingProps> = ({ setGameObj, setMatchFound, so
 								socket.emit('requestMatch', game);
 							}
 						} else if (searchingForMatch === true) {
+							socket.emit('leaveQueue');
 							setState ? setState('select') : navigate("/game");
 						}
 					}}

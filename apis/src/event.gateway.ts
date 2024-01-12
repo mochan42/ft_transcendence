@@ -686,18 +686,21 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
     socket.emit('gameBotSuccess', updatedStats);
   }
 
+  @SubscribeMessage('leaveQueue')
+  async handleLeaveQueue(@ConnectedSocket() socket: Socket) {
+    return this.gameQueueService.leaveQueue(socket);
+  }
+
   @SubscribeMessage('requestMatch')
   async handleRequestMatch(
     @ConnectedSocket() socket: Socket,
     @MessageBody() data: any,
   ) {
     console.log('requestMatch was received.\n');
-    const player1 = data.player1;
     if (data.player2 > 0) {
-      const player2 = data.player2;
       const makeGame = await this.gamesService.makeMatch(
-        +player1,
-        +player2,
+        +data.player1,
+        +data.player2,
         data.difficulty,
         data.isBoost,
       );
@@ -711,13 +714,17 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
         console.log('Broadcasting invitedToMatch\n');
       }
     } else {
-      const playerWaiting = this.gameQueueService.playerAlreadyWaiting();
-      if (!playerWaiting) {
-        const opponent = this.gameQueueService.findOpponent(socket);
+        const opponent = this.gameQueueService.findOpponent({
+          id: data.player1,
+          difficulty: data.difficulty,
+          isBoost: data.isBoost,
+          socket
+        });
         if (opponent) {
-          const player2 = await this.chatsService.getUserFromSocket(opponent);
+          const player1 = await this.chatsService.getUserFromSocket(opponent.socket);
+          const player2 = await this.chatsService.getUserFromSocket(socket);
           const makeGame = await this.gamesService.makeMatch(
-            +player1,
+            +player1.id,
             +player2.id,
             data.difficulty,
             data.isBoost,
@@ -726,30 +733,9 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
           if (makeGame) {
             const roomId = makeGame.id;
             socket.join(roomId.toString());
-            opponent.emit('invitedToMatch', makeGame);
+            socket.emit('matchedToGame', makeGame);
           }
         }
-      }
-      else {
-        console.log("entering")
-        const opponent = await this.chatsService.getUserFromSocket(playerWaiting);
-        const player1 = await this.chatsService.getUserFromSocket(socket);
-        console.log(player1.id, opponent.id)
-        console.log(data.difficulty, data.includeBoost)
-        const makeGame = await this.gamesService.makeMatch(
-            +opponent.id,
-            +player1.id,
-            data.difficulty,
-            data.includeBoost,
-          );
-          
-          if (makeGame) {
-            console.log(makeGame)
-            const roomId = makeGame.id;
-            socket.join(roomId.toString());
-            socket.emit('invitedToMatch', makeGame);
-          }
-      }
     }
   }
 
@@ -817,8 +803,7 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @MessageBody() data: any,
   ) {
     var roomId = 0;
-    if (data.id)
-      roomId = data.id;
+    if (data.id) { roomId = data.id; }
     console.log('\nGameLoop event read!\n');
     if (!roomReadiness[roomId]) {
       roomReadiness[roomId] = { player1Ready: null, player2Ready: null };
