@@ -223,10 +223,10 @@ const Profile: React.FC<ProfileProps> = ({ userId, isAuth }) => {
                                 <div>
                                     <div className='space-y-2 flex flex-col justify-between gap-4'>
                                         {
-                                            userMatchStories.map((match) => {
+                                            userMatchStories.map((match, index) => {
                                                 return (
                                                     <>
-                                                        <div className='flex flex-row justify-between'>
+                                                        <div key={index}  className='flex flex-row justify-between'>
                                                             {
                                                                 (userId && +userId === match.player1) ? userInfo?.userNameLoc : (match.player1 > 0) ? usersInfo?.filter((el: User | null) => (el && +el.id == match.player1))[0].userNameLoc : "Bot"
                                                             }

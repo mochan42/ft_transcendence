@@ -18,6 +18,7 @@ export const Utils__isAPICodeAvailable = ( userAuth : TUserAuth ) =>
         console.log(urlSearchParams);
         Array.from((urlSearchParams.entries())).map(([key, value]) => {
             if (key === "code") {
+                console.log('CODELOGOUT');
                 userAuth.setCode(value);
                 userAuth.setIsAuth(true);
             }
