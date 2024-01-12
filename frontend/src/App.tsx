@@ -152,9 +152,8 @@ const App: React.FC = () => {
 	useEffect(() => {
 		if (socket != null) {
 			if (gameReq) { return };
-			socket.once('invitedToMatch', (data: any) => {
+			socket.once('challengedToMatch', (data: any) => {
 				if (data.player2 == userId) {
-					console.log("Invitation received! from", data.player1, "\n\n");
 					setChallenge(true);
 					setGameReq(true);
 					console.log("I got invited to a game! \n\n");

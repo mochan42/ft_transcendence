@@ -711,8 +711,8 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
         console.log(
           `User ${makeGame.player1} created and joined room: ${roomId}`,
         );
-        this.server.emit('invitedToMatch', makeGame);
-        console.log('Broadcasting invitedToMatch\n');
+        this.server.emit('challengedToMatch', makeGame);
+        console.log('Broadcasting challengedToMatch\n');
       }
     } else {
         const opponent = this.gameQueueService.findOpponent({
