@@ -688,7 +688,8 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage('leaveQueue')
   async handleLeaveQueue(@ConnectedSocket() socket: Socket) {
-    return this.gameQueueService.leaveQueue(socket);
+    const user = await this.chatsService.getUserFromSocket(socket);
+    return this.gameQueueService.leaveQueue(+user.id);
   }
 
   @SubscribeMessage('requestMatch')

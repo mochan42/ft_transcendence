@@ -25,7 +25,7 @@ const MatchMaking: React.FC<MatchMakingProps> = ({ setGameObj, setMatchFound, so
 	const navigate = useNavigate();
 	let game: GameType = {
 		id: -1,
-		player1: userId ? +userId : 0,
+		player1: userId ? +userId : -1,
 		player2: -1,
 		difficulty: difficulty,
 		includeBoost: includeBoost,
@@ -85,8 +85,8 @@ const MatchMaking: React.FC<MatchMakingProps> = ({ setGameObj, setMatchFound, so
 					onClick={() => {
 						if (searchingForMatch === undefined) {
 							setSearchingForMatch(true);
-							console.log("\nSearching for Opponent - Sending requestMatch event to Backend!\n With difficulty: ", game.difficulty, " and booster: ", game.includeBoost, "\n");
 							if (socket !== null) {
+								console.log("\nSearching for Opponent - Sending requestMatch event to Backend!\n With difficulty: ", game.difficulty, " and booster: ", game.includeBoost, "\n");
 								socket.emit('requestMatch', game);
 							}
 						} else if (searchingForMatch === true) {

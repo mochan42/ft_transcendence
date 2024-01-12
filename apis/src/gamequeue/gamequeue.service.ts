@@ -31,18 +31,18 @@ export class GamequeueService {
     if (queuedPlayers.length == 0) {
       return null;
     }
-    GamequeueService.waitingList = [...queuedPlayers.slice(1, queuedPlayers.length)];
+    GamequeueService.waitingList = [...GamequeueService.waitingList.filter((el) => el.id != queuedPlayers[0].id)];
     return queuedPlayers[0];
   }
 
   playersAlreadyWaiting(player: Queued): Queued[]{
     const waiters = [...GamequeueService.waitingList].filter((el: Queued) => {
-      return (el.id !== player.id && el.difficulty == player.difficulty && el.isBoost == player.isBoost)
+      return (el.id != player.id && el.difficulty == player.difficulty && el.isBoost == player.isBoost)
     });
     return waiters;
   }
 
-  leaveQueue(player: Queued) {
-    GamequeueService.waitingList = [...GamequeueService.waitingList].filter((el: Queued) => el.id !== player.id);
+  leaveQueue(playerId: number) {
+    GamequeueService.waitingList = [...GamequeueService.waitingList].filter((el: Queued) => el.id != playerId);
   }
 }

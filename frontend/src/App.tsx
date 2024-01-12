@@ -183,7 +183,7 @@ const App: React.FC = () => {
 
 	const title = document.getElementsByTagName('title');
 	title[0].innerHTML = 'Transcendance App';
-	
+
 	// if (letsPlay == true) return(
 	// 	<> 
 	// 		<div className='h-20 flex backdrop-blur-sm bg-white/75 dark:bg-slate-900 border-b-4 border-white/75 dark:border-slate-600 item-center justify-between'>
@@ -253,7 +253,7 @@ const App: React.FC = () => {
 					<Footer />
 				</div>
 				{challenge ? <GameChallenge userId={userId} game={game} setChallenge={setChallenge} /> : null}
-				{letsPlay ? <Game difficulty={gameObj ? gameObj?.difficulty : 1} userId={gameObj ? gameObj.player1.toString() : userId} includeBoost={gameObj ? gameObj.includeBoost : false} opponent={gameObj ? gameObj.player2.toString() : "-1"} game={gameObj} /> : null}
+				{letsPlay ? <Game difficulty={gameObj ? gameObj?.difficulty : 0} userId={gameObj ? gameObj.player1.toString() : userId} includeBoost={gameObj ? gameObj.includeBoost : false} opponent={gameObj ? gameObj.player2.toString() : "-1"} game={gameObj} /> : null}
 			</Router>
 
 		</div>
