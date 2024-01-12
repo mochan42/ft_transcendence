@@ -56,6 +56,7 @@ const App: React.FC = () => {
 	const socket = getSocket(userId);
 	const dispatch = useDispatch();
 	const chatStore = useSelector(selectChatStore);
+	const [gameReq, setGameReq] = useState<boolean>(false);
 
 	// check if code available for backend to exchange for token
 	Utils__isAPICodeAvailable({ setIsAuth, isAuth, setCode, code })
@@ -150,10 +151,12 @@ const App: React.FC = () => {
 	//---------------------------GAME-----------------------------------------------
 	useEffect(() => {
 		if (socket != null) {
+			if (gameReq) { return };
 			socket.once('invitedToMatch', (data: any) => {
-				console.log("Invitation received!", data.player1, "   ", data.player2, "\n\n");
 				if (data.player2 == userId) {
+					console.log("Invitation received! from", data.player1, "\n\n");
 					setChallenge(true);
+					setGameReq(true);
 					console.log("I got invited to a game! \n\n");
 					setGame(data);
 					console.log("Match invitation received! \n\n", data);
@@ -166,11 +169,13 @@ const App: React.FC = () => {
 
 	useEffect(() => {
 		if (socket != null) {
-			socket.on('matchFound', (data: GameType) => {
+			if (gameReq) { return };
+			socket.once('matchFound', (data: GameType) => {
 				console.log("Match found Event triggered! Player receiving the matchFound: ", data.player1,)
 				if (userId && userId == data.player1.toString()) {
 					console.log("My game challenge was accepted! \n");
 					setGameObj(data);
+					setGameReq(true);
 					setLetsPlay(true);
 				}
 			});

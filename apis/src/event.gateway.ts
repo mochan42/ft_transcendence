@@ -734,7 +734,8 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
           if (makeGame) {
             const roomId = makeGame.id;
             socket.join(roomId.toString());
-            socket.emit('matchedToGame', makeGame);
+            opponent.socket.emit('matchedToGame', makeGame);
+            socket.emit('invitedToMatch', makeGame);
           }
         }
     }
