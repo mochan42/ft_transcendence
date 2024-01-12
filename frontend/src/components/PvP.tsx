@@ -114,6 +114,10 @@ const PvP: React.FC<PvPProps> = ({ includeBoost, isActive, setIsActive, playerPo
 		};
 	});
 
+	useEffect(() => {
+		console.log("GameObj was updated.");
+	}, [gameObj])
+
 
 	useEffect(() => {
 		movePaddles();
@@ -123,14 +127,16 @@ const PvP: React.FC<PvPProps> = ({ includeBoost, isActive, setIsActive, playerPo
 	useEffect(() => {
 		if (socket != null) {
 			socket.on('matchFound', (data: GameType) => {
+				console.log("Match Found!", data);
 				if (userId && userId == data.player1.toString()) {
 					setGameObj(data);
 					setPlayer1Id(data.player1.toString());
 					setPlayer2Id(data.player2.toString());
 					setDifficulty(data.difficulty);
-					setStartGame(false);
 					setMatchFound(true);
 				}
+				socket.emit('gameLoop', data);
+				console.log("Sending gameLoop");
 			});
 
 			socket.on('updateMatch', (currentGame: GameType) => {
@@ -179,8 +185,7 @@ const PvP: React.FC<PvPProps> = ({ includeBoost, isActive, setIsActive, playerPo
 					<Ball xPosition={ballX} yPosition={ballY} />
 				</div>
 				{includeBoost && !isBoost ? <Boost x={boostX} y={boostY} width={boostWidth} height={boostWidth} /> : null}
-				{!matchFound ? <MatchMaking setGameObj={setGameObj} difficulty={selectedDifficulty} includeBoost={includeBoost} socket={socket} setMatchFound={setMatchFound} userId={userId} setState={setState} setOpponentId={setOpponentId} opponentId={3} setPlayer1Id={setPlayer1Id} setPlayer2Id={setPlayer2Id}/> : null}
-				{startGame == false ? <StartGame userId={userId} setStartGame={setStartGame} game={gameObj ? gameObj : null} /> : null}
+				{!matchFound ? <MatchMaking gameObj={gameObj} setGameObj={setGameObj} difficulty={selectedDifficulty} includeBoost={includeBoost} socket={socket} setMatchFound={setMatchFound} userId={userId} setState={setState} setOpponentId={setOpponentId} opponentId={3} setPlayer1Id={setPlayer1Id} setPlayer2Id={setPlayer2Id}/> : null}
 				{gameObj?.isGameOver ? (
 						<div className="absolute inset-0 bg-black bg-opacity-80">
 							<VictoryLoss userId={userId} isVictory={gameObj ? ((gameObj?.score1 > gameObj?.score2) ? true : false) : false} difficulty={gameObj?.difficulty ? gameObj?.difficulty : 1} />
