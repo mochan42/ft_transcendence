@@ -9,6 +9,7 @@ import { fetchUser } from '../../data/ChatData';
 // import { Socket } from 'socket.io-client';
 import { getSocket } from '../../utils/socketService';
 import { MAX_SCORE } from '../../APP_CONSTS';
+import { Socket } from 'socket.io-client';
 
 
 interface GameProps {
@@ -23,7 +24,7 @@ interface GameProps {
 
 const Game:React.FC<GameProps> = ({ difficulty, userId, includeBoost, opponent, setState, status, game }) => {
 	
-	// const socket = getSocket(userId);
+	const socket = getSocket(userId);
 	const [gameActive, setGameActive] = useState(false)
 	const [reset, setReset] = useState(false)
 	const [isGameOver, setIsGameOver] = useState(false)
@@ -73,10 +74,19 @@ const Game:React.FC<GameProps> = ({ difficulty, userId, includeBoost, opponent, 
 	};
 
 	const handleReturn = () => {
+		if (((+player1Id > 0) && (+player2Id < 0)) || ((+player2Id > 0) && (+player1Id < 0))) {
+			socket.emit('leaveQueue');
+			console.log("Leaving match queue!");
+		} else if ((+player1Id > 0) && (+player2Id > 0)) {
+			socket.emit('abortMatch', game);
+			console.log("Aborting game!");
+		} else {
+			console.log("WARNING: NEITHER CONDITION WAS MET!")
+		}
 		if (setState) {
 			setState('select');
 			setIsActive(false);
-			console.log("Player leaving game, aborting.");
+			console.log("Player leaving game.");
 		}
 		else
 			console.log("Can't return, don't have the setState object.");

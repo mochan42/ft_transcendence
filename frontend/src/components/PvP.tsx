@@ -179,7 +179,7 @@ const PvP: React.FC<PvPProps> = ({ includeBoost, isActive, setIsActive, playerPo
 					<Ball xPosition={ballX} yPosition={ballY} />
 				</div>
 				{includeBoost && !isBoost ? <Boost x={boostX} y={boostY} width={boostWidth} height={boostWidth} /> : null}
-				{!matchFound ? <MatchMaking setGameObj={setGameObj} difficulty={selectedDifficulty} includeBoost={includeBoost} socket={socket} setMatchFound={setMatchFound} userId={userId} setState={setState} setOpponentId={setOpponentId} opponentId={3}/> : null}
+				{!matchFound ? <MatchMaking setGameObj={setGameObj} difficulty={selectedDifficulty} includeBoost={includeBoost} socket={socket} setMatchFound={setMatchFound} userId={userId} setState={setState} setOpponentId={setOpponentId} opponentId={3} setPlayer1Id={setPlayer1Id} setPlayer2Id={setPlayer2Id}/> : null}
 				{startGame == false ? <StartGame userId={userId} setStartGame={setStartGame} game={gameObj ? gameObj : null} /> : null}
 				{gameObj?.isGameOver ? (
 						<div className="absolute inset-0 bg-black bg-opacity-80">

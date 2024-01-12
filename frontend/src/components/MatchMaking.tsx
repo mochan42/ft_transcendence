@@ -6,22 +6,24 @@ import { BACKEND_URL } from '../data/Global';
 import { getUserById } from './ChatConversation';
 
 interface MatchMakingProps {
-	userId: string | undefined | null;
+	userId: string | null | undefined;
 	socket: any;
 	difficulty: number;
 	includeBoost: boolean;
 	opponentId: number;
 	setOpponentId: (number: number) => void;
+	setPlayer1Id: (string: string) => void;
+	setPlayer2Id: (string: string) => void;
 	setMatchFound: (boolean: boolean) => void;
 	setGameObj: (GameType: GameType) => void;
 	setState?: React.Dispatch<React.SetStateAction<'select' | 'bot' | 'player'>>;
 }
 
-const MatchMaking: React.FC<MatchMakingProps> = ({ setGameObj, setMatchFound, socket, userId, setState, difficulty, includeBoost, opponentId, setOpponentId }) => {
+const MatchMaking: React.FC<MatchMakingProps> = ({ setGameObj, setMatchFound, socket, userId, setState, difficulty, includeBoost, opponentId, setOpponentId, setPlayer1Id, setPlayer2Id }) => {
 	
 	const [searchingForMatch, setSearchingForMatch] = useState<boolean | undefined>(undefined);
 	const [matched, setMatched] = useState<boolean>(false);
-	const [oId, setOId] = useState<string>("2");
+	const [oId, setOId] = useState<string>("1");
 	const navigate = useNavigate();
 	let game: GameType = {
 		id: -1,
@@ -55,12 +57,36 @@ const MatchMaking: React.FC<MatchMakingProps> = ({ setGameObj, setMatchFound, so
 	useEffect(() => {
 		if (socket != null) {
 			if (!matched) {
+				socket.once('invitedToMatch', (data: any) => {
+					if (userId == data.player2) {
+						setPlayer1Id(data.player2);
+						setPlayer2Id(data.player1);
+						console.log("Invitation received! from", data.player1, "\n\n");
+						setOpponentId(data.player1);
+						setOId(data.player1.toString());
+						console.log("Match invitation received! \n\n", data);
+						setMatched(true);
+						setSearchingForMatch(false);
+					}
+				});
+			} else {
+				console.log("Missing socket\n");
+			}
+		}
+	});
+
+	useEffect(() => {
+		if (socket != null) {
+			if (!matched) {
 				socket.once('matchedToGame', (data: any) => {
 					if (userId == data.player1) {
+						setPlayer1Id(data.player1);
+						setPlayer2Id(data.player2);
 						console.log("Matched to game !", data.player1, "   ", data.player2, "\n\n");
 						setOpponentId(data.player2);
 						setOId(data.player2.toString());
 						setMatched(true);
+						setSearchingForMatch(false);
 					}
 				});
 			}
@@ -88,33 +114,28 @@ const MatchMaking: React.FC<MatchMakingProps> = ({ setGameObj, setMatchFound, so
 							setSearchingForMatch(true);
 							if (socket !== null) {
 								console.log("\nSearching for Opponent - Sending requestMatch event to Backend!\n With difficulty: ", game.difficulty, " and booster: ", game.includeBoost, "\n");
+								setPlayer1Id(userId ? userId.toString() : "0")
 								socket.emit('requestMatch', game);
 							}
 						} else if (searchingForMatch === true) {
 							socket.emit('leaveQueue');
 							setState ? setState('select') : navigate("/game");
-							if (setState) {
-								socket.emit('abortMatch', game);
-								setState('select');
-								console.log("Player leaving game, aborting.");
-							}
-							else {
-								navigate("/game");
-								console.log("Can't return, don't have the setState object.");
-							}
+							console.log("Left game queue!")
+						} else if (matched) {
+							console.log("Accepting Game!");
 						}
 					}}
 					className='border-8 border-slate-200 text-slate-900 h-12 rounded-md absolute top-3/4 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 bg-slate-200'>
 					{searchingForMatch === undefined ? 'Search for opponent' : null}
 					{searchingForMatch === true ? 'Cancel' : null}
-					{searchingForMatch === false ? 'Start Match' : null}
+					{matched === true ? 'Start Match' : null}
 				</button>
 				<div className={'bg-slate-900 border-4 border-amber-400 rounded-full h-32 w-32 text-white text-xl font-extrabold flex-cols justify-around text-center absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 flex flex-col items-center'}>
 					{searchingForMatch === undefined ? <img className={'max-h-28 max-w-28'} src='https://media3.giphy.com/media/vl4kjjLdRxjU9x1z36/giphy.webp?cid=ecf05e476eupiqtr7dj6gjr0sm4pdhb1ahor8x8n7fdu2dj1&ep=v1_stickers_search&rid=giphy.webp&ct=s' />
 						: null}
-					{searchingForMatch === true ? <img className={'max-h-32 max-w-32 rounded-full'} src='https://media3.giphy.com/media/LOo1VDVtrKG3hsNdxy/200.webp?cid=ecf05e47l5fbfbccar0h7wsl9e6b833ahvul8abt3igzb1y9&ep=v1_stickers_search&rid=200.webp&ct=s' alt="crossed swords" />
+					{searchingForMatch === true ? <img className={'max-h-32 max-w-32 rounded-full'} src='https://media3.giphy.com/media/LOo1VDVtrKG3hsNdxy/200.webp?cid=ecf05e47l5fbfbccar0h7wsl9e6b833ahvul8abt3igzb1y9&ep=v1_stickers_search&rid=200.webp&ct=s' alt="waiting screen" />
 						: null}
-					{(searchingForMatch === false && searchingForMatch != undefined) ? <img className={'max-h-32 max-w-32 rounded-full'} src="https://media3.giphy.com/media/LOo1VDVtrKG3hsNdxy/200.webp?cid=ecf05e47l5fbfbccar0h7wsl9e6b833ahvul8abt3igzb1y9&ep=v1_stickers_search&rid=200.webp&ct=s" alt='waiting screen' />
+					{matched === true ? <img className={'max-h-32 max-w-32 rounded-full'} src="https://media3.giphy.com/media/SwUwZMPpgwHNQGIjI7/200w.webp?cid=ecf05e479jqxlumq0r4dolafw2l2f1dw6p8px3dy7z1hqqxv&ep=v1_stickers_search&rid=200w.webp&ct=s" alt='crossing swords' />
 						: null}
 				</div>
 			</div>
