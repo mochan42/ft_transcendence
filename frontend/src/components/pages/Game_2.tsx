@@ -32,6 +32,7 @@ const Game_2:React.FC<GameProps> = ({ difficulty, userId, includeBoost, opponent
 	const [userInfo, setUserInfo] = useState< User | null | undefined >(null);
 	const [player1Score, setPlayer1Score] = useState(0)
 	const [player2Score, setPlayer2Score] = useState(0)
+	const [isActive, setIsActive] = useState(true);
 
 	const playerPoint = () => {
 		setPlayer1Score(player1Score + 1);
@@ -138,7 +139,7 @@ const Game_2:React.FC<GameProps> = ({ difficulty, userId, includeBoost, opponent
 				</div>
 			</div>
 			<div className='w-full h-5/6 border-t-2 border-l-2 border-r-2 border-slate-700 black:border-slate-200 bg-slate-400 dark:text-slate-200 text-center'>
-				<PvP_2 isReset={reset} setReset={setReset} userId={userId} isGameActive={gameActive} selectedDifficulty={difficulty} isGameOver={isGameOver} player1Score={player1Score} player2Score={player2Score} setIsGameOver={setIsGameOver} setState={setState} playerPoint={playerPoint} opponentPoint={opponentPoint} setPlayer1Id={setPlayer1Id} setPlayer2Id={setPlayer2Id} setPlayer1Info={setPlayer1Info} setPlayer2Info={setPlayer2Info} setPlayer1Score={setPlayer1Score} setPlayer2Score={setPlayer2Score} game={gameObj}/>
+				<PvP_2 isActive={isActive} setIsActive={setIsActive} isReset={reset} setReset={setReset} userId={userId} isGameActive={gameActive} selectedDifficulty={difficulty} isGameOver={isGameOver} player1Score={player1Score} player2Score={player2Score} setIsGameOver={setIsGameOver} setState={setState} playerPoint={playerPoint} opponentPoint={opponentPoint} setPlayer1Id={setPlayer1Id} setPlayer2Id={setPlayer2Id} setPlayer1Info={setPlayer1Info} setPlayer2Info={setPlayer2Info} setPlayer1Score={setPlayer1Score} setPlayer2Score={setPlayer2Score} game={gameObj}/>
 			</div>
 		</div>
 	)

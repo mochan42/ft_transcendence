@@ -16,10 +16,11 @@ interface MatchMakingProps {
 	setPlayer2Id: (string: string) => void;
 	setMatchFound: (boolean: boolean) => void;
 	setGameObj: (GameType: GameType) => void;
+	gameObj: GameType | undefined;
 	setState?: React.Dispatch<React.SetStateAction<'select' | 'bot' | 'player'>>;
 }
 
-const MatchMaking: React.FC<MatchMakingProps> = ({ setGameObj, setMatchFound, socket, userId, setState, difficulty, includeBoost, opponentId, setOpponentId, setPlayer1Id, setPlayer2Id }) => {
+const MatchMaking: React.FC<MatchMakingProps> = ({ gameObj, setGameObj, setMatchFound, socket, userId, setState, difficulty, includeBoost, opponentId, setOpponentId, setPlayer1Id, setPlayer2Id }) => {
 	
 	const [searchingForMatch, setSearchingForMatch] = useState<boolean | undefined>(undefined);
 	const [matched, setMatched] = useState<boolean>(false);
@@ -59,6 +60,7 @@ const MatchMaking: React.FC<MatchMakingProps> = ({ setGameObj, setMatchFound, so
 			if (!matched) {
 				socket.once('invitedToMatch', (data: any) => {
 					if (userId == data.player2) {
+						setGameObj(data);
 						setPlayer1Id(data.player2);
 						setPlayer2Id(data.player1);
 						console.log("Invitation received! from", data.player1, "\n\n");
@@ -69,9 +71,9 @@ const MatchMaking: React.FC<MatchMakingProps> = ({ setGameObj, setMatchFound, so
 						setSearchingForMatch(false);
 					}
 				});
-			} else {
-				console.log("Missing socket\n");
 			}
+		} else {
+			console.log("Missing socket\n");
 		}
 	});
 
@@ -80,13 +82,14 @@ const MatchMaking: React.FC<MatchMakingProps> = ({ setGameObj, setMatchFound, so
 			if (!matched) {
 				socket.once('matchedToGame', (data: any) => {
 					if (userId == data.player1) {
+						setGameObj(data);
 						setPlayer1Id(data.player1);
 						setPlayer2Id(data.player2);
 						console.log("Matched to game !", data.player1, "   ", data.player2, "\n\n");
 						setOpponentId(data.player2);
 						setOId(data.player2.toString());
-						setMatched(true);
-						setSearchingForMatch(false);
+						// setMatched(true);
+						// setSearchingForMatch(false);
 					}
 				});
 			}
@@ -94,6 +97,24 @@ const MatchMaking: React.FC<MatchMakingProps> = ({ setGameObj, setMatchFound, so
 			console.log("Missing socket\n");
 		}
 	});
+
+	function acceptGame() {
+		if (userId == gameObj?.player1) {
+			console.log("I am player 1");
+		} else if (userId == gameObj?.player2) {
+			console.log("I am player 2");
+			if (gameObj) {
+				gameObj.status = 'found'
+				if (socket != null) {
+					socket.emit('acceptMatch', gameObj);
+					console.log("Accepting match: ", gameObj);
+					navigate("/game/pvp");
+				}
+				// socket.emit('gameLoop', gameObj);
+			}
+		}
+		// setMatchFound(true);
+	  };
 
 	return (
 		<div className='h-full w-full absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 bg-slate-400 bg-opacity-70'>
@@ -123,6 +144,7 @@ const MatchMaking: React.FC<MatchMakingProps> = ({ setGameObj, setMatchFound, so
 							console.log("Left game queue!")
 						} else if (matched) {
 							console.log("Accepting Game!");
+							acceptGame();
 						}
 					}}
 					className='border-8 border-slate-200 text-slate-900 h-12 rounded-md absolute top-3/4 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 bg-slate-200'>

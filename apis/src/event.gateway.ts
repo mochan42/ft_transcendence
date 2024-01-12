@@ -734,6 +734,7 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
           if (makeGame) {
             const roomId = makeGame.id;
             socket.join(roomId.toString());
+            opponent.socket.join(roomId.toString());
             opponent.socket.emit('matchedToGame', makeGame);
             socket.emit('invitedToMatch', makeGame);
           }
@@ -753,7 +754,6 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
     if (room) {
       const user = await this.chatsService.getUserFromSocket(socket);
       const game = await this.gamesService.acceptMatch(data);
-      socket.join(roomId.toString());
       console.log(`User ${user.id} joined room: ${roomId}`);
       console.log(
         'Now sending matchFound event to users in room ',

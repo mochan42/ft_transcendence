@@ -8,6 +8,8 @@ import { getSocket } from '../utils/socketService';
 import StartGame from './StartGame';
 
 interface PvP_2Props {
+	isActive: boolean;
+	setIsActive: (boolean: boolean) => void;
 	userId: string | null | undefined;
 	player1Score: number;
 	player2Score: number;
@@ -29,7 +31,7 @@ interface PvP_2Props {
 	game?: GameType;
 }
 
-const PvP_2: React.FC<PvP_2Props> = ({ playerPoint, opponentPoint, setReset, userId, player1Score, player2Score, isGameActive, isReset, isGameOver, setIsGameOver, setState, setPlayer1Id, setPlayer2Id, setPlayer1Score, setPlayer2Score, setPlayer1Info, setPlayer2Info, game }) => {
+const PvP_2: React.FC<PvP_2Props> = ({ isActive, setIsActive, playerPoint, opponentPoint, setReset, userId, player1Score, player2Score, isGameActive, isReset, isGameOver, setIsGameOver, setState, setPlayer1Id, setPlayer2Id, setPlayer1Score, setPlayer2Score, setPlayer1Info, setPlayer2Info, game }) => {
 
 	const socket = getSocket(userId);
 	const [startGame, setStartGame] = useState(false);
@@ -79,15 +81,16 @@ const PvP_2: React.FC<PvP_2Props> = ({ playerPoint, opponentPoint, setReset, use
 		setBoostY(data.boostY);
 		setPlayer1Score(data.score1);
 		setPlayer2Score(data.score2);
-		setIsBoost(data.isBoost)
+		setIsBoost(data.includeBoost)
 		if (data.status == 'finished' || data.status == 'aborted')
 			setIsGameOver(true);
 		else {
 			const response = {
-				player: data.player1,
+				player: data.player2,
 				paddlePos: paddle2YRef.current,
+				playerActive: isActive
 			}
-			socket.emit(`ackResponse-G${data.id}P${data.player1}`, response);
+			socket.emit(`ackResponse-G${data.id}P${data.player2}`, response);
 		}
 	};
 
