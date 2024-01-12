@@ -88,8 +88,8 @@ const gameStateManager = new GameStateManager();
 
 const roomReadiness = {};
 
-const conHeight = 700;
-const conWidth = 1400;
+const conHeight = 600;
+const conWidth = 1200;
 const paddleLengths = [200, 150, 100, 80, 50];
 const boostWidth = 80;
 const victoryThreshold = 5;
@@ -794,7 +794,7 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
       console.log(`Room ${roomId} cleared and closed due to match denial.`);
     } else {
       // Handle the case where the room doesn't exist or is already empty
-      console.log(`Room ${roomId} not found for denial process.`);
+      console.log(`Room ${roomId} not found for denial of process.`);
     }
     console.log('Game was aborted\n');
   }
