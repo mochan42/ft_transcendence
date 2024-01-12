@@ -155,7 +155,7 @@ const PvP_2: React.FC<PvP_2Props> = ({ playerPoint, opponentPoint, setReset, use
 
 	return (
 		<div className="relative w-full h-full">
-			<div className='flex rounded min-w-[350px] h-[700px] w-[1400px] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 bg-slate-900 text-slate-200' ref={PvPRef}>
+			<div className='flex rounded min-w-[350px] h-[600px] w-[1200px] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 bg-slate-900 text-slate-200' ref={PvPRef}>
 				<Paddle yPosition={paddle1Y} paddleHeight={paddleLengths[difficulty]} style={{ left: 0 }} />
 				<Paddle yPosition={paddle2Y} paddleHeight={paddleLengths[difficulty]} style={{ right: 0 }} />
 				<div className="relative bg-slate-900">

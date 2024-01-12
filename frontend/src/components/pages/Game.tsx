@@ -72,6 +72,16 @@ const Game:React.FC<GameProps> = ({ difficulty, userId, includeBoost, opponent, 
 		}
 	};
 
+	const handleReturn = () => {
+		if (setState) {
+			setState('select');
+			setIsActive(false);
+			console.log("Player leaving game, aborting.");
+		}
+		else
+			console.log("Can't return, don't have the setState object.");
+	}
+
 	useEffect(() => {
 			(async() => {
 				if (player1Id && player2Id) {
@@ -100,7 +110,7 @@ const Game:React.FC<GameProps> = ({ difficulty, userId, includeBoost, opponent, 
 		<div className='h-full w-full flex flex-col items-center justify-between bg-gray-200 dark:bg-slate-900 border-t-8 dark:border-slate-900 z-50'>
 			<div className='h-1/6 gap-6 items-center justify-between flex'>
 				<div className='left-10'>
-					<Button variant={'link'} onClick={() => setState?('select') && setIsActive(false) : null}>
+					<Button variant={'link'} onClick={() => handleReturn()}>
 						<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
 							<path strokeLinecap="round" strokeLinejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" />
 						</svg>

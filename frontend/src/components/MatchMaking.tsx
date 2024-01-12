@@ -87,7 +87,15 @@ const MatchMaking: React.FC<MatchMakingProps> = ({ setGameObj, setMatchFound, so
 								socket.emit('requestMatch', game);
 							}
 						} else if (searchingForMatch === true) {
-							setState ? setState('select') : navigate("/game");
+							if (setState) {
+								socket.emit('abortMatch', game);
+								setState('select');
+								console.log("Player leaving game, aborting.");
+							}
+							else {
+								navigate("/game");
+								console.log("Can't return, don't have the setState object.");
+							}
 						}
 					}}
 					className='border-8 border-slate-200 text-slate-900 h-12 rounded-md absolute top-3/4 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 bg-slate-200'>

@@ -39,14 +39,11 @@ const PvP: React.FC<PvPProps> = ({ includeBoost, isActive, setIsActive, playerPo
 	const [gameObj, setGameObj] = useState<GameType | undefined>(undefined);
 	const [startGame, setStartGame] = useState<boolean | undefined>(undefined);
 
-	// const [gameMaker, setGameMaker] = useState(false);
 	const [opponentId, setOpponentId] = useState(-1);
 	const [difficulty, setDifficulty] = useState(0);
-	// const [itsDifficult, setItsDifficult] = useState(4);
 	const [matchFound, setMatchFound] = useState<true | false | undefined>(false); // static
 	const PvPRef = useRef<HTMLDivElement>(null);
 	const paddleLengths = [200, 150, 100, 80, 50] // static
-	// const [includeBoost, setIncludeBoost] = useState(false);
 	const boostWidth = 80; //static
 	var startX = 50; // static
 	var startY = 50; // static
@@ -89,8 +86,10 @@ const PvP: React.FC<PvPProps> = ({ includeBoost, isActive, setIsActive, playerPo
 		setPlayer1Score(data.score1);
 		setPlayer2Score(data.score2);
 		setIsBoost(data.isBoost);
-		if (data.status == 'finished' || data.status == 'aborted')
+		if (data.status == 'finished' || data.status == 'aborted') {
 			setIsGameOver(true);
+			console.log("Game has ended. It was ", data.status);
+		}
 		else {
 			const response = {
 				player: data.player1,
@@ -173,7 +172,7 @@ const PvP: React.FC<PvPProps> = ({ includeBoost, isActive, setIsActive, playerPo
 
 	return (
 		<div className="relative w-full h-full">
-			<div className='flex rounded min-w-[350px] h-[700px] w-[1400px] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 bg-slate-900 text-slate-200' ref={PvPRef}>
+			<div className='flex rounded min-w-[350px] h-[600px] w-[1200px] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 bg-slate-900 text-slate-200' ref={PvPRef}>
 				<Paddle yPosition={paddle1Y} paddleHeight={paddleLengths[difficulty]} style={{ left: 0 }} />
 				<Paddle yPosition={paddle2Y} paddleHeight={paddleLengths[difficulty]} style={{ right: 0 }} />
 				<div className="relative bg-slate-900">
