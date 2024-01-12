@@ -63,8 +63,10 @@ const ChatUserProfile = () => {
 
     useEffect(() => {
         (async () => {
-            const updatedUserStats = await fetchAllStats(userId);
-            setUserStats(updatedUserStats);
+            if (chatStore.chatActiveUser) {
+                const updatedUserStats = await fetchAllStats(chatStore.chatActiveUser.id);
+                setUserStats(updatedUserStats);
+            }
         })();
     });
 
@@ -135,12 +137,6 @@ const ChatUserProfile = () => {
                         </Typography>
                         <Typography variant="subtitle2" fontWeight={600}>
                             {`Defeats :  ${(userStats != null) ? userStats.losses : 0} `}
-                        </Typography>
-                        <Typography variant="subtitle2" fontWeight={600}>
-                            {`Score :  100  `} {/** update with real value from backend */}
-                        </Typography>
-                        <Typography variant="subtitle2" fontWeight={600}>
-                            {`Rank :  100  `} {/** update with real value from backend */}
                         </Typography>
                     </Stack>
                     <Divider />
