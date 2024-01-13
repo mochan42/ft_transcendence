@@ -58,6 +58,7 @@ const PvP_2: React.FC<PvP_2Props> = ({ isActive, setIsActive, playerPoint, oppon
 	const [paddle2Dir, setPaddle2Dir] = useState<number>(0); // dynamic
 	const [paddle2Speed, setPaddle2Speed] = useState(15); // dynamic
 	const paddle2YRef = useRef<number>(0);
+	const [arbitrary, setArbitrary] = useState<boolean>(false);
 
 	const movePaddles = () => {
 		setPaddle2Y((prevY) => {
@@ -73,6 +74,7 @@ const PvP_2: React.FC<PvP_2Props> = ({ isActive, setIsActive, playerPoint, oppon
 	}
 
 	const handleGameUpdate = (data: GameType) => {
+		console.log("Receiving Game update from Backend!! : )     : )")
 		setGameObj(data);
 		setPaddle1Y(data.paddle1Y);
 		setBallX(data.ballX);
@@ -95,7 +97,7 @@ const PvP_2: React.FC<PvP_2Props> = ({ isActive, setIsActive, playerPoint, oppon
 	};
 
 	useEffect(() => {
-		if (socket && !isGameOver) {
+		if (socket) {
 			socket.on('gameUpdate', handleGameUpdate);
 		}
 
@@ -105,7 +107,7 @@ const PvP_2: React.FC<PvP_2Props> = ({ isActive, setIsActive, playerPoint, oppon
 				socket.off('gameUpdate', handleGameUpdate);
 			}
 		};
-	});
+	}, [arbitrary]);
 
 
 	useEffect(() => {
@@ -115,6 +117,7 @@ const PvP_2: React.FC<PvP_2Props> = ({ isActive, setIsActive, playerPoint, oppon
 	useEffect(() => {
 		if (socket != null) {
 			socket.on('matchFound', (data: GameType) => {
+				console.log("Reading matchFound Event.", data.id);
 				if (userId && userId == data.player2.toString()) {
 					setGameObj(data);
 					setPlayer1Id(data.player1.toString());
@@ -127,6 +130,23 @@ const PvP_2: React.FC<PvP_2Props> = ({ isActive, setIsActive, playerPoint, oppon
 		}
 		// Cleanup function
 		return () => { if (socket) socket.off('matchFound'); };
+	});
+
+	useEffect(() => {
+		if (socket) {
+			socket.once('comeJoin', (data: GameType) => {
+				console.log("Received comeJoin event");
+				if (userId && (data.player2 == +userId)) {
+					setGameObj(data);
+					setIsGameOver(false);
+					setArbitrary(true);
+					socket.emit('gameLoop', data);
+					console.log("Sending gameLoop");
+				}
+			})
+		}
+		// Cleanup function
+		return () => { if (socket) socket.off('comeJoin'); };
 	});
 
 	// Track player key input

@@ -32,9 +32,10 @@ interface PvPProps {
 	setPlayer1Score: (number: number) => void;
 	setPlayer2Score: (number: number) => void;
 	game?: GameType;
+	matchIsFound?: boolean;
 }
 
-const PvP: React.FC<PvPProps> = ({ setGameRef, includeBoost, isActive, setIsActive, playerPoint, opponentPoint, setReset, userId, player1Score, player2Score, isGameActive, isReset, isGameOver, selectedDifficulty, setIsGameOver, setState, setPlayer1Id, setPlayer2Id, setPlayer1Score, setPlayer2Score, setPlayer1Info, setPlayer2Info, game }) => {
+const PvP: React.FC<PvPProps> = ({ setGameRef, includeBoost, isActive, setIsActive, playerPoint, opponentPoint, setReset, userId, player1Score, player2Score, isGameActive, isReset, isGameOver, selectedDifficulty, setIsGameOver, setState, setPlayer1Id, setPlayer2Id, setPlayer1Score, setPlayer2Score, setPlayer1Info, setPlayer2Info, game, matchIsFound }) => {
 
 	// const tempGame: GameType = {
 	// 	id: -1,
@@ -58,7 +59,7 @@ const PvP: React.FC<PvPProps> = ({ setGameRef, includeBoost, isActive, setIsActi
 	const [startGame, setStartGame] = useState<boolean | undefined>(undefined);
 	const [opponentId, setOpponentId] = useState(-1);
 	const [difficulty, setDifficulty] = useState(0);
-	const [matchFound, setMatchFound] = useState<true | false | undefined>(false); // static
+	const [matchFound, setMatchFound] = useState<true | false | undefined>(matchIsFound ? matchIsFound : false); // static
 	const PvPRef = useRef<HTMLDivElement>(null);
 	const paddleLengths = [200, 150, 100, 80, 50] // static
 	const boostWidth = 80; //static
@@ -132,7 +133,7 @@ const PvP: React.FC<PvPProps> = ({ setGameRef, includeBoost, isActive, setIsActi
 	});
 
 	useEffect(() => {
-		console.log("GameObj was updated.");
+		console.log("GameObj was updated.", gameObj?.id);
 	}, [gameObj])
 
 

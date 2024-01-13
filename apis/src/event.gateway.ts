@@ -840,6 +840,8 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
     if (user.id == data.player1) {
       roomReadiness[roomId].player1Ready = socket;
       console.log('Player 1 is ready for the match!\n');
+      // timeout();
+      this.server.emit('comeJoin', data);
     } else if (user.id == data.player2) {
       roomReadiness[roomId].player2Ready = socket;
       console.log('Player 2 is ready for the match!\n');

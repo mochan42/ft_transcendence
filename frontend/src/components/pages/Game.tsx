@@ -17,12 +17,13 @@ interface GameProps {
 	userId: string | null;
 	includeBoost: boolean;
 	opponent: string;
+	matchIsFound?: boolean;
 	status?: string;
 	setState?: React.Dispatch<React.SetStateAction<'select' | 'bot' | 'player'>>;
 	game?: GameType;
 }
 
-const Game:React.FC<GameProps> = ({ difficulty, userId, includeBoost, opponent, setState, status, game }) => {
+const Game:React.FC<GameProps> = ({ difficulty, userId, includeBoost, opponent, setState, status, game, matchIsFound }) => {
 	
 	const socket = getSocket(userId);
 	const [gameRef, setGameRef] = useState(game);
@@ -164,7 +165,7 @@ const Game:React.FC<GameProps> = ({ difficulty, userId, includeBoost, opponent, 
 			</div>
 			<div className='w-full h-5/6 border-t-2 border-l-2 border-r-2 border-slate-700 black:border-slate-200 bg-slate-400 dark:text-slate-200 text-center'>
 				{(opponent === 'bot') ? <Pong userId={userId} difficulty={difficulty} isGameActive={gameActive} isReset={reset} isGameOver={isGameOver} player1Score={player1Score} opponentScore={player2Score} includeBoost={includeBoost} setIsGameOver={setIsGameOver} playerPoint={playerPoint} opponentPoint={opponentPoint} setReset={setReset}/> : null }
-				{(opponent === 'player') ? <PvP isActive={isActive} setIsActive={setIsActive} includeBoost={includeBoost} isReset={reset} setReset={setReset} userId={userId} isGameActive={gameActive} selectedDifficulty={difficulty ? difficulty : 0} isGameOver={isGameOver} player1Score={player1Score} player2Score={player2Score} setIsGameOver={setIsGameOver} setState={setState} playerPoint={playerPoint} opponentPoint={opponentPoint} setPlayer1Id={setPlayer1Id} setPlayer2Id={setPlayer2Id} setPlayer1Info={setPlayer1Info} setPlayer2Info={setPlayer2Info} setPlayer1Score={setPlayer1Score} setPlayer2Score={setPlayer2Score} game={game} setGameRef={setGameRef} /> : null}
+				{(opponent === 'player') ? <PvP isActive={isActive} setIsActive={setIsActive} includeBoost={includeBoost} isReset={reset} setReset={setReset} userId={userId} isGameActive={gameActive} selectedDifficulty={difficulty ? difficulty : 0} isGameOver={isGameOver} player1Score={player1Score} player2Score={player2Score} setIsGameOver={setIsGameOver} setState={setState} playerPoint={playerPoint} opponentPoint={opponentPoint} setPlayer1Id={setPlayer1Id} setPlayer2Id={setPlayer2Id} setPlayer1Info={setPlayer1Info} setPlayer2Info={setPlayer2Info} setPlayer1Score={setPlayer1Score} setPlayer2Score={setPlayer2Score} game={game} setGameRef={setGameRef} matchIsFound={matchIsFound} /> : null}
 			</div>
 		</div>
 	)
