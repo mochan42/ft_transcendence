@@ -14,6 +14,7 @@ const StartGame: React.FC<StartGameProps> = ({ userId, setStartGame, game }) => 
 	
 	function letsGo() {
 		setStartGame(true)
+		console.log("StartGame of game Id: ", game?.id);
 		socket.emit('gameLoop', game);
 	}
     

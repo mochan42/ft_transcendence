@@ -282,7 +282,7 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
       }
       moveBall(currentGame);
       checkCollision(currentGame);
-      updateBoost(currentGame);
+      // updateBoost(currentGame);
       if (currentGame.isReset) {
         handleReset(currentGame);
       }
@@ -777,7 +777,12 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
     if (room) {
       const user = await this.chatsService.getUserFromSocket(socket);
       const game = await this.gamesService.acceptMatch(data);
-      console.log(`User ${user.id} joined room: ${roomId}`);
+      if (room.size < 3) {
+        socket.join(roomId.toString());
+        console.log(`User ${user.id} joined room: ${roomId}`);
+      } else {
+        console.log("Room is already full: ", room.size);
+      }
       console.log(
         'Now sending matchFound event to users in room ',
         roomId,
@@ -840,6 +845,7 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
     if (user.id == data.player1) {
       roomReadiness[roomId].player1Ready = socket;
       console.log('Player 1 is ready for the match!\n');
+      this.server.emit('comeJoin', data);
     } else if (user.id == data.player2) {
       roomReadiness[roomId].player2Ready = socket;
       console.log('Player 2 is ready for the match!\n');
