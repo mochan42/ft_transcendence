@@ -400,8 +400,11 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @ConnectedSocket() socket: Socket,
     @MessageBody() payload: any,
   ) {
+    if (payload.privacy_state == CHANNEL_TYPE.PROTECTED && !payload.passwd) {
+      // could return a specific infos.
+      return;
+    }
     const user = await this.chatsService.getUserFromSocket(socket);
-
     const channel: CreateChannelDto = {
       password: payload.passwd,
       title: payload.title,
