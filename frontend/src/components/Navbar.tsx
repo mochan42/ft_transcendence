@@ -32,6 +32,7 @@ const Navbar: React.FC<Props> = ({ setIsAuth, isAuth, setCode, setUserId }) => {
 				socket.emit('userLogout', {});
 			}
 			setIsAuth(false);
+			setUserId(null);
 			setCode(null);
 			Cookies.remove('isAuth');
 			Cookies.remove('userId');

@@ -25,6 +25,7 @@ import Game from './components/pages/Game';
 import { ACCEPTED, PENDING } from './APP_CONSTS';
 import Game_2 from './components/pages/Game_2';
 import { HOME_SECTION } from './enums';
+import Temp from './components/Temp';
 
 
 
@@ -57,7 +58,6 @@ const App: React.FC = () => {
 	const dispatch = useDispatch();
 	const chatStore = useSelector(selectChatStore);
 	const [gameReq, setGameReq] = useState<boolean>(false);
-	const navigate = useNavigate();
 
 	// check if code available for backend to exchange for token
 	Utils__isAPICodeAvailable({ setIsAuth, isAuth, setCode, code })
@@ -189,12 +189,6 @@ const App: React.FC = () => {
 	const title = document.getElementsByTagName('title');
 	title[0].innerHTML = 'Transcendance App';
 
-	useEffect(() => {
-		if (letsPlay) {
-			navigate('/game/challenger');
-		}
-	}, [letsPlay])
-
 	// if (letsPlay == true) return(
 	// 	<> 
 	// 		<div className='h-20 flex backdrop-blur-sm bg-white/75 dark:bg-slate-900 border-b-4 border-white/75 dark:border-slate-600 item-center justify-between'>
@@ -215,7 +209,6 @@ const App: React.FC = () => {
 				</div>
 				<Routes>
 					<Route path='about' element={<About isAuth={isAuth} />} />
-					{/* <Route path='/game' element={<ProtectedRoute isAuth={isAuth} path='/game'  */}
 					<Route path='/' element={<ProtectedRoute path='/' isAuth={isAuth} element={<Home
 						userCode={{ code: code, setCode: setCode }}
 						loginState={{ isLogin: isAuth, setIsLogin: setIsAuth }} setUserId={setUserId}
@@ -233,7 +226,7 @@ const App: React.FC = () => {
 							setToken2fa={setToken2fa}
 						/>} />
 					<Route path='/game' element={<ProtectedRoute isAuth={isAuth} path='/game' element={<GameSelection userId={userId} />} />} />
-					<Route path='/game/challenger' element={<ProtectedRoute isAuth={isAuth} path='/game/challenger' element={<Game difficulty={gameObj?.difficulty} includeBoost={gameObj ? gameObj.includeBoost : false} opponent='player' userId={userId} />} />} />
+					<Route path='/game/challenger' element={<ProtectedRoute isAuth={isAuth} path='/game/challenger' element={<Game difficulty={gameObj?.difficulty} includeBoost={gameObj ? gameObj.includeBoost : false} opponent='player' userId={userId} game={gameObj} />} />} />
 					<Route path='/game/pvp' element={<ProtectedRoute isAuth={isAuth} path='/game/pvp' element={<Game_2 difficulty={game ? game.difficulty : 0} userId={userId ? userId : "0"} includeBoost={game ? game.includeBoost : false} opponent={'player'} status={'found'} game={game ? game : undefined} />} />} />
 					<Route path='/profile' element={<ProtectedRoute isAuth={isAuth} path='/profile' element={<Profile userId={userId} isAuth={isAuth} />} />} />
 					<Route path='/chat' element={<Home
@@ -266,6 +259,7 @@ const App: React.FC = () => {
 					<Footer />
 				</div>
 				{challenge ? <GameChallenge userId={userId} game={game} setChallenge={setChallenge} /> : null}
+				{/* {letsPlay ? <Temp set/> : null}; */}
 				{/* {letsPlay ? <Game difficulty={gameObj ? gameObj?.difficulty : 0} userId={gameObj ? gameObj.player1.toString() : userId} includeBoost={gameObj ? gameObj.includeBoost : false} opponent={gameObj ? gameObj.player2.toString() : "-1"} game={gameObj} /> : null} */}
 			</Router>
 
