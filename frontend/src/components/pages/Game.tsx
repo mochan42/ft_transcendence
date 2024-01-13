@@ -10,6 +10,9 @@ import { fetchUser } from '../../data/ChatData';
 import { getSocket } from '../../utils/socketService';
 import { MAX_SCORE } from '../../APP_CONSTS';
 import { Socket } from 'socket.io-client';
+import { getUserById } from '../ChatConversation';
+import axios from 'axios';
+import { BACKEND_URL } from '../../data/Global';
 
 
 interface GameProps {
@@ -35,8 +38,8 @@ const Game:React.FC<GameProps> = ({ difficulty, userId, includeBoost, opponent, 
 	const [player1Info, setPlayer1Info] = useState< User | null | undefined >(null);
 	const [player2Info, setPlayer2Info] = useState< User | null | undefined >(null);
 	const [userInfo, setUserInfo] = useState< User | null | undefined >(null);
-	const [player1Score, setPlayer1Score] = useState(0)
-	const [player2Score, setPlayer2Score] = useState(0)
+	const [player1Score, setPlayer1Score] = useState(0);
+	const [player2Score, setPlayer2Score] = useState(0);
 	const [isActive, setIsActive] = useState(true);
 
 	const playerPoint = () => {
@@ -117,6 +120,31 @@ const Game:React.FC<GameProps> = ({ difficulty, userId, includeBoost, opponent, 
 				window.removeEventListener('keypress', handleKeyPress); // Clean up the event listener when the component is unmounted
 			};
 	}, [userId, player1Id, player2Id, gameActive]);
+
+	const getUserInfo = async (id: number) => {
+		const url_info = `${BACKEND_URL}/pong/users/` + id;
+        const headers = {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${process.env.REACT_APP_SECRET}`
+        };
+        try {
+            const response = await axios.get<User>(url_info, { headers });
+            if (response.status === 200) {
+                setPlayer2Info(response.data);
+            }
+        }
+        catch (error) {
+            console.log('Error fetching user infos', error);
+        }
+    }
+
+	useEffect(() => {
+		if (gameRef) {
+			setPlayer2Id(gameRef.player2.toString());
+			getUserInfo(+player2Id);
+		}
+
+	}, [gameRef]);
 
 	return (
 		<div className='h-full w-full flex flex-col items-center justify-between bg-gray-200 dark:bg-slate-900 border-t-8 dark:border-slate-900 z-50'>

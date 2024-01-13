@@ -1,10 +1,11 @@
 import axios, { AxiosResponse } from "axios";
+import { Button } from "./ui/Button"
 import { useEffect, useState } from "react";
 import { UserAchievements, UserStats } from "../types";
 import { BACKEND_URL } from "../data/Global";
+import { useNavigate } from "react-router-dom";
 
 interface VictoryLossProps {
-	// game: Game
 	isVictory: boolean;
 	userId: string | null | undefined;
 	difficulty: number;
@@ -18,6 +19,7 @@ const VictoryLoss: React.FC<VictoryLossProps> = ({ isVictory, userId, difficulty
 	const [updatedAchievements, setUpdatedAchievements] = useState(false);
 	const url_stats = `${BACKEND_URL}/pong/users/` + userId + '/stats';
 	const url_achievements = `${BACKEND_URL}/pong/users/` + userId + '/achievements';
+	const navigate = useNavigate()
 	
 	const getUserStats = async () => {
 		const headers = {
@@ -28,7 +30,6 @@ const VictoryLoss: React.FC<VictoryLossProps> = ({ isVictory, userId, difficulty
 			const response = await axios.get<UserStats>(url_stats, { headers });
 			if (response.status === 200) {
 				setUserStats(response.data);
-				// console.log('Received User Stats: ', response.data);
 			}
 		} catch (error) {
 			console.log('Error fetching user stats:', error);
@@ -68,7 +69,6 @@ const VictoryLoss: React.FC<VictoryLossProps> = ({ isVictory, userId, difficulty
 			const response: AxiosResponse<UserAchievements[]> = await axios.get(url_achievements, { headers });
 			if (response.status === 200) {
 				setUserAchievements(response.data);
-				// console.log('Received User Achievements: ', response.data);
 			}
 		} catch (error) {
 			console.log('Error fetching user achievements:', error);
@@ -124,6 +124,8 @@ const VictoryLoss: React.FC<VictoryLossProps> = ({ isVictory, userId, difficulty
 		<div className='flex items-center justify-center h-full'>
 			<div className='text-4xl font-bold'>
 				{isVictory ? 'Congratulations! You won!' : 'Oops! You lost!'}
+				{' Lets go '}
+				<Button onClick={() => navigate('/')} size='lg' variant='link' children='Home' className='dark:text-amber-400'/>
 			</div>
 		</div>
 	);

@@ -37,23 +37,6 @@ interface PvPProps {
 
 const PvP: React.FC<PvPProps> = ({ setGameRef, includeBoost, isActive, setIsActive, playerPoint, opponentPoint, setReset, userId, player1Score, player2Score, isGameActive, isReset, isGameOver, selectedDifficulty, setIsGameOver, setState, setPlayer1Id, setPlayer2Id, setPlayer1Score, setPlayer2Score, setPlayer1Info, setPlayer2Info, game, matchIsFound }) => {
 
-	// const tempGame: GameType = {
-	// 	id: -1,
-	// 	player1: -1,
-	// 	player2: -1,
-	// 	difficulty: -1,
-	// 	includeBoost: false,
-	// 	status: 'aborted',
-	// 	score1: -1,
-	// 	score2: -1,
-	// 	paddle1Y: -1,
-	// 	paddle2Y: -1,
-	// 	boostX: 200,
-	// 	boostY: 200,
-	// 	ballX: -1,
-	// 	ballY: -1,
-	// }
-
 	const socket = getSocket(userId);
 	const [gameObj, setGameObj] = useState<GameType | undefined>(game ? game : undefined);
 	const [startGame, setStartGame] = useState<boolean | undefined>(undefined);
