@@ -39,7 +39,8 @@ import { StatService } from './stat/stat.service';
 import { UpdateGameDto } from './games/dto/update-game.dto';
 import { UpdateStatDto } from './stat/dto/update-stat.dto';
 import { CreateStatDto } from './stat/dto/create-stat.dto';
-import { log } from 'console';
+import { EventEmitter } from 'events';
+EventEmitter.defaultMaxListeners = 15; 
 
 type update = {
   player: number;
@@ -271,10 +272,20 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
     private readonly userStats: StatService
   ) {}
 
-  startGameLoop = (game: Game) => {
+  updatePlayersXp = async (game: Game) => {
+    if (game.score1 > game.score2) {
+      const updatePlayer1Xp = await this.userService.updateUserXp(game.player1, 120);
+      const updatePlayer2Xp = await this.userService.updateUserXp(game.player2, 80);
+      return await Promise.all([updatePlayer1Xp, updatePlayer2Xp]);
+    }
+    const updatePlayer1Xp = await this.userService.updateUserXp(game.player1, 80);
+    const updatePlayer2Xp = await this.userService.updateUserXp(game.player2, 120);
+    return await Promise.all([updatePlayer1Xp, updatePlayer2Xp]);
+  }
+  startGameLoop = async (game: Game, socket: Socket) => {
     gameStateManager.startGame(game.id, game); // Initialize game state
 
-    const gameInterval = setInterval(() => {
+    const gameInterval = setInterval(async () => {
       const currentGame = gameStateManager.getGameState(game.id);
       if (!currentGame) {
         clearInterval(gameInterval);
@@ -324,9 +335,16 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
         currentGame.status === 'finished' ||
         currentGame.status === 'aborted'
       ) {
-        this.gamesService.update(currentGame); // You need to handle async/await properly
+        if (currentGame.status === 'aborted') {
+          const user = await this.chatsService.getUserFromSocket(socket);
+          currentGame.score1 = (user.id == currentGame.player1) ? 0 : 10;
+          currentGame.score2 = (user.id == currentGame.player2) ? 0 : 10;
+        }
+        const updatePlayersXp = await this.updatePlayersXp(currentGame);
+        const updated = await this.gamesService.update(currentGame);
+        await Promise.all([updatePlayersXp, updated]);
         clearInterval(gameInterval);
-        gameStateManager.endGame(currentGame.id);
+        gameStateManager.endGame(updated.id);
       }
     }, 1000 / 15); // 30 FPS
   };
@@ -385,10 +403,7 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   @SubscribeMessage('denyFriend')
-  async deleteFriend(
-    @ConnectedSocket() socket: Socket,
-    @MessageBody() friendShip: number,
-  ) {
+  async deleteFriend(@MessageBody() friendShip: number) {
     const isDelete = await this.friendsService.remove(friendShip);
     await Promise.all([isDelete]);
     const allFriends = await this.friendsService.findAll();
@@ -688,28 +703,13 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
       speedX: 0,
       speedY: 0
     }
+    
+    const user = await this.chatsService.getUserFromSocket(socket);
+    const xp = (gameDto.score1 > gameDto.score2 && user.id == gameDto.player1) ? 120 : 80 
+    const updateUser = await this.userService.updateUserXp(user.id, xp);
     const game = await this.gamesService.create(gameDto);
-    const oldStats = await this.userStats.findOne(payload.player1);
-    if (!oldStats)
-    {
-      const createStatDto: CreateStatDto = {
-        wins: (payload.score1 > payload.score2) ? 1 : 0,
-        losses: (payload.score1 < payload.score2) ? 1 : 0,
-        draws: (payload.score1 == payload.score2) ? 1 : 0,
-        userId: payload.player1,
-      };
-      const newStats = await this.userStats.create(payload.player1.toString(), createStatDto);
-      socket.emit('gameBotSuccess', newStats);
-      return;
-    }
-    const newStats: UpdateStatDto = {
-      wins: (payload.score1 > payload.score2) ? oldStats.wins + 1 : oldStats.wins,
-      losses: (payload.score1 < payload.score2) ? oldStats.losses + 1 : oldStats.losses,
-      draws: (payload.score1 == payload.score2) ? oldStats.draws + 1 : oldStats.draws,
-      userId: +oldStats.userId
-    };
-    const updatedStats = await this.userStats.update(oldStats.userId, newStats); 
-    socket.emit('gameBotSuccess', updatedStats);
+    await Promise.all([updateUser, game]);
+    socket.emit('gameBotSuccess', {});
   }
 
   @SubscribeMessage('leaveQueue')
@@ -797,10 +797,7 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   @SubscribeMessage('abortMatch')
-  async handleAbortMatch(
-    @ConnectedSocket() socket: Socket,
-    @MessageBody() data: Game,
-  ) {
+  async handleAbortMatch(@MessageBody() data: Game) {
     const roomId = data.id;
     const room = io.sockets.adapter.rooms[roomId];
 
@@ -831,7 +828,7 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @MessageBody() data: any,
   ) {
     var roomId = 0;
-    if (data.id) { roomId = data.id; }
+    if (data && data.id) { roomId = data.id; }
     console.log('\nGameLoop event read!\n');
     if (!roomReadiness[roomId]) {
       roomReadiness[roomId] = { player1Ready: null, player2Ready: null };
@@ -854,7 +851,7 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
       roomReadiness[roomId].player2Ready != null
     ) {
       console.log('\x1b[32m', 'Starting Game Loop! \n', '\x1b[0m');
-      this.startGameLoop(data);
+      this.startGameLoop(data, socket);
     }
     //   @SubscribeMessage('updatePaddle1')
     //   async handleUpdatePaddle1(

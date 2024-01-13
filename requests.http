@@ -96,7 +96,7 @@ PATCH   http://localhost:5000/pong/users/2fa/30
 DELETE  http://localhost:5000/pong/users/4
 
 ### get user stat
-GET http://localhost:5000/pong/users/9/stats
+GET http://localhost:5000/pong/users/16/stats
 
 ### creat user stat
 POST http://localhost:5000/pong/users/2/stats
@@ -119,7 +119,7 @@ Content-Type: application/json
 }
 
 ### delete user stat
-DELETE  http://localhost:5000/pong/users/13/stats
+DELETE  http://localhost:5000/pong/users/22/stats
 
 ### get user achievement
 GET http://localhost:5000/pong/users/2/achievements/
