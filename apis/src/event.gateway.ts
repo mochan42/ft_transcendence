@@ -93,6 +93,8 @@ const conWidth = 1200;
 const paddleLengths = [200, 150, 100, 80, 50];
 const boostWidth = 80;
 const victoryThreshold = 5;
+const startX = (conWidth - 30) / 2;
+const startY = (conHeight - 30) / 2;
 const containerTop = 0;
 const paddleThickness = 10;
 const containerBottom = conHeight;
@@ -226,6 +228,19 @@ const moveBall = (game: Game) => {
   game.ballY = game.ballY + game.speedY;
 };
 
+const updateBoost = (game: Game) => {
+  if (game.isBoost && game.includeBoost) {
+    const minX = startX / 2;
+    const maxX = startX + minX;
+    const minY = startY / 2;
+    const maxY = startY + minY;
+
+    // Calculate the random coordinates for the Boost region
+    game.boostX= minX + Math.random() * (maxX - minX);
+    game.boostY = minY + Math.random() * (maxY - minY);
+  }
+}
+
 const handleReset = (game: Game) => {
   game.speedX = game.speedX * -1;
   game.speedY = game.speedY * -1;
@@ -267,6 +282,7 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
       }
       moveBall(currentGame);
       checkCollision(currentGame);
+      updateBoost(currentGame);
       if (currentGame.isReset) {
         handleReset(currentGame);
       }
@@ -280,20 +296,27 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
       const ackPlayer2 = `ackResponse-G${currentGame.id}P${currentGame.player2}`;
 
       roomReadiness[currentGame.id].player1Ready.once(ackPlayer1, (response: any) => {
-        if (response === null) console.log('Response empty!\n');
+        if (response === null)
+        {
+          console.log('Response empty!\n');
+        }
         else {
-            currentGame.paddle1Y = response.paddlePos;
-            if (!response.playerActive)
-              currentGame.status == 'aborted';
+          currentGame.paddle1Y = response.paddlePos;
+          if (!response.playerActive) {
+            currentGame.status == 'aborted';
+            console.log("Game state was set to 'aborted'");
           }
+        }
       });
       
       roomReadiness[currentGame.id].player2Ready.once(ackPlayer2, (response: any) => {
         if (response === null) console.log('Response empty!\n');
         else {
             currentGame.paddle2Y = response.paddlePos;
-            if (!response.playerActive)
+            if (!response.playerActive) {
               currentGame.status == 'aborted';
+              console.log("Game state was set to 'aborted'");
+            }
           }
       });
             
