@@ -12,7 +12,7 @@ import ChatGroupProfile from "./ChatGroupProfile";
 import { selectChatDialogStore, selectChatStore } from "../redux/store";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
-import { selectConversation, toggleSidebar, updateChatActiveGroup, updateChatGroupChkPassInpState, updateChatPreActiveGroup } from "../redux/slices/chatSlice";
+import { selectConversation, toggleSidebar, updateChatActiveGroup, updateChatGroupChkPassInpState, updateChatPreActiveGroup, updateTmpGroup } from "../redux/slices/chatSlice";
 import { enChatPrivacy, enChatType } from "../enums";
 import Cookies from 'js-cookie';
 import { updateChatDialogGroupInvite, updateChatDialogInpPasswd, updateChatDialogShwMsg } from "../redux/slices/chatDialogSlice";
@@ -50,7 +50,8 @@ const ChatGroupElement = (group: Group) => {
         }
         dispatch(updateChatPreActiveGroup(group));
         if (group.privacy == enChatPrivacy.PROTECTED && group.channelId != chatStore.chatActiveGroup?.channelId) {
-            dispatch(updateChatDialogInpPasswd(true))
+            dispatch(updateChatDialogInpPasswd(true));
+            dispatch(updateTmpGroup(group.channelId));
         }
         else if (group.privacy == enChatPrivacy.PRIVATE && group.channelId != chatStore.chatActiveGroup?.channelId) {
             const allMembers = await fetchAllMembers();
@@ -71,6 +72,7 @@ const ChatGroupElement = (group: Group) => {
     }
 
     useEffect(() => {
+
     }, [chatStore.chatActiveGroup,
     chatDialogStore.chatDialogInpPasswd,
     chatStore.chatGroupUsrPassInp,
@@ -79,10 +81,12 @@ const ChatGroupElement = (group: Group) => {
     chatStore.chatGroupList]);
 
     useEffect(() => {
-        if (chatStore.chatGroupChkPassInpState)// true means that user have inputted passwd and submit form 
+        console.log('Password', chatStore.chatGroupUsrPassInp, ' and ', group.channelId);
+        if (chatStore.chatGroupChkPassInpState.check && chatStore.chatGroupChkPassInpState.group == group.channelId)// true means that user have inputted passwd and submit form 
         {
             socket.emit('verifyGroupPassword', { input: chatStore.chatGroupUsrPassInp, group: group.channelId });
             socket.once('verifyGroupPasswdSuccess', (verify: boolean) => {
+                console.log(verify);
                 if (verify) {
                     dispatch(selectConversation({ chatRoomId: group.channelId, chatType: enChatType.Group }))
                     dispatch(updateChatActiveGroup(chatStore.chatGroupList.filter((el: any) => {
@@ -91,14 +95,13 @@ const ChatGroupElement = (group: Group) => {
                         }
                     })[0]));
                     dispatch(updateChatDialogShwMsg(false)) // Dont Show error message
-
+                    dispatch(updateChatGroupChkPassInpState({ check: false, group: -1 }));
                 }
                 else {
                     dispatch(updateChatDialogShwMsg(true))
                     console.log("dialog, error, ", chatStore.chatGroupChkPassInpState, chatDialogStore.chatDialogShwMsg)
                 }
             });
-            dispatch(updateChatGroupChkPassInpState(false));
         }
 
         // },[]) 

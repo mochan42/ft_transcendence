@@ -64,16 +64,15 @@ const CreateGroupFormInputPasswd = () => {
     } = methods;
 
 
-    const onSubmit = async (data: any) => {
-
+    const OnSubmit = async (data: any) => {
         dispatch(updateChatGroupUsrPassInp(getValues("passwd")));
+        dispatch(updateChatGroupChkPassInpState({ check: true, group: chatStore.tmpGroup }));
         handleClose();
-        dispatch(updateChatGroupChkPassInpState(true)) // trigger action to check password validity
     }
 
     return (
         <FormProvider {...methods} >
-            <form onSubmit={methods.handleSubmit(onSubmit)}>
+            <form onSubmit={methods.handleSubmit(OnSubmit)}>
                 <Stack spacing={3} padding={2}>
                     <RHF_TextField name="passwd"
                         label="Password"

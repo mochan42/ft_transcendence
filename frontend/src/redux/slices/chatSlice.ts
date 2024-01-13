@@ -45,9 +45,13 @@ const initialState: IChatState = {
   chatGameRequests: ChatGameRequestList,
   chatGameRequest: null,
   chatGroupUsrPassInp: "",
-  chatGroupChkPassInpState: false,
+  chatGroupChkPassInpState: {
+    check: false,
+    group: -1,
+  },
   chatPreActiveGroup: null,
-  chatBlockedUsers: blockedUsersList // update this list upon user login
+  chatBlockedUsers: blockedUsersList, // update this list upon user login
+  tmpGroup: -1,
   // chatBlockedUsers: dummyBlockedUser // use for dev:  update this list upon user login
 };
 
@@ -127,12 +131,15 @@ const chatSlice = createSlice({
       state.chatGroupUsrPassInp = action.payload;
     },
     // triggers the check of password validity
-    updateChatGroupChkPassInpState: (state, action: PayloadAction<boolean>) => {
+    updateChatGroupChkPassInpState: (state, action: PayloadAction<{check: boolean, group: number} >) => {
       state.chatGroupChkPassInpState = action.payload;
     },
     // update the list of all blocks between users
     updateChatBlockedUsers: (state, action: PayloadAction<(Block| null)[]>) => {
       state.chatBlockedUsers = action.payload;
+    },
+    updateTmpGroup: (state, action: PayloadAction<number>) => {
+      state.tmpGroup = action.payload;
     },
   },
 });
@@ -157,7 +164,8 @@ export const {
   updateChatGroupUsrPassInp,
   updateChatGroupChkPassInpState,
   updateChatPreActiveGroup,
-  updateChatBlockedUsers
+  updateChatBlockedUsers,
+  updateTmpGroup
 } = chatSlice.actions;
 export default chatSlice;
 

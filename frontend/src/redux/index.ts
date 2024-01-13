@@ -31,9 +31,10 @@ export interface IChatState {
   chatGameRequests: GameType[];
   chatGameRequest: GameType | null,
   chatGroupUsrPassInp: string,
-  chatGroupChkPassInpState: boolean,
+  chatGroupChkPassInpState: { check: boolean, group: number },
   chatPreActiveGroup: Group | null,
   chatBlockedUsers: (Block | null)[],
+  tmpGroup: number,
 }
 
 
