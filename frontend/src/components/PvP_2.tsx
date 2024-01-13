@@ -74,7 +74,6 @@ const PvP_2: React.FC<PvP_2Props> = ({ isActive, setIsActive, playerPoint, oppon
 	}
 
 	const handleGameUpdate = (data: GameType) => {
-		console.log("Receiving Game update from Backend!! : )     : )")
 		setGameObj(data);
 		setPaddle1Y(data.paddle1Y);
 		setBallX(data.ballX);
@@ -99,15 +98,16 @@ const PvP_2: React.FC<PvP_2Props> = ({ isActive, setIsActive, playerPoint, oppon
 	useEffect(() => {
 		if (socket) {
 			socket.on('gameUpdate', handleGameUpdate);
+		} else {
+			console.log("Missing socket!");
 		}
 
-		// The clean-up function to remove the event listener when the component is unmounted or dependencies change
 		return () => {
 			if (socket) {
 				socket.off('gameUpdate', handleGameUpdate);
 			}
 		};
-	}, [arbitrary]);
+	});
 
 
 	useEffect(() => {
@@ -133,7 +133,7 @@ const PvP_2: React.FC<PvP_2Props> = ({ isActive, setIsActive, playerPoint, oppon
 	});
 
 	useEffect(() => {
-		if (socket) {
+		if (socket && !arbitrary) {
 			socket.once('comeJoin', (data: GameType) => {
 				console.log("Received comeJoin event");
 				if (userId && (data.player2 == +userId)) {
@@ -141,7 +141,7 @@ const PvP_2: React.FC<PvP_2Props> = ({ isActive, setIsActive, playerPoint, oppon
 					setIsGameOver(false);
 					setArbitrary(true);
 					socket.emit('gameLoop', data);
-					console.log("Sending gameLoop");
+					console.log("Sending gameLoop with data: ", data);
 				}
 			})
 		}
@@ -190,7 +190,7 @@ const PvP_2: React.FC<PvP_2Props> = ({ isActive, setIsActive, playerPoint, oppon
 						</div>
 					) : null
 				}
-				{startGame ? null : <StartGame userId={userId} setStartGame={setStartGame} game={gameObj ? gameObj : null} />}
+				{/* {startGame ? null : <StartGame userId={userId} setStartGame={setStartGame} game={gameObj ? gameObj : null} />} */}
 			</div>
 		</div>
 	)

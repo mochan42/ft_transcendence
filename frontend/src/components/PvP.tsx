@@ -124,18 +124,12 @@ const PvP: React.FC<PvPProps> = ({ setGameRef, includeBoost, isActive, setIsActi
 			socket.on('gameUpdate', handleGameUpdate);
 		}
 
-		// The clean-up function to remove the event listener when the component is unmounted or dependencies change
 		return () => {
 			if (socket) {
 				socket.off('gameUpdate', handleGameUpdate);
 			}
 		};
 	});
-
-	useEffect(() => {
-		console.log("GameObj was updated.", gameObj?.id);
-	}, [gameObj])
-
 
 	useEffect(() => {
 		movePaddles();

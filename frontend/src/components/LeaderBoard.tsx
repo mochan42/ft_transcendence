@@ -115,7 +115,7 @@ const Leaderboard:React.FC<LeaderboardProps> =({ userId }) => {
 							/>
 						</Button> */}
 						<img className='h-6 w-6 rounded-full' src={user.avatar != "" ? user.avatar : 'https://www.svgrepo.com/show/170615/robot.svg'}/>
-							<button className="text-lg mr-2 hover:underline" onClick={() => { alert('QUOI ?') }} >{user.userNameLoc}</button>
+							<button className="text-lg mr-2 hover:underline" onClick={() => { alert }} >{user.userNameLoc}</button>
 					</div>
 					<span className="text-slate-300">{user.xp} points</span>
 					<div className="text-amber-400">
