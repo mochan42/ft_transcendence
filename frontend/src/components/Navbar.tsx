@@ -37,6 +37,7 @@ const Navbar: React.FC<Props> = ({ setIsAuth, isAuth, setCode, setUserId }) => {
 			Cookies.remove('isAuth');
 			Cookies.remove('userId');
 			Cookies.remove('userName');
+			window.location.reload();
 		}
 		navigate('/login');
 	}

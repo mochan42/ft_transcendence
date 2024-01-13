@@ -96,17 +96,21 @@ const PvP_2: React.FC<PvP_2Props> = ({ isActive, setIsActive, playerPoint, oppon
 
 	useEffect(() => {
 		if (socket && !isGameOver) {
-			socket.on('gameUpdate', handleGameUpdate);
+			socket.once('gameUpdate', handleGameUpdate);
 		}
 
 		// The clean-up function to remove the event listener when the component is unmounted or dependencies change
-		return () => {
-			if (socket) {
-				socket.off('gameUpdate', handleGameUpdate);
-			}
-		};
+		// return () => {
+		// 	if (socket) {
+		// 		socket.off('gameUpdate', handleGameUpdate);
+		// 	}
+		// };
 	});
 
+
+	useEffect(() => {
+		console.log("GameObj was updated.");
+	}, [gameObj]);
 
 	useEffect(() => {
 		movePaddles();
@@ -165,10 +169,10 @@ const PvP_2: React.FC<PvP_2Props> = ({ isActive, setIsActive, playerPoint, oppon
 					<Ball xPosition={ballX} yPosition={ballY} />
 				</div>
 				{gameObj?.isGameOver ? (
-						<div className="absolute inset-0 bg-black bg-opacity-80">
-							<VictoryLoss userId={userId} isVictory={gameObj ? ((gameObj?.score2 > gameObj?.score1) ? true : false) : false} difficulty={gameObj?.difficulty ? gameObj?.difficulty : 1} />
-						</div>
-					) : null
+					<div className="absolute inset-0 bg-black bg-opacity-80">
+						<VictoryLoss userId={userId} isVictory={gameObj ? ((gameObj?.score2 > gameObj?.score1) ? true : false) : false} difficulty={gameObj?.difficulty ? gameObj?.difficulty : 1} />
+					</div>
+				) : null
 				}
 				{startGame ? null : <StartGame userId={userId} setStartGame={setStartGame} game={gameObj ? gameObj : null} />}
 			</div>

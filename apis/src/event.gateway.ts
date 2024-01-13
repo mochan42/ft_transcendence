@@ -297,11 +297,12 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
       if (currentGame.isReset) {
         handleReset(currentGame);
       }
-      this.server
-        .to(currentGame.id.toString())
-        .timeout(5000)
-        .emit('gameUpdate', currentGame);
-      
+      if (currentGame.status != 'aborted' && currentGame.status != 'finished') {
+        this.server
+          .to(currentGame.id.toString())
+          .timeout(5000)
+          .emit('gameUpdate', currentGame);
+      }
       //listening only once the custom event acknowledgement from the client
       const ackPlayer1 = `ackResponse-G${currentGame.id}P${currentGame.player1}`;
       const ackPlayer2 = `ackResponse-G${currentGame.id}P${currentGame.player2}`;
@@ -330,7 +331,6 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
             }
           }
       });
-            
       if (
         currentGame.status === 'finished' ||
         currentGame.status === 'aborted'
@@ -344,7 +344,7 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
         const updated = await this.gamesService.update(currentGame);
         await Promise.all([updatePlayersXp, updated]);
         clearInterval(gameInterval);
-        gameStateManager.endGame(updated.id);
+        gameStateManager.endGame(currentGame.id);
       }
     }, 1000 / 15); // 30 FPS
   };
