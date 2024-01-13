@@ -228,18 +228,18 @@ const moveBall = (game: Game) => {
   game.ballY = game.ballY + game.speedY;
 };
 
-const updateBoost = (game: Game) => {
-  if (game.isBoost && game.includeBoost) {
-    const minX = startX / 2;
-    const maxX = startX + minX;
-    const minY = startY / 2;
-    const maxY = startY + minY;
+// const updateBoost = (game: Game) => {
+//   if (game.isBoost && game.includeBoost) {
+//     const minX = startX / 2;
+//     const maxX = startX + minX;
+//     const minY = startY / 2;
+//     const maxY = startY + minY;
 
-    // Calculate the random coordinates for the Boost region
-    game.boostX= minX + Math.random() * (maxX - minX);
-    game.boostY = minY + Math.random() * (maxY - minY);
-  }
-}
+//     // Calculate the random coordinates for the Boost region
+//     game.boostX= minX + Math.random() * (maxX - minX);
+//     game.boostY = minY + Math.random() * (maxY - minY);
+//   }
+// }
 
 const handleReset = (game: Game) => {
   const itsdifficult = (game.difficulty + 2) * 2;
