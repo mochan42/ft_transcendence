@@ -242,10 +242,11 @@ const updateBoost = (game: Game) => {
 }
 
 const handleReset = (game: Game) => {
-  game.speedX = game.speedX * -1;
-  game.speedY = game.speedY * -1;
+  const itsdifficult = (game.difficulty + 2) * 2;
   game.ballX = conWidth / 2;
   game.ballY = conHeight / 2;
+  game.speedX = ((Math.sign(game.speedX) * itsdifficult)  + ((Math.random() * itsdifficult)));
+  game.speedY = ((Math.sign(game.speedY) * itsdifficult)  + ((Math.random() * itsdifficult)));
   game.isReset = false;
 }
 
