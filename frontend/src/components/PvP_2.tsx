@@ -77,8 +77,8 @@ const PvP_2: React.FC<PvP_2Props> = ({ isActive, setIsActive, playerPoint, oppon
 		setPaddle1Y(data.paddle1Y);
 		setBallX(data.ballX);
 		setBallY(data.ballY);
-		setBoostX(data.boostX);
-		setBoostY(data.boostY);
+		setBoostX(data.boostStartX ? data.boostStartX : boostX);
+		setBoostY(data.boostStartY ? data.boostStartY : boostY);
 		setPlayer1Score(data.score1);
 		setPlayer2Score(data.score2);
 		setIsBoost(data.includeBoost)
@@ -164,7 +164,6 @@ const PvP_2: React.FC<PvP_2Props> = ({ isActive, setIsActive, playerPoint, oppon
 				<div className="relative bg-slate-900">
 					<Ball xPosition={ballX} yPosition={ballY} />
 				</div>
-				{includeBoost && !isBoost ? <Boost x={boostX} y={boostY} width={boostWidth} height={boostWidth} /> : null}
 				{gameObj?.isGameOver ? (
 						<div className="absolute inset-0 bg-black bg-opacity-80">
 							<VictoryLoss userId={userId} isVictory={gameObj ? ((gameObj?.score2 > gameObj?.score1) ? true : false) : false} difficulty={gameObj?.difficulty ? gameObj?.difficulty : 1} />

@@ -19,6 +19,7 @@ interface PvPProps {
 	isGameActive: boolean;
 	includeBoost: boolean;
 	isReset: boolean;
+	setGameRef: (GameType: GameType) => void;
 	playerPoint: () => void;
 	opponentPoint: () => void;
 	setReset: (boolen: boolean) => void;
@@ -33,12 +34,28 @@ interface PvPProps {
 	game?: GameType;
 }
 
-const PvP: React.FC<PvPProps> = ({ includeBoost, isActive, setIsActive, playerPoint, opponentPoint, setReset, userId, player1Score, player2Score, isGameActive, isReset, isGameOver, selectedDifficulty, setIsGameOver, setState, setPlayer1Id, setPlayer2Id, setPlayer1Score, setPlayer2Score, setPlayer1Info, setPlayer2Info, game }) => {
+const PvP: React.FC<PvPProps> = ({ setGameRef, includeBoost, isActive, setIsActive, playerPoint, opponentPoint, setReset, userId, player1Score, player2Score, isGameActive, isReset, isGameOver, selectedDifficulty, setIsGameOver, setState, setPlayer1Id, setPlayer2Id, setPlayer1Score, setPlayer2Score, setPlayer1Info, setPlayer2Info, game }) => {
+
+	// const tempGame: GameType = {
+	// 	id: -1,
+	// 	player1: -1,
+	// 	player2: -1,
+	// 	difficulty: -1,
+	// 	includeBoost: false,
+	// 	status: 'aborted',
+	// 	score1: -1,
+	// 	score2: -1,
+	// 	paddle1Y: -1,
+	// 	paddle2Y: -1,
+	// 	boostX: 200,
+	// 	boostY: 200,
+	// 	ballX: -1,
+	// 	ballY: -1,
+	// }
 
 	const socket = getSocket(userId);
-	const [gameObj, setGameObj] = useState<GameType | undefined>(undefined);
+	const [gameObj, setGameObj] = useState<GameType | undefined>(game ? game : undefined);
 	const [startGame, setStartGame] = useState<boolean | undefined>(undefined);
-
 	const [opponentId, setOpponentId] = useState(-1);
 	const [difficulty, setDifficulty] = useState(0);
 	const [matchFound, setMatchFound] = useState<true | false | undefined>(false); // static
@@ -54,8 +71,8 @@ const PvP: React.FC<PvPProps> = ({ includeBoost, isActive, setIsActive, playerPo
 	const [ballX, setBallX] = useState<number>(400); // dynamic
 	const [ballY, setBallY] = useState<number>(400); // dynamic
 	const [isBoost, setIsBoost] = useState<boolean | undefined>(false); // dynamic
-	const [boostX, setBoostX] = useState(200); // dynamic
-	const [boostY, setBoostY] = useState(200); // dynamic
+	const [boostX, setBoostX] = useState<number>(100); // dynamic
+	const [boostY, setBoostY] = useState<number>(100); // dynamic
 	const [paddle1Y, setPaddle1Y] = useState(0); // dynamic
 	const [paddle2Y, setPaddle2Y] = useState(0); // dynamic
 	const [paddle1Dir, setPaddle1Dir] = useState<number>(0); // dynamic
@@ -130,13 +147,14 @@ const PvP: React.FC<PvPProps> = ({ includeBoost, isActive, setIsActive, playerPo
 				console.log("Match Found!", data);
 				if (userId && userId == data.player1.toString()) {
 					setGameObj(data);
+					setGameRef(data);
 					setPlayer1Id(data.player1.toString());
 					setPlayer2Id(data.player2.toString());
 					setDifficulty(data.difficulty);
 					setMatchFound(true);
+					socket.emit('gameLoop', data);
+					console.log("Sending gameLoop");
 				}
-				socket.emit('gameLoop', data);
-				console.log("Sending gameLoop");
 			});
 
 			socket.on('updateMatch', (currentGame: GameType) => {
@@ -184,7 +202,7 @@ const PvP: React.FC<PvPProps> = ({ includeBoost, isActive, setIsActive, playerPo
 				<div className="relative bg-slate-900">
 					<Ball xPosition={ballX} yPosition={ballY} />
 				</div>
-				{includeBoost && !isBoost ? <Boost x={boostX} y={boostY} width={boostWidth} height={boostWidth} /> : null}
+				{/* {includeBoost && !isBoost ? <Boost x={boostX} y={boostY} width={boostWidth} height={boostWidth} /> : null} */}
 				{!matchFound ? <MatchMaking gameObj={gameObj} setGameObj={setGameObj} difficulty={selectedDifficulty} includeBoost={includeBoost} socket={socket} setMatchFound={setMatchFound} userId={userId} setState={setState} setOpponentId={setOpponentId} opponentId={3} setPlayer1Id={setPlayer1Id} setPlayer2Id={setPlayer2Id}/> : null}
 				{gameObj?.isGameOver ? (
 						<div className="absolute inset-0 bg-black bg-opacity-80">
