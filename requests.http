@@ -208,7 +208,7 @@ Content-Type: application/json
 	
 
 ### Delete a goal
-DELETE http://localhost:5000/pong/goals/1
+DELETE http://localhost:5000/pong/goals/6
 
 ### display all user's friends
 GET http://localhost:5000/pong/friends

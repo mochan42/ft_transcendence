@@ -38,7 +38,10 @@ export class GoalsService {
   }
   async feedGoals(): Promise<(Goal | null)[]>{
     const goals = await this.GoalRepository.find();
-    if (goals) return null
+    if (goals.length != 0) {
+      console.log('YES')
+      return null;
+    };
     const seeds = [
      {
       label: "WELCOME",
@@ -71,6 +74,8 @@ export class GoalsService {
       "description": "Won against the Bot on extreme"
     }
     ]
-    return await this.GoalRepository.save(goals);
+    const done = await this.GoalRepository.save(seeds);
+    console.log(done);
+    return done;
   }
 }

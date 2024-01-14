@@ -43,12 +43,5 @@ import { GoalsService } from './goals/goals.service';
   ],
 })
 export class AppModule {
-  constructor(private readonly goalService: GoalsService) {
-
-  }
-
-  async onModuleInit() {
-    await this.goalService.feedGoals();
-  }
 
 }
