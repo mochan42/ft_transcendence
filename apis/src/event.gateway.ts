@@ -739,6 +739,7 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const oldStats1 = await this.userStats.findOne(payload.player1);
     if (!oldStats1)
     {
+      console.log("1")
       const createStatDto: CreateStatDto = {
         wins: (payload.score1 > payload.score2) ? 1 : 0,
         losses: (payload.score1 < payload.score2) ? 1 : 0,
@@ -747,19 +748,22 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
       };
       const newStats = await this.userStats.create(payload.player1.toString(), createStatDto);
       // socket.emit('gameSaveSuccess', newStats);
-    } else {
-      const newStats1: UpdateStatDto = {
-        wins: (payload.score1 > payload.score2) ? oldStats1.wins + 1 : oldStats1.wins,
-        losses: (payload.score1 < payload.score2) ? oldStats1.losses + 1 : oldStats1.losses,
-        draws: (payload.score1 == payload.score2) ? oldStats1.draws + 1 : oldStats1.draws,
-        userId: +oldStats1.userId
-      }
-      const updatedStats = await this.userStats.update(oldStats1.userId, newStats1); 
-      // socket.emit('gameSaveSuccess', updatedStats);
-    };
+    } 
+    // else {
+    //   console.log("2")
+    //   const newStats1: UpdateStatDto = {
+    //     wins: (payload.score1 > payload.score2) ? oldStats1.wins + 1 : oldStats1.wins,
+    //     losses: (payload.score1 < payload.score2) ? oldStats1.losses + 1 : oldStats1.losses,
+    //     draws: (payload.score1 == payload.score2) ? oldStats1.draws + 1 : oldStats1.draws,
+    //     userId: +oldStats1.userId
+    //   }
+    //   const updatedStats = await this.userStats.update(oldStats1.userId, newStats1); 
+    //   // socket.emit('gameSaveSuccess', updatedStats);
+    // };
     const oldStats2 = await this.userStats.findOne(payload.player2);
     if (!oldStats2)
     {
+      console.log("3")
       const createStatDto: CreateStatDto = {
         wins: (payload.score2 > payload.score1) ? 1 : 0,
         losses: (payload.score2 < payload.score1) ? 1 : 0,
@@ -769,16 +773,18 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
       const newStats2 = await this.userStats.create(payload.player2.toString(), createStatDto);
       // socket.emit('gameSaveSuccess', newStats2);
       return;
-    } else {
-      const newStats2: UpdateStatDto = {
-        wins: (payload.score1 > payload.score2) ? oldStats2.wins + 1 : oldStats2.wins,
-        losses: (payload.score1 < payload.score2) ? oldStats2.losses + 1 : oldStats2.losses,
-        draws: (payload.score1 == payload.score2) ? oldStats2.draws + 1 : oldStats2.draws,
-        userId: +oldStats2.userId
-      };
-      const updatedStats = await this.userStats.update(oldStats2.userId, newStats2); 
-      // socket.emit('gameSaveSuccess', updatedStats);
     }
+    // else {
+    //   console.log("4")
+    //   const newStats2: UpdateStatDto = {
+    //     wins: (payload.score1 > payload.score2) ? oldStats2.wins + 1 : oldStats2.wins,
+    //     losses: (payload.score1 < payload.score2) ? oldStats2.losses + 1 : oldStats2.losses,
+    //     draws: (payload.score1 == payload.score2) ? oldStats2.draws + 1 : oldStats2.draws,
+    //     userId: +oldStats2.userId
+    //   };
+    //   const updatedStats = await this.userStats.update(oldStats2.userId, newStats2); 
+    //   // socket.emit('gameSaveSuccess', updatedStats);
+    // }
     console.log("Successfully saved the gamestats to Database.")
   }
   
