@@ -5,6 +5,7 @@ import Ball from './Ball';
 import Paddle from './Paddle';
 import { GameType, User, ballXType, ballYType, paddle1Type, paddle2Type, update } from '../types';
 import { getSocket } from '../utils/socketService';
+import { useNavigate } from 'react-router-dom';
 
 interface PvP_2Props {
 	isActive: boolean;
@@ -28,9 +29,10 @@ interface PvP_2Props {
 	setPlayer1Score: (number: number) => void;
 	setPlayer2Score: (number: number) => void;
 	game?: GameType;
+	setGame: (GameType: GameType) => void;
 }
 
-const PvP_2: React.FC<PvP_2Props> = ({ isActive, setIsActive, playerPoint, opponentPoint, setReset, userId, player1Score, player2Score, isGameActive, isReset, isGameOver, setIsGameOver, setState, setPlayer1Id, setPlayer2Id, setPlayer1Score, setPlayer2Score, setPlayer1Info, setPlayer2Info, game }) => {
+const PvP_2: React.FC<PvP_2Props> = ({ game, setGame, isActive, setIsActive, playerPoint, opponentPoint, setReset, userId, player1Score, player2Score, isGameActive, isReset, isGameOver, setIsGameOver, setState, setPlayer1Id, setPlayer2Id, setPlayer1Score, setPlayer2Score, setPlayer1Info, setPlayer2Info }) => {
 
 	const socket = getSocket(userId);
 	const [startGame, setStartGame] = useState(false);
@@ -57,6 +59,7 @@ const PvP_2: React.FC<PvP_2Props> = ({ isActive, setIsActive, playerPoint, oppon
 	const [paddle2Speed, setPaddle2Speed] = useState(15); // dynamic
 	const paddle2YRef = useRef<number>(0);
 	const [arbitrary, setArbitrary] = useState<boolean>(false);
+	const navigate = useNavigate();
 
 	const movePaddles = () => {
 		setPaddle2Y((prevY) => {
@@ -73,6 +76,7 @@ const PvP_2: React.FC<PvP_2Props> = ({ isActive, setIsActive, playerPoint, oppon
 
 	const handleGameUpdate = (data: GameType) => {
 		setGameObj(data);
+		setGame(data);
 		setPaddle1Y(data.paddle1Y);
 		setBallX(data.ballX);
 		setBallY(data.ballY);
@@ -81,9 +85,13 @@ const PvP_2: React.FC<PvP_2Props> = ({ isActive, setIsActive, playerPoint, oppon
 		setPlayer1Score(data.score1);
 		setPlayer2Score(data.score2);
 		setIsBoost(data.includeBoost)
-		if (data.status == 'finished' || data.status == 'aborted') {
+		if (data.status == 'finished') {
 			setIsGameOver(true);
 			console.log("Game has ended. It was ", data.status);
+		} else if (data.status == 'aborted') {
+			console.log("Aborting game event read!");
+			setIsGameOver(true);
+			navigate("/profile");
 		}
 		else {
 			const response = {
@@ -116,6 +124,7 @@ const PvP_2: React.FC<PvP_2Props> = ({ isActive, setIsActive, playerPoint, oppon
 				console.log("Reading matchFound Event.", data.id);
 				if (userId && userId == data.player2.toString()) {
 					setGameObj(data);
+					setGame(data);
 					setPlayer1Id(data.player1.toString());
 					setPlayer2Id(data.player2.toString());
 					setDifficulty(data.difficulty);

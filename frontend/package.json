@@ -2,7 +2,7 @@
 	"name": "transcending",
 	"version": "0.1.0",
 	"private": true,
-	"proxy": "http://localhost:5000",
+	"proxy": "https://supreme-fishstick-45q79xggv9g37rwr-5000.app.github.dev",
 	"dependencies": {
 		"@testing-library/jest-dom": "^5.16.5",
 		"@testing-library/react": "^13.4.0",

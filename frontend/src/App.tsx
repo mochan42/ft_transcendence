@@ -16,7 +16,7 @@ import Cookies from 'js-cookie';
 import { Utils__isAPICodeAvailable } from './utils/utils__isAPICodeAvailable';
 import { getSocket } from './utils/socketService';
 import { GameType, Chat, Block } from './types';
-import { updateChatUserMessages, updateChatUserFriendRequests, updateChatUserFriends, updateChatUsers, updateChatGroups, updateChatGroupMembers, updateChatBlockedUsers, updateChatAllJoinReq } from "./redux/slices/chatSlice";
+import { updateChatUserMessages, updateChatUserFriendRequests, updateChatUserFriends, updateChatUsers, updateChatGroups, updateChatGroupMembers, updateChatBlockedUsers, updateChatAllJoinReq, toggleSidebar } from "./redux/slices/chatSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { selectChatStore } from "./redux/store";
 import { fetchAllFriends, fetchAllMessages, fetchAllUsersFriends } from './data/ChatData';
@@ -72,6 +72,10 @@ const App: React.FC = () => {
 			});
 			socket.on('memberMuteToggleSuccess', (data: any) => {
 				dispatch(updateChatGroupMembers(data.all));
+				dispatch(updateChatAllJoinReq(data.all));
+				if (chatStore.chatSideBar.open && data.actor != userId) {
+					dispatch(toggleSidebar());
+				}
 			});
 			socket.on('unblockSuccess', (blocks: Block[]) => {
 				dispatch(updateChatBlockedUsers(blocks));
@@ -265,7 +269,7 @@ const App: React.FC = () => {
 					<Footer />
 				</div>
 				{challenge ? <GameChallenge userId={userId} game={game} setChallenge={setChallenge} /> : null}
-				{letsPlay ? <Temp  letsPlay={letsPlay} setLetsPlay={setLetsPlay}/> : null};
+				{letsPlay ? <Temp letsPlay={letsPlay} setLetsPlay={setLetsPlay} /> : null};
 				{/* {letsPlay ? <Game difficulty={gameObj ? gameObj?.difficulty : 0} userId={gameObj ? gameObj.player1.toString() : userId} includeBoost={gameObj ? gameObj.includeBoost : false} opponent={gameObj ? gameObj.player2.toString() : "-1"} game={gameObj} /> : null} */}
 			</Router>
 

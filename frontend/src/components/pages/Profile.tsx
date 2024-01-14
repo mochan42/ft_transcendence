@@ -62,8 +62,6 @@ const Profile: React.FC<ProfileProps> = ({ userId, isAuth }) => {
             const notAchievedGoals = allGoals?.filter((goal) => {
                 return !userAchievements?.some((achievement) => achievement.goalId === goal.id);
             })
-            // console.log('achieved goals: ', achievedGoals)
-            // console.log('not achieved goals: ', notAchievedGoals)
             setAchievedGoals(achievedGoals);
             setNotAchievedGoals(notAchievedGoals);
         }

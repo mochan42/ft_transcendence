@@ -37,6 +37,11 @@ export class UsersController {
     return this.usersService.findOne(+id);
   }
 
+  @Patch('xp/:id')
+  updateXp(@Param('id') id: string, @Body() data: any ) {
+    return this.usersService.updateXp(+id, data.xp);
+  }
+
   @Patch(':id')
   @UseInterceptors(
     FileInterceptor('avatar', {

@@ -66,10 +66,18 @@ export class UsersService {
     const updatedUser = { ...user, currentState: state };
     return await this.UserRepository.save(updatedUser);
   }
+<<<<<<< HEAD
 
   async updateUserXp(id: number, xp: number) {
     const user = await this.findOne(id);
     const updatedUser = { ...user, xp: user.xp + xp };
+=======
+  async updateXp(id: number, xp: number) {
+    const user = await this.findOne(id);
+    const updatedUser = { ...user, xp };
+>>>>>>> 34ac79a77506205aaf7f01bfd299798b696f852c
     return await this.UserRepository.save(updatedUser);
   }
 }
+
+

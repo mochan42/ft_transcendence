@@ -67,7 +67,7 @@ const ChatGroupProfile = () => {
 
     useEffect(() => {
 
-    }, [chatStore.chatActiveGroup, chatStore.chatGroupMembers, chatStore.chatGroupList]);
+    }, [chatStore.chatActiveGroup, chatStore.chatGroupMembers, chatStore.chatGroupList, chatStore.chatAllJoinReq, chatStore.chatSideBar.open]);
     // const actionBtnState = true
 
 
@@ -134,7 +134,7 @@ const ChatGroupProfile = () => {
                         >
                             {
                                 groupMembers.map((member) => {
-                                    const memberUser = (chatStore.chatUsers.filter(el => parseInt(el.id) === member.userId)[0])
+                                    const memberUser = (chatStore.chatUsers.filter(el => +el.id === member.userId)[0])
                                     if (memberUser) {
                                         return <ChatGroupMemberProfileComp
                                             key={memberUser.id}
@@ -142,6 +142,7 @@ const ChatGroupProfile = () => {
                                             memberJoin={member}
                                         />
                                     }
+                                    return null;
                                 })
                             }
                             {/* divider  */}
