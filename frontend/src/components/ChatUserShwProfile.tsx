@@ -25,16 +25,18 @@ const ChatUserShwProfile = ( otherUserId : TUserId) => {
     const [userSelect, setUserSelect] = useState<User | null>(null)
 
     useEffect(() => {
-    if (otherUserId.userId && userId != null) {
-        // setUserSelect(getUserById(dummyUsers, otherUserId.userId))       // for development only
-        setUserSelect(getUserById(chatStore.chatUsers, otherUserId.userId)) // uncomment for production
-        // console.log ("show user in show profile - ", userSelect)
-    }
+        if (otherUserId.userId && userId != null) {
+            // setUserSelect(getUserById(dummyUsers, otherUserId.userId))       // for development only
+            setUserSelect(getUserById(chatStore.chatUsers, otherUserId.userId)) // uncomment for production
+            // console.log ("show user in show profile - ", userSelect)
+        }
         (async() => {
             const updatedUserStats = await fetchAllStats(otherUserId.userId);
+            console.log("Fetching User stats");
             setUserStats(updatedUserStats);
         })();
-    },[chatStore.chatGameRequest]);
+    });
+    // },[chatStore.chatGameRequest]);
 
     return ( 
         <Box sx={{

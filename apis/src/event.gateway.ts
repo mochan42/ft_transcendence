@@ -35,6 +35,11 @@ import { CreateJoinchannelDto } from './joinchannel/dto/create-joinchannel-dto';
 import { Channel } from './channels/entities/channel.entity';
 import { Joinchannel } from './joinchannel/entities/joinchannel.entity';
 import { Block } from './chats/entities/block.entity';
+import { StatService } from './stat/stat.service';
+import { UpdateGameDto } from './games/dto/update-game.dto';
+import { UpdateStatDto } from './stat/dto/update-stat.dto';
+import { CreateStatDto } from './stat/dto/create-stat.dto';
+import { log } from 'console';
 
 type update = {
   player: number;
@@ -48,6 +53,10 @@ class GameStateManager {
     this.games.set(gameId, initialState);
   }
 
+  setGame(game: Game) {
+    this.games.set(game.id, game);
+  }
+
   updateGame(gameId: number, updateFn: (game: Game) => void) {
     const game = this.games.get(gameId);
     if (game) {
@@ -59,40 +68,27 @@ class GameStateManager {
     return this.games.get(gameId);
   }
 
-  // paddle1Pos: number = 100;
-  // paddle2Pos: number =100;
-  // // New properties to store latest paddle positions from clients
-  // latestPaddle1Pos: number | null = null;
-  // latestPaddle2Pos: number | null = null;
-
-  // // Method to update paddle positions from client inputs
-  // setPaddlePosition(paddle: number, posY: number) {
-  //   if (paddle === 1) {
-  //     this.latestPaddle1Pos = posY;
-  //   } else if (paddle === 2) {
-  //     this.latestPaddle2Pos = posY;
-  //   }
-  // }
-
-  endGame(gameId: number) {
-    this.games.delete(gameId);
-  }
 }
 
 const gameStateManager = new GameStateManager();
 
 const roomReadiness = {};
 
+const conHeight = 600;
+const conWidth = 1200;
 const paddleLengths = [200, 150, 100, 80, 50];
 const boostWidth = 80;
-const victoryThreshold = 10;
+const victoryThreshold = 5;
+const startX = (conWidth - 30) / 2;
+const startY = (conHeight - 30) / 2;
 const containerTop = 0;
-const containerBottom = 500;
-const rightPaddleLeft = 800;
-const leftPaddleRight = 10; // Paddle width is 10 pixels
+const paddleThickness = 10;
+const containerBottom = conHeight;
+const rightPaddleLeft = conWidth - paddleThickness;
+const leftPaddleRight = paddleThickness;
 
-const checkCollision = (game) => {
-  let margin = (game.difficulty + 2) * 2 * 3;
+const checkCollision = (game: Game) => {
+  let margin = (game.difficulty + 2) * 2;
   if (game.isBoost && game.includeBoost) {
     margin = margin * 2.5;
   }
@@ -116,86 +112,84 @@ const checkCollision = (game) => {
   // Calculate the new Y-velocity component based on the mapped angle
   const newSpeedY =
     game.speedX < 0
-      ? -((game.difficulty + 2) * 2) * Math.sin((mappedAngle * Math.PI) / 180)
-      : (game.difficulty + 2) * 2 * Math.sin((mappedAngle * Math.PI) / 180);
+      ? -((game.difficulty + 10) * 2) * Math.sin((mappedAngle * Math.PI) / 180)
+      : (game.difficulty + 10) * 2 * Math.sin((mappedAngle * Math.PI) / 180);
 
   const randomnessFactor = game.difficulty / 4; // You can adjust this value to control the amount of randomness
   const randomSpeedY = newSpeedY * (1 + Math.random() * randomnessFactor);
 
   // Check collision with left paddle
-  // Check whether Bot made a point
   if (
-    ballLeft <= leftPaddleRight + margin &&
-    ballLeft >= leftPaddleRight - margin &&
-    game.speedX < 0 &&
-    ballCenter >= leftPaddleTop - (game.difficulty + 2) * 2 &&
-    ballCenter <= leftPaddleBottom + (game.difficulty + 2) * 2
+    (ballLeft <= (leftPaddleRight)) &&
+    // (ballLeft >= (leftPaddleRight - margin)) &&
+    (game.speedX < 0) &&
+    (ballCenter >= (leftPaddleTop - 5)) &&
+    (ballCenter <= (leftPaddleBottom + 5))
   ) {
-    if (game.isBoost) {
-      const prevSpeedX = game.speedX;
-      game.speedX = prevSpeedX * 0.66;
-      game.isBoost(false);
-    }
-    game.speedX = -game.speedX * 1.2;
-    game.speedY = randomSpeedY * 1.2;
-  } else if (ballRight < leftPaddleRight && !game.isReset) {
+    // if (game.isBoost) {
+    //   const prevSpeedX = game.speedX;
+    //   game.speedX = prevSpeedX * 0.66;
+    //   game.isBoost = false;
+    // }
+    game.speedX = -game.speedX * 1.20;
+    game.speedY = randomSpeedY * 1.20;
+  } else if ((ballRight < leftPaddleRight) && !game.isReset) {
     game.score2 = game.score2 + 1;
-    if (game.score2 > victoryThreshold) {
+    if (game.score2 >= victoryThreshold) {
       game.isGameOver = true;
       game.status = 'finished';
     } else {
       game.isReset = true;
-      if (game.isBoost) {
-        game.speedX = game.speedX * 0.66;
-        game.isBoost(false);
-      }
+      // if (game.isBoost) {
+      //   game.speedX = game.speedX * 0.66;
+      //   game.isBoost = false;
+      // }
     }
     game.speedX = -game.speedX;
   }
 
   // Check collision with right paddle
-  // Check whether Player made a point
   if (
-    ballRight >= rightPaddleLeft - margin &&
-    ballRight <= rightPaddleLeft + margin &&
-    game.speedX > 0 &&
-    ballCenter >= rightPaddleTop - (game.difficulty + 2) * 2 &&
-    ballCenter <= rightPaddleBottom + (game.difficulty + 2) * 2
+    (ballRight >= (rightPaddleLeft - 25)) &&
+    // (ballRight <= (rightPaddleLeft + margin)) &&
+    (game.speedX > 0) &&
+    (ballCenter >= (rightPaddleTop - 5)) &&
+    (ballCenter <= (rightPaddleBottom + 5))
   ) {
-    if (game.isBoost) {
-      game.speedX = game.speedX * 0.66;
-      game.isBoost = false;
-    }
-    game.speedX = -game.speedX * 0.82;
-    game.speedY = newSpeedY * 0.82;
-  } else if (ballLeft > rightPaddleLeft && !game.isReset) {
+    // if (game.isBoost) {
+    //   game.speedX = game.speedX * 0.66;
+    //   game.isBoost = false;
+    // }
+    game.speedX = -game.speedX * 1.2;
+    game.speedY = newSpeedY * 1.2;
+  } else if ((ballLeft > rightPaddleLeft) && !game.isReset) {
     game.score1 = game.score1 + 1;
-    if (game.score1 > victoryThreshold) {
+    if (game.score1 >= victoryThreshold) {
       game.isGameOver = true;
       game.status = 'finished';
     }
     game.isReset = true;
-    if (game.isBoost) {
-      game.speedX = game.speedX * 0.66;
-      game.isBoost = false;
-    }
+    // if (game.isBoost) {
+    //   game.speedX = game.speedX * 0.66;
+    //   game.isBoost = false;
+    // }
     game.speedX = -game.speedX;
   }
 
   // collision with container top
-  if (game.ballY < 0 && game.speedY < 0) {
+  if (game.ballY <= 0 && game.speedY < 0) {
     game.speedY = -game.speedY;
   }
 
   // collision with container bottom
-  if (game.ballY > containerBottom && game.speedY > 0) {
+  if ((game.ballY + 8) >= (containerBottom - 25)) { // game.ballY is the upper side of the ball. 8 is the diameter
     game.speedY = -game.speedY;
   }
 };
 
-const moveBall = (game) => {
-  game.startX = rightPaddleLeft / 2;
-  game.startY = containerBottom / 2;
+const moveBall = (game: Game) => {
+  // game.startX = rightPaddleLeft / 2;
+  // game.startY = containerBottom / 2;
 
   const boostEndX = game.boostStartX + boostWidth;
   const boostEndY = game.boostStartY + boostWidth;
@@ -220,6 +214,34 @@ const moveBall = (game) => {
   game.ballY = game.ballY + game.speedY;
 };
 
+// const updateBoost = (game: Game) => {
+//   if (game.isBoost && game.includeBoost) {
+//     const minX = startX / 2;
+//     const maxX = startX + minX;
+//     const minY = startY / 2;
+//     const maxY = startY + minY;
+
+//     // Calculate the random coordinates for the Boost region
+//     game.boostX= minX + Math.random() * (maxX - minX);
+//     game.boostY = minY + Math.random() * (maxY - minY);
+//   }
+// }
+
+const handleReset = (game: Game) => {
+  const itsdifficult = (game.difficulty + 2) * 2;
+  game.ballX = conWidth / 2;
+  game.ballY = conHeight / 2;
+  game.speedX = ((Math.sign(game.speedX) * itsdifficult)  + ((Math.random() * itsdifficult)));
+  if (game.speedX < 5 + game.difficulty){
+    game.speedX = 5 + game.difficulty * 5;
+  }
+  game.speedY = ((Math.sign(game.speedY) * itsdifficult)  + ((Math.random() * itsdifficult)));
+  if (game.speedY < 5 + game.difficulty){
+    game.speedY = 5 + game.difficulty * 5;
+  }
+  game.isReset = false;
+}
+
 @WebSocketGateway({
   cors: {
     origin: `${process.env.FRONTEND_URL}`,
@@ -239,51 +261,104 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
     private readonly joinchannelService: JoinchannelService,
     private readonly gameQueueService: GamequeueService,
     private readonly gamesService: GamesService,
+    private readonly userStats: StatService
   ) {}
 
   startGameLoop = (game: Game) => {
     gameStateManager.startGame(game.id, game); // Initialize game state
+    console.log("Game loop initiated for game id ", game.id, ". game information: ", gameStateManager.getGameState(game.id));
+    this.userService.updateLoginState(game.player1, LOG_STATE.INGAME);
+    this.userService.updateLoginState(game.player2, LOG_STATE.INGAME);
+    console.log("Updated the Status to In Game");
+    var pause = false;
 
     const gameInterval = setInterval(() => {
       const currentGame = gameStateManager.getGameState(game.id);
       if (!currentGame) {
         clearInterval(gameInterval);
+        console.log("Couldn't retrieve game information from gameStateManager!");
         return;
       }
       moveBall(currentGame);
       checkCollision(currentGame);
-      // this.gamesService.update(currentGame); // You need to handle async/await properly
-      this.server
-        .to(currentGame.id.toString())
-        .timeout(5000)
-        .emit('gameUpdate', currentGame);
-      
-      //listening only once the custom event acknowledgement from the client
-      const ackPlayer1 = `ackResponse-G${currentGame.id}P${currentGame.player1}`;
-      const ackPlayer2 = `ackResponse-G${currentGame.id}P${currentGame.player2}`;
+      // updateBoost(currentGame);
+      if (currentGame.isReset) {
+        handleReset(currentGame);
+        // gameStateManager.updateGame(currentGame.id, ((currentGame) => {gameStateManager.setGame(currentGame)}));
+      }
+      if (!pause) {
+        this.server
+          .to(currentGame.id.toString())
+          .timeout(5000)
+          .emit('gameUpdate', currentGame);
+        
+        //listening only once the custom event acknowledgement from the client
+        const ackPlayer1 = `ackResponse-G${currentGame.id}P${currentGame.player1}`;
+        const ackPlayer2 = `ackResponse-G${currentGame.id}P${currentGame.player2}`;
 
-      roomReadiness[currentGame.id].player1Ready.once(ackPlayer1, (response: any) => {
-        if (response === null) console.log('Response empty!\n');
-        else {
+        roomReadiness[currentGame.id].player1Ready.once(ackPlayer1, (response: any) => {
+          if (response === null) {
+            console.log('Response empty!\n');
+          } else {
             currentGame.paddle1Y = response.paddlePos;
+            if (!response.playerActive) {
+              currentGame.status == 'aborted';
+              console.log("Game state was set to 'aborted'");
+            }
+            if (response.pause) {
+              pause = true;
+            }
           }
-      });
-      
-      roomReadiness[currentGame.id].player2Ready.once(ackPlayer2, (response: any) => {
-        if (response === null) console.log('Response empty!\n');
-        else {
+          if (pause) {
+            console.log("Entering a 5 seconds pause phase.")
+            setTimeout(() => {
+              pause = false;
+            }, 5000);
+          }
+        });
+        
+        roomReadiness[currentGame.id].player2Ready.once(ackPlayer2, (response: any) => {
+          if (response === null) {
+            console.log('Response empty!\n');
+          } else {
             currentGame.paddle2Y = response.paddlePos;
+            if (!response.playerActive) {
+              currentGame.status == 'aborted';
+              console.log("Game state was set to 'aborted'");
+            }
+            if (response.pause) {
+              pause = true;
+            }
           }
-      });
+          if (pause) {
+            console.log("Entering a 5 seconds pause phase.")
+            setTimeout(() => {
+              pause = false;
+            }, 5000);
+          }
+        });
+      }
             
       if (
         currentGame.status === 'finished' ||
         currentGame.status === 'aborted'
       ) {
+        // console.log("Game has finished, updating current Game . . .")
+        // this.gamesService.update(currentGame);
+        console.log("Clearing Interval . . .")
         clearInterval(gameInterval);
-        gameStateManager.endGame(currentGame.id);
+        console.log("Cleared interval. Updating user status . . .");
+        this.userService.updateLoginState(game.player1, LOG_STATE.ONLINE);
+        this.userService.updateLoginState(game.player2, LOG_STATE.ONLINE);
+        console.log("Updated user states to online.");
+        // console.log("Cleared Interval. Kicking Players from Game Room . . .");
+        // console.log("Ending current game . . .")
+        // gameStateManager.endGame(currentGame.id);
+        // console.log("Ended current Game!")
+      } else {
+        gameStateManager.updateGame(currentGame.id, ((newGame) => {gameStateManager.setGame(newGame)}));
       }
-    }, 1000 / 2); // 30 FPS
+    }, 1000 / 15); // 30 FPS
   };
 
   async handleConnection(@ConnectedSocket() socket: Socket, ...args: any[]) {
@@ -355,8 +430,11 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @ConnectedSocket() socket: Socket,
     @MessageBody() payload: any,
   ) {
+    if (payload.privacy_state == CHANNEL_TYPE.PROTECTED && !payload.passwd) {
+      // could return a specific infos.
+      return;
+    }
     const user = await this.chatsService.getUserFromSocket(socket);
-
     const channel: CreateChannelDto = {
       password: payload.passwd,
       title: payload.title,
@@ -433,10 +511,10 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const user = await this.chatsService.getUserFromSocket(socket);
     if (user) {
       const join = await this.joinchannelService.deleteJoin(user.id, +group);
-//       const remainMembers = await this.joinchannelService.findAGroupMembers(+group);
-//       if (!remainMembers) {
-//          await this.chatsService.remove(+group);
-//       }
+      //const remainMembers = await this.joinchannelService.findAGroupMembers(+group);
+      // if (!remainMembers) {
+      //    await this.chatsService.remove(+group);
+      // }
       const allMembers = await this.joinchannelService.findAll();
       this.server.emit('exitGroupSuccess', { new: join, all: allMembers });
     }
@@ -604,18 +682,165 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
   /***********************GAME*********************** */
 
+  @SubscribeMessage('saveOverGameVsBot')
+  async handleSaveOverGame(
+    @ConnectedSocket() socket: Socket,
+    @MessageBody() payload: {
+      player1: number,
+      player2: number,
+      difficulty: number,
+      score1: number,
+      score2: number,
+      includeBoost: boolean
+    }
+  ) {
+    const gameDto: CreateGameDto = {
+      id: -1,
+      player1: payload.player1,
+      player2: payload.player2,
+      difficulty: payload.difficulty,
+      includeBoost: payload.includeBoost,
+      isReset: false,
+      status: 'finished',
+      score1: payload.score1,
+      score2: payload.score2,
+      paddle1Y: 0,
+      paddle2Y: 0,
+      boostX: 0,
+      boostY: 0,
+      ballX: 0,
+      ballY: 0,
+      gameMaker: 0,
+      paddle1Speed: 0,
+      paddle2Speed: 0,
+      paddle1Dir: 0,
+      paddle2Dir: 0,
+      speedX: 0,
+      speedY: 0
+    }
+    const game = await this.gamesService.create(gameDto);
+    const oldStats = await this.userStats.findOne(payload.player1);
+    if (!oldStats)
+    {
+      const createStatDto: CreateStatDto = {
+        wins: (payload.score1 > payload.score2) ? 1 : 0,
+        losses: (payload.score1 < payload.score2) ? 1 : 0,
+        draws: (payload.score1 == payload.score2) ? 1 : 0,
+        userId: payload.player1,
+      };
+      const newStats = await this.userStats.create(payload.player1.toString(), createStatDto);
+      socket.emit('gameBotSuccess', newStats);
+      return;
+    }
+    const newStats: UpdateStatDto = {
+      wins: (payload.score1 > payload.score2) ? oldStats.wins + 1 : oldStats.wins,
+      losses: (payload.score1 < payload.score2) ? oldStats.losses + 1 : oldStats.losses,
+      draws: (payload.score1 == payload.score2) ? oldStats.draws + 1 : oldStats.draws,
+      userId: +oldStats.userId
+    };
+    const updatedStats = await this.userStats.update(oldStats.userId, newStats); 
+    socket.emit('gameBotSuccess', updatedStats);
+  }
+
+  @SubscribeMessage('saveGame')
+  async handleSaveGame(
+    @ConnectedSocket() socket: Socket,
+    @MessageBody() payload: {
+      id: number,
+      player1: number,
+      player2: number,
+      difficulty: number,
+      score1: number,
+      score2: number,
+      includeBoost: boolean,
+    }
+  ) {
+    const roomId = payload.id;
+    const oldGame = await this.gamesService.findOne(payload.id);
+    const newGame = { 
+      ... oldGame,
+      ...payload,
+    }
+    const newGameCheck = await this.gamesService.update(newGame);
+    if (newGameCheck.id == payload.id) {
+      console.log("Updated game" , payload.id , "successfully!");
+    } else {
+      console.log("Failed to update game ", payload.id);
+    }
+    // console.log(this.server.sockets.adapter.rooms);
+    const room = this.server.sockets.adapter.rooms[roomId.toString()];
+    if (room) {
+      room.sockets.forEach((_, socketId) => {
+        const socket = io.sockets.sockets.get(socketId);
+        if (socket) {
+          socket.leave(roomId);
+          console.log(`User ${socketId} left room: ${roomId}`);
+        }
+      })
+    }
+    const oldStats1 = await this.userStats.findOne(payload.player1);
+    if (!oldStats1)
+    {
+      const createStatDto: CreateStatDto = {
+        wins: (payload.score1 > payload.score2) ? 1 : 0,
+        losses: (payload.score1 < payload.score2) ? 1 : 0,
+        draws: (payload.score1 == payload.score2) ? 1 : 0,
+        userId: payload.player1,
+      };
+      const newStats = await this.userStats.create(payload.player1.toString(), createStatDto);
+      // socket.emit('gameSaveSuccess', newStats);
+    } else {
+      const newStats1: UpdateStatDto = {
+        wins: (payload.score1 > payload.score2) ? oldStats1.wins + 1 : oldStats1.wins,
+        losses: (payload.score1 < payload.score2) ? oldStats1.losses + 1 : oldStats1.losses,
+        draws: (payload.score1 == payload.score2) ? oldStats1.draws + 1 : oldStats1.draws,
+        userId: +oldStats1.userId
+      }
+      const updatedStats = await this.userStats.update(oldStats1.userId, newStats1); 
+      // socket.emit('gameSaveSuccess', updatedStats);
+    };
+
+    const oldStats2 = await this.userStats.findOne(payload.player2);
+    if (!oldStats2)
+    {
+      const createStatDto: CreateStatDto = {
+        wins: (payload.score2 > payload.score1) ? 1 : 0,
+        losses: (payload.score2 < payload.score1) ? 1 : 0,
+        draws: (payload.score2 == payload.score1) ? 1 : 0,
+        userId: payload.player2,
+      };
+      const newStats2 = await this.userStats.create(payload.player2.toString(), createStatDto);
+      // socket.emit('gameSaveSuccess', newStats2);
+    }
+    else {
+      const newStats2: UpdateStatDto = {
+        wins: (payload.score1 > payload.score2) ? oldStats2.wins + 1 : oldStats2.wins,
+        losses: (payload.score1 < payload.score2) ? oldStats2.losses + 1 : oldStats2.losses,
+        draws: (payload.score1 == payload.score2) ? oldStats2.draws + 1 : oldStats2.draws,
+        userId: +oldStats2.userId
+      };
+      const updatedStats = await this.userStats.update(oldStats2.userId, newStats2); 
+      // socket.emit('gameSaveSuccess', updatedStats);
+    }
+    console.log("Successfully saved the gamestats to Database.")
+  }
+  
+  @SubscribeMessage('leaveQueue')
+  async handleLeaveQueue(@ConnectedSocket() socket: Socket) {
+    const user = await this.chatsService.getUserFromSocket(socket);
+    return this.gameQueueService.leaveQueue(+user.id);
+  }
+
   @SubscribeMessage('requestMatch')
   async handleRequestMatch(
     @ConnectedSocket() socket: Socket,
     @MessageBody() data: any,
   ) {
     console.log('requestMatch was received.\n');
-    const player1 = data.player1;
     if (data.player2 > 0) {
-      const player2 = data.player2;
       const makeGame = await this.gamesService.makeMatch(
-        +player1,
-        +player2,
+        +data.player1,
+        +data.player2,
         data.difficulty,
         data.isBoost,
       );
@@ -625,26 +850,38 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
         console.log(
           `User ${makeGame.player1} created and joined room: ${roomId}`,
         );
-        this.server.emit('invitedToMatch', makeGame);
-        console.log('Broadcasting invitedToMatch\n');
+        this.server.emit('challengedToMatch', makeGame);
+        console.log('Broadcasting challengedToMatch\n');
       }
     } else {
-      const opponent = this.gameQueueService.findOpponent(socket);
-      if (opponent) {
-        const player2 = await this.chatsService.getUserFromSocket(opponent);
-        const makeGame = await this.gamesService.makeMatch(
-          +player1,
-          +player2.id,
-          data.difficulty,
-          data.isBoost,
-        );
-
-        if (makeGame) {
-          const roomId = makeGame.id;
-          socket.join(roomId.toString());
-          opponent.emit('invitedToMatch', makeGame);
+        const opponent = this.gameQueueService.findOpponent({
+          id: data.player1,
+          difficulty: data.difficulty,
+          isBoost: data.isBoost,
+          socket
+        });
+        if (opponent) {
+          const player1 = await this.chatsService.getUserFromSocket(opponent.socket);
+          const player2 = await this.chatsService.getUserFromSocket(socket);
+          const makeGame = await this.gamesService.makeMatch(
+            +player1.id,
+            +player2.id,
+            data.difficulty,
+            data.isBoost,
+          );
+  
+          if (makeGame) {
+            const roomId = makeGame.id;
+            const user = await this.chatsService.getUserFromSocket(socket);
+            socket.join(roomId.toString());
+            console.log(
+              `User ${user.id} joined room: ${roomId}`,
+            );
+            opponent.socket.join(roomId.toString());
+            opponent.socket.emit('matchedToGame', makeGame);
+            socket.emit('invitedToMatch', makeGame);
+          }
         }
-      }
     }
   }
 
@@ -660,8 +897,12 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
     if (room) {
       const user = await this.chatsService.getUserFromSocket(socket);
       const game = await this.gamesService.acceptMatch(data);
-      socket.join(roomId.toString());
-      console.log(`User ${user.id} joined room: ${roomId}`);
+      if (room.size < 3) {
+        socket.join(roomId.toString());
+        console.log(`User ${user.id} joined room: ${roomId}`);
+      } else {
+        console.log("Room is already full: ", room.size);
+      }
       console.log(
         'Now sending matchFound event to users in room ',
         roomId,
@@ -682,10 +923,46 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @ConnectedSocket() socket: Socket,
     @MessageBody() data: Game,
   ) {
+    console.log(data);
+    const user = await this.chatsService.getUserFromSocket(socket);
+    const victor = (user.id == data.player1) ? data.player2 : data.player1;
     const roomId = data.id;
-    const room = io.sockets.adapter.rooms[roomId];
+    const room = this.server.sockets.adapter.rooms[roomId];
+    console.log("Retrieving game state for id: ", data.id);
+    const game = gameStateManager.getGameState(data.id);
+    if (game) {
+      game.status = 'aborted';
+      gameStateManager.updateGame(data.id, ((newGame) => {gameStateManager.setGame(newGame)}));
+      console.log("Game was retrieved: ", game.id);
+      console.log("Game status == ", game.status);
+      const saveGame = (game.score1 > 0 || game.score2 > 0) ? true : false;
+      console.log("saveGame: ", saveGame)
+      if (saveGame) {
+        const oldGame = await this.gamesService.findOne(data.id);
+        const newGame = { 
+          ... oldGame,
+          status: 'finished',
+          score1: victor == data.player1 ? 1 : 0,
+          score2: victor == data.player2 ? 1 : 0,
+        }
+        const newGameCheck = await this.gamesService.update(newGame);
+        if (newGameCheck.id == data.id) {
+          console.log("Updated game" , data.id , "successfully!");
+        } else {
+          console.log("Failed to update game ", data.id);
+        }
+      } else {
+        console.log("Game was not saved!");
+      }
+    } else
+      console.log("Game retrieval failed!");
 
     if (room) {
+      // Optionally, emit an event to inform all clients in the room
+      this.server.to(roomId.toString()).emit('matchDenied', {
+        roomId,
+        message: 'Match request denied, room closed.',
+      });
       room.sockets.forEach((_, socketId) => {
         const socket = io.sockets.sockets.get(socketId);
         if (socket) {
@@ -693,15 +970,10 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
           console.log(`User ${socketId} left room: ${roomId}`);
         }
       });
-      // Optionally, emit an event to inform all clients in the room
-      this.server.to(roomId.toString()).emit('matchDenied', {
-        roomId,
-        message: 'Match request denied, room closed.',
-      });
       console.log(`Room ${roomId} cleared and closed due to match denial.`);
     } else {
       // Handle the case where the room doesn't exist or is already empty
-      console.log(`Room ${roomId} not found for denial process.`);
+      console.log(`Room ${roomId} not found for denial of process.`);
     }
     console.log('Game was aborted\n');
   }
@@ -711,23 +983,23 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @ConnectedSocket() socket: Socket,
     @MessageBody() data: any,
   ) {
-    const roomId = data.id;
+    var roomId = 0;
+    if (data.id) { roomId = data.id; }
     console.log('\nGameLoop event read!\n');
     if (!roomReadiness[roomId]) {
       roomReadiness[roomId] = { player1Ready: null, player2Ready: null };
     }
     const user = await this.chatsService.getUserFromSocket(socket);
     console.log('user id: ', user.id);
-    console.log('player id: ', data.player1);
-    // Update readiness based on which player sent the event
+    console.log('player id: ', data.player1); // Update readiness based on which player sent the event
     if (user.id == data.player1) {
       roomReadiness[roomId].player1Ready = socket;
       console.log('Player 1 is ready for the match!\n');
+      this.server.emit('comeJoin', data);
     } else if (user.id == data.player2) {
       roomReadiness[roomId].player2Ready = socket;
       console.log('Player 2 is ready for the match!\n');
     }
-
     // Check if both players are ready
     if (
       roomReadiness[roomId].player1Ready != null &&
@@ -736,46 +1008,5 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
       console.log('\x1b[32m', 'Starting Game Loop! \n', '\x1b[0m');
       this.startGameLoop(data);
     }
-    //   @SubscribeMessage('updatePaddle1')
-    //   async handleUpdatePaddle1(
-    //   @ConnectedSocket() socket: Socket,
-    //   @MessageBody() data: { gameId: number, newY: number },
-    // ) {
-    //   gameStateManager.setPaddlePosition(1, data.newY);
-    //   // The updateGame method expects a function that updates the game state
-    //   // gameStateManager.updateGame(data.gameId, (game) => {
-    //   //   if (game) {
-    //   //     game.paddle1Y = data.newY;
-    //   //     // Emit the updated game state to all clients in the room
-    //   //     this.server.to(data.gameId.toString()).emit('gameUpdate', game);
-    //   //   }
-    //   // });
-
-    //   // If you need to save the game state to the database, do it here
-    //   // after the in-memory state has been updated
-    //   // const game = gameStateManager.getGameState(data.gameId);
-    //   // if (game) {
-    //   //   await this.gamesService.update(game);
-    //   // }
-    // }
-
-    // @SubscribeMessage('updatePaddle2')
-    // async handleUpdatePaddle2(
-    //   @ConnectedSocket() socket: Socket,
-    //   @MessageBody() data: { roomId: number, newY: number },
-    // ) {
-    //   gameStateManager.setPaddlePosition(2, data.newY);
-    //   // gameStateManager.updateGame(data.roomId, (game) => {
-    //   //   game.paddle2Y = data.newY;
-    //   //   // Emit update immediately
-    //   //   this.server.to(data.roomId.toString()).emit('gameUpdate', game);
-    //   // });
-
-    //   // // Assuming gamesService.update is properly handling async operations
-    //   // const game = gameStateManager.getGameState(data.roomId);
-    //   // if (game) {
-    //   //   await this.gamesService.update(game);
-    //   // }
-    // }
   }
 }

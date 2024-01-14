@@ -9,25 +9,30 @@ import EditProfile from '../EditProfile';
 
 import '../../css/profile.css';
 import { BACKEND_URL } from '../../data/Global';
+import { GameType } from '../../types'
 
 const Profile: React.FC<ProfileProps> = ({ userId, isAuth }) => {
+
 
     const [userInfo, setUserInfo] = useState<User | null>(null);
     const [usersInfo, setUsersInfo] = useState<User[] | null>(null);
     const [userStats, setUserStats] = useState<UserStats | null>(null);
+    const [userMatchStories, setUserMatchStories] = useState<GameType[]>([]);
     const [showScreen, setShowScreen] = useState<'default' | 'achievements' | 'friends' | 'stats' | 'userProfile'>('default');
     const [userAchievements, setUserAchievements] = useState<UserAchievements[] | null>(null);
     const [allGoals, setAllGoals] = useState<Goal[] | null>(null);
     const [friends, setFriends] = useState<Friend[] | null>(null)
+    const [userFriends, setUserFriends] = useState<User[] | null>(null)
     const id = userId;
     const urlFriends = `${BACKEND_URL}/pong/users/` + id + '/friends';
     const url_info = `${BACKEND_URL}/pong/users/` + id;
     const url_stats = `${BACKEND_URL}/pong/users/` + id + '/stats'
     const url_achievements = `${BACKEND_URL}/pong/users/` + id + '/achievements';
     const url_goals = `${BACKEND_URL}/pong/goals`;
+    const url_games = `${BACKEND_URL}/pong/users/` + id + '/games';
+
     const [achievedGoals, setAchievedGoals] = useState<Goal[]>();
     const [notAchievedGoals, setNotAchievedGoals] = useState<Goal[]>();
-    const [userFriends, setUserFriends] = useState<User[] | null>(null)
     const [state2fa, setState2fa] = useState<boolean>(false);
     const [btnTxt2fa, setBtnTxt2fa] = useState<string>("2FA: disabled");
     //const [btnStyle, setBtnStyle] = useState<string>('default');
@@ -57,8 +62,6 @@ const Profile: React.FC<ProfileProps> = ({ userId, isAuth }) => {
             const notAchievedGoals = allGoals?.filter((goal) => {
                 return !userAchievements?.some((achievement) => achievement.goalId === goal.id);
             })
-            // console.log('achieved goals: ', achievedGoals)
-            // console.log('not achieved goals: ', notAchievedGoals)
             setAchievedGoals(achievedGoals);
             setNotAchievedGoals(notAchievedGoals);
         }
@@ -89,6 +92,10 @@ const Profile: React.FC<ProfileProps> = ({ userId, isAuth }) => {
                         setUserStats(response.data);
                         // console.log('Received User Stats: ', response.data);
                     }
+                    const respUserGames = await axios.get<GameType[]>(url_games, { headers });
+                    if (respUserGames.status === 200) {
+                        setUserMatchStories(respUserGames.data.slice(0, 5));
+                    }
                 } catch (error) {
                     console.log('Error fetching user stats:', error);
                 }
@@ -108,8 +115,10 @@ const Profile: React.FC<ProfileProps> = ({ userId, isAuth }) => {
                 try {
                     const response: AxiosResponse<Goal[] | null> = await axios.get(url_goals, { headers });
                     if (response.status === 200) {
-                        setAllGoals(response.data);
-                        // console.log('Received Goals: ', response.data);
+                        if (response.data && response.data.length > 0) {
+                            console.log('Received Goals: ', response.data);
+                            setAllGoals(response.data);
+                        }
                     }
                 } catch (error) {
                     console.log('Error fetching Goals:', error);
@@ -139,12 +148,12 @@ const Profile: React.FC<ProfileProps> = ({ userId, isAuth }) => {
             }
             if (userFriends === null && usersInfo) {
                 const usersFriends = usersInfo?.filter((user) =>
-                    friends?.some((friend) => (friend.sender === user.id || friend.receiver === user.id) && user.id !== userId)
+                    friends?.some((friend) => (friend.sender == user.id || friend.receiver == user.id) && user.id != userId)
                 );
                 setUserFriends(usersFriends);
             }
             if (userInfo) {
-                setState2fa(userInfo.is2Fa)// should be substituted with getuserinfo for latest 2fa status
+                setState2fa(userInfo.is2Fa); // should be substituted with getuserinfo for latest 2fa status
                 ConfigureBtn2fa(userInfo.is2Fa);
             }
         })();
@@ -181,29 +190,53 @@ const Profile: React.FC<ProfileProps> = ({ userId, isAuth }) => {
                     </div>
                 </div>
                 <div className='w-2/3 flex flex-col justify-around items-center text-center z-0'>
-                    <div className='flex flex-col items-center gap-y-4'>
-                        <h3 className='text-center w-[300px] bg-slate-900 text-lg font-bold mb-4 border-slate-900 border-2 rounded-lg text-white dark:bg-slate-200 dark:text-slate-900'>
-                            Stats and numbers
-                        </h3>
-                        <div className='flex flex-wrap items-center justify-around gap-8'>
-                            <div>
-                                <div className='space-y-2 flex flex-col justify-between gap-4'>
-                                    <div className='flex flex-row justify-between'>
-                                        Total Games Played: {(userStats?.wins ?? 0) + (userStats?.losses ?? 0)}
-                                    </div>
-                                    <div className='flex flex-row justify-between'>
-                                        Total Victories: {(userStats?.wins) ?? 0}
-                                    </div>
-                                    <div className='flex flex-row justify-between'>
-                                        Total Defeats: {(userStats?.losses) ?? 0}
+                    <div className='flex flex-wrap justify-around z-0 w-full items-baseline'>
+                        <div className='w-1/2 h-full text-center space-y-8 flex flex-col items-center'>
+                            <h3 className='text-center w-[300px] bg-slate-900 text-lg font-bold mb-4 border-slate-900 border-2 rounded-lg text-white dark:bg-slate-200 dark:text-slate-900'>
+                                Stats and numbers
+                            </h3>
+                            <div className='flex flex-wrap items-center justify-around gap-8'>
+                                <div>
+                                    <div className='space-y-2 flex flex-col justify-between gap-4'>
+                                        <div className='flex flex-row justify-between'>
+                                            Total Games Played: {(userStats?.wins ?? 0) + (userStats?.losses ?? 0)}
+                                        </div>
+                                        <div className='flex flex-row justify-between'>
+                                            Total Victories: {(userStats?.wins) ?? 0}
+                                        </div>
+                                        <div className='flex flex-row justify-between'>
+                                            Total Defeats: {(userStats?.losses) ?? 0}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
+                            <div>
+                                <Button variant={'link'} onClick={() => setShowScreen('stats')}>
+                                    more
+                                </Button>
+                            </div>
                         </div>
-                        <div>
-                            <Button variant={'link'} onClick={() => setShowScreen('stats')}>
-                                more
-                            </Button>
+                        <div className='w-1/2 h-full text-center space-y-8 flex flex-col items-center'>
+                            <h3 className='text-center w-[300px] bg-slate-900 text-lg font-bold mb-4 border-slate-900 border-2 rounded-lg text-white dark:bg-slate-200 dark:text-slate-900'>
+                                Last 5 Games
+                            </h3>
+                            <div className='flex flex-wrap items-center justify-around gap-8'>
+                                <div>
+                                    {
+                                        userMatchStories.map((match) => {
+                                            return (
+                                                <div key={match.id} className='flex flex-row justify-between'>
+                                                    {(userId && +userId === match.player1) ? userInfo?.userNameLoc : (match.player1 > 0) ? usersInfo?.filter((el: User | null) => (el && +el.id == match.player1))[0].userNameLoc : "Bot"}
+                                                    <span className={(match.score1 > match.score2) ? 'text-green-500' : 'text-red-500'}>&nbsp;{match.score1}&nbsp;</span>
+                                                    <span>-</span>
+                                                    <span className={(match.score2 > match.score1) ? 'text-green-500' : 'text-red-500'}>&nbsp;{match.score2}&nbsp;</span>
+                                                    {(userId && +userId === match.player2) ? userInfo?.userNameLoc : (match.player2 > 0) ? usersInfo?.filter((el: User | null) => (el && +el.id == match.player2))[0].userNameLoc : "Bot"}
+                                                </div>
+                                            );
+                                        })
+                                    }
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div className='flex flex-wrap justify-around z-0 w-full items-baseline'>

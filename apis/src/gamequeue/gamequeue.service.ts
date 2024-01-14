@@ -5,9 +5,16 @@ import { GamesService } from '../games/games.service';
 import { GameQueue } from './entities/gamequeue.entity';
 import { Socket } from 'socket.io';
 
+type Queued = {
+  id: number,
+  difficulty: number,
+  isBoost: boolean,
+  socket: Socket
+};
+
 @Injectable()
 export class GamequeueService {
-  private static waitingList: Socket[] = [];
+  private static waitingList: Queued[] = [];
 
   constructor(
     @InjectRepository(GameQueue)
@@ -15,11 +22,27 @@ export class GamequeueService {
     private readonly gamesService: GamesService,
   ) {}
 
-  findOpponent(socket: Socket) {
-    if (GamequeueService.waitingList.length != 1) {
-      GamequeueService.waitingList.push(socket);
+  findOpponent(player: Queued) {
+    if (GamequeueService.waitingList.length == 0) {
+      GamequeueService.waitingList.push(player);
       return null;
     }
-    return GamequeueService.waitingList.pop();
+    const queuedPlayers = this.playersAlreadyWaiting(player);
+    if (queuedPlayers.length == 0) {
+      return null;
+    }
+    GamequeueService.waitingList = [...GamequeueService.waitingList.filter((el) => el.id != queuedPlayers[0].id)];
+    return queuedPlayers[0];
+  }
+
+  playersAlreadyWaiting(player: Queued): Queued[]{
+    const waiters = [...GamequeueService.waitingList].filter((el: Queued) => {
+      return (el.id != player.id && el.difficulty == player.difficulty && el.isBoost == player.isBoost)
+    });
+    return waiters;
+  }
+
+  leaveQueue(playerId: number) {
+    GamequeueService.waitingList = [...GamequeueService.waitingList].filter((el: Queued) => el.id != playerId);
   }
 }

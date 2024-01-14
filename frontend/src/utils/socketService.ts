@@ -1,5 +1,4 @@
 import { io } from "socket.io-client";
-import Cookies from "js-cookie";
 import { BACKEND_URL } from "../data/Global";
 
 let socket: any = null;

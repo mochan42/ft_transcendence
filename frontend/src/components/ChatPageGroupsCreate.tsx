@@ -5,9 +5,9 @@ import { Dialog, Slide, DialogTitle, DialogContent, RadioGroup, FormLabel } from
 import { TransitionProps } from '@mui/material/transitions';
 import * as Yup from 'yup';
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Button, Stack, Radio } from "@mui/material";  
-import Checkbox from "@mui/material/Checkbox";  
-import FormControlLabel from "@mui/material/FormControlLabel";  
+import { Button, Stack, Radio } from "@mui/material";
+import Checkbox from "@mui/material/Checkbox";
+import FormControlLabel from "@mui/material/FormControlLabel";
 import RHF_TextField from './ui/RHF_TextField';
 import RHF_AutoCompDropDown from './ui/RHF_AutoCompDropDown';
 import Cookies from 'js-cookie';
@@ -15,7 +15,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { selectChatStore } from "../redux/store";
 import { getSocket } from '../utils/socketService';
 import { enChatPrivacy } from '../enums';
-import { updateChatGroupCreateFormPasswdState, updateChatGroupMembers, updateChatGroups } from '../redux/slices/chatSlice';
+import { updateChatGroupCreateFormPasswdState, updateChatGroupMembers, updateChatGroups, updateChatAllJoinReq } from '../redux/slices/chatSlice';
 import { TFormMember } from '../types';
 
 
@@ -23,12 +23,11 @@ import { TFormMember } from '../types';
  * See vide0 12 form creation
  * See video 9 for custom textfield creation
  */
-const Transition = React.forwardRef(function Transition (
-    props: TransitionProps & { children: React.ReactElement<any, any>;},
-    ref: React.Ref<unknown>)
-    {
-        return <Slide direction="up" ref={ref} {...props} />;
-    }
+const Transition = React.forwardRef(function Transition(
+    props: TransitionProps & { children: React.ReactElement<any, any>; },
+    ref: React.Ref<unknown>) {
+    return <Slide direction="up" ref={ref} {...props} />;
+}
 );
 
 type TGroupDialog = {
@@ -46,12 +45,12 @@ type THandler = {
 //     {id: "3", name: "Philip"},
 //     {id: "4", name: "Monine"},
 // ];
-const CreateGroupForm = ( handleFormClose: THandler ) => {
+const CreateGroupForm = (handleFormClose: THandler) => {
     const chatStore = useSelector(selectChatStore);
     const dispatch = useDispatch();
     const userId = Cookies.get('userId');
 
-    let  MEMBERS : TFormMember[] = [];
+    let MEMBERS: TFormMember[] = [];
     chatStore.chatUsers.forEach((el) => {
         if (el.id != userId) {
             MEMBERS.push({ id: el.id, name: el.userName });
@@ -66,8 +65,8 @@ const CreateGroupForm = ( handleFormClose: THandler ) => {
         }
     )
 
-    const defaultValues = { 
-        title: "" ,
+    const defaultValues = {
+        title: "",
         members: [], // to be replace with list of all users
         privacy_state: enChatPrivacy.PUBLIC,
     }
@@ -75,7 +74,7 @@ const CreateGroupForm = ( handleFormClose: THandler ) => {
     const methods = useForm({
         resolver: yupResolver(groupSchema),
         defaultValues,
-    }) 
+    })
 
     const {
         reset,
@@ -89,91 +88,96 @@ const CreateGroupForm = ( handleFormClose: THandler ) => {
 
     const socket = getSocket(Cookies.get('userId'));
 
-    const handleRadioBtn = (e : React.ChangeEvent<HTMLInputElement>) =>{
+    const handleRadioBtn = (e: React.ChangeEvent<HTMLInputElement>) => {
         const state = e.target.value;
         // setPrivacy(e.target.value);
         setValue("privacy_state", state)
         console.log(state);
-        (state == enChatPrivacy.PROTECTED) 
-            ? dispatch(updateChatGroupCreateFormPasswdState(false)) 
-            : dispatch(updateChatGroupCreateFormPasswdState(true)) 
+        (state == enChatPrivacy.PROTECTED)
+            ? dispatch(updateChatGroupCreateFormPasswdState(false))
+            : dispatch(updateChatGroupCreateFormPasswdState(true))
     }
 
     //const onSubmit:SubmitHandler<TFormInputs> = async (data: TFormInputs) => {
     // would be easier if data has the same names with channels colums in apis side
     const onSubmit = async (data: any) => {
-        dispatch(updateChatGroupCreateFormPasswdState(true)) 
-        try{
+        dispatch(updateChatGroupCreateFormPasswdState(true))
+        try {
             //API CALL
-            const newMembers = data.members.map((elt: {id: any, name: any }) => elt.id);
+            const newMembers = data.members.map((elt: { id: any, name: any }) => elt.id);
             const formatedData = {
                 ...data,
                 members: newMembers
             };
-            socket.emit('createChannel', formatedData);
+            if (formatedData.privacy_state == enChatPrivacy.PROTECTED && !formatedData.passwd) {
+                alert('password is required');
+            }
+            else {
+                socket.emit('createChannel', formatedData);
+            }
             socket.on('newChannel', (data: any) => {
-				dispatch(updateChatGroups(data.groups));
-				dispatch(updateChatGroupMembers(data.members));
-			});
+                dispatch(updateChatGroups(data.groups));
+                dispatch(updateChatGroupMembers(data.members));
+                dispatch(updateChatAllJoinReq(data.members));
+            });
             handleFormClose.close(false);
         }
-        catch (error)
-        {
+        catch (error) {
             console.log("EEROR!", error);
         }
     }
 
     return (
-        <FormProvider {...methods} > 
+        <FormProvider {...methods} >
             <form onSubmit={methods.handleSubmit(onSubmit)}>
                 <Stack spacing={3} padding={2}>
                     {/* channel title */}
-                    <RHF_TextField name="title" label="Title" type="text"/>
+                    <RHF_TextField name="title" label="Title" type="text" />
                     {/* Privacy */}
                     <FormLabel>Privacy</FormLabel>
-                        <RadioGroup name='privacy_state' 
-                            onChange={handleRadioBtn}
-                            defaultValue={defaultValues.privacy_state}
-                        >
-                            {/* channel public */}
-                            <FormControlLabel
-                                name='state_public'
-                                label="Public"
-                                control={<Radio />}
-                                value={enChatPrivacy.PUBLIC}
-                            />
-                            {/* channel private */}
-                            <FormControlLabel
-                                name='state_private'
-                                label="Private"
-                                control={<Radio />}
-                                value={enChatPrivacy.PRIVATE}
-                            />
-                            {/* channel protection */}
-                            <FormControlLabel
-                                name='state_protected'
-                                label="Protected"
-                                control={<Radio />}
-                                value={enChatPrivacy.PROTECTED}
-                            />
-                        </RadioGroup>
+                    <RadioGroup name='privacy_state'
+                        onChange={handleRadioBtn}
+                        defaultValue={defaultValues.privacy_state}
+                    >
+                        {/* channel public */}
+                        <FormControlLabel
+                            name='state_public'
+                            label="Public"
+                            control={<Radio />}
+                            value={enChatPrivacy.PUBLIC}
+                        />
+                        {/* channel private */}
+                        <FormControlLabel
+                            name='state_private'
+                            label="Private"
+                            control={<Radio />}
+                            value={enChatPrivacy.PRIVATE}
+                        />
+                        {/* channel protection */}
+                        <FormControlLabel
+                            name='state_protected'
+                            label="Protected"
+                            control={<Radio />}
+                            value={enChatPrivacy.PROTECTED}
+                        />
+                    </RadioGroup>
                     {/* channel password */}
-                    <RHF_TextField name="passwd" 
-                        label="Password" 
-                        type="password" 
+                    <RHF_TextField name="passwd"
+                        label="Password"
+                        type="password"
                         disabled={chatStore.chatGroupCreateFormPasswdState}
                     />
                     {/* channel members */}
-                    <RHF_AutoCompDropDown name="members" label="Members" options={MEMBERS}/>
+                    <RHF_AutoCompDropDown name="members" label="Members" options={MEMBERS} />
                 </Stack>
-                <Stack spacing={2} direction={"row"} 
+                <Stack spacing={2} direction={"row"}
                     alignItems={"center"}
                     justifyContent={"end"}
                 >
-                    <Button onClick={()=>handleFormClose.close(true)}>Cancel </Button>
+                    <Button onClick={() => handleFormClose.close(true)}>Cancel </Button>
                     <Button type="submit" variant='contained'>Create</Button>
                 </Stack>
-           </form>
+            </form>
 
         </FormProvider>
     )
@@ -181,10 +185,10 @@ const CreateGroupForm = ( handleFormClose: THandler ) => {
 
 const ChatPageGroupsCreate = (state: TGroupDialog) => {
     return (
-        <Dialog fullWidth maxWidth="xs" 
+        <Dialog fullWidth maxWidth="xs"
             open={state.openState} TransitionComponent={Transition}
             keepMounted
-            sx={{p: 4}}
+            sx={{ p: 4 }}
         >
             {/* Title */}
             <DialogTitle>Create New Channel</DialogTitle>
@@ -195,7 +199,7 @@ const ChatPageGroupsCreate = (state: TGroupDialog) => {
                 {/* Create form */}
                 <CreateGroupForm close={state.handleClose} />
             </DialogContent>
-         
+
         </Dialog>
     )
 }

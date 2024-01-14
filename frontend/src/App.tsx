@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import './App.css';
 import Login from './components/pages/Login';
@@ -16,7 +16,7 @@ import Cookies from 'js-cookie';
 import { Utils__isAPICodeAvailable } from './utils/utils__isAPICodeAvailable';
 import { getSocket } from './utils/socketService';
 import { GameType, Chat, Block } from './types';
-import { updateChatUserMessages, updateChatUserFriendRequests, updateChatUserFriends, updateChatUsers, updateChatGroups, updateChatGroupMembers, updateChatBlockedUsers } from "./redux/slices/chatSlice";
+import { updateChatUserMessages, updateChatUserFriendRequests, updateChatUserFriends, updateChatUsers, updateChatGroups, updateChatGroupMembers, updateChatBlockedUsers, updateChatAllJoinReq } from "./redux/slices/chatSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { selectChatStore } from "./redux/store";
 import { fetchAllFriends, fetchAllMessages, fetchAllUsersFriends } from './data/ChatData';
@@ -25,6 +25,7 @@ import Game from './components/pages/Game';
 import { ACCEPTED, PENDING } from './APP_CONSTS';
 import Game_2 from './components/pages/Game_2';
 import { HOME_SECTION } from './enums';
+import Temp from './components/Temp';
 
 
 
@@ -56,6 +57,7 @@ const App: React.FC = () => {
 	const socket = getSocket(userId);
 	const dispatch = useDispatch();
 	const chatStore = useSelector(selectChatStore);
+	const [gameReq, setGameReq] = useState<boolean>(false);
 
 	// check if code available for backend to exchange for token
 	Utils__isAPICodeAvailable({ setIsAuth, isAuth, setCode, code })
@@ -66,9 +68,11 @@ const App: React.FC = () => {
 		if (socket != null) {
 			socket.on('kickMemberSucces', (data: any) => {
 				dispatch(updateChatGroupMembers(data.all));
+				dispatch(updateChatAllJoinReq(data.all));
 			});
 			socket.on('memberMuteToggleSuccess', (data: any) => {
 				dispatch(updateChatGroupMembers(data.all));
+				dispatch(updateChatAllJoinReq(data.all));
 			});
 			socket.on('unblockSuccess', (blocks: Block[]) => {
 				dispatch(updateChatBlockedUsers(blocks));
@@ -78,6 +82,7 @@ const App: React.FC = () => {
 			});
 			socket.on('declinedMemberSuccess', (data: any) => {
 				dispatch(updateChatGroupMembers(data.all));
+				dispatch(updateChatAllJoinReq(data.all));
 			});
 			socket.on('deleteGroupSucces', (data: any) => {
 				dispatch(updateChatGroups(data.all));
@@ -89,10 +94,12 @@ const App: React.FC = () => {
 				dispatch(updateChatGroups(data.all));
 			});
 			socket.on('newMembers', (data: any) => {
-				dispatch(updateChatGroupMembers(data.all))
+				dispatch(updateChatGroupMembers(data.all));
+				dispatch(updateChatAllJoinReq(data.all));
 			});
 			socket.on('exitGroupSuccess', (data: any) => {
 				dispatch(updateChatGroupMembers(data.all));
+				dispatch(updateChatAllJoinReq(data.all));
 			});
 			socket.on('BlockedFriendSucces', (data: any) => {
 				dispatch(updateChatBlockedUsers(data.all));
@@ -150,10 +157,11 @@ const App: React.FC = () => {
 	//---------------------------GAME-----------------------------------------------
 	useEffect(() => {
 		if (socket != null) {
-			socket.on('invitedToMatch', (data: any) => {
-				console.log("Invitation received!", userId, "   ", data.player2, "\n\n");
+			if (gameReq) { return };
+			socket.once('challengedToMatch', (data: any) => {
 				if (data.player2 == userId) {
 					setChallenge(true);
+					setGameReq(true);
 					console.log("I got invited to a game! \n\n");
 					setGame(data);
 					console.log("Match invitation received! \n\n", data);
@@ -166,12 +174,16 @@ const App: React.FC = () => {
 
 	useEffect(() => {
 		if (socket != null) {
-			socket.on('matchFound', (data: GameType) => {
+			if (gameReq) { return };
+			socket.once('matchFound', (data: GameType) => {
 				console.log("Match found Event triggered! Player receiving the matchFound: ", data.player1,)
 				if (userId && userId == data.player1.toString()) {
 					console.log("My game challenge was accepted! \n");
 					setGameObj(data);
+					setGameReq(true);
 					setLetsPlay(true);
+					socket.emit('gameLoop', data);
+					console.log("Sending gameLoop");
 				}
 			});
 		} else {
@@ -183,7 +195,7 @@ const App: React.FC = () => {
 
 	const title = document.getElementsByTagName('title');
 	title[0].innerHTML = 'Transcendance App';
-	
+
 	// if (letsPlay == true) return(
 	// 	<> 
 	// 		<div className='h-20 flex backdrop-blur-sm bg-white/75 dark:bg-slate-900 border-b-4 border-white/75 dark:border-slate-600 item-center justify-between'>
@@ -204,14 +216,14 @@ const App: React.FC = () => {
 				</div>
 				<Routes>
 					<Route path='about' element={<About isAuth={isAuth} />} />
-					<Route path='/' element={<Home
+					<Route path='/' element={<ProtectedRoute path='/' isAuth={isAuth} element={<Home
 						userCode={{ code: code, setCode: setCode }}
 						loginState={{ isLogin: isAuth, setIsLogin: setIsAuth }} setUserId={setUserId}
 						userId={userId} state={state}
 						token2fa={token2fa}
 						setToken2fa={setToken2fa}
 						section={HOME_SECTION.PROFILE}
-					/>} />
+					/>} />} />
 					<Route path='/login' element={<Login isAuth={isAuth} setIsAuth={setIsAuth} state={state} />} />
 					<Route path='/login2fa' element={
 						<Login2fa isAuth={isAuth}
@@ -221,6 +233,7 @@ const App: React.FC = () => {
 							setToken2fa={setToken2fa}
 						/>} />
 					<Route path='/game' element={<ProtectedRoute isAuth={isAuth} path='/game' element={<GameSelection userId={userId} />} />} />
+					<Route path='/game/challenger' element={<ProtectedRoute isAuth={isAuth} path='/game/challenger' element={<Game difficulty={gameObj?.difficulty} includeBoost={gameObj ? gameObj.includeBoost : false} opponent='player' userId={userId} game={gameObj} matchIsFound={true} />} />} />
 					<Route path='/game/pvp' element={<ProtectedRoute isAuth={isAuth} path='/game/pvp' element={<Game_2 difficulty={game ? game.difficulty : 0} userId={userId ? userId : "0"} includeBoost={game ? game.includeBoost : false} opponent={'player'} status={'found'} game={game ? game : undefined} />} />} />
 					<Route path='/profile' element={<ProtectedRoute isAuth={isAuth} path='/profile' element={<Profile userId={userId} isAuth={isAuth} />} />} />
 					<Route path='/chat' element={<Home
@@ -253,7 +266,8 @@ const App: React.FC = () => {
 					<Footer />
 				</div>
 				{challenge ? <GameChallenge userId={userId} game={game} setChallenge={setChallenge} /> : null}
-				{letsPlay ? <Game difficulty={gameObj ? gameObj?.difficulty : 1} userId={gameObj ? gameObj.player1.toString() : userId} includeBoost={gameObj ? gameObj.includeBoost : false} opponent={gameObj ? gameObj.player2.toString() : "-1"} game={gameObj} /> : null}
+				{letsPlay ? <Temp  letsPlay={letsPlay} setLetsPlay={setLetsPlay}/> : null};
+				{/* {letsPlay ? <Game difficulty={gameObj ? gameObj?.difficulty : 0} userId={gameObj ? gameObj.player1.toString() : userId} includeBoost={gameObj ? gameObj.includeBoost : false} opponent={gameObj ? gameObj.player2.toString() : "-1"} game={gameObj} /> : null} */}
 			</Router>
 
 		</div>

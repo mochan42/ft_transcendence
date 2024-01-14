@@ -26,7 +26,14 @@ export class GamesService {
   }
 
   async findAll() {
-    return await this.gameRepo.find();
+    return this.gameRepo.find();
+  }
+
+  async findUsersGame(userId: number) {
+    return this.gameRepo.find({
+      where: [{ player1: userId }, { player2: userId }],
+      order: { id: 'DESC' }
+    });
   }
 
   async findOne(id: number) {
@@ -38,9 +45,12 @@ export class GamesService {
   }
 
   async remove(id: number) {
-    return `This action removes a #${id} game`;
+    return await this.gameRepo.delete(id);
   }
 
+  async removeAll() {
+    return await this.gameRepo.delete({});
+  }
   async makeMatch(
     player1: number,
     player2: number,
@@ -52,7 +62,8 @@ export class GamesService {
       player1: player1,
       player2: player2,
       difficulty: difficulty,
-      includeBoost: false,
+      includeBoost: isBoost,
+      isReset: false,
       status: 'request',
       score1: 0,
       score2: 0,
