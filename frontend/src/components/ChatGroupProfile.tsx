@@ -67,7 +67,7 @@ const ChatGroupProfile = () => {
 
     useEffect(() => {
 
-    }, [chatStore.chatActiveGroup, chatStore.chatGroupMembers, chatStore.chatGroupList]);
+    }, [chatStore.chatActiveGroup, chatStore.chatGroupMembers, chatStore.chatGroupList, chatStore.chatAllJoinReq]);
     // const actionBtnState = true
 
 

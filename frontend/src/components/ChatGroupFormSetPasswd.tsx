@@ -43,7 +43,7 @@ const CreateGroupFormSetPasswd = () => {
 
     const groupSchema = Yup.object().shape(
         {
-            passwd: Yup.string().required("Password is required").min(6),
+            passwd: Yup.string().required("Password is required"),
 
         }
     )

@@ -64,6 +64,11 @@ const ChatGroupMemberProfileComp = (user: IUserData) => {
         handleClose();
     }
 
+    useEffect(() => { 
+
+    }, [chatStore.chatGroupMembers, chatStore.chatAllJoinReq])
+
+
     return (
         <>
             <StyledChatBox sx={{
@@ -127,15 +132,17 @@ const ChatGroupMemberProfileComp = (user: IUserData) => {
                 <MenuItem onClick={onShwProfile}>View profile</MenuItem>
                 {/* {loggedUser.userId != +user.memberUser.id && <MenuItem onClick={handleClose}>Play game</MenuItem>} */}
                 {loggedUser.rank != enChatMemberRank.MEMBER &&
-                    user.memberJoin.rank != enChatMemberRank.OWNER && <Divider />}
+                    <Divider />}
 
+
+                
                 {loggedUser.rank != enChatMemberRank.MEMBER &&
                     user.memberJoin.rank != enChatMemberRank.OWNER &&
                     user.memberJoin.rights != enChatMemberRights.BANNED && loggedUser.userId != +user.memberUser.id && <MenuItem onClick={() => handleMute(enChatMemberRights.BANNED)}>Mute</MenuItem>}
 
                 {loggedUser.rank != enChatMemberRank.MEMBER &&
-                    user.memberJoin.rank != enChatMemberRank.OWNER &&
-                    user.memberJoin.rights != enChatMemberRights.PRIVILEDGED && loggedUser.userId != +user.memberUser.id && <MenuItem onClick={() => handleMute(enChatMemberRights.PRIVILEDGED)}>Unmute</MenuItem>}
+                    user.memberJoin.rank != enChatMemberRank.OWNER && user.memberJoin.rights == enChatMemberRights.BANNED &&
+                    <MenuItem onClick={() => handleMute(enChatMemberRights.PRIVILEDGED)}>Unmute</MenuItem>}
 
                 {loggedUser.rank != enChatMemberRank.MEMBER &&
                     user.memberJoin.rank != enChatMemberRank.OWNER && loggedUser.userId != +user.memberUser.id && <MenuItem onClick={handleKick}>Kick</MenuItem>}
@@ -174,6 +181,10 @@ const socket = getSocket(loggedUserId);
 const ChatGroupInfoComp = (group: Group) => {
     const chatStore = useSelector(selectChatStore)
     const groupOwner = getUserById(chatStore.chatUsers, group.ownerId)
+
+    useEffect(() => {
+
+     }, [chatStore.chatGroupMembers, chatStore.chatAllJoinReq])
 
     return (
         <>
