@@ -36,4 +36,41 @@ export class GoalsService {
   async remove(id: number) {
     return await this.GoalRepository.delete(id);
   }
+  async feedGoals(): Promise<(Goal | null)[]>{
+    const goals = await this.GoalRepository.find();
+    if (goals) return null
+    const seeds = [
+     {
+      label: "WELCOME",
+      image: "https://www.svgrepo.com/show/398519/trophy.svg",
+      description: "Welcome on board!"
+    },
+    {
+      label: "Beat that Bot",
+      image: "https://www.svgrepo.com/show/131148/robot.svg",
+      description: "Won against the Bot on easy"
+    },
+    {
+      label: "Artificial what now?",
+      image: "https://www.svgrepo.com/show/235195/robot-ai.svg",
+      description: "Won against the Bot on medium"
+    },
+    {
+      label: "iRobot who?",
+      image: "https://www.svgrepo.com/show/134/robot.svg",
+      description: "Won against the Bot on hard"
+    },
+    {
+      label: "Terminator termniated",
+      image: "https://www.svgrepo.com/show/402624/robot-face.svg",
+      description: "Won against the Bot on very hard"
+    },
+    {
+      label: "Heisted Heistotron",
+      image: "https://www.svgrepo.com/show/145418/robot.svg",
+      "description": "Won against the Bot on extreme"
+    }
+    ]
+    return await this.GoalRepository.save(goals);
+  }
 }

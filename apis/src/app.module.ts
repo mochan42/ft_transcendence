@@ -16,6 +16,7 @@ import { ChannelsModule } from './channels/channels.module';
 import { JoinchannelModule } from './joinchannel/joinchannel.module';
 import { GamequeueModule } from './gamequeue/gamequeue.module';
 import { AuthGuard } from './auth/auth.guard';
+import { GoalsService } from './goals/goals.service';
 
 @Module({
   imports: [
@@ -41,4 +42,13 @@ import { AuthGuard } from './auth/auth.guard';
     AuthGuard,
   ],
 })
-export class AppModule {}
+export class AppModule {
+  constructor(private readonly goalService: GoalsService) {
+
+  }
+
+  async onModuleInit() {
+    await this.goalService.feedGoals();
+  }
+
+}
