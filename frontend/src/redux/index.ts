@@ -20,6 +20,7 @@ export interface IChatState {
   chatUserFriendRequests: Friend[];
   chatGroupList: (Group | null)[];
   chatGroupMembers: JoinGroup[];
+  chatAllJoinReq: JoinGroup[];
   chatType: String | null;
   chatRoomId: String | null;
   chatActiveUser: User | null;

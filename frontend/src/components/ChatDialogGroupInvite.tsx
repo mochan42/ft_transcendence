@@ -57,7 +57,6 @@ export const FindUserMemberShip = (userId: string | undefined, channelId: number
     const chatStore = useSelector(selectChatStore)
     const groupMembers = chatStore.chatGroupMembers.filter(el => el.channelId == channelId);
     const userMemberShip = groupMembers.find(el => el.userId.toString() == userId);
-    console.log(userMemberShip);
     if (!userMemberShip) {
         return null;
     }

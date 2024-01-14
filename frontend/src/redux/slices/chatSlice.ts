@@ -34,6 +34,7 @@ const initialState: IChatState = {
   chatGroupList: ChatGroupList,  // uncomment for production
   // chatGroupList: ChatGroupListDummy, //# for dev purpose
   chatGroupMembers: ChatGroupMemberList,
+  chatAllJoinReq: ChatGroupMemberList,
   chatType: null,
   chatRoomId: null,
   chatActiveUser: null,
@@ -104,6 +105,9 @@ const chatSlice = createSlice({
     updateChatGroupMembers: (state, action: PayloadAction<JoinGroup[]>) => {
       state.chatGroupMembers = action.payload;
     },
+    updateChatAllJoinReq: (state, action: PayloadAction<JoinGroup[]>) => {
+      state.chatGroupMembers = action.payload;
+    },
     updateStateGroupDialog: (state, action: PayloadAction<boolean>) => {
       state.chatGroupDialogState = action.payload;
     },
@@ -165,7 +169,8 @@ export const {
   updateChatGroupChkPassInpState,
   updateChatPreActiveGroup,
   updateChatBlockedUsers,
-  updateTmpGroup
+  updateTmpGroup,
+  updateChatAllJoinReq
 } = chatSlice.actions;
 export default chatSlice;
 
