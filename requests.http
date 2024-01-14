@@ -15,7 +15,7 @@ Content-Type: application/json
 
 
 ### Delete channels 
-DELETE  http://localhost:5000/pong/channels/42
+DELETE  http://localhost:5000/pong/channels/53
 
 
 ### ALL members
