@@ -5,7 +5,6 @@ import Ball from './Ball';
 import Paddle from './Paddle';
 import { GameType, User, ballXType, ballYType, paddle1Type, paddle2Type, update } from '../types';
 import { getSocket } from '../utils/socketService';
-import StartGame from './StartGame';
 
 interface PvP_2Props {
 	isActive: boolean;
@@ -36,7 +35,6 @@ const PvP_2: React.FC<PvP_2Props> = ({ isActive, setIsActive, playerPoint, oppon
 	const socket = getSocket(userId);
 	const [startGame, setStartGame] = useState(false);
 	const [gameObj, setGameObj] = useState<GameType | undefined>(game);
-	// const [matchFound, setMatchFound] = useState< true | false | undefined >(false); // static
 	const PvPRef = useRef<HTMLDivElement>(null);
 	const paddleLengths = [200, 150, 100, 80, 50] // static
 	const [includeBoost, setIncludeBoost] = useState(false);
@@ -83,8 +81,10 @@ const PvP_2: React.FC<PvP_2Props> = ({ isActive, setIsActive, playerPoint, oppon
 		setPlayer1Score(data.score1);
 		setPlayer2Score(data.score2);
 		setIsBoost(data.includeBoost)
-		if (data.status == 'finished' || data.status == 'aborted')
+		if (data.status == 'finished' || data.status == 'aborted') {
 			setIsGameOver(true);
+			console.log("Game has ended. It was ", data.status);
+		}
 		else {
 			const response = {
 				player: data.player2,
@@ -184,7 +184,7 @@ const PvP_2: React.FC<PvP_2Props> = ({ isActive, setIsActive, playerPoint, oppon
 				<div className="relative bg-slate-900">
 					<Ball xPosition={ballX} yPosition={ballY} />
 				</div>
-				{gameObj?.isGameOver ? (
+				{isGameOver ? (
 						<div className="absolute inset-0 bg-black bg-opacity-80">
 							<VictoryLoss userId={userId} isVictory={gameObj ? ((gameObj?.score2 > gameObj?.score1) ? true : false) : false} difficulty={gameObj?.difficulty ? gameObj?.difficulty : 1} />
 						</div>

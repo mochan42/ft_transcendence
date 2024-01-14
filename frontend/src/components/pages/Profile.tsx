@@ -13,6 +13,7 @@ import { GameType } from '../../types'
 
 const Profile: React.FC<ProfileProps> = ({ userId, isAuth }) => {
 
+
     const [userInfo, setUserInfo] = useState<User | null>(null);
     const [usersInfo, setUsersInfo] = useState<User[] | null>(null);
     const [userStats, setUserStats] = useState<UserStats | null>(null);
@@ -221,27 +222,19 @@ const Profile: React.FC<ProfileProps> = ({ userId, isAuth }) => {
                             </h3>
                             <div className='flex flex-wrap items-center justify-around gap-8'>
                                 <div>
-                                    <div className='space-y-2 flex flex-col justify-between gap-4'>
-                                        {
-                                            userMatchStories.map((match, index) => {
-                                                return (
-                                                    <>
-                                                        <div key={index}  className='flex flex-row justify-between'>
-                                                            {
-                                                                (userId && +userId === match.player1) ? userInfo?.userNameLoc : (match.player1 > 0) ? usersInfo?.filter((el: User | null) => (el && +el.id == match.player1))[0].userNameLoc : "Bot"
-                                                            }
-                                                            <span className={(match.score1 > match.score2) ? 'text-green-500' : 'text-red-500'}>&nbsp;{match.score1}&nbsp;</span>
-                                                            <span>-</span>
-                                                            <span className={(match.score2 > match.score1) ? 'text-green-500' : 'text-red-500'}>&nbsp;{match.score2}&nbsp;</span>
-                                                            {
-                                                                (userId && +userId === match.player2) ? userInfo?.userNameLoc : (match.player2 > 0) ? usersInfo?.filter((el: User | null) => (el && +el.id == match.player2))[0].userNameLoc : "Bot"
-                                                            }
-                                                        </div>
-                                                    </>
-                                                );
-                                            })
-                                        }
-                                    </div>
+                                    {
+                                        userMatchStories.map((match) => {
+                                            return (
+                                                <div key={match.id} className='flex flex-row justify-between'>
+                                                    {(userId && +userId === match.player1) ? userInfo?.userNameLoc : (match.player1 > 0) ? usersInfo?.filter((el: User | null) => (el && +el.id == match.player1))[0].userNameLoc : "Bot"}
+                                                    <span className={(match.score1 > match.score2) ? 'text-green-500' : 'text-red-500'}>&nbsp;{match.score1}&nbsp;</span>
+                                                    <span>-</span>
+                                                    <span className={(match.score2 > match.score1) ? 'text-green-500' : 'text-red-500'}>&nbsp;{match.score2}&nbsp;</span>
+                                                    {(userId && +userId === match.player2) ? userInfo?.userNameLoc : (match.player2 > 0) ? usersInfo?.filter((el: User | null) => (el && +el.id == match.player2))[0].userNameLoc : "Bot"}
+                                                </div>
+                                            );
+                                        })
+                                    }
                                 </div>
                             </div>
                         </div>

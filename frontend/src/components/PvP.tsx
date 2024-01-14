@@ -87,8 +87,16 @@ const PvP: React.FC<PvPProps> = ({ setGameRef, includeBoost, isActive, setIsActi
 		setPlayer1Score(data.score1);
 		setPlayer2Score(data.score2);
 		setIsBoost(data.isBoost);
-		if (data.status == 'finished' || data.status == 'aborted') {
+		if (data.status == 'finished') {
 			setIsGameOver(true);
+			socket.emit('saveGame', {
+				player1: data.player1,
+				player2: data.player2,
+				difficulty: data.difficulty,
+				score1: data.score1,
+				score2: data.score2,
+				includeBoost: data.includeBoost,
+			});
 			console.log("Game has ended. It was ", data.status);
 		}
 		else {
@@ -142,7 +150,7 @@ const PvP: React.FC<PvPProps> = ({ setGameRef, includeBoost, isActive, setIsActi
 			});
 		}
 		// Cleanup function
-		return () => { if (socket) socket.off('matchFound'); };
+		return () => { if (socket) socket.off('matchFound'); socket.off('updateMatch'); };
 	});
 
 	// Track player key input
@@ -182,7 +190,7 @@ const PvP: React.FC<PvPProps> = ({ setGameRef, includeBoost, isActive, setIsActi
 				</div>
 				{/* {includeBoost && !isBoost ? <Boost x={boostX} y={boostY} width={boostWidth} height={boostWidth} /> : null} */}
 				{!matchFound ? <MatchMaking gameObj={gameObj} setGameObj={setGameObj} difficulty={selectedDifficulty} includeBoost={includeBoost} socket={socket} setMatchFound={setMatchFound} userId={userId} setState={setState} setOpponentId={setOpponentId} opponentId={3} setPlayer1Id={setPlayer1Id} setPlayer2Id={setPlayer2Id}/> : null}
-				{gameObj?.isGameOver ? (
+				{isGameOver ? (
 						<div className="absolute inset-0 bg-black bg-opacity-80">
 							<VictoryLoss userId={userId} isVictory={gameObj ? ((gameObj?.score1 > gameObj?.score2) ? true : false) : false} difficulty={gameObj?.difficulty ? gameObj?.difficulty : 1} />
 						</div>

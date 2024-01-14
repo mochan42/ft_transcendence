@@ -243,9 +243,9 @@ const Pong: React.FC<PongProps> = ({ userId, difficulty, isGameActive, isGameOve
 						score2: opponentScore,
 						includeBoost
 					});
-					socket.on('gameBotSuccess', (data: any) => {
-						console.log(data);
-					});
+					// socket.on('gameBotSuccess', (data: any) => {
+					// 	console.log(data);
+					// });
 				}
 				setIsGameOver(true);
 				setIsGameSaved(false);
