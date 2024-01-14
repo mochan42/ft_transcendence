@@ -61,7 +61,9 @@ export class ChannelsService {
   
   async verifyPasswd(input: string, group: number) {
     const channel = await this.findOne(group);
+    console.log('group: ', group, ' and ', channel.channelId);
+    await Promise.all([channel]);
     if (!group) return false;
-    return this.comparePassword(input, channel.password);
+    return await this.comparePassword(input, channel.password);
   }
 }

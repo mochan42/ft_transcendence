@@ -15,7 +15,7 @@ Content-Type: application/json
 
 
 ### Delete channels 
-DELETE  http://localhost:5000/pong/channels/42
+DELETE  http://localhost:5000/pong/channels/53
 
 
 ### ALL members
@@ -39,8 +39,10 @@ Content-Type: application/json
 ### Delete all members
 DELETE  http://localhost:5000/pong/chanel-all-members
 
-### get all users
+
 GET http://localhost:5000/pong/users/
+### get all users
+GET https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/users
 Authorization: Bearer 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
 ### test
 GET http://localhost:5000/pong/friends
@@ -71,23 +73,14 @@ Content-Type: application/json
 }
 
 ###  Edit user info
-PATCH  http://localhost:5000/pong/users/39
+PATCH https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/users/xp/4
 Content-Type: application/json
 
 {
-  "userName": "fakouyat",
-  "userNameLoc": "kouyaBoss",
-  "firstName": "Facinet",
-  "lastName": "Kouyate",
-  "is2Fa": false,
-  "authToken": "dkdkd",
-  "email": "fakouyat@student.42wolfsburg.de",
-  "secret2Fa": "H4DHQUYSIY6XOJTP",
-  "avatar": "https://cdn.intra.42.fr/users/19eaa22c691bc561cf527f09a094bbad/fakouyat.jpg",
-  "xp": 0,
-  "currentState": "ONLINE",
-  "lastSeen": "2023-08-02T17:30:58.572Z"
+	"xp": 1
 }
+
+
 
 ### udpate 2FA option
 PATCH   http://localhost:5000/pong/users/2fa/30

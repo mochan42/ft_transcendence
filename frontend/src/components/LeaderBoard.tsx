@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Friend, User } from "../types";
 import axios from "axios";
-import { Button } from "./ui/Button";
 import { useSelector } from "react-redux";
 import { selectChatStore } from "../redux/store";
 import { getSocket } from '../utils/socketService';
 import { BACKEND_URL } from "../data/Global";
+import UserCard from "./UserCard";
+import { Button } from "./ui/Button";
 
 
 interface LeaderboardProps {
@@ -16,7 +17,7 @@ const Leaderboard:React.FC<LeaderboardProps> =({ userId }) => {
 	
 	const chatStore = useSelector(selectChatStore);
 	const [usersInfo, setUsersInfo] = useState<User[]>([]);
-	const [showScreen, setShowScreen] = useState< 'default' | 'FriendView'>('default');
+	const [showScreen, setShowScreen] = useState<number>(-1);
 	const [topUsers, setTopUsers] = useState< User[] >([]);
 	const [friends, setFriends] = useState< Friend [] | null>(null)
 	const urlFriends = `${BACKEND_URL}/pong/users/` + userId + '/friends';
@@ -76,54 +77,37 @@ const Leaderboard:React.FC<LeaderboardProps> =({ userId }) => {
 
 	useEffect(() => {
 		const sortedUsers = usersInfo.sort((a, b) => b.xp - a.xp);
-		const top5Users = sortedUsers.slice(0, 5);
-		setTopUsers(top5Users);
+		const top10Users = sortedUsers.slice(0, 10);
+		setTopUsers(top10Users);
 	}, [usersInfo]);
 
 	return (
 		<div className="h-full w-full bg-slate-900 p-4 text-center rounded-lg">
-			<h2 className="text-2xl text-amber-400 font-semibold mb-4">Leaderboard</h2>
-			<div className="overflow-y-auto max-h-80 text-slate-200">
-				{topUsers.map((user) => (
-				<div
-					key={user.id}
-					className="flex items-center justify-around py-2 border-b border-slate-900"
-				>
-					<div className='flex justify-between gap-x-6 items-center'>
-						{/* <Button variant={'ghost'} onClick={
-							(() => {
-									if (!(friends?.some((friend) => friend.receiver === user.id || friends?.some((friend) => friend.sender === user.id)))) {
-										return addFriend(user.id);
-								}
-							})
-						}>
-							<img
-								className='bg-slate-900 h-6 w-6 min-w-[24px] min-h-[24px] rounded-full'
-								src={
-								(() => {
-									if (user.id === userId) {
-										return 'https://www.svgrepo.com/show/515532/circle.svg';
-									} else if (friends?.some((friend) => friend.receiver === user.id && friend.relation === 'accepted' || friends?.some((friend) => friend.sender === user.id && friend.relation === 'accepted'))) {
-										return "https://www.svgrepo.com/show/157817/success.svg";
-									} else if (friends?.some((friend) => friend.receiver === user.id && friend.relation === 'pending' || friends?.some((friend) => friend.sender === user.id && friend.relation === 'pending'))) {
-										return "https://www.svgrepo.com/show/226028/clock-watch.svg";
-									} else {
-										return "https://www.svgrepo.com/show/416162/add-friend-basic-outline.svg";
-									}
-								  })()
-								}
-							/>
-						</Button> */}
-						<img className='h-6 w-6 rounded-full' src={user.avatar != "" ? user.avatar : 'https://www.svgrepo.com/show/170615/robot.svg'}/>
-							<button className="text-lg mr-2 hover:underline" onClick={() => { alert('QUOI ?') }} >{user.userNameLoc}</button>
+			{(showScreen > -1) ?
+			<div>
+				<UserCard userId={showScreen.toString()} />
+				<Button onClick={() => setShowScreen(-1)} variant='outline' children='Close' className='dark:text-slate-900' />
+			</div> :
+			<div>
+				<h2 className="text-2xl text-amber-400 font-semibold mb-4">Leaderboard</h2>
+				<div className="overflow-y-auto max-h-80 text-slate-200">
+					{topUsers.map((user) => (
+					<div
+						key={user.id}
+						className="flex items-center justify-around py-2 border-b border-slate-900"
+					>
+						<div className='flex justify-between gap-x-6 items-center'>
+							<img className='h-6 w-6 rounded-full' src={user.avatar != "" ? user.avatar : 'https://www.svgrepo.com/show/170615/robot.svg'}/>
+								<button className="text-lg mr-2 hover:underline" onClick={() => {setShowScreen(+user.id) }} >{user.userNameLoc}</button>
+						</div>
+						<span className="text-slate-300">{user.xp} points</span>
+						<div className="text-amber-400">
+							Rank: {topUsers.indexOf(user) + 1}
+						</div>
 					</div>
-					<span className="text-slate-300">{user.xp} points</span>
-					<div className="text-amber-400">
-						Rank: {topUsers.indexOf(user) + 1}
-					</div>
+					))}
 				</div>
-				))}
-			</div>
+			</div> }
 		</div>
 	);
 };

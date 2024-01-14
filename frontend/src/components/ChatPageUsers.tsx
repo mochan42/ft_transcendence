@@ -47,7 +47,7 @@ const ChatElement = (user: User) => {
 
     useEffect(() => {
 
-    }, [chatStore.chatUserMessages]);
+    }, [chatStore.chatUserMessages, user]);
 
     return (
         <Box 
@@ -68,7 +68,7 @@ const ChatElement = (user: User) => {
                 justifyContent={"space-between"}
             >
                 <Stack direction="row" spacing={2}>
-                    {user.currentState !== LOG_STATE.OFFLINE ? 
+                    {user.currentState == LOG_STATE.ONLINE &&
                     <Badge 
                         color="success" 
                         variant="dot" 
@@ -77,7 +77,25 @@ const ChatElement = (user: User) => {
                     >
                     <Avatar src={ user.avatar }/>
                     </Badge>
-                    : <Avatar src={ user.avatar }/>
+                    }
+                    {(user.currentState == LOG_STATE.OFFLINE || user.currentState == null) &&
+                        <Badge 
+                        color="primary"
+                        variant="dot" 
+                        anchorOrigin={{vertical:"bottom", horizontal:"left"}}
+                        overlap="circular"
+                        >
+                    <Avatar src={ user.avatar }/>
+                    </Badge>}
+                    {user.currentState == LOG_STATE.INGAME &&
+                        <Badge 
+                        color="error"
+                        variant="dot" 
+                        anchorOrigin={{vertical:"bottom", horizontal:"left"}}
+                        overlap="circular"
+                        >
+                    <Avatar src={ user.avatar }/>
+                    </Badge>
                     }
                     <Stack spacing={0.2}>
                         <Typography variant="subtitle2">{ user.userNameLoc }</Typography>

@@ -58,7 +58,6 @@ const ChatGroupProfile = () => {
     const exitGroup = () => {
 
         const isExit = canExit(loggedUser[0], groupMembers);
-        console.log('ISEXIT: ', isExit, ' --\n');
         if (isExit) {
             socket.emit('exitGroup', chatStore.chatActiveGroup?.channelId);
             dispatch(selectConversation({ chatRoomId: null, chatType: enChatType.Group }));
@@ -68,7 +67,7 @@ const ChatGroupProfile = () => {
 
     useEffect(() => {
 
-    }, [chatStore.chatActiveGroup, chatStore.chatGroupMembers, chatStore.chatGroupList]);
+    }, [chatStore.chatActiveGroup, chatStore.chatGroupMembers, chatStore.chatGroupList, chatStore.chatAllJoinReq]);
     // const actionBtnState = true
 
 

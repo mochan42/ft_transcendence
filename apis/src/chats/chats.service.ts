@@ -16,9 +16,15 @@ export class ChatsService {
   ) {}
 
   async getUserFromSocket(socket: Socket) {
-    const userId = socket.handshake.headers['x-custom-data'];
-    const user = await this.usersService.findOne(+userId);
-    return user;
+    if (socket) {
+      var userId = socket.handshake.headers['x-custom-data'];
+      const user = await this.usersService.findOne(+userId);
+      return user;
+    }
+    else {
+      console.log("Socket doesn't exist. Can't get User from Socket!")
+      return (null)
+    }
   }
 
   async saveMessage(message: MessageDto) {

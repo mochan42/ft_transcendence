@@ -16,6 +16,9 @@ export class CreateGameDto {
   @IsBoolean()
   includeBoost: boolean;
 
+  @IsBoolean()
+  isReset: boolean;
+
   @IsString()
   status: string;
 

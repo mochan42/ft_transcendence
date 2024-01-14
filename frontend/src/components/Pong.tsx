@@ -23,7 +23,7 @@ interface PongProps {
 
 const Pong: React.FC<PongProps> = ({ userId, difficulty, isGameActive, isGameOver, isReset, player1Score, opponentScore, includeBoost, playerPoint, opponentPoint, setIsGameOver, setReset }) => {
 
-	const itsdifficult = difficulty ? (difficulty + 2) * 2 : 1;
+	const itsdifficult = difficulty ? (difficulty + 2) * 2 : 6;
 	const realDifficulty = difficulty ? difficulty : 1;
 	const PongRef = useRef<HTMLDivElement>(null);
 	const paddleLengths = [200, 150, 100, 80, 50]
@@ -243,9 +243,9 @@ const Pong: React.FC<PongProps> = ({ userId, difficulty, isGameActive, isGameOve
 						score2: opponentScore,
 						includeBoost
 					});
-					socket.on('gameBotSuccess', (data: any) => {
-						console.log(data);
-					});
+					// socket.on('gameBotSuccess', (data: any) => {
+					// 	console.log(data);
+					// });
 				}
 				setIsGameOver(true);
 				setIsGameSaved(false);
@@ -253,8 +253,8 @@ const Pong: React.FC<PongProps> = ({ userId, difficulty, isGameActive, isGameOve
 			if (isReset && !isGameOver) {
 				setBallX(startX);
 				setBallY(startY);
-				setSpeedX(Math.sign(speedX) * itsdifficult);
-				setSpeedY(Math.sign(speedY) * itsdifficult);
+				setSpeedX(Math.sign(speedX) * itsdifficult + (Math.random() * itsdifficult));
+				setSpeedY(Math.sign(speedY) * itsdifficult + (Math.random() * itsdifficult));
 				setReset(false);
 			}
 			if (isBoost && includeBoost) {
@@ -304,19 +304,21 @@ const Pong: React.FC<PongProps> = ({ userId, difficulty, isGameActive, isGameOve
 
 	return (
 		<div className='w-full h-full border-t-2 border-l-2 border-r-2 border-slate-700 black:border-slate-200 dark:text-slate-200 text-center'>
-			<div className="relative w-full h-full" ref={PongRef}>
-				<Paddle yPosition={leftPaddleY} paddleHeight={paddleLengths[realDifficulty]} style={{ left: 0 }} />
-				<Paddle yPosition={rightPaddleY} paddleHeight={botpaddleLengths[realDifficulty]} style={{ right: 0 }} />
-				<div className="relative bg-slate-900">
-					<Ball xPosition={ballX} yPosition={ballY} />
-				</div>
-				{includeBoost && !isBoost ? <Boost x={boostStartX} y={boostStartY} width={boostWidth} height={boostWidth} /> : null}
-				{isGameOver ? (
-					<div className="absolute inset-0 bg-black bg-opacity-80">
-						<VictoryLoss userId={userId} isVictory={player1Score === 10} difficulty={realDifficulty} />
+			<div className="relative w-full h-full">
+				<div className='flex rounded min-w-[350px] h-[600px] w-[1200px] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 bg-slate-900 text-slate-200' ref={PongRef}>
+					<Paddle yPosition={leftPaddleY} paddleHeight={paddleLengths[realDifficulty]} style={{ left: 0 }} />
+					<Paddle yPosition={rightPaddleY} paddleHeight={botpaddleLengths[realDifficulty]} style={{ right: 0 }} />
+					<div className="relative bg-slate-900">
+						<Ball xPosition={ballX} yPosition={ballY} />
 					</div>
-				) : null
-				}
+					{includeBoost && !isBoost ? <Boost x={boostStartX} y={boostStartY} width={boostWidth} height={boostWidth} /> : null}
+					{isGameOver ? (
+						<div className="absolute inset-0 bg-black bg-opacity-80">
+							<VictoryLoss userId={userId} isVictory={player1Score === MAX_SCORE} difficulty={realDifficulty} />
+						</div>
+					) : null
+					}
+				</div>
 			</div>
 		</div>
 	)

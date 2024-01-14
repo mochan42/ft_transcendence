@@ -13,6 +13,7 @@ import { GameType } from '../../types'
 
 const Profile: React.FC<ProfileProps> = ({ userId, isAuth }) => {
 
+
     const [userInfo, setUserInfo] = useState<User | null>(null);
     const [usersInfo, setUsersInfo] = useState<User[] | null>(null);
     const [userStats, setUserStats] = useState<UserStats | null>(null);
@@ -21,6 +22,7 @@ const Profile: React.FC<ProfileProps> = ({ userId, isAuth }) => {
     const [userAchievements, setUserAchievements] = useState<UserAchievements[] | null>(null);
     const [allGoals, setAllGoals] = useState<Goal[] | null>(null);
     const [friends, setFriends] = useState<Friend[] | null>(null)
+    const [userFriends, setUserFriends] = useState<User[] | null>(null)
     const id = userId;
     const urlFriends = `${BACKEND_URL}/pong/users/` + id + '/friends';
     const url_info = `${BACKEND_URL}/pong/users/` + id;
@@ -31,7 +33,6 @@ const Profile: React.FC<ProfileProps> = ({ userId, isAuth }) => {
 
     const [achievedGoals, setAchievedGoals] = useState<Goal[]>();
     const [notAchievedGoals, setNotAchievedGoals] = useState<Goal[]>();
-    const [userFriends, setUserFriends] = useState<User[] | null>(null)
     const [state2fa, setState2fa] = useState<boolean>(false);
     const [btnTxt2fa, setBtnTxt2fa] = useState<string>("2FA: disabled");
     //const [btnStyle, setBtnStyle] = useState<string>('default');
@@ -61,8 +62,6 @@ const Profile: React.FC<ProfileProps> = ({ userId, isAuth }) => {
             const notAchievedGoals = allGoals?.filter((goal) => {
                 return !userAchievements?.some((achievement) => achievement.goalId === goal.id);
             })
-            // console.log('achieved goals: ', achievedGoals)
-            // console.log('not achieved goals: ', notAchievedGoals)
             setAchievedGoals(achievedGoals);
             setNotAchievedGoals(notAchievedGoals);
         }
@@ -116,8 +115,10 @@ const Profile: React.FC<ProfileProps> = ({ userId, isAuth }) => {
                 try {
                     const response: AxiosResponse<Goal[] | null> = await axios.get(url_goals, { headers });
                     if (response.status === 200) {
-                        setAllGoals(response.data);
-                        // console.log('Received Goals: ', response.data);
+                        if (response.data && response.data.length > 0) {
+                            console.log('Received Goals: ', response.data);
+                            setAllGoals(response.data);
+                        }
                     }
                 } catch (error) {
                     console.log('Error fetching Goals:', error);
@@ -221,27 +222,19 @@ const Profile: React.FC<ProfileProps> = ({ userId, isAuth }) => {
                             </h3>
                             <div className='flex flex-wrap items-center justify-around gap-8'>
                                 <div>
-                                    <div className='space-y-2 flex flex-col justify-between gap-4'>
-                                        {
-                                            userMatchStories.map((match) => {
-                                                return (
-                                                    <>
-                                                        <div className='flex flex-row justify-between'>
-                                                            {
-                                                                (userId && +userId === match.player1) ? userInfo?.userNameLoc : (match.player1 > 0) ? usersInfo?.filter((el: User | null) => (el && +el.id == match.player1))[0].userNameLoc : "Bot"
-                                                            }
-                                                            <span className={(match.score1 > match.score2) ? 'text-green-500' : 'text-red-500'}>&nbsp;{match.score1}&nbsp;</span>
-                                                            <span>-</span>
-                                                            <span className={(match.score2 > match.score1) ? 'text-green-500' : 'text-red-500'}>&nbsp;{match.score2}&nbsp;</span>
-                                                            {
-                                                                (userId && +userId === match.player2) ? userInfo?.userNameLoc : (match.player2 > 0) ? usersInfo?.filter((el: User | null) => (el && +el.id == match.player2))[0].userNameLoc : "Bot"
-                                                            }
-                                                        </div>
-                                                    </>
-                                                );
-                                            })
-                                        }
-                                    </div>
+                                    {
+                                        userMatchStories.map((match) => {
+                                            return (
+                                                <div key={match.id} className='flex flex-row justify-between'>
+                                                    {(userId && +userId === match.player1) ? userInfo?.userNameLoc : (match.player1 > 0) ? usersInfo?.filter((el: User | null) => (el && +el.id == match.player1))[0].userNameLoc : "Bot"}
+                                                    <span className={(match.score1 > match.score2) ? 'text-green-500' : 'text-red-500'}>&nbsp;{match.score1}&nbsp;</span>
+                                                    <span>-</span>
+                                                    <span className={(match.score2 > match.score1) ? 'text-green-500' : 'text-red-500'}>&nbsp;{match.score2}&nbsp;</span>
+                                                    {(userId && +userId === match.player2) ? userInfo?.userNameLoc : (match.player2 > 0) ? usersInfo?.filter((el: User | null) => (el && +el.id == match.player2))[0].userNameLoc : "Bot"}
+                                                </div>
+                                            );
+                                        })
+                                    }
                                 </div>
                             </div>
                         </div>

@@ -5,9 +5,11 @@ import Ball from './Ball';
 import Paddle from './Paddle';
 import { GameType, User, ballXType, ballYType, paddle1Type, paddle2Type, update } from '../types';
 import { getSocket } from '../utils/socketService';
-import StartGame from './StartGame';
+import { useNavigate } from 'react-router-dom';
 
 interface PvP_2Props {
+	isActive: boolean;
+	setIsActive: (boolean: boolean) => void;
 	userId: string | null | undefined;
 	player1Score: number;
 	player2Score: number;
@@ -27,14 +29,16 @@ interface PvP_2Props {
 	setPlayer1Score: (number: number) => void;
 	setPlayer2Score: (number: number) => void;
 	game?: GameType;
+	setGame: (GameType: GameType) => void;
+	isPause: boolean;
+	setIsPause: (boolean: boolean) => void;
 }
 
-const PvP_2: React.FC<PvP_2Props> = ({ playerPoint, opponentPoint, setReset, userId, player1Score, player2Score, isGameActive, isReset, isGameOver, setIsGameOver, setState, setPlayer1Id, setPlayer2Id, setPlayer1Score, setPlayer2Score, setPlayer1Info, setPlayer2Info, game }) => {
+const PvP_2: React.FC<PvP_2Props> = ({ setIsPause, isPause, game, setGame, isActive, setIsActive, playerPoint, opponentPoint, setReset, userId, player1Score, player2Score, isGameActive, isReset, isGameOver, setIsGameOver, setState, setPlayer1Id, setPlayer2Id, setPlayer1Score, setPlayer2Score, setPlayer1Info, setPlayer2Info }) => {
 
 	const socket = getSocket(userId);
 	const [startGame, setStartGame] = useState(false);
 	const [gameObj, setGameObj] = useState<GameType | undefined>(game);
-	// const [matchFound, setMatchFound] = useState< true | false | undefined >(false); // static
 	const PvPRef = useRef<HTMLDivElement>(null);
 	const paddleLengths = [200, 150, 100, 80, 50] // static
 	const [includeBoost, setIncludeBoost] = useState(false);
@@ -47,6 +51,7 @@ const PvP_2: React.FC<PvP_2Props> = ({ playerPoint, opponentPoint, setReset, use
 	}
 	const [ballX, setBallX] = useState<number>(400); // dynamic
 	const [ballY, setBallY] = useState<number>(400); // dynamic
+	const [isBoost, setIsBoost] = useState<boolean | undefined>(false); // dynamic
 	const [difficulty, setDifficulty] = useState(0);
 	const [boostX, setBoostX] = useState(200); // dynamic
 	const [boostY, setBoostY] = useState(200); // dynamic
@@ -55,6 +60,8 @@ const PvP_2: React.FC<PvP_2Props> = ({ playerPoint, opponentPoint, setReset, use
 	const [paddle2Dir, setPaddle2Dir] = useState<number>(0); // dynamic
 	const [paddle2Speed, setPaddle2Speed] = useState(15); // dynamic
 	const paddle2YRef = useRef<number>(0);
+	const [arbitrary, setArbitrary] = useState<boolean>(false);
+	const navigate = useNavigate();
 
 	const movePaddles = () => {
 		setPaddle2Y((prevY) => {
@@ -71,26 +78,42 @@ const PvP_2: React.FC<PvP_2Props> = ({ playerPoint, opponentPoint, setReset, use
 
 	const handleGameUpdate = (data: GameType) => {
 		setGameObj(data);
+		setIsPause(false);
+		setGame(data);
 		setPaddle1Y(data.paddle1Y);
 		setBallX(data.ballX);
 		setBallY(data.ballY);
-		setBoostX(data.boostX);
-		setBoostY(data.boostY);
-
-		const response = {
-			player: data.player2,
-			paddlePos: paddle2YRef.current,
+		setBoostX(data.boostStartX ? data.boostStartX : boostX);
+		setBoostY(data.boostStartY ? data.boostStartY : boostY);
+		setPlayer1Score(data.score1);
+		setPlayer2Score(data.score2);
+		setIsBoost(data.includeBoost)
+		if (data.status == 'finished') {
+			setIsGameOver(true);
+			console.log("Game has ended. It was ", data.status);
+		} else if (data.status == 'aborted') {
+			console.log("Aborting game event read!");
+			setIsGameOver(true);
+			navigate("/profile");
 		}
-		socket.emit(`ackResponse-G${data.id}P${data.player2}`, response);
+		else {
+			const response = {
+				player: data.player2,
+				paddlePos: paddle2YRef.current,
+				playerActive: isActive,
+				pause: isPause,
+			}
+			socket.emit(`ackResponse-G${data.id}P${data.player2}`, response);
+		}
 	};
-	useEffect(() => {  
-		// This function will be called whenever the 'gameUpdate' event is emitted from the server
-		// Register the event listener
+
+	useEffect(() => {
 		if (socket) {
 			socket.on('gameUpdate', handleGameUpdate);
+		} else {
+			console.log("Missing socket!");
 		}
 
-		// The clean-up function to remove the event listener when the component is unmounted or dependencies change
 		return () => {
 			if (socket) {
 				socket.off('gameUpdate', handleGameUpdate);
@@ -106,8 +129,10 @@ const PvP_2: React.FC<PvP_2Props> = ({ playerPoint, opponentPoint, setReset, use
 	useEffect(() => {
 		if (socket != null) {
 			socket.on('matchFound', (data: GameType) => {
+				console.log("Reading matchFound Event.", data.id);
 				if (userId && userId == data.player2.toString()) {
 					setGameObj(data);
+					setGame(data);
 					setPlayer1Id(data.player1.toString());
 					setPlayer2Id(data.player2.toString());
 					setDifficulty(data.difficulty);
@@ -118,6 +143,23 @@ const PvP_2: React.FC<PvP_2Props> = ({ playerPoint, opponentPoint, setReset, use
 		}
 		// Cleanup function
 		return () => { if (socket) socket.off('matchFound'); };
+	});
+
+	useEffect(() => {
+		if (socket && !arbitrary) {
+			socket.once('comeJoin', (data: GameType) => {
+				console.log("Received comeJoin event");
+				if (userId && (data.player2 == +userId)) {
+					setGameObj(data);
+					setIsGameOver(false);
+					setArbitrary(true);
+					socket.emit('gameLoop', data);
+					console.log("Sending gameLoop with data: ", data);
+				}
+			})
+		}
+		// Cleanup function
+		return () => { if (socket) socket.off('comeJoin'); };
 	});
 
 	// Track player key input
@@ -148,20 +190,21 @@ const PvP_2: React.FC<PvP_2Props> = ({ playerPoint, opponentPoint, setReset, use
 	});
 
 	return (
-		<div className="relative w-full h-full" ref={PvPRef}>
-			<Paddle yPosition={paddle1Y} paddleHeight={paddleLengths[difficulty]} style={{ left: 0 }} />
-			<Paddle yPosition={paddle2Y} paddleHeight={paddleLengths[difficulty]} style={{ right: 0 }} />
-			<div className="relative bg-slate-900">
-				<Ball xPosition={ballX} yPosition={ballY} />
-			</div>
-			{includeBoost && (gameObj ? !gameObj.isBoost : false) ? <Boost x={boostX} y={boostY} width={boostWidth} height={boostWidth} /> : null}
-			{isGameOver ? (
-				<div className="absolute inset-0 bg-black bg-opacity-80">
-					<VictoryLoss userId={userId} isVictory={player1Score == 1} difficulty={difficulty} />
+		<div className="relative w-full h-full">
+			<div className='flex rounded min-w-[350px] h-[600px] w-[1200px] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 bg-slate-900 text-slate-200' ref={PvPRef}>
+				<Paddle yPosition={paddle1Y} paddleHeight={paddleLengths[difficulty]} style={{ left: 0 }} />
+				<Paddle yPosition={paddle2Y} paddleHeight={paddleLengths[difficulty]} style={{ right: 0 }} />
+				<div className="relative bg-slate-900">
+					<Ball xPosition={ballX} yPosition={ballY} />
 				</div>
-			) : null
-			}
-			{startGame ? null : <StartGame userId={userId} setStartGame={setStartGame} game={gameObj ? gameObj : null} />}
+				{isGameOver ? (
+						<div className="absolute inset-0 bg-black bg-opacity-80">
+							<VictoryLoss userId={userId} isVictory={gameObj ? ((gameObj?.score2 > gameObj?.score1) ? true : false) : false} difficulty={gameObj?.difficulty ? gameObj?.difficulty : 1} />
+						</div>
+					) : null
+				}
+				{/* {startGame ? null : <StartGame userId={userId} setStartGame={setStartGame} game={gameObj ? gameObj : null} />} */}
+			</div>
 		</div>
 	)
 }

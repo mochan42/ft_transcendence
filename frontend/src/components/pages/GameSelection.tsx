@@ -9,7 +9,7 @@ interface GameSelectionProps {
 	userId: string | null;
 }
 
-const GameSelection:React.FC<GameSelectionProps> =({ userId }) => {
+const GameSelection: React.FC<GameSelectionProps> = ({ userId }) => {
 
 	const [state, setState] = useState<'select' | 'bot' | 'player'>('select');
 	const [difficulty, setDifficulty] = useState(0);
@@ -17,25 +17,25 @@ const GameSelection:React.FC<GameSelectionProps> =({ userId }) => {
 	const [isHoveredBot, setIsHoveredBot] = useState(false);
 	const [isHoveredPlayer, setIsHoveredPlayer] = useState(false);
 	const [includeBoost, setIncludeBoost] = useState(true);
-	
+
 	const handleMouseEnterBot = () => {
 		setIsHoveredBot(true);
 	};
-	
+
 	const handleMouseLeaveBot = () => {
 		setIsHoveredBot(false);
 	};
-	
+
 	const handleMouseEnterPlayer = () => {
 		setIsHoveredPlayer(true);
 	};
-	
+
 	const handleMouseLeavePlayer = () => {
 		setIsHoveredPlayer(false);
 	};
-	
-	
-	
+
+
+
 	useEffect(() => {
 		if (difficulty === 0) {
 			setDifficultyStyle('bg-green-400')
@@ -50,7 +50,7 @@ const GameSelection:React.FC<GameSelectionProps> =({ userId }) => {
 		}
 	}, [difficulty])
 
-	
+
 	const handleDifficulty = () => {
 		if (difficulty === 4) {
 			setDifficulty(0);
@@ -104,7 +104,7 @@ const GameSelection:React.FC<GameSelectionProps> =({ userId }) => {
 						</button>
 					</div>
 				</div>
-			: <Game difficulty={difficulty} userId={userId} opponent={state} setState={setState} includeBoost={includeBoost}/> }
+				: <Game difficulty={difficulty} userId={userId} opponent={state} setState={setState} includeBoost={includeBoost} />}
 		</div>
 	)
 }
