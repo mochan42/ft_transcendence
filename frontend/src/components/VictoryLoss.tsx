@@ -127,9 +127,12 @@ const VictoryLoss: React.FC<VictoryLossProps> = ({ isVictory, userId, difficulty
 
 	const checkUserAchievements = async () => {
 		if (isVictory && UserAchievements) {
-			const achievementExists = UserAchievements.some((achievement) => achievement.goalId === (difficulty + 2).toString());
-			console.log("Achievement exists: ", achievementExists);
+			const numericGoalIds = UserAchievements.map((achievement) => Number(achievement.goalId));
+			console.log((difficulty + 2).toString());
+			console.log(numericGoalIds);
+			const achievementExists = UserAchievements.some((achievement) => (achievement.goalId == (difficulty + 2).toString()));
 			if (!achievementExists) {
+				console.log("Achievement does not exist yet!");
 				const headers = {
 					'Content-Type': 'application/json',
 					'Authorization': `Bearer ${process.env.REACT_APP_SECRET}`
@@ -142,12 +145,14 @@ const VictoryLoss: React.FC<VictoryLossProps> = ({ isVictory, userId, difficulty
 					}
 					const response = await axios.post(url_achievements, Achievement, { headers });
 					if (response.status === 201) {
-						console.log('Added Achievement Successfully');
+						console.log('Added Achievement ' , Achievement, ' successfully');
 						setUpdatedAchievements(true);
 					}
 				} catch (error) {
 					console.log('Creating Achievement failed: ', error);
 				}
+			} else {
+				console.log("Achievement already exists!");
 			}
 		}
 	}

@@ -23,7 +23,7 @@ interface PongProps {
 
 const Pong: React.FC<PongProps> = ({ userId, difficulty, isGameActive, isGameOver, isReset, player1Score, opponentScore, includeBoost, playerPoint, opponentPoint, setIsGameOver, setReset }) => {
 
-	const itsdifficult = difficulty ? (difficulty + 2) * 2 : 1;
+	const itsdifficult = difficulty ? (difficulty + 2) * 2 : 6;
 	const realDifficulty = difficulty ? difficulty : 1;
 	const PongRef = useRef<HTMLDivElement>(null);
 	const paddleLengths = [200, 150, 100, 80, 50]
