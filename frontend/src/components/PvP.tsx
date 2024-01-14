@@ -105,7 +105,7 @@ const PvP: React.FC<PvPProps> = ({ setGameRef, includeBoost, isActive, setIsActi
 		} else if (data.status == 'aborted') {
 			console.log("Aborting game event read!");
 			setIsGameOver(true);
-			navigate("/");
+			navigate("/profile");
 		}
 		else {
 			const response = {
