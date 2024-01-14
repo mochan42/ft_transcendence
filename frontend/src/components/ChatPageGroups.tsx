@@ -55,8 +55,8 @@ const ChatGroupElement = (group: Group) => {
             dispatch(updateTmpGroup(group.channelId));
         }
         else if (group.privacy == enChatPrivacy.PRIVATE && group.channelId != chatStore.chatActiveGroup?.channelId) {
-            //const allMembers = await fetchAllMembers();
-            const groupMembers = getMembers(chatStore.chatAllJoinReq, group.channelId)
+            const allMembers = await fetchAllMembers();
+            const groupMembers = getMembers(allMembers, group.channelId)
             const userGroupData = groupMembers.filter((el) => {
                 if (userId && parseInt(userId) == el.userId)
                     return el;
@@ -212,7 +212,6 @@ const ChatPageGroups = (chatProp: ChatProps) => {
                             {chatStore.chatGroupList.map((el) => {
                                 if (el)
                                     return (<ChatGroupElement key={el.channelId} {...el} />)
-                                return null;
                             })
                             }
                         </Stack>
@@ -230,7 +229,7 @@ const ChatPageGroups = (chatProp: ChatProps) => {
                 {/* show the contact profile on toggle */}
                 <Stack>
                     {chatStore.chatSideBar.open && <ChatGroupProfile />}
-                    {!chatStore.chatSideBar.open && <></>}
+                    {/* {!chatStore.chatSideBar.open && <></>} */}
                 </Stack>
             </Stack>
 
