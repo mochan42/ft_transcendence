@@ -3,24 +3,18 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import UserCard from "../UserCard";
 import Leaderboard from "../LeaderBoard";
-import ChatBoard from '../HomeBoard';
 import { Friend, User } from "../../types";
 import ChatPageUsers from '../ChatPageUsers';
 import ChatPageGroups from '../ChatPageGroups';
 import About from './About';
 import Cookies from 'js-cookie';
-import { io } from 'socket.io-client';
 import { useDispatch, useSelector } from "react-redux";
 import { selectChatStore } from "../../redux/store";
-import { Stack } from "@mui/material";
-import { HOME_SECTION, logStatus } from "../../enums";
+import { HOME_SECTION } from "../../enums";
 import HomeBoard from '../HomeBoard';
 import EditProfile from '../EditProfile';
 import { getSocket } from '../../utils/socketService';
-import ChatPageGameRequests from '../ChatPageGameRequests';
 import { BACKEND_URL } from '../../data/Global';
-import { updateChatBlockedUsers } from '../../redux/slices/chatSlice';
-
 
 type TUserState = {
 	userCode: {
@@ -153,7 +147,6 @@ const Home = ({
 				const response = await axios.get<Friend[]>(urlFriends, { headers });
 				if (response.status === 200) {
 					setFriends(response.data);
-					// console.log('Received Friends data', response.data);
 				}
 			}
 		}
