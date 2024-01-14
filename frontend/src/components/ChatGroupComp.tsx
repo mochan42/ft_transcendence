@@ -125,7 +125,7 @@ const ChatGroupMemberProfileComp = (user: IUserData) => {
                 }}
             >
                 <MenuItem onClick={onShwProfile}>View profile</MenuItem>
-                {loggedUser.userId != +user.memberUser.id && <MenuItem onClick={handleClose}>Play game</MenuItem>}
+                {/* {loggedUser.userId != +user.memberUser.id && <MenuItem onClick={handleClose}>Play game</MenuItem>} */}
                 {loggedUser.rank != enChatMemberRank.MEMBER &&
                     user.memberJoin.rank != enChatMemberRank.OWNER && <Divider />}
 
@@ -326,6 +326,9 @@ const ChatGroupDialogRequestEntryComp = (args: TGroupRequestArgs) => {
         if (joinGroup) {
             const newJoinGroup = { ...joinGroup, status: enChatGroupInviteStatus.ACCEPTED }
             socket.emit('acceptJoinGroup', newJoinGroup);
+            socket.once('acceptMemberSuccess', (data: any) => {
+                dispatch(updateChatGroupMembers(data.all));
+            });
             dispatch(updateChatDialogGroupInvite(false));
         }
     }

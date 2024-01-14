@@ -16,7 +16,7 @@ import Cookies from 'js-cookie';
 import { Utils__isAPICodeAvailable } from './utils/utils__isAPICodeAvailable';
 import { getSocket } from './utils/socketService';
 import { GameType, Chat, Block } from './types';
-import { updateChatUserMessages, updateChatUserFriendRequests, updateChatUserFriends, updateChatUsers, updateChatGroups, updateChatGroupMembers, updateChatBlockedUsers } from "./redux/slices/chatSlice";
+import { updateChatUserMessages, updateChatUserFriendRequests, updateChatUserFriends, updateChatUsers, updateChatGroups, updateChatGroupMembers, updateChatBlockedUsers, updateChatAllJoinReq } from "./redux/slices/chatSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { selectChatStore } from "./redux/store";
 import { fetchAllFriends, fetchAllMessages, fetchAllUsersFriends } from './data/ChatData';
@@ -68,6 +68,7 @@ const App: React.FC = () => {
 		if (socket != null) {
 			socket.on('kickMemberSucces', (data: any) => {
 				dispatch(updateChatGroupMembers(data.all));
+				dispatch(updateChatAllJoinReq(data.all));
 			});
 			socket.on('memberMuteToggleSuccess', (data: any) => {
 				dispatch(updateChatGroupMembers(data.all));
@@ -80,6 +81,7 @@ const App: React.FC = () => {
 			});
 			socket.on('declinedMemberSuccess', (data: any) => {
 				dispatch(updateChatGroupMembers(data.all));
+				dispatch(updateChatAllJoinReq(data.all));
 			});
 			socket.on('deleteGroupSucces', (data: any) => {
 				dispatch(updateChatGroups(data.all));
@@ -91,10 +93,12 @@ const App: React.FC = () => {
 				dispatch(updateChatGroups(data.all));
 			});
 			socket.on('newMembers', (data: any) => {
-				dispatch(updateChatGroupMembers(data.all))
+				dispatch(updateChatGroupMembers(data.all));
+				dispatch(updateChatAllJoinReq(data.all));
 			});
 			socket.on('exitGroupSuccess', (data: any) => {
 				dispatch(updateChatGroupMembers(data.all));
+				dispatch(updateChatAllJoinReq(data.all));
 			});
 			socket.on('BlockedFriendSucces', (data: any) => {
 				dispatch(updateChatBlockedUsers(data.all));
