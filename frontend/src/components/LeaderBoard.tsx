@@ -77,8 +77,8 @@ const Leaderboard:React.FC<LeaderboardProps> =({ userId }) => {
 
 	useEffect(() => {
 		const sortedUsers = usersInfo.sort((a, b) => b.xp - a.xp);
-		const top5Users = sortedUsers.slice(0, 5);
-		setTopUsers(top5Users);
+		const top10Users = sortedUsers.slice(0, 10);
+		setTopUsers(top10Users);
 	}, [usersInfo]);
 
 	return (

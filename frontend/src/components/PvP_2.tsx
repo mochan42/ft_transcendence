@@ -30,9 +30,11 @@ interface PvP_2Props {
 	setPlayer2Score: (number: number) => void;
 	game?: GameType;
 	setGame: (GameType: GameType) => void;
+	isPause: boolean;
+	setIsPause: (boolean: boolean) => void;
 }
 
-const PvP_2: React.FC<PvP_2Props> = ({ game, setGame, isActive, setIsActive, playerPoint, opponentPoint, setReset, userId, player1Score, player2Score, isGameActive, isReset, isGameOver, setIsGameOver, setState, setPlayer1Id, setPlayer2Id, setPlayer1Score, setPlayer2Score, setPlayer1Info, setPlayer2Info }) => {
+const PvP_2: React.FC<PvP_2Props> = ({ setIsPause, isPause, game, setGame, isActive, setIsActive, playerPoint, opponentPoint, setReset, userId, player1Score, player2Score, isGameActive, isReset, isGameOver, setIsGameOver, setState, setPlayer1Id, setPlayer2Id, setPlayer1Score, setPlayer2Score, setPlayer1Info, setPlayer2Info }) => {
 
 	const socket = getSocket(userId);
 	const [startGame, setStartGame] = useState(false);
@@ -76,6 +78,7 @@ const PvP_2: React.FC<PvP_2Props> = ({ game, setGame, isActive, setIsActive, pla
 
 	const handleGameUpdate = (data: GameType) => {
 		setGameObj(data);
+		setIsPause(false);
 		setGame(data);
 		setPaddle1Y(data.paddle1Y);
 		setBallX(data.ballX);
@@ -97,7 +100,8 @@ const PvP_2: React.FC<PvP_2Props> = ({ game, setGame, isActive, setIsActive, pla
 			const response = {
 				player: data.player2,
 				paddlePos: paddle2YRef.current,
-				playerActive: isActive
+				playerActive: isActive,
+				pause: isPause,
 			}
 			socket.emit(`ackResponse-G${data.id}P${data.player2}`, response);
 		}

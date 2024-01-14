@@ -115,8 +115,10 @@ const Profile: React.FC<ProfileProps> = ({ userId, isAuth }) => {
                 try {
                     const response: AxiosResponse<Goal[] | null> = await axios.get(url_goals, { headers });
                     if (response.status === 200) {
-                        setAllGoals(response.data);
-                        // console.log('Received Goals: ', response.data);
+                        if (response.data && response.data.length > 0) {
+                            console.log('Received Goals: ', response.data);
+                            setAllGoals(response.data);
+                        }
                     }
                 } catch (error) {
                     console.log('Error fetching Goals:', error);

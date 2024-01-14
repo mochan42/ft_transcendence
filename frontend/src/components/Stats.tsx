@@ -120,7 +120,7 @@ const Stats:React.FC<StatsProps> =({ userId, setShowScreen }) => {
 						</div>
 						<div className="flex justify-between mb-4">
 							<span>Total Achievements unlocked:</span>
-							<span>{userAchievements?.length} / 42</span>
+							<span>{userAchievements?.length} / 6</span>
 						</div>
 					</div>
 				</div>

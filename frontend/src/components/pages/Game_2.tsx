@@ -33,6 +33,7 @@ const Game_2:React.FC<GameProps> = ({ difficulty, userId, includeBoost, opponent
 	const [player1Score, setPlayer1Score] = useState(0)
 	const [player2Score, setPlayer2Score] = useState(0)
 	const [isActive, setIsActive] = useState(true);
+	const [isPause, setIsPause] = useState(false);
 
 	const playerPoint = () => {
 		setPlayer1Score(player1Score + 1);
@@ -49,9 +50,14 @@ const Game_2:React.FC<GameProps> = ({ difficulty, userId, includeBoost, opponent
 	}
 
 	const handlePause = () => {
-		setGameActive(!gameActive)
-		if (reset) {
-			setReset(false);
+		if (opponent === 'bot') {
+			setGameActive(!gameActive);
+			if (reset) {
+				setReset(false);
+			}
+		} else if (opponent == 'player') {
+			setIsPause(true);
+			console.log("Setting pause to true");
 		}
 	}
 
@@ -139,11 +145,11 @@ const Game_2:React.FC<GameProps> = ({ difficulty, userId, includeBoost, opponent
 							<path strokeLinecap='round' strokeLinejoin='round' d='M21 7.5V18M15 7.5V18M3 16.811V8.69c0-.864.933-1.406 1.683-.977l7.108 4.061a1.125 1.125 0 010 1.954l-7.108 4.061A1.125 1.125 0 013 16.811z' />
 						</svg>
 					</Button>
-					<Button className='focus:outline-none' variant='ghost' onClick={() => handleReset()}>
+					{ opponent === 'bot' ? <Button className='focus:outline-none' variant='ghost' onClick={() => handleReset()}>
 						<svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' strokeWidth={1.5} stroke='currentColor' className='w-6 h-6'>
 							<path strokeLinecap='round' strokeLinejoin='round' d='M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 00-3.7-3.7 48.678 48.678 0 00-7.324 0 4.006 4.006 0 00-3.7 3.7c-.017.22-.032.441-.046.662M19.5 12l3-3m-3 3l-3-3m-12 3c0 1.232.046 2.453.138 3.662a4.006 4.006 0 003.7 3.7 48.656 48.656 0 007.324 0 4.006 4.006 0 003.7-3.7c.017-.22.032-.441.046-.662M4.5 12l3 3m-3-3l-3 3' />
 						</svg>
-					</Button>
+					</Button> : null }
 				</div>
 				<div className='border-8 dark:border-slate-900'>
 					<Button>
@@ -158,7 +164,7 @@ const Game_2:React.FC<GameProps> = ({ difficulty, userId, includeBoost, opponent
 				</div>
 			</div>
 			<div className='w-full h-5/6 border-t-2 border-l-2 border-r-2 border-slate-700 black:border-slate-200 bg-slate-400 dark:text-slate-200 text-center'>
-				<PvP_2 isActive={isActive} setIsActive={setIsActive} isReset={reset} setReset={setReset} userId={userId} isGameActive={gameActive} selectedDifficulty={difficulty} isGameOver={isGameOver} player1Score={player1Score} player2Score={player2Score} setIsGameOver={setIsGameOver} setState={setState} playerPoint={playerPoint} opponentPoint={opponentPoint} setPlayer1Id={setPlayer1Id} setPlayer2Id={setPlayer2Id} setPlayer1Info={setPlayer1Info} setPlayer2Info={setPlayer2Info} setPlayer1Score={setPlayer1Score} setPlayer2Score={setPlayer2Score} setGame={setGameObj} game={gameObj}/>
+				<PvP_2 setIsPause={setIsPause} isPause={isPause} isActive={isActive} setIsActive={setIsActive} isReset={reset} setReset={setReset} userId={userId} isGameActive={gameActive} selectedDifficulty={difficulty} isGameOver={isGameOver} player1Score={player1Score} player2Score={player2Score} setIsGameOver={setIsGameOver} setState={setState} playerPoint={playerPoint} opponentPoint={opponentPoint} setPlayer1Id={setPlayer1Id} setPlayer2Id={setPlayer2Id} setPlayer1Info={setPlayer1Info} setPlayer2Info={setPlayer2Info} setPlayer1Score={setPlayer1Score} setPlayer2Score={setPlayer2Score} setGame={setGameObj} game={gameObj}/>
 			</div>
 		</div>
 	)

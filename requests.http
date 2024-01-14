@@ -39,8 +39,10 @@ Content-Type: application/json
 ### Delete all members
 DELETE  http://localhost:5000/pong/chanel-all-members
 
-### get all users
+
 GET http://localhost:5000/pong/users/
+### get all users
+GET https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/users
 Authorization: Bearer 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
 ### test
 GET http://localhost:5000/pong/friends
