@@ -48,9 +48,11 @@ const ChatGroupMemberProfileComp = (user: IUserData) => {
     }
 
     const handleMute = (rights: string) => {
-        const joinGroup = { ...user.memberJoin, rights: rights }
-        socket.emit('memberMuteToggle', joinGroup);
-        handleClose();
+        if (user && user.memberJoin) {
+            const joinGroup = { ...user.memberJoin, rights: rights }
+            socket.emit('memberMuteToggle', joinGroup);
+            handleClose();
+        }
     }
 
     const handlePromote = (rank: string) => {

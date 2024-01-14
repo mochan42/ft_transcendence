@@ -66,9 +66,12 @@ const App: React.FC = () => {
 	//----------------------------CHAT---------------------------
 	useEffect(() => {
 		if (socket != null) {
-			socket.on('kickMemberSucces', (data: any) => {
+			socket.on('kickMemberSuccess', (data: any) => {
 				dispatch(updateChatGroupMembers(data.all));
 				dispatch(updateChatAllJoinReq(data.all));
+				if (chatStore.chatSideBar.open && data.actor != userId) {
+					dispatch(toggleSidebar());
+				}
 			});
 			socket.on('memberMuteToggleSuccess', (data: any) => {
 				dispatch(updateChatGroupMembers(data.all));

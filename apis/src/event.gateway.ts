@@ -632,11 +632,11 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   async updateMemberShip(joinChannel: Joinchannel, socket: Socket) {
-    const mutedUser = await this.joinchannelService.update(joinChannel);
+    const memberShip = await this.joinchannelService.update(joinChannel);
     const actor = await this.chatsService.getUserFromSocket(socket);
-    await Promise.all([mutedUser]);
+    await Promise.all([memberShip]);
     const allMembers = await this.joinchannelService.findAll();
-    this.server.emit('memberMuteToggleSuccess', { new: mutedUser, all: allMembers, actor: actor.id });
+    this.server.emit('memberMuteToggleSuccess', { new: memberShip, all: allMembers, actor: actor.id });
   }
   
   @SubscribeMessage('memberPromoteToggle')
@@ -655,11 +655,15 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   @SubscribeMessage('kickMember')
-  async handleKickMember(@MessageBody() payload: Joinchannel) {
+  async handleKickMember(
+    @ConnectedSocket() socket: Socket,
+    @MessageBody() payload: Joinchannel
+  ) {
     const kicked = await this.joinchannelService.delete(payload.id);
-    await Promise.all([kicked]);
+    const actor = await this.chatsService.getUserFromSocket(socket);
+    await Promise.all([kicked, actor]);
     const allMembers = await this.joinchannelService.findAll();
-    this.server.emit('memberMuteToggleSuccess', { new: payload, all: allMembers });
+    this.server.emit('kickMemberSuccess', { new: payload, all: allMembers, actor: actor.id});
   }
   /***********************GAME*********************** */
 
