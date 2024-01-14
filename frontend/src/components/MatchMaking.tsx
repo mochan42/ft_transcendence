@@ -26,6 +26,7 @@ const MatchMaking: React.FC<MatchMakingProps> = ({ gameObj, setGameObj, setMatch
 	const [matched, setMatched] = useState<boolean>(false);
 	const [oId, setOId] = useState<string>("1");
 	const navigate = useNavigate();
+	const [leaveAbort, setLeaveAbort] = useState<'leave' | 'abort'>('leave');
 	let game: GameType = {
 		id: -1,
 		player1: userId ? +userId : -1,
@@ -88,6 +89,7 @@ const MatchMaking: React.FC<MatchMakingProps> = ({ gameObj, setGameObj, setMatch
 						console.log("Matched to game !", data.player1, "   ", data.player2, "\n\n");
 						setOpponentId(data.player2);
 						setOId(data.player2.toString());
+						setLeaveAbort('abort');
 						// setMatched(true);
 						// setSearchingForMatch(false);
 					}
@@ -139,9 +141,11 @@ const MatchMaking: React.FC<MatchMakingProps> = ({ gameObj, setGameObj, setMatch
 								socket.emit('requestMatch', game);
 							}
 						} else if (searchingForMatch === true) {
-							socket.emit('leaveQueue');
-							setState ? setState('select') : navigate("/game");
-							console.log("Left game queue!")
+							if (leaveAbort == 'leave'){
+								socket.emit('leaveQueue');
+								console.log("Left game queue!")
+								setState ? setState('select') : navigate("/game");
+							}
 						} else if (matched) {
 							console.log("Accepting Game!");
 							acceptGame();
@@ -149,7 +153,8 @@ const MatchMaking: React.FC<MatchMakingProps> = ({ gameObj, setGameObj, setMatch
 					}}
 					className='border-8 border-slate-200 text-slate-900 h-12 rounded-md absolute top-3/4 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 bg-slate-200'>
 					{searchingForMatch === undefined ? 'Search for opponent' : null}
-					{searchingForMatch === true ? 'Cancel' : null}
+					{(searchingForMatch === true && leaveAbort == 'leave') ? 'Cancel' : null}
+					{(searchingForMatch === true && leaveAbort == 'abort') ? '. . .' : null}
 					{matched === true ? 'Start Match' : null}
 				</button>
 				<div className={'bg-slate-900 border-4 border-amber-400 rounded-full h-32 w-32 text-white text-xl font-extrabold flex-cols justify-around text-center absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 flex flex-col items-center'}>
