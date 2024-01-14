@@ -78,7 +78,7 @@ const conHeight = 600;
 const conWidth = 1200;
 const paddleLengths = [200, 150, 100, 80, 50];
 const boostWidth = 80;
-const victoryThreshold = 2;
+const victoryThreshold = 1;
 const startX = (conWidth - 30) / 2;
 const startY = (conHeight - 30) / 2;
 const containerTop = 0;
@@ -748,7 +748,6 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const oldStats1 = await this.userStats.findOne(payload.player1);
     if (!oldStats1)
     {
-      console.log("1")
       const createStatDto: CreateStatDto = {
         wins: (payload.score1 > payload.score2) ? 1 : 0,
         losses: (payload.score1 < payload.score2) ? 1 : 0,
@@ -758,7 +757,6 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
       const newStats = await this.userStats.create(payload.player1.toString(), createStatDto);
       // socket.emit('gameSaveSuccess', newStats);
     } else {
-      console.log("2")
       const newStats1: UpdateStatDto = {
         wins: (payload.score1 > payload.score2) ? oldStats1.wins + 1 : oldStats1.wins,
         losses: (payload.score1 < payload.score2) ? oldStats1.losses + 1 : oldStats1.losses,
@@ -768,10 +766,10 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
       const updatedStats = await this.userStats.update(oldStats1.userId, newStats1); 
       // socket.emit('gameSaveSuccess', updatedStats);
     };
+
     const oldStats2 = await this.userStats.findOne(payload.player2);
     if (!oldStats2)
     {
-      console.log("3")
       const createStatDto: CreateStatDto = {
         wins: (payload.score2 > payload.score1) ? 1 : 0,
         losses: (payload.score2 < payload.score1) ? 1 : 0,
@@ -782,7 +780,6 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
       // socket.emit('gameSaveSuccess', newStats2);
     }
     else {
-      console.log("4")
       const newStats2: UpdateStatDto = {
         wins: (payload.score1 > payload.score2) ? oldStats2.wins + 1 : oldStats2.wins,
         losses: (payload.score1 < payload.score2) ? oldStats2.losses + 1 : oldStats2.losses,

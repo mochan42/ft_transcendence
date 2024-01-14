@@ -1,9 +1,10 @@
 import axios, { AxiosResponse } from "axios";
 import { Button } from "./ui/Button"
 import { useEffect, useState } from "react";
-import { UserAchievements, UserStats } from "../types";
+import { User, UserAchievements, UserStats } from "../types";
 import { BACKEND_URL } from "../data/Global";
 import { useNavigate } from "react-router-dom";
+import UpdateUserInfo from "./UpdateUserInfo";
 
 interface VictoryLossProps {
 	isVictory: boolean;
@@ -15,12 +16,61 @@ const VictoryLoss: React.FC<VictoryLossProps> = ({ isVictory, userId, difficulty
 
 	const [userStats, setUserStats] = useState< UserStats | null >(null);
 	const [UserAchievements, setUserAchievements] = useState< UserAchievements[] | null >(null);
+	const [user, setUser] = useState<User | null>(null);
+	const [newXp, setNewXp] = useState(0);
 	const [updatedStats, setUpdatedStats] = useState(false);
 	const [updatedAchievements, setUpdatedAchievements] = useState(false);
 	const url_stats = `${BACKEND_URL}/pong/users/` + userId + '/stats';
 	const url_achievements = `${BACKEND_URL}/pong/users/` + userId + '/achievements';
+	const url_user = `${BACKEND_URL}/pong/users/` + userId;
 	const navigate = useNavigate()
 	
+	const getUserInfo = async () => {
+		const headers = {
+			'Content-Type': 'application/json',
+			'Authorization': `Bearer ${process.env.REACT_APP_SECRET}`
+		};
+		try {
+			const response = await axios.get<User>(url_user, { headers });
+			if (response.status === 200) {
+				const user = response.data;
+				console.log("User xp start: ", user.xp);
+				user.xp = user.xp + (isVictory ? 120 : 80);
+				console.log("User xp after: ", user.xp);
+				setUser(response.data);
+				setNewXp(user.xp);
+			}
+		} catch (error) {
+			console.log('Error fetching user info:', error);
+		}
+	}
+
+	const UpdateUserInfo = async () => {
+		console.log("Xp: ", newXp);
+		if (user) {
+			console.log("User.xp: ", user.xp);
+			const headers = {
+				'Content-Type': 'application/json',
+				'Authorization': `Bearer ${process.env.REACT_APP_SECRET}`
+			};
+			try {
+				// const newUser: User = {
+				// 	...user,
+				// 	xp: newXp,
+				// }
+				const response = await axios.patch(url_user, user, { headers });
+				if (response.status === 200) {
+					console.log('User Info updated:', response.data);
+				}
+			} catch (error) {
+				console.log('Error updating userStats:', error);
+			}
+		} else {
+			console.log("ERROR: user isn't set!");
+		}
+
+	}
+
 	const getUserStats = async () => {
 		const headers = {
 			'Content-Type': 'application/json',
@@ -103,11 +153,14 @@ const VictoryLoss: React.FC<VictoryLossProps> = ({ isVictory, userId, difficulty
 	}
 
 	useEffect(() => {
-		if (userStats === null) {
+		if (userStats == null) {
 			getUserStats();
 		}
-		if (UserAchievements === null) {
+		if (UserAchievements == null) {
 			getUserAchievements();
+		}
+		if (user == null) {
+			getUserInfo();
 		}
 	})
 
@@ -119,6 +172,10 @@ const VictoryLoss: React.FC<VictoryLossProps> = ({ isVictory, userId, difficulty
 			checkUserAchievements();
 		}
 	}, [updatedStats, updatedAchievements, userStats]);
+
+	useEffect(() => {
+		UpdateUserInfo();
+	}, [user])
 
 	return (
 		<div className='flex items-center justify-center h-full'>
