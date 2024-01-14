@@ -181,6 +181,8 @@ const App: React.FC = () => {
 					setGameObj(data);
 					setGameReq(true);
 					setLetsPlay(true);
+					socket.emit('gameLoop', data);
+					console.log("Sending gameLoop");
 				}
 			});
 		} else {
@@ -230,7 +232,7 @@ const App: React.FC = () => {
 							setToken2fa={setToken2fa}
 						/>} />
 					<Route path='/game' element={<ProtectedRoute isAuth={isAuth} path='/game' element={<GameSelection userId={userId} />} />} />
-					<Route path='/game/challenger' element={<ProtectedRoute isAuth={isAuth} path='/game/challenger' element={<Game difficulty={gameObj?.difficulty} includeBoost={gameObj ? gameObj.includeBoost : false} opponent='player' userId={userId} game={gameObj} />} />} />
+					<Route path='/game/challenger' element={<ProtectedRoute isAuth={isAuth} path='/game/challenger' element={<Game difficulty={gameObj?.difficulty} includeBoost={gameObj ? gameObj.includeBoost : false} opponent='player' userId={userId} game={gameObj} matchIsFound={true} />} />} />
 					<Route path='/game/pvp' element={<ProtectedRoute isAuth={isAuth} path='/game/pvp' element={<Game_2 difficulty={game ? game.difficulty : 0} userId={userId ? userId : "0"} includeBoost={game ? game.includeBoost : false} opponent={'player'} status={'found'} game={game ? game : undefined} />} />} />
 					<Route path='/profile' element={<ProtectedRoute isAuth={isAuth} path='/profile' element={<Profile userId={userId} isAuth={isAuth} />} />} />
 					<Route path='/chat' element={<Home
@@ -263,7 +265,7 @@ const App: React.FC = () => {
 					<Footer />
 				</div>
 				{challenge ? <GameChallenge userId={userId} game={game} setChallenge={setChallenge} /> : null}
-				{/* {letsPlay ? <Temp set/> : null}; */}
+				{letsPlay ? <Temp  letsPlay={letsPlay} setLetsPlay={setLetsPlay}/> : null};
 				{/* {letsPlay ? <Game difficulty={gameObj ? gameObj?.difficulty : 0} userId={gameObj ? gameObj.player1.toString() : userId} includeBoost={gameObj ? gameObj.includeBoost : false} opponent={gameObj ? gameObj.player2.toString() : "-1"} game={gameObj} /> : null} */}
 			</Router>
 

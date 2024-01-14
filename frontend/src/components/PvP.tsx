@@ -32,33 +32,17 @@ interface PvPProps {
 	setPlayer1Score: (number: number) => void;
 	setPlayer2Score: (number: number) => void;
 	game?: GameType;
+	matchIsFound?: boolean;
 }
 
-const PvP: React.FC<PvPProps> = ({ setGameRef, includeBoost, isActive, setIsActive, playerPoint, opponentPoint, setReset, userId, player1Score, player2Score, isGameActive, isReset, isGameOver, selectedDifficulty, setIsGameOver, setState, setPlayer1Id, setPlayer2Id, setPlayer1Score, setPlayer2Score, setPlayer1Info, setPlayer2Info, game }) => {
-
-	// const tempGame: GameType = {
-	// 	id: -1,
-	// 	player1: -1,
-	// 	player2: -1,
-	// 	difficulty: -1,
-	// 	includeBoost: false,
-	// 	status: 'aborted',
-	// 	score1: -1,
-	// 	score2: -1,
-	// 	paddle1Y: -1,
-	// 	paddle2Y: -1,
-	// 	boostX: 200,
-	// 	boostY: 200,
-	// 	ballX: -1,
-	// 	ballY: -1,
-	// }
+const PvP: React.FC<PvPProps> = ({ setGameRef, includeBoost, isActive, setIsActive, playerPoint, opponentPoint, setReset, userId, player1Score, player2Score, isGameActive, isReset, isGameOver, selectedDifficulty, setIsGameOver, setState, setPlayer1Id, setPlayer2Id, setPlayer1Score, setPlayer2Score, setPlayer1Info, setPlayer2Info, game, matchIsFound }) => {
 
 	const socket = getSocket(userId);
 	const [gameObj, setGameObj] = useState<GameType | undefined>(game ? game : undefined);
 	const [startGame, setStartGame] = useState<boolean | undefined>(undefined);
 	const [opponentId, setOpponentId] = useState(-1);
 	const [difficulty, setDifficulty] = useState(0);
-	const [matchFound, setMatchFound] = useState<true | false | undefined>(false); // static
+	const [matchFound, setMatchFound] = useState<true | false | undefined>(matchIsFound ? matchIsFound : false); // static
 	const PvPRef = useRef<HTMLDivElement>(null);
 	const paddleLengths = [200, 150, 100, 80, 50] // static
 	const boostWidth = 80; //static
@@ -103,8 +87,16 @@ const PvP: React.FC<PvPProps> = ({ setGameRef, includeBoost, isActive, setIsActi
 		setPlayer1Score(data.score1);
 		setPlayer2Score(data.score2);
 		setIsBoost(data.isBoost);
-		if (data.status == 'finished' || data.status == 'aborted') {
+		if (data.status == 'finished') {
 			setIsGameOver(true);
+			socket.emit('saveGame', {
+				player1: data.player1,
+				player2: data.player2,
+				difficulty: data.difficulty,
+				score1: data.score1,
+				score2: data.score2,
+				includeBoost: data.includeBoost,
+			});
 			console.log("Game has ended. It was ", data.status);
 		}
 		else {
@@ -122,19 +114,7 @@ const PvP: React.FC<PvPProps> = ({ setGameRef, includeBoost, isActive, setIsActi
 		if (socket && !isGameOver) {
 			socket.once('gameUpdate', handleGameUpdate);
 		}
-
-		// The clean-up function to remove the event listener when the component is unmounted or dependencies change
-		// return () => {
-		// 	if (socket) {
-		// 		socket.off('gameUpdate', handleGameUpdate);
-		// 	}
-		// };
 	});
-
-	useEffect(() => {
-		console.log("GameObj was updated.");
-	}, [gameObj])
-
 
 	useEffect(() => {
 		movePaddles();
@@ -164,7 +144,7 @@ const PvP: React.FC<PvPProps> = ({ setGameRef, includeBoost, isActive, setIsActi
 			});
 		}
 		// Cleanup function
-		return () => { if (socket) socket.off('matchFound'); };
+		return () => { if (socket) socket.off('matchFound'); socket.off('updateMatch'); };
 	});
 
 	// Track player key input
@@ -204,7 +184,7 @@ const PvP: React.FC<PvPProps> = ({ setGameRef, includeBoost, isActive, setIsActi
 				</div>
 				{/* {includeBoost && !isBoost ? <Boost x={boostX} y={boostY} width={boostWidth} height={boostWidth} /> : null} */}
 				{!matchFound ? <MatchMaking gameObj={gameObj} setGameObj={setGameObj} difficulty={selectedDifficulty} includeBoost={includeBoost} socket={socket} setMatchFound={setMatchFound} userId={userId} setState={setState} setOpponentId={setOpponentId} opponentId={3} setPlayer1Id={setPlayer1Id} setPlayer2Id={setPlayer2Id} /> : null}
-				{gameObj?.isGameOver ? (
+				{isGameOver ? (
 					<div className="absolute inset-0 bg-black bg-opacity-80">
 						<VictoryLoss userId={userId} isVictory={gameObj ? ((gameObj?.score1 > gameObj?.score2) ? true : false) : false} difficulty={gameObj?.difficulty ? gameObj?.difficulty : 1} />
 					</div>

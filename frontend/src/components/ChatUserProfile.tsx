@@ -45,7 +45,7 @@ const ChatUserProfile = () => {
                 id: -1,
                 player1: userId ? +userId : 0,
                 player2: +chatStore.chatActiveUser.id,
-                difficulty: 0,
+                difficulty: 2,
                 includeBoost: false,
                 status: 'request',
                 score1: 0,
