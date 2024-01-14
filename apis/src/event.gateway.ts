@@ -78,7 +78,7 @@ const conHeight = 600;
 const conWidth = 1200;
 const paddleLengths = [200, 150, 100, 80, 50];
 const boostWidth = 80;
-const victoryThreshold = 1;
+const victoryThreshold = 5;
 const startX = (conWidth - 30) / 2;
 const startY = (conHeight - 30) / 2;
 const containerTop = 0;
@@ -112,8 +112,8 @@ const checkCollision = (game: Game) => {
   // Calculate the new Y-velocity component based on the mapped angle
   const newSpeedY =
     game.speedX < 0
-      ? -((game.difficulty + 2) * 2) * Math.sin((mappedAngle * Math.PI) / 180)
-      : (game.difficulty + 2) * 2 * Math.sin((mappedAngle * Math.PI) / 180);
+      ? -((game.difficulty + 10) * 2) * Math.sin((mappedAngle * Math.PI) / 180)
+      : (game.difficulty + 10) * 2 * Math.sin((mappedAngle * Math.PI) / 180);
 
   const randomnessFactor = game.difficulty / 4; // You can adjust this value to control the amount of randomness
   const randomSpeedY = newSpeedY * (1 + Math.random() * randomnessFactor);
@@ -126,13 +126,13 @@ const checkCollision = (game: Game) => {
     (ballCenter >= (leftPaddleTop - 5)) &&
     (ballCenter <= (leftPaddleBottom + 5))
   ) {
-    if (game.isBoost) {
-      const prevSpeedX = game.speedX;
-      game.speedX = prevSpeedX * 0.66;
-      game.isBoost = false;
-    }
-    game.speedX = -game.speedX * 1.05;
-    game.speedY = randomSpeedY * 1.05;
+    // if (game.isBoost) {
+    //   const prevSpeedX = game.speedX;
+    //   game.speedX = prevSpeedX * 0.66;
+    //   game.isBoost = false;
+    // }
+    game.speedX = -game.speedX * 1.20;
+    game.speedY = randomSpeedY * 1.20;
   } else if ((ballRight < leftPaddleRight) && !game.isReset) {
     game.score2 = game.score2 + 1;
     if (game.score2 >= victoryThreshold) {
@@ -140,10 +140,10 @@ const checkCollision = (game: Game) => {
       game.status = 'finished';
     } else {
       game.isReset = true;
-      if (game.isBoost) {
-        game.speedX = game.speedX * 0.66;
-        game.isBoost = false;
-      }
+      // if (game.isBoost) {
+      //   game.speedX = game.speedX * 0.66;
+      //   game.isBoost = false;
+      // }
     }
     game.speedX = -game.speedX;
   }
@@ -156,12 +156,12 @@ const checkCollision = (game: Game) => {
     (ballCenter >= (rightPaddleTop - 5)) &&
     (ballCenter <= (rightPaddleBottom + 5))
   ) {
-    if (game.isBoost) {
-      game.speedX = game.speedX * 0.66;
-      game.isBoost = false;
-    }
-    game.speedX = -game.speedX * 1.05;
-    game.speedY = newSpeedY * 1.05;
+    // if (game.isBoost) {
+    //   game.speedX = game.speedX * 0.66;
+    //   game.isBoost = false;
+    // }
+    game.speedX = -game.speedX * 1.2;
+    game.speedY = newSpeedY * 1.2;
   } else if ((ballLeft > rightPaddleLeft) && !game.isReset) {
     game.score1 = game.score1 + 1;
     if (game.score1 >= victoryThreshold) {
@@ -169,10 +169,10 @@ const checkCollision = (game: Game) => {
       game.status = 'finished';
     }
     game.isReset = true;
-    if (game.isBoost) {
-      game.speedX = game.speedX * 0.66;
-      game.isBoost = false;
-    }
+    // if (game.isBoost) {
+    //   game.speedX = game.speedX * 0.66;
+    //   game.isBoost = false;
+    // }
     game.speedX = -game.speedX;
   }
 
@@ -232,7 +232,13 @@ const handleReset = (game: Game) => {
   game.ballX = conWidth / 2;
   game.ballY = conHeight / 2;
   game.speedX = ((Math.sign(game.speedX) * itsdifficult)  + ((Math.random() * itsdifficult)));
+  if (game.speedX < 5 + game.difficulty){
+    game.speedX = 5 + game.difficulty * 5;
+  }
   game.speedY = ((Math.sign(game.speedY) * itsdifficult)  + ((Math.random() * itsdifficult)));
+  if (game.speedY < 5 + game.difficulty){
+    game.speedY = 5 + game.difficulty * 5;
+  }
   game.isReset = false;
 }
 
@@ -261,6 +267,9 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
   startGameLoop = (game: Game) => {
     gameStateManager.startGame(game.id, game); // Initialize game state
     console.log("Game loop initiated for game id ", game.id, ". game information: ", gameStateManager.getGameState(game.id));
+    this.userService.updateLoginState(game.player1, LOG_STATE.INGAME);
+    this.userService.updateLoginState(game.player2, LOG_STATE.INGAME);
+    console.log("Updated the Status to In Game");
 
     const gameInterval = setInterval(() => {
       const currentGame = gameStateManager.getGameState(game.id);
@@ -318,6 +327,10 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
         // this.gamesService.update(currentGame);
         console.log("Clearing Interval . . .")
         clearInterval(gameInterval);
+        console.log("Cleared interval. Updating user status . . .");
+        this.userService.updateLoginState(game.player1, LOG_STATE.ONLINE);
+        this.userService.updateLoginState(game.player2, LOG_STATE.ONLINE);
+        console.log("Updated user states to online.");
         // console.log("Cleared Interval. Kicking Players from Game Room . . .");
         // console.log("Ending current game . . .")
         // gameStateManager.endGame(currentGame.id);
@@ -899,31 +912,31 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const game = gameStateManager.getGameState(data.id);
     if (game) {
       game.status = 'aborted';
+      gameStateManager.updateGame(data.id, ((newGame) => {gameStateManager.setGame(newGame)}));
       console.log("Game was retrieved: ", game.id);
       console.log("Game status == ", game.status);
+      const saveGame = (game.score1 > 0 || game.score2 > 0) ? true : false;
+      console.log("saveGame: ", saveGame)
+      if (saveGame) {
+        const oldGame = await this.gamesService.findOne(data.id);
+        const newGame = { 
+          ... oldGame,
+          status: 'finished',
+          score1: victor == data.player1 ? 1 : 0,
+          score2: victor == data.player2 ? 1 : 0,
+        }
+        const newGameCheck = await this.gamesService.update(newGame);
+        if (newGameCheck.id == data.id) {
+          console.log("Updated game" , data.id , "successfully!");
+        } else {
+          console.log("Failed to update game ", data.id);
+        }
+      } else {
+        console.log("Game was not saved!");
+      }
     } else
       console.log("Game retrieval failed!");
-    gameStateManager.updateGame(data.id, ((newGame) => {gameStateManager.setGame(newGame)}));
 
-    const saveGame = (game.score1 > 0 || game.score2 > 0) ? true : false;
-    console.log("saveGame: ", saveGame)
-    if (saveGame) {
-      const oldGame = await this.gamesService.findOne(data.id);
-      const newGame = { 
-        ... oldGame,
-        status: 'finished',
-        score1: victor == data.player1 ? 1 : 0,
-        score2: victor == data.player2 ? 1 : 0,
-      }
-      const newGameCheck = await this.gamesService.update(newGame);
-      if (newGameCheck.id == data.id) {
-        console.log("Updated game" , data.id , "successfully!");
-      } else {
-        console.log("Failed to update game ", data.id);
-      }
-    } else {
-      console.log("Game was not saved!");
-    }
     if (room) {
       // Optionally, emit an event to inform all clients in the room
       this.server.to(roomId.toString()).emit('matchDenied', {

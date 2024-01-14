@@ -314,7 +314,7 @@ const Pong: React.FC<PongProps> = ({ userId, difficulty, isGameActive, isGameOve
 					{includeBoost && !isBoost ? <Boost x={boostStartX} y={boostStartY} width={boostWidth} height={boostWidth} /> : null}
 					{isGameOver ? (
 						<div className="absolute inset-0 bg-black bg-opacity-80">
-							<VictoryLoss userId={userId} isVictory={player1Score === 5} difficulty={realDifficulty} />
+							<VictoryLoss userId={userId} isVictory={player1Score === MAX_SCORE} difficulty={realDifficulty} />
 						</div>
 					) : null
 					}
