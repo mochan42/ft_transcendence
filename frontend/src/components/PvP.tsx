@@ -7,6 +7,7 @@ import { GameType, User, paddle1Type } from '../types';
 import MatchMaking from './MatchMaking';
 import { getSocket } from '../utils/socketService';
 import StartGame from './StartGame';
+import { useNavigate } from 'react-router-dom';
 
 interface PvPProps {
 	isActive: boolean;
@@ -62,6 +63,8 @@ const PvP: React.FC<PvPProps> = ({ setGameRef, includeBoost, isActive, setIsActi
 	const [paddle1Dir, setPaddle1Dir] = useState<number>(0); // dynamic
 	const [paddle1Speed, setPaddle1Speed] = useState(15); // dynamic
 	const paddle1YRef = useRef<number>(0);
+	const [abort, setAbort] = useState(false);
+	const navigate = useNavigate();
 
 	const movePaddles = () => {
 		setPaddle1Y((prevY) => {
@@ -90,6 +93,7 @@ const PvP: React.FC<PvPProps> = ({ setGameRef, includeBoost, isActive, setIsActi
 		if (data.status == 'finished') {
 			setIsGameOver(true);
 			socket.emit('saveGame', {
+				id: data.id,
 				player1: data.player1,
 				player2: data.player2,
 				difficulty: data.difficulty,
@@ -98,6 +102,10 @@ const PvP: React.FC<PvPProps> = ({ setGameRef, includeBoost, isActive, setIsActi
 				includeBoost: data.includeBoost,
 			});
 			console.log("Game has ended. It was ", data.status);
+		} else if (data.status == 'aborted') {
+			console.log("Aborting game event read!");
+			setIsGameOver(true);
+			navigate("/");
 		}
 		else {
 			const response = {
@@ -179,6 +187,15 @@ const PvP: React.FC<PvPProps> = ({ setGameRef, includeBoost, isActive, setIsActi
 			document.removeEventListener('keyup', handleKeyUp);
 		};
 	});
+
+	useEffect(() => {
+		if (socket) {
+			socket.on('cancelGame', (data: GameType) => {
+				setAbort(true);
+			})
+		}
+		return () => { if (socket) socket.off('cancelGame');};
+	})
 
 	return (
 		<div className="relative w-full h-full">
