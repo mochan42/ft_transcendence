@@ -8,6 +8,7 @@ import MatchMaking from './MatchMaking';
 import { getSocket } from '../utils/socketService';
 import StartGame from './StartGame';
 import { useNavigate } from 'react-router-dom';
+import Alert from './Alert';
 
 interface PvPProps {
 	isActive: boolean;
@@ -34,9 +35,11 @@ interface PvPProps {
 	setPlayer2Score: (number: number) => void;
 	game?: GameType;
 	matchIsFound?: boolean;
+	isPause: boolean;
+	setIsPause: (boolean: boolean) => void;
 }
 
-const PvP: React.FC<PvPProps> = ({ setGameRef, includeBoost, isActive, setIsActive, playerPoint, opponentPoint, setReset, userId, player1Score, player2Score, isGameActive, isReset, isGameOver, selectedDifficulty, setIsGameOver, setState, setPlayer1Id, setPlayer2Id, setPlayer1Score, setPlayer2Score, setPlayer1Info, setPlayer2Info, game, matchIsFound }) => {
+const PvP: React.FC<PvPProps> = ({ setIsPause, isPause, setGameRef, includeBoost, isActive, setIsActive, playerPoint, opponentPoint, setReset, userId, player1Score, player2Score, isGameActive, isReset, isGameOver, selectedDifficulty, setIsGameOver, setState, setPlayer1Id, setPlayer2Id, setPlayer1Score, setPlayer2Score, setPlayer1Info, setPlayer2Info, game, matchIsFound }) => {
 
 	const socket = getSocket(userId);
 	const [gameObj, setGameObj] = useState<GameType | undefined>(game ? game : undefined);
@@ -82,6 +85,7 @@ const PvP: React.FC<PvPProps> = ({ setGameRef, includeBoost, isActive, setIsActi
 
 	const handleGameUpdate = (data: GameType) => {
 		setGameObj(data);
+		setIsPause(false);
 		setPaddle2Y(data.paddle2Y);
 		setBallX(data.ballX);
 		setBallY(data.ballY);
@@ -112,6 +116,7 @@ const PvP: React.FC<PvPProps> = ({ setGameRef, includeBoost, isActive, setIsActi
 				player: data.player1,
 				paddlePos: paddle1YRef.current,
 				playerActive: isActive,
+				pause: isPause,
 			}
 			socket.emit(`ackResponse-G${data.id}P${data.player1}`, response);
 		}

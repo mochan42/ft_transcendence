@@ -270,6 +270,7 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
     this.userService.updateLoginState(game.player1, LOG_STATE.INGAME);
     this.userService.updateLoginState(game.player2, LOG_STATE.INGAME);
     console.log("Updated the Status to In Game");
+    var pause = false;
 
     const gameInterval = setInterval(() => {
       const currentGame = gameStateManager.getGameState(game.id);
@@ -285,39 +286,58 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
         handleReset(currentGame);
         // gameStateManager.updateGame(currentGame.id, ((currentGame) => {gameStateManager.setGame(currentGame)}));
       }
-      this.server
-        .to(currentGame.id.toString())
-        .timeout(5000)
-        .emit('gameUpdate', currentGame);
-      
-      //listening only once the custom event acknowledgement from the client
-      const ackPlayer1 = `ackResponse-G${currentGame.id}P${currentGame.player1}`;
-      const ackPlayer2 = `ackResponse-G${currentGame.id}P${currentGame.player2}`;
+      if (!pause) {
+        this.server
+          .to(currentGame.id.toString())
+          .timeout(5000)
+          .emit('gameUpdate', currentGame);
+        
+        //listening only once the custom event acknowledgement from the client
+        const ackPlayer1 = `ackResponse-G${currentGame.id}P${currentGame.player1}`;
+        const ackPlayer2 = `ackResponse-G${currentGame.id}P${currentGame.player2}`;
 
-      roomReadiness[currentGame.id].player1Ready.once(ackPlayer1, (response: any) => {
-        if (response === null)
-        {
-          console.log('Response empty!\n');
-        }
-        else {
-          currentGame.paddle1Y = response.paddlePos;
-          if (!response.playerActive) {
-            currentGame.status == 'aborted';
-            console.log("Game state was set to 'aborted'");
+        roomReadiness[currentGame.id].player1Ready.once(ackPlayer1, (response: any) => {
+          if (response === null) {
+            console.log('Response empty!\n');
+          } else {
+            currentGame.paddle1Y = response.paddlePos;
+            if (!response.playerActive) {
+              currentGame.status == 'aborted';
+              console.log("Game state was set to 'aborted'");
+            }
+            if (response.pause) {
+              pause = true;
+            }
           }
-        }
-      });
-      
-      roomReadiness[currentGame.id].player2Ready.once(ackPlayer2, (response: any) => {
-        if (response === null) console.log('Response empty!\n');
-        else {
+          if (pause) {
+            console.log("Entering a 5 seconds pause phase.")
+            setTimeout(() => {
+              pause = false;
+            }, 5000);
+          }
+        });
+        
+        roomReadiness[currentGame.id].player2Ready.once(ackPlayer2, (response: any) => {
+          if (response === null) {
+            console.log('Response empty!\n');
+          } else {
             currentGame.paddle2Y = response.paddlePos;
             if (!response.playerActive) {
               currentGame.status == 'aborted';
               console.log("Game state was set to 'aborted'");
             }
+            if (response.pause) {
+              pause = true;
+            }
           }
-      });
+          if (pause) {
+            console.log("Entering a 5 seconds pause phase.")
+            setTimeout(() => {
+              pause = false;
+            }, 5000);
+          }
+        });
+      }
             
       if (
         currentGame.status === 'finished' ||
