@@ -72,6 +72,7 @@ const App: React.FC = () => {
 			});
 			socket.on('memberMuteToggleSuccess', (data: any) => {
 				dispatch(updateChatGroupMembers(data.all));
+				dispatch(updateChatAllJoinReq(data.all));
 			});
 			socket.on('unblockSuccess', (blocks: Block[]) => {
 				dispatch(updateChatBlockedUsers(blocks));
