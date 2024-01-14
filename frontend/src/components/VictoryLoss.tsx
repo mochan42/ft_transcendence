@@ -23,6 +23,7 @@ const VictoryLoss: React.FC<VictoryLossProps> = ({ isVictory, userId, difficulty
 	const url_stats = `${BACKEND_URL}/pong/users/` + userId + '/stats';
 	const url_achievements = `${BACKEND_URL}/pong/users/` + userId + '/achievements';
 	const url_user = `${BACKEND_URL}/pong/users/` + userId;
+	const url_xp = `${BACKEND_URL}/pong/users/xp/` + userId;
 	const navigate = useNavigate()
 	
 	const getUserInfo = async () => {
@@ -37,7 +38,7 @@ const VictoryLoss: React.FC<VictoryLossProps> = ({ isVictory, userId, difficulty
 				console.log("User xp start: ", user.xp);
 				user.xp = user.xp + (isVictory ? 120 : 80);
 				console.log("User xp after: ", user.xp);
-				setUser(response.data);
+				setUser(user);
 				setNewXp(user.xp);
 			}
 		} catch (error) {
@@ -54,16 +55,15 @@ const VictoryLoss: React.FC<VictoryLossProps> = ({ isVictory, userId, difficulty
 				'Authorization': `Bearer ${process.env.REACT_APP_SECRET}`
 			};
 			try {
-				// const newUser: User = {
-				// 	...user,
-				// 	xp: newXp,
-				// }
-				const response = await axios.patch(url_user, user, { headers });
+				const data = {
+					xp: user.xp
+				}
+				const response = await axios.patch(url_xp, data, { headers });
 				if (response.status === 200) {
 					console.log('User Info updated:', response.data);
 				}
 			} catch (error) {
-				console.log('Error updating userStats:', error);
+				console.log('Error updating userInfo:', error);
 			}
 		} else {
 			console.log("ERROR: user isn't set!");
