@@ -8,14 +8,14 @@ FROM node:18
 WORKDIR /usr/src/client
 
 # Copy both package.json and package-lock.json (if available)
-COPY package*.json ./
+# COPY package*.json ./
 
 # Upgrade application dependencies
 #RUN npm update
 
 # Clean cache and install app dependencies
-RUN npm cache clean --force
-RUN npm install --legacy-peer-deps
+# RUN npm cache clean --force
+# RUN npm install --legacy-peer-deps
 
 # Bundle your app source code
 COPY . .
@@ -26,5 +26,4 @@ COPY . .
 # Expose the port the app will run on
 EXPOSE 3000
 
-# Define the command to run your app
-CMD ["npm", "run", "start"]
+ENTRYPOINT [ "sh", "prestart.sh" ]
