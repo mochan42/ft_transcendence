@@ -78,7 +78,6 @@ const PvP_2: React.FC<PvP_2Props> = ({ setIsPause, isPause, game, setGame, isAct
 
 	const handleGameUpdate = (data: GameType) => {
 		setGameObj(data);
-		setIsPause(false);
 		setGame(data);
 		setPaddle1Y(data.paddle1Y);
 		setBallX(data.ballX);
@@ -113,11 +112,6 @@ const PvP_2: React.FC<PvP_2Props> = ({ setIsPause, isPause, game, setGame, isAct
 		}
 	});
 
-
-	useEffect(() => {
-		console.log("GameObj was updated.");
-	}, [gameObj]);
-
 	useEffect(() => {
 		movePaddles();
 	}, [paddle2Dir, paddle2Speed])
@@ -140,6 +134,13 @@ const PvP_2: React.FC<PvP_2Props> = ({ setIsPause, isPause, game, setGame, isAct
 		// Cleanup function
 		return () => { if (socket) socket.off('matchFound'); };
 	});
+
+	useEffect(() => {
+		console.log("isPause: ", isPause);
+		setTimeout(() => {
+			setIsPause(false);
+			}, 5100);
+	}, [isPause])
 
 	useEffect(() => {
 		if (socket && !arbitrary) {

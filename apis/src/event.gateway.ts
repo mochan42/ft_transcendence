@@ -275,15 +275,29 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const updatePlayer2Xp = await this.userService.updateUserXp(game.player2, 120);
     return await Promise.all([updatePlayer1Xp, updatePlayer2Xp]);
   }
-  startGameLoop = async (game: Game, socket: Socket) => {
+  startGameLoop = async (game: Game) => {
     gameStateManager.startGame(game.id, game); // Initialize game state
     console.log("Game loop initiated for game id ", game.id, ". game information: ", gameStateManager.getGameState(game.id));
     this.userService.updateLoginState(game.player1, LOG_STATE.INGAME);
     this.userService.updateLoginState(game.player2, LOG_STATE.INGAME);
-    console.log("Updated the Status to In Game");
-    var pause = false;
+    // await Promise.all([state1, state2]);
+    console.log("Updated the Status to In Game.") //, state1.currentState, ", ", state2.currentState);
+    let isGamePaused = false;
 
-    const gameInterval = setInterval(async () => {
+    const handlePause = () => {
+      console.log("Entering a 5-second pause.");
+      isGamePaused = true;
+    
+      setTimeout(() => {
+        console.log("Five seconds passed. Resuming the game.");
+        isGamePaused = false;
+      }, 5000);
+    };
+
+    const gameInterval = setInterval(() => {
+      if (isGamePaused) {
+        return;
+      }
       const currentGame = gameStateManager.getGameState(game.id);
       if (!currentGame) {
         clearInterval(gameInterval);
@@ -295,77 +309,58 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
       // updateBoost(currentGame);
       if (currentGame.isReset) {
         handleReset(currentGame);
-        // gameStateManager.updateGame(currentGame.id, ((currentGame) => {gameStateManager.setGame(currentGame)}));
       }
-      if (!pause) {
-        this.server
-          .to(currentGame.id.toString())
-          .timeout(5000)
-          .emit('gameUpdate', currentGame);
-        
-        //listening only once the custom event acknowledgement from the client
-        const ackPlayer1 = `ackResponse-G${currentGame.id}P${currentGame.player1}`;
-        const ackPlayer2 = `ackResponse-G${currentGame.id}P${currentGame.player2}`;
+      this.server
+        .to(currentGame.id.toString())
+        .timeout(5000)
+        .emit('gameUpdate', currentGame);
+      
+      //listening only once the custom event acknowledgement from the client
+      const ackPlayer1 = `ackResponse-G${currentGame.id}P${currentGame.player1}`;
+      const ackPlayer2 = `ackResponse-G${currentGame.id}P${currentGame.player2}`;
 
-        roomReadiness[currentGame.id].player1Ready.once(ackPlayer1, (response: any) => {
-          if (response === null) {
-            console.log('Response empty!\n');
-          } else {
-            currentGame.paddle1Y = response.paddlePos;
-            if (!response.playerActive) {
-              currentGame.status == 'aborted';
-              console.log("Game state was set to 'aborted'");
-            }
-            if (response.pause) {
-              pause = true;
-            }
+      roomReadiness[currentGame.id].player1Ready.once(ackPlayer1, (response: any) => {
+        if (response === null) {
+          console.log('Response empty!\n');
+        } else {
+          currentGame.paddle1Y = response.paddlePos;
+          if (!response.playerActive) {
+            currentGame.status == 'aborted';
+            console.log("Game state was set to 'aborted'");
           }
-          if (pause) {
-            console.log("Entering a 5 seconds pause phase.")
-            setTimeout(() => {
-              pause = false;
-            }, 5000);
+          if (response.pause) {
+            console.log("Player 1 paused game!");
+            handlePause();
+          }            
+        }
+      });
+      
+      roomReadiness[currentGame.id].player2Ready.once(ackPlayer2, (response: any) => {
+        if (response === null) {
+          console.log('Response empty!\n');
+        } else {
+          currentGame.paddle2Y = response.paddlePos;
+          if (!response.playerActive) {
+            currentGame.status == 'aborted';
+            console.log("Game state was set to 'aborted'");
           }
-        });
-        
-        roomReadiness[currentGame.id].player2Ready.once(ackPlayer2, (response: any) => {
-          if (response === null) {
-            console.log('Response empty!\n');
-          } else {
-            currentGame.paddle2Y = response.paddlePos;
-            if (!response.playerActive) {
-              currentGame.status == 'aborted';
-              console.log("Game state was set to 'aborted'");
-            }
-            if (response.pause) {
-              pause = true;
-            }
+          if (response.pause) {
+            console.log("Player 2 paused game!");
+            handlePause();
           }
-          if (pause) {
-            console.log("Entering a 5 seconds pause phase.")
-            setTimeout(() => {
-              pause = false;
-            }, 5000);
-          }
-        });
-      }
+        }
+      });
             
       if (
         currentGame.status === 'finished' ||
         currentGame.status === 'aborted'
       ) {
-        // console.log("Game has finished, updating current Game . . .")
-        // this.gamesService.update(currentGame);
         console.log("Clearing Interval . . .")
         clearInterval(gameInterval);
         console.log("Cleared interval. Updating user status . . .");
         this.userService.updateLoginState(game.player1, LOG_STATE.ONLINE);
         this.userService.updateLoginState(game.player2, LOG_STATE.ONLINE);
         console.log("Updated user states to online.");
-        // console.log("Cleared Interval. Kicking Players from Game Room . . .");
-        // console.log("Ending current game . . .")
-        // gameStateManager.endGame(currentGame.id);
-        // console.log("Ended current Game!")
       } else {
         gameStateManager.updateGame(currentGame.id, ((newGame) => {gameStateManager.setGame(newGame)}));
       }
@@ -980,7 +975,8 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
       roomReadiness[roomId].player2Ready != null
     ) {
       console.log('\x1b[32m', 'Starting Game Loop! \n', '\x1b[0m');
-      this.startGameLoop(data, socket);
+      // this.startGameLoop(data, socket);
+      this.startGameLoop(data);
     }
   }
 }

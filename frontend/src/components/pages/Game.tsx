@@ -13,6 +13,7 @@ import { Socket } from 'socket.io-client';
 import { getUserById } from '../ChatConversation';
 import axios from 'axios';
 import { BACKEND_URL } from '../../data/Global';
+import { LOG_STATE } from '../../enums';
 
 
 interface GameProps {
@@ -64,8 +65,8 @@ const Game:React.FC<GameProps> = ({ difficulty, userId, includeBoost, opponent, 
 				setReset(false);
 			}
 		} else if (opponent == 'player') {
-			console.log("Setting pause to true");
 			setIsPause(true);
+			console.log("Setting pause to true");
 		}
 	}
 
@@ -136,7 +137,11 @@ const Game:React.FC<GameProps> = ({ difficulty, userId, includeBoost, opponent, 
         try {
             const response = await axios.get<User>(url_info, { headers });
             if (response.status === 200) {
-                setPlayer2Info(response.data);
+				if (id == +player1Id) {
+					setPlayer1Info(response.data);
+				} else {
+					setPlayer2Info(response.data);
+				}
             }
         }
         catch (error) {
@@ -147,8 +152,12 @@ const Game:React.FC<GameProps> = ({ difficulty, userId, includeBoost, opponent, 
 	useEffect(() => {
 		if (gameRef) {
 			setPlayer2Id(gameRef.player2.toString());
+			getUserInfo(+player1Id);
 			getUserInfo(+player2Id);
 		}
+		// if (player1Info?.currentState != LOG_STATE.INGAME) {
+		// 	setIsActive(false);
+		// }
 
 	}, [gameRef]);
 
