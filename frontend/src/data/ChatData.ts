@@ -168,9 +168,15 @@ export const fetchAllMembers = async (): Promise<JoinGroup[]> => {
   return members;
 }
 
-export const getMembers = (members: JoinGroup[], group: number): JoinGroup[] => {
-  const allMembers: JoinGroup[] = members.filter((el: JoinGroup) => el.channelId === group && el.status === enChatGroupInviteStatus.ACCEPTED);
-  return allMembers ? allMembers: [];
+export const getMembers = (members: JoinGroup[], groupId: number): JoinGroup[] => {
+  let allMembers: JoinGroup[] = [];
+  members.forEach((el: JoinGroup) => {
+    if (el.channelId == groupId && el.status == enChatGroupInviteStatus.ACCEPTED) {
+      allMembers.push(el);
+    }
+  })
+  console.log(allMembers);
+  return allMembers;
 }
 
 const ChatGroupMemberList: JoinGroup[] = await fetchAllMembers();

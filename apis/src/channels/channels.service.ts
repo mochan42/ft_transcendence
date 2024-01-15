@@ -64,4 +64,8 @@ export class ChannelsService {
     if (!group) return false;
     return await this.comparePassword(input, channel.password);
   }
+
+  async removeAll() {
+    return await this.ChannelRepo.delete({});
+  }
 }

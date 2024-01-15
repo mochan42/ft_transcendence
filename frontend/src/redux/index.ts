@@ -36,6 +36,7 @@ export interface IChatState {
   chatPreActiveGroup: Group | null,
   chatBlockedUsers: (Block | null)[],
   tmpGroup: number,
+  newGroupId: number,
   userInfo: User | null
 }
 

@@ -32,15 +32,6 @@ const ChatGroupMemberProfileComp = (user: IUserData) => {
     const chatStore = useSelector(selectChatStore);
     const dispatch = useDispatch();
     const userId = Cookies.get('userId') ? Cookies.get('userId') : '';
-    //const userId = (chatStore.userInfo) ? chatStore.userInfo.id : null;
-    //const loggedUser = chatStore.chatAllJoinReq.filter((el: JoinGroup) => {
-    //     if ((el && el.userId)
-    //         && (el.userId.toString()) == userId
-    //         && (el.channelId == user.memberJoin.channelId)
-    //     ) {
-    //         return el;
-    //     }
-    // })[0];
     const groupMembers = chatStore.chatActiveGroup ? getMembers(chatStore.chatGroupMembers, chatStore.chatActiveGroup.channelId) : [];
     const groupMemberNo = (chatStore.chatActiveGroup ? groupMembers.length : 0)
     const loggedUser = groupMembers.filter((el: JoinGroup) => el && el.userId.toString() == userId)[0];

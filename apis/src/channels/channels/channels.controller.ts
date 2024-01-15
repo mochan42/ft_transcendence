@@ -47,4 +47,9 @@ export class ChannelsController {
   ) {
     return this.joinChannelService.create(joinChannel);
   }
+
+  @Delete('pong/channels')
+  async deleteAllChannels() {
+    return this.channelsService.removeAll();
+  }
 }

@@ -66,11 +66,11 @@ const App: React.FC = () => {
 	useEffect(() => {
 		(async () => {
 			if (userId != null) {
-				const userInfos = await fetchUser(userId); 
+				const userInfos = await fetchUser(userId);
 				dispatch(updateUserInfo(userInfos));
 			}
 		})();
-	},[userId])
+	}, [userId])
 	//----------------------------CHAT---------------------------
 	useEffect(() => {
 		if (socket != null) {
@@ -120,8 +120,8 @@ const App: React.FC = () => {
 			});
 			socket.on('newChannel', (data: any) => {
 				dispatch(updateChatGroups(data.groups));
-				dispatch(updateChatActiveGroup(null));
 				dispatch(updateChatGroupMembers(data.members));
+				dispatch(updateChatAllJoinReq(data.members));
 			});
 			socket.on("receiveMessage", (data: any) => {
 				dispatch(updateChatUserMessages(data.all));
@@ -165,6 +165,7 @@ const App: React.FC = () => {
 
 			socket.on('joinChannelSucces', (data: any) => {
 				dispatch(updateChatGroupMembers(data.all));
+				dispatch(updateChatAllJoinReq(data.all));
 			});
 		}
 	});

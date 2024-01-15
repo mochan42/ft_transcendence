@@ -39,6 +39,9 @@ Content-Type: application/json
 ### Delete all members
 DELETE  http://localhost:5000/pong/chanel-all-members
 
+
+### Delete all channels
+DELETE http://localhost:5000/pong/channels
 ### Get all users
 GET http://localhost:5000/pong/users/
 ### get all users

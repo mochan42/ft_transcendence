@@ -482,6 +482,7 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
     this.server.emit('newChannel', {
       members: allMembers,
       groups: allChannels,
+      owner: newChannel.ownerId,
     });
   }
 
