@@ -735,13 +735,9 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
       paddle2Dir: 0,
       speedX: 0,
       speedY: 0
-    }
-    
-    const user = await this.chatsService.getUserFromSocket(socket);
-    const xp = (gameDto.score1 > gameDto.score2 && user.id == gameDto.player1) ? 120 : 80 
-    const updateUser = await this.userService.updateUserXp(user.id, xp);
+    };
     const game = await this.gamesService.create(gameDto);
-    await Promise.all([updateUser, game]);
+    await Promise.all([game]);
     socket.emit('gameBotSuccess', {});
   }
 
@@ -782,46 +778,22 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
       })
     }
     const oldStats1 = await this.userStats.findOne(payload.player1);
-    // if (!oldStats1)
-    // {
-    //   const createStatDto: CreateStatDto = {
-    //     wins: (payload.score1 > payload.score2) ? 1 : 0,
-    //     losses: (payload.score1 < payload.score2) ? 1 : 0,
-    //     draws: (payload.score1 == payload.score2) ? 1 : 0,
-    //     userId: payload.player1,
-    //   };
-    //   const newStats = await this.userStats.create(payload.player1.toString(), createStatDto);
-    //   // socket.emit('gameSaveSuccess', newStats);
-    // } else {
       const newStats1: UpdateStatDto = {
         wins: (payload.score1 > payload.score2) ? oldStats1.wins + 1 : oldStats1.wins,
         losses: (payload.score1 < payload.score2) ? oldStats1.losses + 1 : oldStats1.losses,
         draws: (payload.score1 == payload.score2) ? oldStats1.draws + 1 : oldStats1.draws,
         userId: +oldStats1.userId
       }
-      const updatedStats = await this.userStats.update(oldStats1.userId, newStats1); 
-    // socket.emit('gameSaveSuccess', updatedStats);
+    const updatedStats = await this.userStats.update(oldStats1.userId, newStats1); 
     
     const oldStats2 = await this.userStats.findOne(payload.player2);
-    // if (!oldStats2)
-    // {
-    //   const createStatDto: CreateStatDto = {
-    //     wins: (payload.score2 > payload.score1) ? 1 : 0,
-    //     losses: (payload.score2 < payload.score1) ? 1 : 0,
-    //     draws: (payload.score2 == payload.score1) ? 1 : 0,
-    //     userId: payload.player2,
-    //   };
-    //   const newStats2 = await this.userStats.create(payload.player2.toString(), createStatDto);
-    //   // socket.emit('gameSaveSuccess', newStats2);
-    // }
-      const newStats2: UpdateStatDto = {
-        wins: (payload.score1 > payload.score2) ? oldStats2.wins + 1 : oldStats2.wins,
-        losses: (payload.score1 < payload.score2) ? oldStats2.losses + 1 : oldStats2.losses,
-        draws: (payload.score1 == payload.score2) ? oldStats2.draws + 1 : oldStats2.draws,
-        userId: +oldStats2.userId
-      };
-      const updatedStats2 = await this.userStats.update(oldStats2.userId, newStats2); 
-      // socket.emit('gameSaveSuccess', updatedStats);
+    const newStats2: UpdateStatDto = {
+      wins: (payload.score1 > payload.score2) ? oldStats2.wins + 1 : oldStats2.wins,
+      losses: (payload.score1 < payload.score2) ? oldStats2.losses + 1 : oldStats2.losses,
+      draws: (payload.score1 == payload.score2) ? oldStats2.draws + 1 : oldStats2.draws,
+      userId: +oldStats2.userId
+    };
+    const updatedStats2 = await this.userStats.update(oldStats2.userId, newStats2); 
     console.log("Successfully saved the gamestats to Database.")
   }
   
