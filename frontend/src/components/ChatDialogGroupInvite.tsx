@@ -34,7 +34,7 @@ function GetJoinGroupListForLoggedUser(): JoinGroup[] {
     const chatStore = useSelector(selectChatStore);
 
     // api call to fetch all JoinGroup elements for filtering
-    const JoinGroupList = chatStore.chatGroupMembers
+    const JoinGroupList = chatStore.chatAllJoinReq
 
     const affiliatedJoinGroupList = JoinGroupList.filter(el => el && el.userId &&
         (userId && (el.userId.toString()) == userId))
@@ -73,9 +73,11 @@ const ChatGroupInviteList = () => {
         el.status == enChatGroupInviteStatus.INVITE
     )
     let group = {} as Group | null
-    useEffect(() => { 
 
-    }, [chatStore.chatGroupList] )
+    useEffect(() => {
+
+    }, [chatStore.chatGroupList, chatStore.chatAllJoinReq]);
+
     return (
         <>
             {inviteList.map((el) => {

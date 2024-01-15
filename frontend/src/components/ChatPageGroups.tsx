@@ -40,7 +40,6 @@ const ChatGroupElement = (group: Group) => {
                 return el;
             }
         })[0]));
-        dispatch(updateNewGrpId(-1));
     }
 
     const HandleOnClick = () => {
@@ -48,8 +47,9 @@ const ChatGroupElement = (group: Group) => {
             dispatch(toggleSidebar());
         }
         dispatch(updateChatPreActiveGroup(group));
-        if (userId == groupOwnerUserData.id && group.privacy != enChatPrivacy.PROTECTED) {
+        if ((userId == groupOwnerUserData.id || group.channelId == chatStore.newGroupId) && group.privacy != enChatPrivacy.PROTECTED) {
             dispatch(updateChatDialogShwMsg(false));
+            dispatch(updateNewGrpId(-1));
             joinChannel(group.channelId);
         }
         else if (group.privacy == enChatPrivacy.PROTECTED && group.channelId != chatStore.chatActiveGroup?.channelId) {
@@ -67,9 +67,8 @@ const ChatGroupElement = (group: Group) => {
             else {
                 dispatch(updateChatDialogShwMsg(true));
             }
-            //(userGroupData.length) > 0 ? joinChannel(group.channelId) : (chatStore.newGroupId > 0) ? joinChannel(chatStore.newGroupId) : dispatch(updateChatDialogShwMsg(true))
         }
-        else // group channel is public
+        else
         {
             joinChannel(group.channelId);
         }

@@ -12,7 +12,7 @@ import { updateChatDialogProfileUserId, updateChatDialogShwProfile, updateChatDi
 import img42 from "../img/icon_42.png"
 import { getUserById } from './ChatConversation';
 import { getSocket } from '../utils/socketService';
-import { updateChatGroupMembers, updateChatAllJoinReq } from '../redux/slices/chatSlice';
+import { updateChatGroupMembers, updateChatAllJoinReq, updateNewGrpId } from '../redux/slices/chatSlice';
 import { ChatGroupMemberList, getMembers } from "../data/ChatData";
 
 
@@ -60,7 +60,6 @@ const ChatGroupMemberProfileComp = (user: IUserData) => {
     const handlePromote = (rank: string) => {
         if (user && user.memberJoin) {
             const joinGroup = { ...user.memberJoin, rank: rank }
-            console.log("joinGroup :", joinGroup);
             socket.emit('memberPromoteToggle', joinGroup);
             handleClose();
         }
@@ -367,9 +366,12 @@ const ChatGroupDialogRequestEntryComp = (args: TGroupRequestArgs) => {
             socket.once('acceptMemberSuccess', (data: any) => {
                 dispatch(updateChatGroupMembers(data.all));
                 dispatch(updateChatAllJoinReq(data.all));
+                if (loggedUserId && data.new.userId == loggedUserId) {
+                    dispatch(updateNewGrpId(data.new.channelId));
+                }
             });
-            dispatch(updateChatDialogGroupInvite(false));
         }
+        dispatch(updateChatDialogGroupInvite(false));
     }
 
     const denyRequest = (joinGroup: JoinGroup) => {
@@ -379,8 +381,8 @@ const ChatGroupDialogRequestEntryComp = (args: TGroupRequestArgs) => {
                 dispatch(updateChatGroupMembers(data.all));
                 dispatch(updateChatAllJoinReq(data.all));
             });
-            dispatch(updateChatDialogGroupInvite(false));
         }
+        dispatch(updateChatDialogGroupInvite(false));
     }
 
     useEffect(() => {
