@@ -9,13 +9,20 @@ import EditProfile from '../EditProfile';
 
 import '../../css/profile.css';
 import { BACKEND_URL } from '../../data/Global';
-import { GameType } from '../../types'
+import { GameType } from '../../types';
+import { selectChatDialogStore, selectChatStore } from '../../redux/store';
+import { useDispatch, useSelector } from "react-redux";
+import { updateUserInfo } from '../../redux/slices/chatSlice';
+
 
 const Profile: React.FC<ProfileProps> = ({ userId, isAuth }) => {
 
-
-    const [userInfo, setUserInfo] = useState<User | null>(null);
-    const [usersInfo, setUsersInfo] = useState<User[] | null>(null);
+    const chatStore = useSelector(selectChatStore);
+    const dispatch = useDispatch();
+    const userInfo = chatStore.userInfo;
+    const usersInfo = chatStore.chatUsers;
+    //const [userInfo, setUserInfo] = useState<User | null>(null);
+    //const [usersInfo, setUsersInfo] = useState<User[] | null>(null);
     const [userStats, setUserStats] = useState<UserStats | null>(null);
     const [userMatchStories, setUserMatchStories] = useState<GameType[]>([]);
     const [showScreen, setShowScreen] = useState<'default' | 'achievements' | 'friends' | 'stats' | 'userProfile'>('default');
@@ -49,11 +56,12 @@ const Profile: React.FC<ProfileProps> = ({ userId, isAuth }) => {
         };
         const resp = await axios.patch<User>(`${BACKEND_URL}/pong/users/2fa/` + id, { headers });
         if (resp.status === 200) {
-            setUserInfo(resp.data);
+            dispatch(updateUserInfo(resp.data));
             console.log('2FA options updated successfully');
         }
     }
 
+    useEffect(() => { }, [chatStore.chatUsers, chatStore.userInfo]);
     useEffect(() => {
         if (allGoals != null && userAchievements != null) {
             const achievedGoals = allGoals?.filter((goal) => {
@@ -73,18 +81,6 @@ const Profile: React.FC<ProfileProps> = ({ userId, isAuth }) => {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${process.env.REACT_APP_SECRET}`
             };
-            if (userInfo === null) {
-                try {
-                    const response = await axios.get<User>(url_info, { headers });
-                    if (response.status === 200) {
-                        setUserInfo(response.data);
-                        // console.log('Received User Info: ', response.data)
-                    }
-                }
-                catch (error) {
-                    console.log('Error fetching user infos', error);
-                }
-            }
             if (userStats === null) {
                 try {
                     const response = await axios.get<UserStats>(url_stats, { headers });
@@ -135,17 +131,17 @@ const Profile: React.FC<ProfileProps> = ({ userId, isAuth }) => {
                     console.log('Error receiving Friends information: ', error);
                 }
             }
-            if (usersInfo === null) {
-                try {
-                    const response = await axios.get<User[]>(`${BACKEND_URL}/pong/users/`, { headers });
-                    if (response.status === 200) {
-                        setUsersInfo(response.data);
-                    }
-                }
-                catch (error) {
-                    console.log('Error fetching users infos', error);
-                }
-            }
+            // if (usersInfo === null) {
+            //     try {
+            //         const response = await axios.get<User[]>(`${BACKEND_URL}/pong/users/`, { headers });
+            //         if (response.status === 200) {
+            //             setUsersInfo(response.data);
+            //         }
+            //     }
+            //     catch (error) {
+            //         console.log('Error fetching users infos', error);
+            //     }
+            // }
             if (userFriends === null && usersInfo) {
                 const usersFriends = usersInfo?.filter((user) =>
                     friends?.some((friend) => (friend.sender == user.id || friend.receiver == user.id) && user.id != userId)
@@ -158,9 +154,9 @@ const Profile: React.FC<ProfileProps> = ({ userId, isAuth }) => {
             }
         })();
     }, [
-        userInfo, ConfigureBtn2fa, allGoals,
+        chatStore.userInfo, ConfigureBtn2fa, allGoals,
         friends, userAchievements, userFriends,
-        userId, userStats, usersInfo, url_info,
+        userId, userStats, chatStore.chatUsers, url_info,
         url_stats, url_achievements, urlFriends,
         url_goals
     ]

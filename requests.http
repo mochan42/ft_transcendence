@@ -39,7 +39,7 @@ Content-Type: application/json
 ### Delete all members
 DELETE  http://localhost:5000/pong/chanel-all-members
 
-
+### Get all users
 GET http://localhost:5000/pong/users/
 ### get all users
 GET https://literate-space-garbanzo-vjvjp6xjpvvfp57j-5000.app.github.dev/pong/users
@@ -86,10 +86,10 @@ Content-Type: application/json
 PATCH   http://localhost:5000/pong/users/2fa/30
 
 ###  delete user
-DELETE  http://localhost:5000/pong/users/4
+DELETE  http://localhost:5000/pong/users/19
 
 ### get user stat
-GET http://localhost:5000/pong/users/16/stats
+GET http://localhost:5000/pong/users/18/stats
 
 ### creat user stat
 POST http://localhost:5000/pong/users/2/stats

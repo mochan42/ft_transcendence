@@ -16,10 +16,10 @@ import Cookies from 'js-cookie';
 import { Utils__isAPICodeAvailable } from './utils/utils__isAPICodeAvailable';
 import { getSocket } from './utils/socketService';
 import { GameType, Chat, Block } from './types';
-import { updateChatUserMessages, updateChatUserFriendRequests, updateChatUserFriends, updateChatUsers, updateChatGroups, updateChatGroupMembers, updateChatBlockedUsers, updateChatAllJoinReq, toggleSidebar } from "./redux/slices/chatSlice";
+import { updateChatUserMessages, updateChatUserFriendRequests, updateChatUserFriends, updateChatUsers, updateChatGroups, updateChatGroupMembers, updateChatBlockedUsers, updateChatAllJoinReq, toggleSidebar, updateUserInfo } from "./redux/slices/chatSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { selectChatStore } from "./redux/store";
-import { fetchAllFriends, fetchAllMessages, fetchAllUsersFriends } from './data/ChatData';
+import { fetchAllFriends, fetchAllMessages, fetchAllUsersFriends, fetchUser } from './data/ChatData';
 import GameChallenge from './components/GameChallenge';
 import Game from './components/pages/Game';
 import { ACCEPTED, PENDING } from './APP_CONSTS';
@@ -62,7 +62,15 @@ const App: React.FC = () => {
 	// check if code available for backend to exchange for token
 	Utils__isAPICodeAvailable({ setIsAuth, isAuth, setCode, code })
 
-
+	// set userInfo the first time
+	useEffect(() => {
+		(async () => {
+			if (userId != null) {
+				const userInfos = await fetchUser(userId); 
+				dispatch(updateUserInfo(userInfos));
+			}
+		})();
+	},[userId])
 	//----------------------------CHAT---------------------------
 	useEffect(() => {
 		if (socket != null) {
