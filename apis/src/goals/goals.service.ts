@@ -38,7 +38,7 @@ export class GoalsService {
   }
   async feedGoals(): Promise<(Goal | null)[]>{
     const goals = await this.GoalRepository.find();
-    if (goals.length != 0) {
+    if (goals.length > 0) {
       console.log('YES')
       return null;
     };
