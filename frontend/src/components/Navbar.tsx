@@ -30,6 +30,7 @@ const Navbar: React.FC<Props> = ({ setIsAuth, isAuth, setCode, setUserId }) => {
 		if (isAuth) {
 			if (socket != null) {
 				socket.emit('userLogout', {});
+				window.location.reload();
 			}
 			setIsAuth(false);
 			setUserId(null);
@@ -37,7 +38,6 @@ const Navbar: React.FC<Props> = ({ setIsAuth, isAuth, setCode, setUserId }) => {
 			Cookies.remove('isAuth');
 			Cookies.remove('userId');
 			Cookies.remove('userName');
-			window.location.reload();
 		}
 		navigate('/login');
 	}
