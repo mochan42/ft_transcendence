@@ -44,7 +44,6 @@ const ChatGroupMemberProfileComp = (user: IUserData) => {
     const groupMembers = chatStore.chatActiveGroup ? getMembers(chatStore.chatGroupMembers, chatStore.chatActiveGroup.channelId) : [];
     const groupMemberNo = (chatStore.chatActiveGroup ? groupMembers.length : 0)
     const loggedUser = groupMembers.filter((el: JoinGroup) => el && el.userId.toString() == userId)[0];
-    console.log("CONNECTED USER", loggedUser);
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {

@@ -169,7 +169,7 @@ export const fetchAllMembers = async (): Promise<JoinGroup[]> => {
 }
 
 export const getMembers = (members: JoinGroup[], group: number): JoinGroup[] => {
-  const allMembers: JoinGroup[] = members.filter((el: any) => el.channelId === group && el.status === enChatGroupInviteStatus.ACCEPTED);
+  const allMembers: JoinGroup[] = members.filter((el: JoinGroup) => el.channelId === group && el.status === enChatGroupInviteStatus.ACCEPTED);
   return allMembers ? allMembers: [];
 }
 

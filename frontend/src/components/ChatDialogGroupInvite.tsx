@@ -156,7 +156,12 @@ const ChatDialogGroupInvite = () => {
     useEffect(() => {
         
 
-    }, [chatStore.chatGroupList, chatStore.chatGroupMembers, chatStore.chatAllJoinReq]);
+    }, [
+        chatStore.chatGroupList,
+        chatStore.chatGroupMembers,
+        chatStore.chatAllJoinReq,
+        chatStore.chatSideBar.open
+    ]);
 
     return (
         <>

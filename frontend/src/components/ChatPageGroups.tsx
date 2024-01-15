@@ -34,11 +34,10 @@ const ChatGroupElement = (group: Group) => {
     const socket = getSocket(userId);
 
 
-    const joinChannel = () => {
-
-        dispatch(selectConversation({ chatRoomId: group.channelId, chatType: enChatType.Group }))
-        dispatch(updateChatActiveGroup(chatStore.chatGroupList.filter((el: Group|null) => {
-            if (el && (el.channelId == group.channelId)) {
+    const joinChannel = (currentGroup: Group) => {
+        dispatch(selectConversation({ chatRoomId: currentGroup.channelId, chatType: enChatType.Group }))
+        dispatch(updateChatActiveGroup(chatStore.chatGroupList.filter((el: Group | null) => {
+            if (el && (el.channelId == currentGroup.channelId)) {
                 return el;
             }
         })[0]));
@@ -58,15 +57,16 @@ const ChatGroupElement = (group: Group) => {
         else if (group.privacy == enChatPrivacy.PRIVATE && group.channelId != chatStore.chatActiveGroup?.channelId) {
             const groupMembers = getMembers(chatStore.chatAllJoinReq, group.channelId)
             const userGroupData = groupMembers.filter((el: JoinGroup) => {
-                if ((userId && el) && (+userId == el.userId))
+                if ((userId && el) && (+userId == el.userId)) {
                     return el;
-            })
-
-            userGroupData.length ? joinChannel() : dispatch(updateChatDialogShwMsg(true))
+                }
+            });
+            console.log("YOU ARE\n", userId);
+            userGroupData.length > 0 ? joinChannel(group) : dispatch(updateChatDialogShwMsg(true))
         }
         else // group channel is public
         {
-            joinChannel()
+            joinChannel(group);
         }
 
     }
@@ -85,8 +85,7 @@ const ChatGroupElement = (group: Group) => {
     ]);
 
     useEffect(() => {
-        if (chatStore.chatGroupChkPassInpState.check && chatStore.chatGroupChkPassInpState.group == group.channelId)
-        {
+        if (chatStore.chatGroupChkPassInpState.check && chatStore.chatGroupChkPassInpState.group == group.channelId) {
             socket.emit('verifyGroupPassword', { input: chatStore.chatGroupUsrPassInp, group: group.channelId });
             socket.once('verifyGroupPasswdSuccess', (verify: boolean) => {
                 console.log(verify);
@@ -161,10 +160,10 @@ const ChatPageGroups = (chatProp: ChatProps) => {
 
     useEffect(() => {
 
-    },[ chatStore.chatActiveGroup,
-            chatStore.chatGroupList,
-            chatStore.chatGroupMembers,
-            chatStore.chatAllJoinReq ]);
+    }, [chatStore.chatActiveGroup,
+    chatStore.chatGroupList,
+    chatStore.chatGroupMembers,
+    chatStore.chatAllJoinReq]);
     // console.log("counting list - ", chatStore.chatGroupList.length)
 
     return (
@@ -212,7 +211,7 @@ const ChatPageGroups = (chatProp: ChatProps) => {
                             sx={{ flexGrow: 1, overflowY: "scroll", height: "100%" }}
                             spacing={0.5}
                         >
-                            {chatStore.chatGroupList.map((el: Group|null) => {
+                            {chatStore.chatGroupList.map((el: Group | null) => {
                                 if (el)
                                     return (<ChatGroupElement key={el.channelId} {...el} />)
                             })
