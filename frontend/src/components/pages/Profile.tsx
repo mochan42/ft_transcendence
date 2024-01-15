@@ -241,7 +241,7 @@ const Profile: React.FC<ProfileProps> = ({ userId, isAuth }) => {
                                 Achievements
                             </h3>
                             <div className="grid grid-cols-2 gap-8">
-                                {achievedGoals?.map((goal, index) => (
+                                {achievedGoals?.slice(0, 3).map((goal, index) => (
                                     <div key={index}>
                                         <div className="space-y-2 flex flex-col justify-between gap-4">
                                             <div className="flex flex-row justify-between">
@@ -255,7 +255,7 @@ const Profile: React.FC<ProfileProps> = ({ userId, isAuth }) => {
                                         </div>
                                     </div>
                                 ))}
-                                {notAchievedGoals?.map((goal, index) => (
+                                {notAchievedGoals?.slice(0, 3).map((goal, index) => (
                                     <div key={index}>
                                         <div className="space-y-2 flex flex-col justify-between gap-4">
                                             <div className="flex flex-row justify-between min-w-[220px]">

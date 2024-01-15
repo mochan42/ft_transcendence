@@ -89,36 +89,40 @@ const Navbar: React.FC<Props> = ({ setIsAuth, isAuth, setCode, setUserId }) => {
 	return (
 
 		<div className='w-full flex items-center justify-evenly'>
-			<Button
-				variant='link'
-				onClick={() => {navigate('/about'); if (userInfo) {userInfo.currentState = LOG_STATE.ONLINE}}}
-			>
-				Transcendence 42
-			</Button>
+			{ userInfo?.currentState != LOG_STATE.INGAME ? 
+			<>
+				<Button
+					variant='link'
+					onClick={() => {navigate('/about'); if (userInfo) {userInfo.currentState = LOG_STATE.ONLINE}}}
+				>
+					Transcendence 42
+				</Button>
 
-			<Button
-				variant='link'
-				type='submit'
-				onClick={() => {navigate('/'); if (userInfo) {userInfo.currentState = LOG_STATE.ONLINE}}}
-			>
-				Home
-			</Button>
+				<Button
+					variant='link'
+					type='submit'
+					onClick={() => {navigate('/'); if (userInfo) {userInfo.currentState = LOG_STATE.ONLINE}}}
+				>
+					Home
+				</Button>
 
-			<Button
-				variant='link'
-				type='submit'
-				onClick={() => {navigate('/profile'); if (userInfo) {userInfo.currentState = LOG_STATE.ONLINE}}}
-			>
-				Profile
-			</Button>
+				<Button
+					variant='link'
+					type='submit'
+					onClick={() => {navigate('/profile'); if (userInfo) {userInfo.currentState = LOG_STATE.ONLINE}}}
+				>
+					Profile
+				</Button>
 
-			<Button
-				variant='link'
-				type='submit'
-				onClick={() => {navigate('/game'); if (userInfo) {userInfo.currentState = LOG_STATE.ONLINE}}}
-			>
-				Play Pong
-			</Button>
+				<Button
+					variant='link'
+					type='submit'
+					onClick={() => {navigate('/game'); if (userInfo) {userInfo.currentState = LOG_STATE.ONLINE}}}
+				>
+					Play Pong
+				</Button>
+			</>
+			 : null}
 			<Button
 				variant='ghost'
 				onClick={handleThemeSwitch}
