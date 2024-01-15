@@ -55,7 +55,6 @@ const ChatGroupElement = (group: Group) => {
             dispatch(updateTmpGroup(group.channelId));
         }
         else if (group.privacy == enChatPrivacy.PRIVATE && group.channelId != chatStore.chatActiveGroup?.channelId) {
-            const allMembers = await fetchAllMembers();
             const groupMembers = getMembers(chatStore.chatAllJoinReq, group.channelId)
             const userGroupData = groupMembers.filter((el) => {
                 if (userId && parseInt(userId) == el.userId)

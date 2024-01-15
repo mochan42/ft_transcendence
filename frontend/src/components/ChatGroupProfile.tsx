@@ -27,7 +27,6 @@ const ChatGroupProfile = () => {
     const theme = useTheme()
     const userId = Cookies.get('userId') ? Cookies.get('userId') : ''; // not working
     console.log("userId :", userId);
-    //const userId = '1' // for testing only member (7) admin (1)
     const dispatch = useDispatch();
     const chatStore = useSelector(selectChatStore);
     const chatDialogStore = useSelector(selectChatDialogStore);
@@ -35,12 +34,10 @@ const ChatGroupProfile = () => {
     const activeGroupPrivacy = (chatStore.chatActiveGroup ? chatStore.chatActiveGroup.privacy : "")
     const groupMembers = chatStore.chatActiveGroup ? getMembers(chatStore.chatGroupMembers, chatStore.chatActiveGroup.channelId) : [];
     const groupMemberNo = (chatStore.chatActiveGroup ? groupMembers.length : 0)
-    const loggedUser = groupMembers.filter((el: JoinGroup) => el.userId.toString() == userId);
+    const loggedUser = groupMembers.filter((el: JoinGroup) => el && el.userId.toString() == userId);
     const socket = getSocket(userId);
 
-    // console.log(loggedUser, 'id- ', userId, loggedUser[0].rank)
-    // console.log("Show userId", userId)
-    let actionBtnState = IsUserInGroup(userId, chatStore.chatActiveGroup) ? ((loggedUser.length > 0 && loggedUser[0].rank === enChatMemberRank.MEMBER) ? false : true) : false
+    const actionBtnState = IsUserInGroup(userId, chatStore.chatActiveGroup) ? ((loggedUser.length > 0 && loggedUser[0].rank === enChatMemberRank.MEMBER) ? false : true) : false
     const [ChangePasswdDialogState, setChangePasswdDialogState] = useState<Boolean>(false);
 
     const canExit = (loggedUser: JoinGroup, groupMembers: JoinGroup[]): boolean => {
@@ -57,7 +54,6 @@ const ChatGroupProfile = () => {
     }
 
     const exitGroup = () => {
-
         const isExit = canExit(loggedUser[0], groupMembers);
         if (isExit) {
             socket.emit('exitGroup', chatStore.chatActiveGroup?.channelId);
@@ -68,7 +64,12 @@ const ChatGroupProfile = () => {
 
     useEffect(() => {
 
-    }, [chatStore.chatActiveGroup, chatStore.chatGroupMembers, chatStore.chatGroupList, chatStore.chatAllJoinReq, chatStore.chatSideBar.open]);
+    }, [chatStore.chatActiveGroup,
+    chatStore.chatGroupMembers,
+    chatStore.chatGroupList,
+    chatStore.chatAllJoinReq,
+    chatStore.chatSideBar.open
+    ]);
     // const actionBtnState = true
 
 
@@ -143,7 +144,6 @@ const ChatGroupProfile = () => {
                                             memberJoin={member}
                                         />
                                     }
-                                    return null;
                                 })
                             }
                             {/* divider  */}

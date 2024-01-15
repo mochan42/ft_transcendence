@@ -9,6 +9,7 @@ import { StatService } from 'src/stat/stat.service';
 import { LOG_STATE } from 'src/APIS_CONSTS';
 import { JwtService } from '@nestjs/jwt';
 import { GoalsService } from 'src/goals/goals.service';
+import { promises } from 'dns';
 
 @Injectable()
 export class AuthService {
@@ -19,6 +20,7 @@ export class AuthService {
     private goalService: GoalsService
   ) {}
   async signin(authUserDto: AuthUserDto) {
+    let userStat;
     const seedGoals = await this.goalService.feedGoals();
     const accessToken = await this.getFortyTwoAccessToken(authUserDto);
     if (!accessToken) {
@@ -41,16 +43,14 @@ export class AuthService {
     } else {
       signedUser = await this.usersService.create(pongUser);
       const defaultStat = { wins: 0, losses: 0, draws: 0 };
-      // firstTime creat user's stats.
-      await this.statService.create(signedUser.id, defaultStat);
+      userStat = await this.statService.create(signedUser.id, defaultStat);
     }
-
+    await Promise.all([seedGoals, userStat]);
     if (!signedUser.is2Fa) {
       const userAccessToken = await this.jwtService.signAsync(signedUser);
       return { is2Fa: false, access_token: userAccessToken, isFirstLogin: logTimes };
     }
     const token2fa = await this.generateSecret(signedUser.id.toString());
-    Promise.all([seedGoals]);
     return { is2Fa: true, token2fa, isFirstLogin: false };
   }
 
