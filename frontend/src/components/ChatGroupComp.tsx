@@ -30,9 +30,11 @@ const ChatGroupMemberProfileComp = (user: IUserData) => {
     const theme = useTheme();
     const chatStore = useSelector(selectChatStore);
     const dispatch = useDispatch();
+    const userId = (chatStore.userInfo) ? chatStore.userInfo.id : null;
     const loggedUser = chatStore.chatGroupMembers.filter((el: JoinGroup) => {
-        if (el && el.userId && (el.userId.toString()) == userId)
+        if ((el && el.userId && userId) && (el.userId.toString()) == userId) {
             return el;
+        }
     })[0];
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
