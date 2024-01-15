@@ -30,9 +30,13 @@ const ChatGroupMemberProfileComp = (user: IUserData) => {
     const theme = useTheme();
     const chatStore = useSelector(selectChatStore);
     const dispatch = useDispatch();
-    const userId = (chatStore.userInfo) ? chatStore.userInfo.id : null;
-    const loggedUser = chatStore.chatGroupMembers.filter((el: JoinGroup) => {
-        if ((el && el.userId && userId) && (el.userId.toString()) == userId) {
+    const userId = Cookies.get('userId') ? Cookies.get('userId') : '';
+    //const userId = (chatStore.userInfo) ? chatStore.userInfo.id : null;
+    const loggedUser = chatStore.chatAllJoinReq.filter((el: JoinGroup) => {
+        if ((el && el.userId)
+            && (el.userId.toString()) == userId
+            && (el.channelId == chatStore.chatActiveGroup?.channelId)
+        ) {
             return el;
         }
     })[0];
