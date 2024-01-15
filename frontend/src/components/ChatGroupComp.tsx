@@ -30,11 +30,10 @@ const ChatGroupMemberProfileComp = (user: IUserData) => {
     const theme = useTheme();
     const chatStore = useSelector(selectChatStore);
     const dispatch = useDispatch();
-    const userId = Cookies.get('userId') ? Cookies.get('userId') : '';
-    const loggedUser = chatStore.chatGroupMembers.filter((el) => {
+    const loggedUser = chatStore.chatGroupMembers.filter((el: JoinGroup) => {
         if (el && el.userId && (el.userId.toString()) == userId)
             return el;
-    })[0]
+    })[0];
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -75,9 +74,9 @@ const ChatGroupMemberProfileComp = (user: IUserData) => {
 
     useEffect(() => {
 
-    }, [ chatStore.chatGroupMembers,
-        chatStore.chatAllJoinReq,
-        chatStore.chatSideBar.open ])
+    }, [chatStore.chatGroupMembers,
+    chatStore.chatAllJoinReq,
+    chatStore.chatSideBar.open])
 
 
     return (
@@ -142,29 +141,29 @@ const ChatGroupMemberProfileComp = (user: IUserData) => {
             >
                 <MenuItem onClick={onShwProfile}>View profile</MenuItem>
                 {/* {loggedUser.userId != +user.memberUser.id && <MenuItem onClick={handleClose}>Play game</MenuItem>} */}
-                {loggedUser.rank != enChatMemberRank.MEMBER &&
+                {loggedUser && loggedUser.rank != enChatMemberRank.MEMBER &&
                     <Divider />}
 
                 {/* {loggedUser.rank == enChatMemberRank.ADMIN && <Divider />} */}
 
-                {loggedUser.rank != enChatMemberRank.MEMBER &&
+                {loggedUser && loggedUser.rank != enChatMemberRank.MEMBER &&
                     user.memberJoin.rank != enChatMemberRank.OWNER &&
-                    user.memberJoin.rights != enChatMemberRights.BANNED && 
-                    loggedUser.userId != +user.memberUser.id && 
+                    user.memberJoin.rights != enChatMemberRights.BANNED &&
+                    loggedUser.userId != +user.memberUser.id &&
                     <MenuItem onClick={() => handleMute(enChatMemberRights.BANNED)}>Mute</MenuItem>}
 
-                {loggedUser.rank != enChatMemberRank.MEMBER &&
+                {loggedUser && loggedUser.rank != enChatMemberRank.MEMBER &&
                     user.memberJoin.rank != enChatMemberRank.OWNER && user.memberJoin.rights == enChatMemberRights.BANNED &&
                     <MenuItem onClick={() => handleMute(enChatMemberRights.PRIVILEDGED)}>Unmute</MenuItem>}
 
-                {loggedUser.rank != enChatMemberRank.MEMBER &&
+                {loggedUser && loggedUser.rank != enChatMemberRank.MEMBER &&
                     user.memberJoin.rank != enChatMemberRank.OWNER && loggedUser.userId != +user.memberUser.id && <MenuItem onClick={handleKick}>Kick</MenuItem>}
 
-                {loggedUser.rank != enChatMemberRank.MEMBER &&
+                {loggedUser && loggedUser.rank != enChatMemberRank.MEMBER &&
                     user.memberJoin.rank != enChatMemberRank.OWNER &&
                     user.memberJoin.rank == enChatMemberRank.ADMIN && loggedUser.userId != +user.memberUser.id && <MenuItem onClick={() => handlePromote(enChatMemberRank.MEMBER)}>Demote</MenuItem>}
 
-                {loggedUser.rank != enChatMemberRank.MEMBER &&
+                {loggedUser && loggedUser.rank != enChatMemberRank.MEMBER &&
                     user.memberJoin.rank != enChatMemberRank.OWNER &&
                     user.memberJoin.rank == enChatMemberRank.MEMBER && loggedUser.userId != +user.memberUser.id && <MenuItem onClick={() => handlePromote(enChatMemberRank.ADMIN)}>Promote</MenuItem>}
             </Menu>
@@ -234,17 +233,17 @@ const ChatGroupDialogInviteEntryComp = (group: Group) => {
     const chatStore = useSelector(selectChatStore)
 
     const onAccept = () => {
-        const joinGroup = chatStore.chatGroupMembers.find( (el: JoinGroup) =>
+        const joinGroup = chatStore.chatGroupMembers.find((el: JoinGroup) =>
             el && el.userId
             && el.userId.toString() == loggedUserId
-            && el.channelId == group.channelId )
+            && el.channelId == group.channelId)
         if (joinGroup) {
             socket.emit('acceptJoinGroup', joinGroup);
         }
     }
 
     const onDecline = () => {
-        const joinGroup = chatStore.chatGroupMembers.find( (el: JoinGroup) =>
+        const joinGroup = chatStore.chatGroupMembers.find((el: JoinGroup) =>
             el && el.userId
             && el.userId.toString() == loggedUserId
             && el.channelId == group.channelId);
@@ -255,9 +254,9 @@ const ChatGroupDialogInviteEntryComp = (group: Group) => {
 
     useEffect(() => {
 
-    },[ chatStore.chatGroupList,
-        chatStore.chatGroupMembers,
-        chatStore.chatGroupDialogState
+    }, [chatStore.chatGroupList,
+    chatStore.chatGroupMembers,
+    chatStore.chatGroupDialogState
     ]);
 
     return (
@@ -386,8 +385,8 @@ const ChatGroupDialogRequestEntryComp = (args: TGroupRequestArgs) => {
     useEffect(() => {
 
     }, [chatStore.chatGroupList,
-        chatStore.chatGroupMembers,
-        chatStore.chatAllJoinReq,
+    chatStore.chatGroupMembers,
+    chatStore.chatAllJoinReq,
     ]);
 
     return (

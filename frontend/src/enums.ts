@@ -29,6 +29,7 @@ enum enChatMemberRank {
   OWNER = "owner",
   ADMIN = "admin",
   MEMBER = "member",
+  GUESS = "guess",
 }
 
 enum enChatMemberRights {

@@ -41,13 +41,14 @@ const ChatGroupProfile = () => {
     const [ChangePasswdDialogState, setChangePasswdDialogState] = useState<Boolean>(false);
 
     const canExit = (loggedUser: JoinGroup, groupMembers: JoinGroup[]): boolean => {
+        if (!loggedUser) { return false; }
         const role = loggedUser.rank;
         if (role == enChatMemberRank.MEMBER) return true;
         if (groupMembers.length < 2) {
             socket.emit('deleteGroup', loggedUser.channelId);
             return true;
         }
-        if (groupMembers.filter(el => el.rank != enChatMemberRank.MEMBER).length > 1) {
+        if (groupMembers.filter((el: JoinGroup) => el.rank != enChatMemberRank.MEMBER).length > 1) {
             return true;
         }
         return false;
@@ -135,8 +136,9 @@ const ChatGroupProfile = () => {
                             spacing={0.5}
                         >
                             {
-                                groupMembers.map((member) => {
-                                    const memberUser = (chatStore.chatUsers.filter(el => +el.id === member.userId)[0])
+                                groupMembers.map((member: JoinGroup) => {
+                                    console.log(member);
+                                    const memberUser = (chatStore.chatUsers.filter((el: User) => +el.id === member.userId)[0])
                                     if (memberUser) {
                                         return <ChatGroupMemberProfileComp
                                             key={memberUser.id}
