@@ -36,7 +36,7 @@ function GetJoinGroupListForLoggedUser(): JoinGroup[] {
     // api call to fetch all JoinGroup elements for filtering
     const JoinGroupList = chatStore.chatGroupMembers
 
-    const affiliatedJoinGroupList = JoinGroupList.filter(el =>
+    const affiliatedJoinGroupList = JoinGroupList.filter(el => el && el.userId &&
         (userId && (el.userId.toString()) == userId))
 
     return affiliatedJoinGroupList
@@ -58,7 +58,7 @@ function GetGroupDataById(groupList: (Group | null)[], groupId: number): Group |
 export const FindUserMemberShip = (userId: string | undefined, channelId: number): JoinGroup | null => {
     const chatStore = useSelector(selectChatStore)
     const groupMembers = chatStore.chatGroupMembers.filter(el => el.channelId == channelId);
-    const userMemberShip = groupMembers.find(el => el.userId.toString() == userId);
+    const userMemberShip = groupMembers.find(el => el && el.userId && el.userId.toString() == userId);
     if (!userMemberShip) {
         return null;
     }

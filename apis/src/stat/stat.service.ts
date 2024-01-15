@@ -40,13 +40,17 @@ export class StatService {
     const oldStat = await this.StatRepository.findOne({
       where: { userId: id },
     });
+    if (!oldStat) {
+      console.log('here\n');
+      return await this.create(id, updateStatDto);
+    }
     const UpdatedStat = Object.assign(oldStat, updateStatDto);
     return await this.StatRepository.save(UpdatedStat);
   }
 
   async remove(id: string) {
     try {
-      await this.usersService.remove(id.toString());
+      //await this.usersService.remove(id.toString());
       return await this.StatRepository.delete({ userId: id });
     } catch (error) {
       throw new Error('error deleting user stat');

@@ -51,6 +51,7 @@ export class GamesService {
   async removeAll() {
     return await this.gameRepo.delete({});
   }
+  
   async makeMatch(
     player1: number,
     player2: number,

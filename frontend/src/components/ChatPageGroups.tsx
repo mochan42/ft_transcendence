@@ -21,6 +21,7 @@ import { fetchAllMembers, getMembers } from "../data/ChatData";
 import ChatGroupFormInputPasswd from "./ChatGroupFormInputPasswd";
 import ChatDialogShwMsg from "./ChatDialogShwMsg";
 import { getSocket } from "../utils/socketService";
+import React from "react";
 
 
 const ChatGroupElement = (group: Group) => {
@@ -35,7 +36,7 @@ const ChatGroupElement = (group: Group) => {
     const joinChannel = () => {
 
         dispatch(selectConversation({ chatRoomId: group.channelId, chatType: enChatType.Group }))
-        dispatch(updateChatActiveGroup(chatStore.chatGroupList.filter((el: any) => {
+        dispatch(updateChatActiveGroup(chatStore.chatGroupList.filter((el: Group|null) => {
             if (el && (el.channelId == group.channelId)) {
                 return el;
             }
@@ -44,7 +45,7 @@ const ChatGroupElement = (group: Group) => {
 
 
 
-    const HandleOnClick = async () => {
+    const HandleOnClick = () => {
         if (chatStore.chatSideBar.open) {
             dispatch(toggleSidebar());
         }
@@ -54,15 +55,13 @@ const ChatGroupElement = (group: Group) => {
             dispatch(updateTmpGroup(group.channelId));
         }
         else if (group.privacy == enChatPrivacy.PRIVATE && group.channelId != chatStore.chatActiveGroup?.channelId) {
-            const allMembers = await fetchAllMembers();
-            const groupMembers = getMembers(allMembers, group.channelId)
-            const userGroupData = groupMembers.filter((el) => {
-                if (userId && parseInt(userId) == el.userId)
+            const groupMembers = getMembers(chatStore.chatAllJoinReq, group.channelId)
+            const userGroupData = groupMembers.filter((el: JoinGroup) => {
+                if ((userId && el) && (+userId == el.userId))
                     return el;
             })
 
-            userGroupData.length ? joinChannel()
-                : dispatch(updateChatDialogShwMsg(true))
+            userGroupData.length ? joinChannel() : dispatch(updateChatDialogShwMsg(true))
         }
         else // group channel is public
         {
@@ -78,11 +77,14 @@ const ChatGroupElement = (group: Group) => {
     chatStore.chatGroupUsrPassInp,
     chatStore.chatActiveGroup,
     chatStore.chatGroupMembers,
-    chatStore.chatGroupList]);
+    chatStore.chatGroupList,
+    chatStore.chatAllJoinReq,
+    chatStore.chatUsers,
+    chatStore.userInfo
+    ]);
 
     useEffect(() => {
-        console.log('Password', chatStore.chatGroupUsrPassInp, ' and ', group.channelId);
-        if (chatStore.chatGroupChkPassInpState.check && chatStore.chatGroupChkPassInpState.group == group.channelId)// true means that user have inputted passwd and submit form 
+        if (chatStore.chatGroupChkPassInpState.check && chatStore.chatGroupChkPassInpState.group == group.channelId)
         {
             socket.emit('verifyGroupPassword', { input: chatStore.chatGroupUsrPassInp, group: group.channelId });
             socket.once('verifyGroupPasswdSuccess', (verify: boolean) => {
@@ -158,7 +160,10 @@ const ChatPageGroups = (chatProp: ChatProps) => {
 
     useEffect(() => {
 
-    }, [chatStore.chatActiveGroup, chatStore.chatGroupList, chatStore.chatGroupMembers]);
+    },[ chatStore.chatActiveGroup,
+            chatStore.chatGroupList,
+            chatStore.chatGroupMembers,
+            chatStore.chatAllJoinReq ]);
     // console.log("counting list - ", chatStore.chatGroupList.length)
 
     return (
@@ -206,10 +211,11 @@ const ChatPageGroups = (chatProp: ChatProps) => {
                             sx={{ flexGrow: 1, overflowY: "scroll", height: "100%" }}
                             spacing={0.5}
                         >
-                            {chatStore.chatGroupList.map((el) => {
+                            {chatStore.chatGroupList.map((el: Group|null) => {
                                 if (el)
                                     return (<ChatGroupElement key={el.channelId} {...el} />)
-                            })}
+                            })
+                            }
                         </Stack>
                     </Stack>
                 </Box>
@@ -225,6 +231,7 @@ const ChatPageGroups = (chatProp: ChatProps) => {
                 {/* show the contact profile on toggle */}
                 <Stack>
                     {chatStore.chatSideBar.open && <ChatGroupProfile />}
+                    {/* {!chatStore.chatSideBar.open && <></>} */}
                 </Stack>
             </Stack>
 

@@ -17,7 +17,7 @@ const GameChallenge: React.FC<GameChallengeProps> = ({ userId,  game, setChallen
 
     const socket = getSocket(userId);
 	const navigate = useNavigate();
-	const [opponent, setOpponent] = useState< User >();
+	const [opponent, setOpponent] = useState< User|null>(null);
 	const [gaming, setGaming] = useState(false);
 
     function acceptGame() {

@@ -17,7 +17,6 @@ export class ChannelsService {
       ...createChannelDto,
       password: await this.cryptPasswd(createChannelDto.password),
     };
-
     return await this.ChannelRepo.save(newChannel);
   }
 
@@ -61,7 +60,6 @@ export class ChannelsService {
   
   async verifyPasswd(input: string, group: number) {
     const channel = await this.findOne(group);
-    console.log('group: ', group, ' and ', channel.channelId);
     await Promise.all([channel]);
     if (!group) return false;
     return await this.comparePassword(input, channel.password);

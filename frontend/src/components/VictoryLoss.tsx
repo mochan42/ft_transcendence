@@ -14,8 +14,8 @@ interface VictoryLossProps {
 
 const VictoryLoss: React.FC<VictoryLossProps> = ({ isVictory, userId, difficulty }) => {
 
-	const [userStats, setUserStats] = useState< UserStats | null >(null);
-	const [UserAchievements, setUserAchievements] = useState< UserAchievements[] | null >(null);
+	const [userStats, setUserStats] = useState<UserStats | null>(null);
+	const [UserAchievements, setUserAchievements] = useState<UserAchievements[] | null>(null);
 	const [user, setUser] = useState<User | null>(null);
 	const [newXp, setNewXp] = useState(0);
 	const [updatedStats, setUpdatedStats] = useState(false);
@@ -25,7 +25,7 @@ const VictoryLoss: React.FC<VictoryLossProps> = ({ isVictory, userId, difficulty
 	const url_user = `${BACKEND_URL}/pong/users/` + userId;
 	const url_xp = `${BACKEND_URL}/pong/users/xp/` + userId;
 	const navigate = useNavigate()
-	
+
 	const getUserInfo = async () => {
 		const headers = {
 			'Content-Type': 'application/json',
@@ -86,7 +86,7 @@ const VictoryLoss: React.FC<VictoryLossProps> = ({ isVictory, userId, difficulty
 		}
 	};
 
-	const updateUserStats = async ( isVictory: boolean ) => {
+	const updateUserStats = async (isVictory: boolean) => {
 		if (userStats) {
 			const headers = {
 				'Content-Type': 'application/json',
@@ -138,14 +138,14 @@ const VictoryLoss: React.FC<VictoryLossProps> = ({ isVictory, userId, difficulty
 					'Authorization': `Bearer ${process.env.REACT_APP_SECRET}`
 				};
 				try {
-					const Achievement = 
+					const Achievement =
 					{
 						"goalId": (difficulty + 2),
 						"createdAt": Date.now().toLocaleString(),
 					}
 					const response = await axios.post(url_achievements, Achievement, { headers });
 					if (response.status === 201) {
-						console.log('Added Achievement ' , Achievement, ' successfully');
+						console.log('Added Achievement ', Achievement, ' successfully');
 						setUpdatedAchievements(true);
 					}
 				} catch (error) {
@@ -187,7 +187,7 @@ const VictoryLoss: React.FC<VictoryLossProps> = ({ isVictory, userId, difficulty
 			<div className='text-4xl font-bold'>
 				{isVictory ? 'Congratulations! You won!' : 'Oops! You lost!'}
 				{' Lets go '}
-				<Button onClick={() => navigate('/')} size='lg' variant='link' children='Home' className='dark:text-amber-400'/>
+				<Button onClick={() => navigate('/')} size='lg' variant='link' children='Home' className='dark:text-amber-400' />
 			</div>
 		</div>
 	);

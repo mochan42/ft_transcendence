@@ -325,6 +325,3 @@ const Pong: React.FC<PongProps> = ({ userId, difficulty, isGameActive, isGameOve
 }
 
 export default Pong
-
-
-

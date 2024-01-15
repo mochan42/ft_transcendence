@@ -120,19 +120,13 @@ const PvP: React.FC<PvPProps> = ({ setIsPause, isPause, setGameRef, includeBoost
 			}
 			socket.emit(`ackResponse-G${data.id}P${data.player1}`, response);
 		}
-		
+
 	};
 
 	useEffect(() => {
 		if (socket && !isGameOver) {
-			socket.on('gameUpdate', handleGameUpdate);
+			socket.once('gameUpdate', handleGameUpdate);
 		}
-
-		return () => {
-			if (socket) {
-				socket.off('gameUpdate', handleGameUpdate);
-			}
-		};
 	});
 
 	useEffect(() => {
@@ -211,12 +205,12 @@ const PvP: React.FC<PvPProps> = ({ setIsPause, isPause, setGameRef, includeBoost
 					<Ball xPosition={ballX} yPosition={ballY} />
 				</div>
 				{/* {includeBoost && !isBoost ? <Boost x={boostX} y={boostY} width={boostWidth} height={boostWidth} /> : null} */}
-				{!matchFound ? <MatchMaking gameObj={gameObj} setGameObj={setGameObj} difficulty={selectedDifficulty} includeBoost={includeBoost} socket={socket} setMatchFound={setMatchFound} userId={userId} setState={setState} setOpponentId={setOpponentId} opponentId={3} setPlayer1Id={setPlayer1Id} setPlayer2Id={setPlayer2Id}/> : null}
+				{!matchFound ? <MatchMaking gameObj={gameObj} setGameObj={setGameObj} difficulty={selectedDifficulty} includeBoost={includeBoost} socket={socket} setMatchFound={setMatchFound} userId={userId} setState={setState} setOpponentId={setOpponentId} opponentId={3} setPlayer1Id={setPlayer1Id} setPlayer2Id={setPlayer2Id} /> : null}
 				{isGameOver ? (
-						<div className="absolute inset-0 bg-black bg-opacity-80">
-							<VictoryLoss userId={userId} isVictory={gameObj ? ((gameObj?.score1 > gameObj?.score2) ? true : false) : false} difficulty={gameObj?.difficulty ? gameObj?.difficulty : 1} />
-						</div>
-					) : null
+					<div className="absolute inset-0 bg-black bg-opacity-80">
+						<VictoryLoss userId={userId} isVictory={gameObj ? ((gameObj?.score1 > gameObj?.score2) ? true : false) : false} difficulty={gameObj?.difficulty ? gameObj?.difficulty : 1} />
+					</div>
+				) : null
 				}
 			</div>
 		</div>

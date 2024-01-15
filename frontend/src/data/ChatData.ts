@@ -33,16 +33,21 @@ const fetchAllUsers = async (): Promise<User[]> => {
   return users;
 };
 
-const fetchUser = async (userId: string): Promise<User | undefined> => {
+const fetchUser = async (userId: string): Promise<User|null> => {
   const headers = {
 			'Content-Type': 'application/json',
 			'Authorization': `Bearer ${process.env.REACT_APP_SECRET}`
   };
-  
-  const resp = await axios.get<User>(backendUrl + "/pong/users/" + userId, { headers });
-  if (resp.status === 200) {
-    return resp.data;
+  try {
+    const resp = await axios.get<User>(backendUrl + "/pong/users/" + userId, { headers });
+    if (resp.status === 200) {
+      return resp.data;
+    }
   }
+  catch (error) {
+    console.log('Error fetching user info', error);
+  }
+  return null;
 };
 
 
@@ -72,9 +77,14 @@ const fetchAllBlockedUsers = async (): Promise<any[]> => {
 		};
   let blockedUsers = [];
   const urlFriend = backendUrl + "/pong/blocks";
-  const resp = await axios<any[]>(urlFriend, { headers });
-  if (resp.status === 200) {
-    blockedUsers = resp.data;
+  try {
+    const resp = await axios<any[]>(urlFriend, { headers });
+    if (resp.status === 200) {
+      blockedUsers = resp.data;
+    }
+  }
+  catch (error) {
+    console.log('Error fetching blocked users', error);
   }
   return blockedUsers;
 };
