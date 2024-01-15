@@ -13,6 +13,7 @@ import img42 from "../img/icon_42.png"
 import { getUserById } from './ChatConversation';
 import { getSocket } from '../utils/socketService';
 import { updateChatGroupMembers, updateChatAllJoinReq } from '../redux/slices/chatSlice';
+import { ChatGroupMemberList, getMembers } from "../data/ChatData";
 
 
 const StyledChatBox = styled(Box)(({ theme }) => ({
@@ -32,14 +33,18 @@ const ChatGroupMemberProfileComp = (user: IUserData) => {
     const dispatch = useDispatch();
     const userId = Cookies.get('userId') ? Cookies.get('userId') : '';
     //const userId = (chatStore.userInfo) ? chatStore.userInfo.id : null;
-    const loggedUser = chatStore.chatAllJoinReq.filter((el: JoinGroup) => {
-        if ((el && el.userId)
-            && (el.userId.toString()) == userId
-            && (el.channelId == chatStore.chatActiveGroup?.channelId)
-        ) {
-            return el;
-        }
-    })[0];
+    //const loggedUser = chatStore.chatAllJoinReq.filter((el: JoinGroup) => {
+    //     if ((el && el.userId)
+    //         && (el.userId.toString()) == userId
+    //         && (el.channelId == user.memberJoin.channelId)
+    //     ) {
+    //         return el;
+    //     }
+    // })[0];
+    const groupMembers = chatStore.chatActiveGroup ? getMembers(chatStore.chatGroupMembers, chatStore.chatActiveGroup.channelId) : [];
+    const groupMemberNo = (chatStore.chatActiveGroup ? groupMembers.length : 0)
+    const loggedUser = groupMembers.filter((el: JoinGroup) => el && el.userId.toString() == userId)[0];
+    console.log("CONNECTED USER", loggedUser);
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -182,7 +187,7 @@ export function IsUserInGroup(userId: string | undefined, group: Group | null): 
         return false;
     }
     let result = false
-    const groupMembers = chatStore.chatGroupMembers.filter(
+    const groupMembers = chatStore.chatAllJoinReq.filter(
         el => el.channelId == group.channelId)
 
     const memberResult = groupMembers.filter(el => {
