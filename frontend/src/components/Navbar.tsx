@@ -24,7 +24,7 @@ const Navbar: React.FC<Props> = ({ setIsAuth, isAuth, setCode, setUserId }) => {
 	const [theme, setTheme] = useState('dark');
 	const [logBtnMsg, setLogBtnMsg] = useState(msg);
 	const socket = getSocket(Cookies.get('userId'));
-	const url_info = `${BACKEND_URL}/pong/users/` + Cookies.get('userId');
+	const url_info_1 = `${BACKEND_URL}/pong/users/`;
 	const [userInfo, setUserInfo] = useState<User>();
 
 
@@ -58,24 +58,29 @@ const Navbar: React.FC<Props> = ({ setIsAuth, isAuth, setCode, setUserId }) => {
 	}, [theme]);
 
 	useEffect(() => {
-        (async () => {
-            const headers = {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${process.env.REACT_APP_SECRET}`
-            };
-            if (userInfo === null) {
-                try {
-                    const response = await axios.get<User>(url_info, { headers });
-                    if (response.status === 200) {
-                        setUserInfo(response.data);
-                        console.log('Received User Info: ', response.data)
-                    }
-                }
-                catch (error) {
-                    console.log('Error fetching user infos', error);
-                }
-            }
-		})();
+		const headers = {
+		'Content-Type': 'application/json',
+		'Authorization': `Bearer ${process.env.REACT_APP_SECRET}`
+		};
+		async function fetchUserInfo() {
+			try {
+				const userId = Cookies.get('userId');
+				if (userId && +userId > -1) {
+					const url_info = url_info_1 + userId;
+					const response = await axios.get<User>(url_info, { headers });
+					if (response.status === 200) {
+					setUserInfo(response.data);
+					}
+				}
+			} catch (error) {
+				console.log('Error fetching user info', error);
+			}
+		}
+	
+		const intervalId = setInterval(fetchUserInfo, 1000); // Call every 500 milliseconds
+	
+		// Clear the interval when the component is unmounted
+		return () => clearInterval(intervalId);
 	});
 
 	useEffect(() => {
@@ -89,11 +94,11 @@ const Navbar: React.FC<Props> = ({ setIsAuth, isAuth, setCode, setUserId }) => {
 	return (
 
 		<div className='w-full flex items-center justify-evenly'>
-			{ userInfo?.currentState != LOG_STATE.INGAME ? 
+			{ userInfo && userInfo.currentState != LOG_STATE.INGAME ? 
 			<>
 				<Button
 					variant='link'
-					onClick={() => {navigate('/about'); if (userInfo) {userInfo.currentState = LOG_STATE.ONLINE}}}
+					onClick={() => {navigate('/about')}}
 				>
 					Transcendence 42
 				</Button>
@@ -101,7 +106,7 @@ const Navbar: React.FC<Props> = ({ setIsAuth, isAuth, setCode, setUserId }) => {
 				<Button
 					variant='link'
 					type='submit'
-					onClick={() => {navigate('/'); if (userInfo) {userInfo.currentState = LOG_STATE.ONLINE}}}
+					onClick={() => {navigate('/')}}
 				>
 					Home
 				</Button>
@@ -109,7 +114,7 @@ const Navbar: React.FC<Props> = ({ setIsAuth, isAuth, setCode, setUserId }) => {
 				<Button
 					variant='link'
 					type='submit'
-					onClick={() => {navigate('/profile'); if (userInfo) {userInfo.currentState = LOG_STATE.ONLINE}}}
+					onClick={() => {navigate('/profile')}}
 				>
 					Profile
 				</Button>

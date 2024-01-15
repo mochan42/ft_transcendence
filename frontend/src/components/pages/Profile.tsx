@@ -112,7 +112,7 @@ const Profile: React.FC<ProfileProps> = ({ userId, isAuth }) => {
                     const response: AxiosResponse<Goal[] | null> = await axios.get(url_goals, { headers });
                     if (response.status === 200) {
                         if (response.data && response.data.length > 0) {
-                            console.log('Received Goals: ', response.data);
+                            // console.log('Received Goals: ', response.data);
                             setAllGoals(response.data);
                         }
                     }

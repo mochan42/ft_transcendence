@@ -65,8 +65,8 @@ const Game:React.FC<GameProps> = ({ difficulty, userId, includeBoost, opponent, 
 				setReset(false);
 			}
 		} else if (opponent == 'player') {
-			console.log("Setting pause to true");
 			setIsPause(true);
+			console.log("Setting pause to true");
 		}
 	}
 
@@ -155,9 +155,9 @@ const Game:React.FC<GameProps> = ({ difficulty, userId, includeBoost, opponent, 
 			getUserInfo(+player1Id);
 			getUserInfo(+player2Id);
 		}
-		if (player1Info?.currentState != LOG_STATE.INGAME) {
-			setIsActive(false);
-		}
+		// if (player1Info?.currentState != LOG_STATE.INGAME) {
+		// 	setIsActive(false);
+		// }
 
 	}, [gameRef]);
 

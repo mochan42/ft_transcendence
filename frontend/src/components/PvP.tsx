@@ -6,9 +6,7 @@ import Paddle from './Paddle';
 import { GameType, User, paddle1Type } from '../types';
 import MatchMaking from './MatchMaking';
 import { getSocket } from '../utils/socketService';
-import StartGame from './StartGame';
 import { useNavigate } from 'react-router-dom';
-import Alert from './Alert';
 
 interface PvPProps {
 	isActive: boolean;
@@ -84,8 +82,9 @@ const PvP: React.FC<PvPProps> = ({ setIsPause, isPause, setGameRef, includeBoost
 	}
 
 	const handleGameUpdate = (data: GameType) => {
+		console.log(".");
 		setGameObj(data);
-		setIsPause(false);
+		// setIsPause(false);
 		setPaddle2Y(data.paddle2Y);
 		setBallX(data.ballX);
 		setBallY(data.ballY);
@@ -120,8 +119,14 @@ const PvP: React.FC<PvPProps> = ({ setIsPause, isPause, setGameRef, includeBoost
 			}
 			socket.emit(`ackResponse-G${data.id}P${data.player1}`, response);
 		}
-
 	};
+
+	useEffect(() => {
+		console.log("isPause: ", isPause);
+		setTimeout(() => {
+			setIsPause(false);
+		  }, 5100);
+	}, [isPause])
 
 	useEffect(() => {
 		if (socket && !isGameOver) {
@@ -131,7 +136,6 @@ const PvP: React.FC<PvPProps> = ({ setIsPause, isPause, setGameRef, includeBoost
 
 	useEffect(() => {
 		movePaddles();
-
 	}, [paddle1Dir, paddle1Speed])
 
 	useEffect(() => {
