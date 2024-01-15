@@ -45,7 +45,7 @@ const ChatGroupElement = (group: Group) => {
 
 
 
-    const HandleOnClick = async () => {
+    const HandleOnClick = () => {
         if (chatStore.chatSideBar.open) {
             dispatch(toggleSidebar());
         }
@@ -212,7 +212,6 @@ const ChatPageGroups = (chatProp: ChatProps) => {
                             {chatStore.chatGroupList.map((el) => {
                                 if (el)
                                     return (<ChatGroupElement key={el.channelId} {...el} />)
-                                return null;
                             })
                             }
                         </Stack>
@@ -230,7 +229,7 @@ const ChatPageGroups = (chatProp: ChatProps) => {
                 {/* show the contact profile on toggle */}
                 <Stack>
                     {chatStore.chatSideBar.open && <ChatGroupProfile />}
-                    {!chatStore.chatSideBar.open && <></>}
+                    {/* {!chatStore.chatSideBar.open && <></>} */}
                 </Stack>
             </Stack>
 

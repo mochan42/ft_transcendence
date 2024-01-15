@@ -31,8 +31,13 @@ const ChatGroupMemberProfileComp = (user: IUserData) => {
     const chatStore = useSelector(selectChatStore);
     const dispatch = useDispatch();
     const userId = Cookies.get('userId') ? Cookies.get('userId') : '';
-    const loggedUser = chatStore.chatGroupMembers.filter(el => (el.userId.toString()) == userId)[0]
-
+    console.log("chatStore.chatGroupMembers :", chatStore.chatGroupMembers);
+    console.log("userId :", userId);
+    const loggedUser = chatStore.chatGroupMembers.filter((el) => {
+        if (el && el.userId && (el.userId.toString()) == userId)
+            return el;
+        })[0]
+    console.log("loggedUser :", loggedUser)
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -57,6 +62,7 @@ const ChatGroupMemberProfileComp = (user: IUserData) => {
 
     const handlePromote = (rank: string) => {
         const joinGroup = { ...user.memberJoin, rank: rank }
+        console.log("joinGroup :", joinGroup);
         socket.emit('memberPromoteToggle', joinGroup);
         handleClose();
     }
@@ -136,11 +142,14 @@ const ChatGroupMemberProfileComp = (user: IUserData) => {
                 {loggedUser.rank != enChatMemberRank.MEMBER &&
                     <Divider />}
 
+                {loggedUser.rank == enChatMemberRank.ADMIN && <Divider />}
 
 
                 {loggedUser.rank != enChatMemberRank.MEMBER &&
-                    user.memberJoin.rank != enChatMemberRank.OWNER &&
-                    user.memberJoin.rights != enChatMemberRights.BANNED && loggedUser.userId != +user.memberUser.id && <MenuItem onClick={() => handleMute(enChatMemberRights.BANNED)}>Mute</MenuItem>}
+                    // user.memberJoin.rank != enChatMemberRank.OWNER &&
+                    // user.memberJoin.rights != enChatMemberRights.BANNED && 
+                    // loggedUser.userId != +user.memberUser.id && 
+                    <MenuItem onClick={() => handleMute(enChatMemberRights.BANNED)}>Mute</MenuItem>}
 
                 {loggedUser.rank != enChatMemberRank.MEMBER &&
                     user.memberJoin.rank != enChatMemberRank.OWNER && user.memberJoin.rights == enChatMemberRights.BANNED &&
@@ -223,18 +232,20 @@ const ChatGroupDialogInviteEntryComp = (group: Group) => {
     const chatStore = useSelector(selectChatStore)
 
     const onAccept = () => {
-        const joinGroup = chatStore.chatGroupMembers.find((el: any) => el.userId.toString() == loggedUserId && el.channelId == group.channelId)
+        const joinGroup = chatStore.chatGroupMembers.find((el: any) => el && el.userId && el.userId.toString() == loggedUserId && el.channelId == group.channelId)
         socket.emit('acceptJoinGroup', joinGroup);
     }
 
     const onDecline = () => {
-        const joinGroup = chatStore.chatGroupMembers.find((el: any) => el.userId.toString() == loggedUserId && el.channelId == group.channelId);
+        const joinGroup = chatStore.chatGroupMembers.find((el: any) => el && el.userId &&  el.userId.toString() == loggedUserId && el.channelId == group.channelId);
         socket.emit('declineJoinGroup', joinGroup);
     }
 
     useEffect(() => {
 
-    }, [chatStore.chatGroupList, chatStore.chatGroupMembers, chatStore.chatGroupDialogState]);
+    });
+    // [chatStore.chatGroupList, chatStore.chatGroupMembers, chatStore.chatGroupDialogState]
+
     return (
         <>
             <Box

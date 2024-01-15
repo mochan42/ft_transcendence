@@ -21,7 +21,7 @@ import { getSocket } from '../utils/socketService';
 import { useEffect } from 'react';
 import { toggleSidebar, updateChatActiveGroup, selectConversation } from '../redux/slices/chatSlice';
 
-export default function ChatGroupActionBtn(privacy: string) {
+export default function ChatGroupActionBtn(privacy: string, btnState: boolean) {
   const chatDialogStore = useSelector(selectChatDialogStore)
   const dispatch = useDispatch()
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -73,9 +73,12 @@ export default function ChatGroupActionBtn(privacy: string) {
     handleClose();
   }
 
+
   useEffect(() => {
 
   });
+  if (btnState == false)
+    return <></>;
   return (
     <div>
       <Button

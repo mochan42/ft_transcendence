@@ -26,6 +26,7 @@ const ChatGroupProfile = () => {
 
     const theme = useTheme()
     const userId = Cookies.get('userId') ? Cookies.get('userId') : ''; // not working
+    console.log("userId :", userId);
     //const userId = '1' // for testing only member (7) admin (1)
     const dispatch = useDispatch();
     const chatStore = useSelector(selectChatStore);
@@ -121,7 +122,7 @@ const ChatGroupProfile = () => {
                         <Stack alignItems={"center"} direction={"row"} spacing={2}>
                             <Button startIcon={<SignOut />} fullWidth variant="outlined" disabled={!IsUserInGroup(userId, chatStore.chatActiveGroup)} onClick={() => { exitGroup() }}> Exit </Button>
                             {/* render action button if logged user is owner or admin */}
-                            {actionBtnState && ChatGroupActionBtn(activeGroupPrivacy)
+                            {ChatGroupActionBtn(activeGroupPrivacy, actionBtnState)
                                 // <Button startIcon={ <Gear size={25} />} fullWidth variant="outlined" > Actions </Button>
                             }
                         </Stack>
