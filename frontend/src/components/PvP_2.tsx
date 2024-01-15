@@ -108,19 +108,15 @@ const PvP_2: React.FC<PvP_2Props> = ({ setIsPause, isPause, game, setGame, isAct
 	};
 
 	useEffect(() => {
-		if (socket) {
-			socket.on('gameUpdate', handleGameUpdate);
-		} else {
-			console.log("Missing socket!");
+		if (socket && !isGameOver) {
+			socket.once('gameUpdate', handleGameUpdate);
 		}
-
-		return () => {
-			if (socket) {
-				socket.off('gameUpdate', handleGameUpdate);
-			}
-		};
 	});
 
+
+	useEffect(() => {
+		console.log("GameObj was updated.");
+	}, [gameObj]);
 
 	useEffect(() => {
 		movePaddles();

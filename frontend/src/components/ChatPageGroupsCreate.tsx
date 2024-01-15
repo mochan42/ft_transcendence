@@ -17,6 +17,7 @@ import { getSocket } from '../utils/socketService';
 import { enChatPrivacy } from '../enums';
 import { updateChatGroupCreateFormPasswdState, updateChatGroupMembers, updateChatGroups, updateChatAllJoinReq } from '../redux/slices/chatSlice';
 import { TFormMember } from '../types';
+import { element } from 'prop-types';
 
 
 /**
@@ -104,7 +105,11 @@ const CreateGroupForm = (handleFormClose: THandler) => {
         dispatch(updateChatGroupCreateFormPasswdState(true))
         try {
             //API CALL
-            const newMembers = data.members.map((elt: { id: any, name: any }) => elt.id);
+            const newMembers = data.members.map((elt: any) => {
+                if (elt)
+                    return elt.id;
+            });
+            console.log("new members :", newMembers);
             const formatedData = {
                 ...data,
                 members: newMembers

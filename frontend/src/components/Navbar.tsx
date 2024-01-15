@@ -2,11 +2,12 @@ import { useNavigate } from 'react-router-dom'
 import { Button } from './ui/Button'
 import React from 'react';
 import { useEffect, useState } from 'react';
-import { Box } from '@mui/material';
 import Cookies from 'js-cookie';
-import { useSelector } from "react-redux";
-import { selectChatStore } from "../redux/store";
 import { getSocket } from '../utils/socketService';
+import { BACKEND_URL } from '../data/Global';
+import axios from 'axios';
+import { User } from '../types';
+import { LOG_STATE } from '../enums';
 // Icons from https://heroicons.com/
 
 interface Props {
@@ -23,6 +24,8 @@ const Navbar: React.FC<Props> = ({ setIsAuth, isAuth, setCode, setUserId }) => {
 	const [theme, setTheme] = useState('dark');
 	const [logBtnMsg, setLogBtnMsg] = useState(msg);
 	const socket = getSocket(Cookies.get('userId'));
+	const url_info = `${BACKEND_URL}/pong/users/` + Cookies.get('userId');
+	const [userInfo, setUserInfo] = useState<User>();
 
 
 	const handleLogout = () => {
@@ -55,6 +58,27 @@ const Navbar: React.FC<Props> = ({ setIsAuth, isAuth, setCode, setUserId }) => {
 	}, [theme]);
 
 	useEffect(() => {
+        (async () => {
+            const headers = {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${process.env.REACT_APP_SECRET}`
+            };
+            if (userInfo === null) {
+                try {
+                    const response = await axios.get<User>(url_info, { headers });
+                    if (response.status === 200) {
+                        setUserInfo(response.data);
+                        console.log('Received User Info: ', response.data)
+                    }
+                }
+                catch (error) {
+                    console.log('Error fetching user infos', error);
+                }
+            }
+		})();
+	});
+
+	useEffect(() => {
 		if (!isAuth) setLogBtnMsg('Log in');
 		else setLogBtnMsg('Log out');
 	}, [isAuth, logBtnMsg]);
@@ -67,7 +91,7 @@ const Navbar: React.FC<Props> = ({ setIsAuth, isAuth, setCode, setUserId }) => {
 		<div className='w-full flex items-center justify-evenly'>
 			<Button
 				variant='link'
-				onClick={() => navigate('/about')}
+				onClick={() => {navigate('/about'); if (userInfo) {userInfo.currentState = LOG_STATE.ONLINE}}}
 			>
 				Transcendence 42
 			</Button>
@@ -75,7 +99,7 @@ const Navbar: React.FC<Props> = ({ setIsAuth, isAuth, setCode, setUserId }) => {
 			<Button
 				variant='link'
 				type='submit'
-				onClick={() => navigate('/')}
+				onClick={() => {navigate('/'); if (userInfo) {userInfo.currentState = LOG_STATE.ONLINE}}}
 			>
 				Home
 			</Button>
@@ -83,7 +107,7 @@ const Navbar: React.FC<Props> = ({ setIsAuth, isAuth, setCode, setUserId }) => {
 			<Button
 				variant='link'
 				type='submit'
-				onClick={() => navigate('/profile')}
+				onClick={() => {navigate('/profile'); if (userInfo) {userInfo.currentState = LOG_STATE.ONLINE}}}
 			>
 				Profile
 			</Button>
@@ -91,11 +115,10 @@ const Navbar: React.FC<Props> = ({ setIsAuth, isAuth, setCode, setUserId }) => {
 			<Button
 				variant='link'
 				type='submit'
-				onClick={() => navigate('/game')}
+				onClick={() => {navigate('/game'); if (userInfo) {userInfo.currentState = LOG_STATE.ONLINE}}}
 			>
 				Play Pong
 			</Button>
-
 			<Button
 				variant='ghost'
 				onClick={handleThemeSwitch}

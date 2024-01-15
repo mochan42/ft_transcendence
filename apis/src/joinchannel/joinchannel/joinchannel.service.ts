@@ -12,6 +12,14 @@ export class JoinchannelService {
   ) {}
 
   async create(joinchannel: CreateJoinchannelDto) {
+    const check = await this.JoinchannelRepo.find(
+      {
+        where: {
+          userId: joinchannel.userId,
+          channelId: joinchannel.channelId
+        }
+      })
+    if (check.length != 0) return null;
     return await this.JoinchannelRepo.save(joinchannel);
   }
 

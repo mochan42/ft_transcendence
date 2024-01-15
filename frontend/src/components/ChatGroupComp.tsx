@@ -12,7 +12,7 @@ import { updateChatDialogProfileUserId, updateChatDialogShwProfile, updateChatDi
 import img42 from "../img/icon_42.png"
 import { getUserById } from './ChatConversation';
 import { getSocket } from '../utils/socketService';
-import { updateChatGroupMembers } from '../redux/slices/chatSlice';
+import { updateChatGroupMembers, updateChatAllJoinReq } from '../redux/slices/chatSlice';
 
 
 const StyledChatBox = styled(Box)(({ theme }) => ({
@@ -30,9 +30,12 @@ const ChatGroupMemberProfileComp = (user: IUserData) => {
     const theme = useTheme();
     const chatStore = useSelector(selectChatStore);
     const dispatch = useDispatch();
-    const userId = Cookies.get('userId') ? Cookies.get('userId') : '';
-    const loggedUser = chatStore.chatGroupMembers.filter(el => (el.userId.toString()) == userId)[0]
-
+    const userId = (chatStore.userInfo) ? chatStore.userInfo.id : null;
+    const loggedUser = chatStore.chatGroupMembers.filter((el: JoinGroup) => {
+        if ((el && el.userId && userId) && (el.userId.toString()) == userId) {
+            return el;
+        }
+    })[0];
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -48,25 +51,34 @@ const ChatGroupMemberProfileComp = (user: IUserData) => {
     }
 
     const handleMute = (rights: string) => {
-        const joinGroup = { ...user.memberJoin, rights: rights }
-        socket.emit('memberMuteToggle', joinGroup);
-        handleClose();
+        if (user && user.memberJoin) {
+            const joinGroup = { ...user.memberJoin, rights: rights }
+            socket.emit('memberMuteToggle', joinGroup);
+            handleClose();
+        }
     }
 
     const handlePromote = (rank: string) => {
-        const joinGroup = { ...user.memberJoin, rank: rank }
-        socket.emit('memberPromoteToggle', joinGroup);
-        handleClose();
+        if (user && user.memberJoin) {
+            const joinGroup = { ...user.memberJoin, rank: rank }
+            console.log("joinGroup :", joinGroup);
+            socket.emit('memberPromoteToggle', joinGroup);
+            handleClose();
+        }
     }
 
     const handleKick = () => {
-        socket.emit('kickMember', user.memberJoin);
-        handleClose();
+        if (user && user.memberJoin) {
+            socket.emit('kickMember', user.memberJoin);
+            handleClose();
+        }
     }
 
-    useEffect(() => { 
+    useEffect(() => {
 
-    }, [chatStore.chatGroupMembers, chatStore.chatAllJoinReq])
+    }, [chatStore.chatGroupMembers,
+    chatStore.chatAllJoinReq,
+    chatStore.chatSideBar.open])
 
 
     return (
@@ -131,27 +143,29 @@ const ChatGroupMemberProfileComp = (user: IUserData) => {
             >
                 <MenuItem onClick={onShwProfile}>View profile</MenuItem>
                 {/* {loggedUser.userId != +user.memberUser.id && <MenuItem onClick={handleClose}>Play game</MenuItem>} */}
-                {loggedUser.rank != enChatMemberRank.MEMBER &&
+                {loggedUser && loggedUser.rank != enChatMemberRank.MEMBER &&
                     <Divider />}
 
+                {/* {loggedUser.rank == enChatMemberRank.ADMIN && <Divider />} */}
 
-                
-                {loggedUser.rank != enChatMemberRank.MEMBER &&
+                {loggedUser && loggedUser.rank != enChatMemberRank.MEMBER &&
                     user.memberJoin.rank != enChatMemberRank.OWNER &&
-                    user.memberJoin.rights != enChatMemberRights.BANNED && loggedUser.userId != +user.memberUser.id && <MenuItem onClick={() => handleMute(enChatMemberRights.BANNED)}>Mute</MenuItem>}
+                    user.memberJoin.rights != enChatMemberRights.BANNED &&
+                    loggedUser.userId != +user.memberUser.id &&
+                    <MenuItem onClick={() => handleMute(enChatMemberRights.BANNED)}>Mute</MenuItem>}
 
-                {loggedUser.rank != enChatMemberRank.MEMBER &&
+                {loggedUser && loggedUser.rank != enChatMemberRank.MEMBER &&
                     user.memberJoin.rank != enChatMemberRank.OWNER && user.memberJoin.rights == enChatMemberRights.BANNED &&
                     <MenuItem onClick={() => handleMute(enChatMemberRights.PRIVILEDGED)}>Unmute</MenuItem>}
 
-                {loggedUser.rank != enChatMemberRank.MEMBER &&
+                {loggedUser && loggedUser.rank != enChatMemberRank.MEMBER &&
                     user.memberJoin.rank != enChatMemberRank.OWNER && loggedUser.userId != +user.memberUser.id && <MenuItem onClick={handleKick}>Kick</MenuItem>}
 
-                {loggedUser.rank != enChatMemberRank.MEMBER &&
+                {loggedUser && loggedUser.rank != enChatMemberRank.MEMBER &&
                     user.memberJoin.rank != enChatMemberRank.OWNER &&
                     user.memberJoin.rank == enChatMemberRank.ADMIN && loggedUser.userId != +user.memberUser.id && <MenuItem onClick={() => handlePromote(enChatMemberRank.MEMBER)}>Demote</MenuItem>}
 
-                {loggedUser.rank != enChatMemberRank.MEMBER &&
+                {loggedUser && loggedUser.rank != enChatMemberRank.MEMBER &&
                     user.memberJoin.rank != enChatMemberRank.OWNER &&
                     user.memberJoin.rank == enChatMemberRank.MEMBER && loggedUser.userId != +user.memberUser.id && <MenuItem onClick={() => handlePromote(enChatMemberRank.ADMIN)}>Promote</MenuItem>}
             </Menu>
@@ -184,7 +198,7 @@ const ChatGroupInfoComp = (group: Group) => {
 
     useEffect(() => {
 
-     }, [chatStore.chatGroupMembers, chatStore.chatAllJoinReq])
+    }, [chatStore.chatGroupMembers, chatStore.chatAllJoinReq])
 
     return (
         <>
@@ -221,18 +235,32 @@ const ChatGroupDialogInviteEntryComp = (group: Group) => {
     const chatStore = useSelector(selectChatStore)
 
     const onAccept = () => {
-        const joinGroup = chatStore.chatGroupMembers.find((el: any) => el.userId.toString() == loggedUserId && el.channelId == group.channelId)
-        socket.emit('acceptJoinGroup', joinGroup);
+        const joinGroup = chatStore.chatGroupMembers.find((el: JoinGroup) =>
+            el && el.userId
+            && el.userId.toString() == loggedUserId
+            && el.channelId == group.channelId)
+        if (joinGroup) {
+            socket.emit('acceptJoinGroup', joinGroup);
+        }
     }
 
     const onDecline = () => {
-        const joinGroup = chatStore.chatGroupMembers.find((el: any) => el.userId.toString() == loggedUserId && el.channelId == group.channelId);
-        socket.emit('declineJoinGroup', joinGroup);
+        const joinGroup = chatStore.chatGroupMembers.find((el: JoinGroup) =>
+            el && el.userId
+            && el.userId.toString() == loggedUserId
+            && el.channelId == group.channelId);
+        if (joinGroup) {
+            socket.emit('declineJoinGroup', joinGroup);
+        }
     }
 
     useEffect(() => {
 
-    }, [chatStore.chatGroupList, chatStore.chatGroupMembers, chatStore.chatGroupDialogState]);
+    }, [chatStore.chatGroupList,
+    chatStore.chatGroupMembers,
+    chatStore.chatGroupDialogState
+    ]);
+
     return (
         <>
             <Box
@@ -339,6 +367,7 @@ const ChatGroupDialogRequestEntryComp = (args: TGroupRequestArgs) => {
             socket.emit('acceptJoinGroup', newJoinGroup);
             socket.once('acceptMemberSuccess', (data: any) => {
                 dispatch(updateChatGroupMembers(data.all));
+                dispatch(updateChatAllJoinReq(data.all));
             });
             dispatch(updateChatDialogGroupInvite(false));
         }
@@ -349,6 +378,7 @@ const ChatGroupDialogRequestEntryComp = (args: TGroupRequestArgs) => {
             socket.emit('declineJoinGroup', joinGroup);
             socket.once('declinedMemberSuccess', (data: any) => {
                 dispatch(updateChatGroupMembers(data.all));
+                dispatch(updateChatAllJoinReq(data.all));
             });
             dispatch(updateChatDialogGroupInvite(false));
         }
@@ -356,7 +386,10 @@ const ChatGroupDialogRequestEntryComp = (args: TGroupRequestArgs) => {
 
     useEffect(() => {
 
-    }, [chatStore.chatGroupList, chatStore.chatGroupMembers]);
+    }, [chatStore.chatGroupList,
+    chatStore.chatGroupMembers,
+    chatStore.chatAllJoinReq,
+    ]);
 
     return (
         <>
