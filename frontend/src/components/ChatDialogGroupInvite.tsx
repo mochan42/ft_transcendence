@@ -15,7 +15,7 @@ import { useRef } from 'react';
 const ChatGroupList = () => {
     const userId = Cookies.get('userId') ? Cookies.get('userId') : '';
     const chatStore = useSelector(selectChatStore)
-    useEffect(() => { 
+    useEffect(() => {
 
     }, [chatStore.chatGroupList])
     return (
@@ -34,7 +34,7 @@ function GetJoinGroupListForLoggedUser(): JoinGroup[] {
     const chatStore = useSelector(selectChatStore);
 
     // api call to fetch all JoinGroup elements for filtering
-    const JoinGroupList = chatStore.chatAllJoinReq
+    const JoinGroupList = chatStore.chatGroupMembers;
 
     const affiliatedJoinGroupList = JoinGroupList.filter(el => el && el.userId &&
         (userId && (el.userId.toString()) == userId))
@@ -76,7 +76,7 @@ const ChatGroupInviteList = () => {
 
     useEffect(() => {
 
-    }, [chatStore.chatGroupList, chatStore.chatAllJoinReq]);
+    }, [chatStore.chatGroupList, chatStore.chatAllJoinReq, chatStore.chatGroupMembers]);
 
     return (
         <>
@@ -156,7 +156,7 @@ const ChatDialogGroupInvite = () => {
         dispatch(updateChatDialogGroupInvite(false));
     }
     useEffect(() => {
-        
+
 
     }, [
         chatStore.chatGroupList,

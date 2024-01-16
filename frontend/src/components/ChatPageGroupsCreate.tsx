@@ -92,8 +92,8 @@ const CreateGroupForm = (handleFormClose: THandler) => {
     const handleRadioBtn = (e: React.ChangeEvent<HTMLInputElement>) => {
         const state = e.target.value;
         // setPrivacy(e.target.value);
-        setValue("privacy_state", state)
-        console.log(state);
+        //setValue("privacy_state", state)
+        //console.log(state);
         (state == enChatPrivacy.PROTECTED)
             ? dispatch(updateChatGroupCreateFormPasswdState(false))
             : dispatch(updateChatGroupCreateFormPasswdState(true))

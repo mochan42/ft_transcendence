@@ -428,58 +428,108 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
     this.server.emit('deniedFriend', { all: allFriends });
   }
 
-  @SubscribeMessage('createChannel')
-  async createChannel(
-    @ConnectedSocket() socket: Socket,
-    @MessageBody() payload: any,
-  ) {
-    if (payload.privacy_state == CHANNEL_TYPE.PROTECTED && !payload.passwd) {
-      // could return a specific infos.
-      return;
-    }
-    const user = await this.chatsService.getUserFromSocket(socket);
+  // @SubscribeMessage('createChannel')
+  // async createChannel(
+  //   @ConnectedSocket() socket: Socket,
+  //   @MessageBody() payload: any,
+  // ) {
+  //   if (payload.privacy_state == CHANNEL_TYPE.PROTECTED && !payload.passwd) {
+  //     // could return a specific infos.
+  //     return;
+  //   }
+  //   const user = await this.chatsService.getUserFromSocket(socket);
     
-    const channel: CreateChannelDto = {
-      password: payload.passwd,
-      title: payload.title,
-      privacy: payload.privacy_state,
-      ownerId: +user.id,
-    };
-    const newChannel = await this.channelsService.create(channel);
+  //   const channel: CreateChannelDto = {
+  //     password: payload.passwd,
+  //     title: payload.title,
+  //     privacy: payload.privacy_state,
+  //     ownerId: +user.id,
+  //   };
+  //   const newChannel = await this.channelsService.create(channel);
+  //   let membersCreation;
+  //   const members = [...payload.members];
+  //   if (members.length && newChannel) {
+  //     const owner = {
+  //       userId: +user.id,
+  //       channelId: newChannel.channelId,
+  //       rank: MEMBER_RANK.OWNER,
+  //       rights: MEMBER_RIGHTS.PRIVILEDGED,
+  //       status: MEMBER_STATUS.ACCEPTED,
+  //     };
+  //     const memberOwner = await this.joinchannelService.create(owner);
 
-    const members = [...payload.members];
-    if (members.length && newChannel) {
-      const owner = {
-        userId: +user.id,
-        channelId: newChannel.channelId,
-        rank: MEMBER_RANK.OWNER,
-        rights: MEMBER_RIGHTS.PRIVILEDGED,
-        status: MEMBER_STATUS.ACCEPTED,
-      };
-      const memberOwner = await this.joinchannelService.create(owner);
-      await Promise.all([memberOwner]);
-
-      const joints: CreateJoinchannelDto[] = members.map((member) => {
-        const joinchannelDTo: CreateJoinchannelDto = {
-          userId: +member,
-          channelId: newChannel.channelId,
-          rank: MEMBER_RANK.MEMBER,
-          rights: MEMBER_RIGHTS.PRIVILEDGED,
-          status: MEMBER_STATUS.INVITE,
-        };
-        return joinchannelDTo;
-      });
-      const newMembers = await this.joinchannelService.createMultiple(joints);
-      await Promise.all([newMembers]);
-    }
-    const allMembers = await this.joinchannelService.findAll();
-    const allChannels = await this.channelsService.findAll();
-    this.server.emit('newChannel', {
-      members: allMembers,
-      groups: allChannels,
-      owner: newChannel.ownerId,
-    });
+  //     const joints = members.map(async (member) => {
+  //       const joinchannelDTo: CreateJoinchannelDto = {
+  //         userId: +member,
+  //         channelId: newChannel.channelId,
+  //         rank: MEMBER_RANK.MEMBER,
+  //         rights: MEMBER_RIGHTS.PRIVILEDGED,
+  //         status: MEMBER_STATUS.INVITE,
+  //       };
+  //       return await this.joinchannelService.create(joinchannelDTo);
+  //     });
+  //     membersCreation = await Promise.all([joints, memberOwner]);
+  //   }
+  //   const allMembers = await this.joinchannelService.findAfterInsert(membersCreation);
+  //   const allChannels = await this.channelsService.findAll();
+  //   await Promise.all([allMembers, allChannels]);
+  //   this.server.emit('newChannel', {
+  //     members: allMembers,
+  //     groups: allChannels,
+  //     owner: newChannel.ownerId,
+  //   });
+  // }
+  @SubscribeMessage('createChannel')
+async createChannel(
+  @ConnectedSocket() socket: Socket,
+  @MessageBody() payload: any,
+) {
+  if (payload.privacy_state == CHANNEL_TYPE.PROTECTED && !payload.passwd) {
+    // could return a specific infos.
+    return;
   }
+  const user = await this.chatsService.getUserFromSocket(socket);
+
+  const channel: CreateChannelDto = {
+    password: payload.passwd,
+    title: payload.title,
+    privacy: payload.privacy_state,
+    ownerId: +user.id,
+  };
+  const newChannel = await this.channelsService.create(channel);
+  let membersCreation;
+  const members = [...payload.members];
+  if (members.length && newChannel) {
+    const owner = {
+      userId: +user.id,
+      channelId: newChannel.channelId,
+      rank: MEMBER_RANK.OWNER,
+      rights: MEMBER_RIGHTS.PRIVILEDGED,
+      status: MEMBER_STATUS.ACCEPTED,
+    };
+    const memberOwner = await this.joinchannelService.create(owner);
+
+    const joints = members.map(async (member) => {
+      const joinchannelDTo: CreateJoinchannelDto = {
+        userId: +member,
+        channelId: newChannel.channelId,
+        rank: MEMBER_RANK.MEMBER,
+        rights: MEMBER_RIGHTS.PRIVILEDGED,
+        status: MEMBER_STATUS.INVITE,
+      };
+      return this.joinchannelService.create(joinchannelDTo);
+    });
+    membersCreation = await Promise.all([...joints, memberOwner]);
+  }
+  const allMembers = await this.joinchannelService.findAfterInsert(membersCreation);
+  const allChannels = await this.channelsService.findAll();
+  await Promise.all([allMembers, allChannels]);
+  this.server.emit('newChannel', {
+    members: allMembers,
+    groups: allChannels,
+    owner: newChannel.ownerId,
+  });
+}
 
   @SubscribeMessage('sendMessage')
   async sendMessage(
