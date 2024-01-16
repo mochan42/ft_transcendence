@@ -245,7 +245,7 @@ const Home = ({
 														</div>
 													</div>
 												</div>
-											)) : <img className='h-40 w-40 rounded-lg' src='../../img/desert1.png' />}
+											)) : null }
 										</div>
 									</div>
 									<div className='w-2/3 h-5/6'>

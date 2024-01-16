@@ -12,7 +12,7 @@ import { GameType } from '../../types';
 import { selectChatDialogStore, selectChatStore } from '../../redux/store';
 import { useDispatch, useSelector } from "react-redux";
 import { updateUserInfo } from '../../redux/slices/chatSlice';
-import robot from "../img/robot.svg"
+// import robot from "../img/robot.svg"
 
 
 const Profile: React.FC<ProfileProps> = ({ userId, isAuth }) => {
@@ -158,7 +158,7 @@ const Profile: React.FC<ProfileProps> = ({ userId, isAuth }) => {
                 <div className='flex flex-col w-1/3 items-center gap-6 border-4 dark:border-slate-900'>
                     <img
                         className="h-2/5 w-2/5 rounded-full object-cover"
-                        src={(userInfo?.avatar) ?? '../../img/robot.svg'}
+                        src={userInfo ? (userInfo?.avatar) : null}
                     />
                     <h1 className='text-2xl text-slate-900 font-extrabold dark:text-amber-300 drop-shadow-lg'>
                         {userInfo?.userNameLoc ?? 'unknown'}
@@ -283,7 +283,7 @@ const Profile: React.FC<ProfileProps> = ({ userId, isAuth }) => {
                                             </div>
                                         </div>
                                     </div>
-                                )) : <img className='h-40 w-40 rounded-lg' src='../img/desert1.png' />}
+                                )) : null}
                                 <Button variant={'link'} onClick={() => setShowScreen('friends')}>
                                     more
                                 </Button>
