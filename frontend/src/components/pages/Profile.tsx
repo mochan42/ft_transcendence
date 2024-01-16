@@ -158,7 +158,7 @@ const Profile: React.FC<ProfileProps> = ({ userId, isAuth }) => {
                 <div className='flex flex-col w-1/3 items-center gap-6 border-4 dark:border-slate-900'>
                     <img
                         className="h-2/5 w-2/5 rounded-full object-cover"
-                        src={(userInfo?.avatar) ?? robot}
+                        src={(userInfo?.avatar) ?? '../../img/robot.svg'}
                     />
                     <h1 className='text-2xl text-slate-900 font-extrabold dark:text-amber-300 drop-shadow-lg'>
                         {userInfo?.userNameLoc ?? 'unknown'}
