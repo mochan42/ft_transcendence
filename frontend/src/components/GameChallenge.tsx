@@ -17,7 +17,7 @@ const GameChallenge: React.FC<GameChallengeProps> = ({ userId,  game, setChallen
 
     const socket = getSocket(userId);
 	const navigate = useNavigate();
-	const [opponent, setOpponent] = useState< User >();
+	const [opponent, setOpponent] = useState< User|null>(null);
 	const [gaming, setGaming] = useState(false);
 
     function acceptGame() {
@@ -67,7 +67,7 @@ const GameChallenge: React.FC<GameChallengeProps> = ({ userId,  game, setChallen
 					<div className="h-full p-4 flex-col text-center justify-between space-y-4">
 						<div className='h-4/5 w-full space-y-4 text-center flex justify-center'>
 							<h1 className='text-slate-200'>
-								You were challenged to a Game of Pong by {opponent ? opponent.userNameLoc : "Bot"}
+								You are challenged to play a Pong Game with {opponent ? opponent.userNameLoc : "Bot"}
 							</h1>
 						</div>
 						<div>

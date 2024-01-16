@@ -3,6 +3,9 @@ import { Button } from './ui/Button'
 import { User } from '../types';
 import axios from 'axios';
 import { BACKEND_URL } from '../data/Global';
+import { selectChatDialogStore, selectChatStore } from '../redux/store';
+import { useDispatch, useSelector } from "react-redux";
+import { updateUserInfo } from '../redux/slices/chatSlice';
 
 interface EditProfileProps {
     setShowScreen: React.Dispatch<React.SetStateAction<'default' | 'achievements' | 'friends' | 'stats' | 'userProfile'>>;
@@ -16,7 +19,10 @@ interface FormDataLoc {
 
 const EditProfile: React.FC<EditProfileProps> = ({ setShowScreen, userId }) => {
 
-    const [userInfo, setUserInfo] = useState<User | null>(null);
+    //const [userInfo, setUserInfo] = useState<User | null>(null);
+    const chatStore = useSelector(selectChatStore);
+    const dispatch = useDispatch();
+    const userInfo = chatStore.userInfo;
     const [errors, setErrors] = useState<Partial<FormDataLoc>>({});
     const url_info = `${BACKEND_URL}/pong/users/` + userId;
     const [formData, setFormData] = useState<FormDataLoc>({
@@ -24,21 +30,21 @@ const EditProfile: React.FC<EditProfileProps> = ({ setShowScreen, userId }) => {
         image: null,
     });
 
-    const getUserInfo = async () => {
-        const headers = {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${process.env.REACT_APP_SECRET}`
-        };
-        try {
-            const response = await axios.get<User>(url_info, { headers });
-            if (response.status === 200) {
-                setUserInfo(response.data);
-            }
-        }
-        catch (error) {
-            console.log('Error fetching user infos', error);
-        }
-    }
+    // const getUserInfo = async () => {
+    //     const headers = {
+    //         'Content-Type': 'application/json',
+    //         'Authorization': `Bearer ${process.env.REACT_APP_SECRET}`
+    //     };
+    //     try {
+    //         const response = await axios.get<User>(url_info, { headers });
+    //         if (response.status === 200) {
+    //             setUserInfo(response.data);
+    //         }
+    //     }
+    //     catch (error) {
+    //         console.log('Error fetching user infos', error);
+    //     }
+    // }
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -84,6 +90,7 @@ const EditProfile: React.FC<EditProfileProps> = ({ setShowScreen, userId }) => {
                 };
                 const response = await axios.patch(url_info, updatedUser, { headers });
                 if (response.status === 200) {
+                    dispatch(updateUserInfo(response.data));
                     console.log("Updated user information");
                 }
 
@@ -93,14 +100,11 @@ const EditProfile: React.FC<EditProfileProps> = ({ setShowScreen, userId }) => {
         }
         setShowScreen('default');
         // This is a temporary solution, better would be to affecte trigger useEffect hook
-        window.location.reload();
+        // window.location.reload();
     };
 
     useEffect(() => {
-        if (userInfo === null) {
-            getUserInfo();
-        }
-    })
+    }, [chatStore.chatUsers, chatStore.userInfo])
 
     return (
         <div className='h-full w-full absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 bg-slate-900 bg-opacity-70'>

@@ -34,6 +34,7 @@ const initialState: IChatState = {
   chatGroupList: ChatGroupList,  // uncomment for production
   // chatGroupList: ChatGroupListDummy, //# for dev purpose
   chatGroupMembers: ChatGroupMemberList,
+  chatAllJoinReq: ChatGroupMemberList,
   chatType: null,
   chatRoomId: null,
   chatActiveUser: null,
@@ -45,9 +46,15 @@ const initialState: IChatState = {
   chatGameRequests: ChatGameRequestList,
   chatGameRequest: null,
   chatGroupUsrPassInp: "",
-  chatGroupChkPassInpState: false,
+  chatGroupChkPassInpState: {
+    check: false,
+    group: -1,
+  },
   chatPreActiveGroup: null,
-  chatBlockedUsers: blockedUsersList // update this list upon user login
+  chatBlockedUsers: blockedUsersList, // update this list upon user login
+  tmpGroup: -1,
+  newGroupId: -1,
+  userInfo: null,
   // chatBlockedUsers: dummyBlockedUser // use for dev:  update this list upon user login
 };
 
@@ -100,6 +107,9 @@ const chatSlice = createSlice({
     updateChatGroupMembers: (state, action: PayloadAction<JoinGroup[]>) => {
       state.chatGroupMembers = action.payload;
     },
+    updateChatAllJoinReq: (state, action: PayloadAction<JoinGroup[]>) => {
+      state.chatGroupMembers = action.payload;
+    },
     updateStateGroupDialog: (state, action: PayloadAction<boolean>) => {
       state.chatGroupDialogState = action.payload;
     },
@@ -127,12 +137,21 @@ const chatSlice = createSlice({
       state.chatGroupUsrPassInp = action.payload;
     },
     // triggers the check of password validity
-    updateChatGroupChkPassInpState: (state, action: PayloadAction<boolean>) => {
+    updateChatGroupChkPassInpState: (state, action: PayloadAction<{check: boolean, group: number} >) => {
       state.chatGroupChkPassInpState = action.payload;
     },
     // update the list of all blocks between users
     updateChatBlockedUsers: (state, action: PayloadAction<(Block| null)[]>) => {
       state.chatBlockedUsers = action.payload;
+    },
+    updateTmpGroup: (state, action: PayloadAction<number>) => {
+      state.tmpGroup = action.payload;
+    },
+    updateNewGrpId: (state, action: PayloadAction<number>) => {
+      state.newGroupId = action.payload;
+    },
+    updateUserInfo: (state, action: PayloadAction<User|null>) => {
+      state.userInfo = action.payload;
     },
   },
 });
@@ -157,7 +176,11 @@ export const {
   updateChatGroupUsrPassInp,
   updateChatGroupChkPassInpState,
   updateChatPreActiveGroup,
-  updateChatBlockedUsers
+  updateChatBlockedUsers,
+  updateTmpGroup,
+  updateChatAllJoinReq,
+  updateUserInfo,
+  updateNewGrpId
 } = chatSlice.actions;
 export default chatSlice;
 

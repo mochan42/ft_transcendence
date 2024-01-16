@@ -3,24 +3,18 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import UserCard from "../UserCard";
 import Leaderboard from "../LeaderBoard";
-import ChatBoard from '../HomeBoard';
 import { Friend, User } from "../../types";
 import ChatPageUsers from '../ChatPageUsers';
 import ChatPageGroups from '../ChatPageGroups';
 import About from './About';
 import Cookies from 'js-cookie';
-import { io } from 'socket.io-client';
 import { useDispatch, useSelector } from "react-redux";
 import { selectChatStore } from "../../redux/store";
-import { Stack } from "@mui/material";
-import { HOME_SECTION, logStatus } from "../../enums";
+import { HOME_SECTION } from "../../enums";
 import HomeBoard from '../HomeBoard';
 import EditProfile from '../EditProfile';
 import { getSocket } from '../../utils/socketService';
-import ChatPageGameRequests from '../ChatPageGameRequests';
 import { BACKEND_URL } from '../../data/Global';
-import { updateChatBlockedUsers } from '../../redux/slices/chatSlice';
-
 
 type TUserState = {
 	userCode: {
@@ -62,8 +56,8 @@ const Home = ({
 	const [authCount, setAuthCount] = useState<number>(0);
 	const id = userId;
 	const urlFriends = `${BACKEND_URL}/pong/users/` + id + '/friends';
-	const [userFriends, setUserFriends] = useState<User[] | null>(null);
 	const [friends, setFriends] = useState<Friend[] | null>(null);
+	const [userFriends, setUserFriends] = useState<User[] | null>(null);
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 	const [selectSection, setSelectSection] = useState<Number>(section);
@@ -153,7 +147,6 @@ const Home = ({
 				const response = await axios.get<Friend[]>(urlFriends, { headers });
 				if (response.status === 200) {
 					setFriends(response.data);
-					// console.log('Received Friends data', response.data);
 				}
 			}
 		}
@@ -187,25 +180,19 @@ const Home = ({
 					getUsersInfo()
 				}
 				if (userFriends === null && usersInfo) {
-					const usersFriends = usersInfo?.filter((user) =>
-						friends?.some((friend) => friend.sender === user.id || friend.receiver === user.id && user.id != userId)
+					const _userFriends = usersInfo?.filter((user) =>
+						friends?.some((friend) => (friend.sender == user.id || friend.receiver == user.id) && user.id != userId)
 					);
-					if (userFriends !== null) {
-						setUserFriends(usersFriends);
+					if (_userFriends !== null) {
+						
+						setUserFriends(_userFriends);
 					}
 				}
 			}
 		})();
-	}, [userId, loginState.isLogin]);
+	}, [userId, loginState.isLogin, friends]);
 
 	if (socket) {
-		// socket.emit('allBlock', {});
-		// socket.once('allBlockSuccess', (data: any) => {
-		// 	console.log('-BLOCKES--\n');
-		// 	console.log(data);
-		// 	dispatch(updateChatBlockedUsers(data));
-		// 	console.log(chatStore.chatBlockedUsers);
-		// });
 		// ---new channel created---------------
 		socket.on('newChannel', (channel: any) => {
 			console.log('channel created successfully');
@@ -223,10 +210,7 @@ const Home = ({
 		});
 		/******************************* */
 	}
-	// // hack for access
-	// // to be removed later
-	// loginState.setIsLogin(true)
-	// setUserId('1');
+
 	if (!userId && !loginState.isLogin) {
 		return (
 			<>
@@ -238,24 +222,30 @@ const Home = ({
 		return (
 			<>
 				<div className='h-5/6 w-full relative'>
-					<div className="flex h-full p-1 bg-gray-200 justify-between">
+					<div className="flex h-full w-30 p-1 bg-gray-200 justify-between">
 						<div className="space-y-8 min-w-[70px]">
 							<HomeBoard section={selectSection} setSection={setSelectSection} />
 						</div>
 						<div className="flex w-full">
 							{selectSection === HOME_SECTION.PROFILE && (
 								<div className="flex justify-evenly space-y-8 items-center h-full w-full">
-									<div className="flex flex-col space-y-2">
+									<div className="flex flex-col space-y-2 h-4/5">
 										<UserCard userId={userId} />
-										<div className="flex justify-between items-center min-w-[200px] bg-slate-900 text-center rounded-lg">
-											{userFriends ? userFriends.map((user, index) => (
-												<div key={index} className="flex items-center">
-													<img className="h-6 w-6 dark:bg-slate-200 rounded-full" src={user.avatar} alt="User avatar" />
-													{user.userNameLoc}
+										<div className='space-y-2 flex flex-col items-center gap-4 bg-slate-900 rounded-lg text-slate-200 justify-around gap-y-8 h-2/3'>
+											{userFriends != null ? userFriends?.map((user, index) => (
+												<div key={index}>
+													<div className="space-y-2 flex flex-col justify-between gap-4">
+														<div className="flex flex-row justify-between min-w-[220px]">
+															<img
+																className="h-6 w-6 dark:bg-slate-200 rounded-full"
+																src={user.avatar}
+																alt="Achievement badge"
+															/>
+															{user.userNameLoc}
+														</div>
+													</div>
 												</div>
-											)) : (
-												<img className='h-full w-full rounded-lg' src='https://media0.giphy.com/media/KG4ST0tXOrt1yQRsv0/200.webp?cid=ecf05e4732is65t7ah6nvhvwst9hkjqv0c52bhfnilk0b9g0&ep=v1_stickers_search&rid=200.webp&ct=s' />
-											)}
+											)) : <img className='h-40 w-40 rounded-lg' src='https://media0.giphy.com/media/KG4ST0tXOrt1yQRsv0/200.webp?cid=ecf05e4732is65t7ah6nvhvwst9hkjqv0c52bhfnilk0b9g0&ep=v1_stickers_search&rid=200.webp&ct=s' />}
 										</div>
 									</div>
 									<div className='w-2/3 h-5/6'>

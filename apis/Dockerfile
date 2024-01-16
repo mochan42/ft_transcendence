@@ -3,15 +3,15 @@ FROM node:18
 # Set the working directory in the container
 WORKDIR /usr/src/app
 
-# Copy both package.json and package-lock.json (if available)
-COPY package*.json ./
+# # Copy both package.json and package-lock.json (if available)
+# COPY package*.json ./
 
-# Upgrade application dependencies
-#RUN npm update
+# # Upgrade application dependencies
+# #RUN npm update
 
-# Clean cache and install app dependencies
-RUN npm cache clean --force
-RUN npm install --legacy-peer-deps
+# # Clean cache and install app dependencies
+# RUN npm cache clean --force
+# RUN npm install --legacy-peer-deps
 
 # Bundle your app source code
 COPY . .
@@ -19,5 +19,4 @@ COPY . .
 # Expose the port the app will run on
 EXPOSE 5000
 
-# Define the command to run your app
-CMD ["npm", "run", "start:dev"]
+ENTRYPOINT [ "sh", "prestart.sh" ]

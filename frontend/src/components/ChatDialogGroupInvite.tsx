@@ -15,7 +15,9 @@ import { useRef } from 'react';
 const ChatGroupList = () => {
     const userId = Cookies.get('userId') ? Cookies.get('userId') : '';
     const chatStore = useSelector(selectChatStore)
+    useEffect(() => { 
 
+    }, [chatStore.chatGroupList])
     return (
         <>
             {chatStore.chatGroupList.map((group) => {
@@ -32,9 +34,9 @@ function GetJoinGroupListForLoggedUser(): JoinGroup[] {
     const chatStore = useSelector(selectChatStore);
 
     // api call to fetch all JoinGroup elements for filtering
-    const JoinGroupList = chatStore.chatGroupMembers
+    const JoinGroupList = chatStore.chatAllJoinReq
 
-    const affiliatedJoinGroupList = JoinGroupList.filter(el =>
+    const affiliatedJoinGroupList = JoinGroupList.filter(el => el && el.userId &&
         (userId && (el.userId.toString()) == userId))
 
     return affiliatedJoinGroupList
@@ -56,8 +58,7 @@ function GetGroupDataById(groupList: (Group | null)[], groupId: number): Group |
 export const FindUserMemberShip = (userId: string | undefined, channelId: number): JoinGroup | null => {
     const chatStore = useSelector(selectChatStore)
     const groupMembers = chatStore.chatGroupMembers.filter(el => el.channelId == channelId);
-    const userMemberShip = groupMembers.find(el => el.userId.toString() == userId);
-    console.log(userMemberShip);
+    const userMemberShip = groupMembers.find(el => el && el.userId && el.userId.toString() == userId);
     if (!userMemberShip) {
         return null;
     }
@@ -72,6 +73,10 @@ const ChatGroupInviteList = () => {
         el.status == enChatGroupInviteStatus.INVITE
     )
     let group = {} as Group | null
+
+    useEffect(() => {
+
+    }, [chatStore.chatGroupList, chatStore.chatAllJoinReq]);
 
     return (
         <>
@@ -105,11 +110,13 @@ const ChatGroupRequestList = () => {
     const userId = Cookies.get('userId') ? Cookies.get('userId') : '';
 
     const groups = chatStore.chatGroupList
-    const allRequests = chatStore.chatGroupMembers.filter(el => el.status == enChatGroupInviteStatus.PENDING || el.status == enChatGroupInviteStatus.INVITE);
+    let allRequests = chatStore.chatGroupMembers.filter(el => el.status == enChatGroupInviteStatus.PENDING || el.status == enChatGroupInviteStatus.INVITE);
 
     useEffect(() => {
+        allRequests = chatStore.chatGroupMembers.filter(el => el.status == enChatGroupInviteStatus.PENDING || el.status == enChatGroupInviteStatus.INVITE);
 
-    }, [chatStore.chatGroupList, chatStore.chatGroupMembers]);
+
+    }, [chatStore.chatGroupList, chatStore.chatGroupMembers, chatStore.chatAllJoinReq]);
 
     return (
         <>
@@ -142,12 +149,21 @@ const ChatDialogGroupInvite = () => {
 
     }
     const chatDialogStore = useSelector(selectChatDialogStore)
+    const chatStore = useSelector(selectChatStore)
     const dispatch = useDispatch()
     const open = chatDialogStore.chatDialogGroupInvite
     const handleClose = () => {
         dispatch(updateChatDialogGroupInvite(false));
     }
+    useEffect(() => {
+        
 
+    }, [
+        chatStore.chatGroupList,
+        chatStore.chatGroupMembers,
+        chatStore.chatAllJoinReq,
+        chatStore.chatSideBar.open
+    ]);
 
     return (
         <>

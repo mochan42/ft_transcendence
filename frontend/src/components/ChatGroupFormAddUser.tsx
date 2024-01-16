@@ -5,9 +5,9 @@ import { Dialog, Slide, DialogTitle, DialogContent, RadioGroup, FormLabel } from
 import { TransitionProps } from '@mui/material/transitions';
 import * as Yup from 'yup';
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Button, Stack, Radio } from "@mui/material";  
-import Checkbox from "@mui/material/Checkbox";  
-import FormControlLabel from "@mui/material/FormControlLabel";  
+import { Button, Stack, Radio } from "@mui/material";
+import Checkbox from "@mui/material/Checkbox";
+import FormControlLabel from "@mui/material/FormControlLabel";
 import RHF_TextField from './ui/RHF_TextField';
 import RHF_AutoCompDropDown from './ui/RHF_AutoCompDropDown';
 import Cookies from 'js-cookie';
@@ -19,32 +19,32 @@ import { selectConversation, toggleSidebar, updateChatActiveGroup, updateChatGro
 import { TFormMember, User } from '../types';
 import { getUserById } from './ChatConversation';
 import { updateChatDialogAddUser } from '../redux/slices/chatDialogSlice';
-import { getMembers } from '../data/ChatData';
+import { getMembers, fetchAllMembers } from '../data/ChatData';
+import { enChatGroupInviteStatus, enChatMemberRights } from "../enums";
 
 
 /**
  * See vide0 12 form creation
  * See video 9 for custom textfield creation
  */
-const Transition = React.forwardRef(function Transition (
-    props: TransitionProps & { children: React.ReactElement<any, any>;},
-    ref: React.Ref<unknown>)
-    {
-        return <Slide direction="up" ref={ref} {...props} />;
-    }
+const Transition = React.forwardRef(function Transition(
+    props: TransitionProps & { children: React.ReactElement<any, any>; },
+    ref: React.Ref<unknown>) {
+    return <Slide direction="up" ref={ref} {...props} />;
+}
 );
 
 const CreateGroupFormAddUser = () => {
     const chatStore = useSelector(selectChatStore);
     const userId = Cookies.get('userId')
     const dispatch = useDispatch()
-    const socket = getSocket(userId); 
+    const socket = getSocket(userId);
 
-    const handleClose = () => { 
+    const handleClose = () => {
         dispatch(updateChatDialogAddUser(false))
-    } 
+    }
 
-    const groupMembers = (chatStore.chatActiveGroup) ? getMembers(chatStore.chatGroupMembers, chatStore.chatActiveGroup.channelId): [];
+    const groupMembers = (chatStore.chatActiveGroup) ? getMembers(chatStore.chatGroupMembers, chatStore.chatActiveGroup.channelId) : [];
     // fetch user data of all group members
     let memberUsers: User[] = [];
     groupMembers.forEach((member) => {
@@ -52,10 +52,11 @@ const CreateGroupFormAddUser = () => {
     })
 
     // filter out non-members
-    const nonMemberUsers = chatStore.chatUsers.filter(el => !(memberUsers.includes(el)));
-    
+    const allRequests = chatStore.chatAllJoinReq;
+    const groupRequests = allRequests.filter((el: any) => el.channelId == chatStore.chatActiveGroup!.channelId);
+    const nonMemberUsers = chatStore.chatUsers.filter(el => !memberUsers.includes(el) && !groupRequests.find((sub: any) => sub.userId == el.id));
     // create list of non members for form selection
-    let  nonMembers : TFormMember[] = [];
+    let nonMembers: TFormMember[] = [];
     nonMemberUsers.map((el) => {
         nonMembers.push({ id: el.id, name: el.userName })
     });
@@ -68,8 +69,8 @@ const CreateGroupFormAddUser = () => {
         }
     )
 
-    const defaultValues = { 
-        members: nonMembers ,
+    const defaultValues = {
+        members: nonMembers,
         // members: [], // to be replace with list of all users
         // privacy_state: enChatPrivacy.PUBLIC,
     }
@@ -77,7 +78,7 @@ const CreateGroupFormAddUser = () => {
     const methods = useForm({
         resolver: yupResolver(groupSchema),
         defaultValues,
-    }) 
+    })
 
     const {
         reset,
@@ -92,14 +93,13 @@ const CreateGroupFormAddUser = () => {
     //const onSubmit:SubmitHandler<TFormInputs> = async (data: TFormInputs) => {
     // would be easier if data has the same names with channels colums in apis side
     const onSubmit = async (data: any) => {
-        try{
+        try {
             socket.emit('addUsersToGroup', { group: chatStore.chatActiveGroup?.channelId, users: data });
             // socket.on('newMembers', (data: any) => {
             //     dispatch(updateChatGroupMembers(data.all));
-			// });
+            // });
         }
-        catch (error)
-        {
+        catch (error) {
             console.log("EEROR!", error);
         }
         handleClose();
@@ -110,21 +110,21 @@ const CreateGroupFormAddUser = () => {
     });
 
     return (
-        <FormProvider {...methods} > 
+        <FormProvider {...methods} >
             <form onSubmit={methods.handleSubmit(onSubmit)}>
                 <Stack spacing={3} padding={2}>
 
                     {/* channel members */}
-                    <RHF_AutoCompDropDown name="members" label="Members" options={nonMembers}/>
+                    <RHF_AutoCompDropDown name="members" label="Members" options={nonMembers} />
                 </Stack>
-                <Stack spacing={2} direction={"row"} 
+                <Stack spacing={2} direction={"row"}
                     alignItems={"center"}
                     justifyContent={"end"}
                 >
                     <Button onClick={handleClose}>Cancel </Button>
                     <Button type="submit" variant='contained'>Add Users</Button>
                 </Stack>
-           </form>
+            </form>
         </FormProvider>
     )
 }
@@ -133,10 +133,10 @@ const ChatGroupFormAddUser = () => {
     const chatDialogStore = useSelector(selectChatDialogStore)
     const open = chatDialogStore.chatDialogAddUser
     return (
-        <Dialog fullWidth maxWidth="xs" 
+        <Dialog fullWidth maxWidth="xs"
             open={open} TransitionComponent={Transition}
             keepMounted
-            sx={{p: 4}}
+            sx={{ p: 4 }}
         >
             {/* Title */}
             <DialogTitle>Add User</DialogTitle>

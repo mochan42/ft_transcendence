@@ -5,6 +5,7 @@ import QRCode from 'qrcode.react';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import { BACKEND_URL } from '../../data/Global';
+import { OK } from '../../APP_CONSTS';
 
 
 interface Props {
@@ -49,7 +50,7 @@ const Login2fa: React.FC<Props> = ({ setIsAuth, isAuth, setUserId, token2fa }) =
     try {
       const validate = await axios.post(`${BACKEND_URL}/pong/users/auth/2fa`, { token: otp, userId: id + '' }, { headers });
       if (validate.status === 200) {
-        if (validate.data === 'OK') {
+        if (validate.data === OK) {
           Cookies.set('userId', id + '', { expires: 7 });
           Cookies.set('isAuth', 'true', { expires: 7 });
           setIsAuth(true);

@@ -15,7 +15,6 @@ const Achievements:React.FC<AchievementsProps> =({ userId, setShowScreen }) => {
 	const [allGoals, setAllGoals] = useState< Goal[] | null >(null);
 	const url_achievements = `${BACKEND_URL}/pong/users/` + userId + '/achievements';
 	const url_goals = `${BACKEND_URL}/pong/goals`;
-	const id = userId;
 	const [achievedGoals, setAchievedGoals] = useState<Goal[]>();
 	const [notAchievedGoals, setNotAchievedGoals] = useState<Goal[]>();
 
@@ -28,7 +27,6 @@ const Achievements:React.FC<AchievementsProps> =({ userId, setShowScreen }) => {
 			const response: AxiosResponse<UserAchievements[]> = await axios.get(url_achievements,{ headers });
 			if (response.status === 200) {
 				setUserAchievements(response.data);
-				// console.log('Received User Achievements: ', response.data);
 			}
 		} catch (error) {
 			console.log('Error fetching user achievements:', error);
@@ -58,8 +56,6 @@ const Achievements:React.FC<AchievementsProps> =({ userId, setShowScreen }) => {
 			const notAchievedGoals = allGoals?.filter((goal) => {
 				return !userAchievements?.some((achievement) => achievement.goalId === goal.id);
 			})
-			console.log('achieved goals: ', achievedGoals)
-			console.log('not achieved goals: ', notAchievedGoals)
 			setAchievedGoals(achievedGoals);
 			setNotAchievedGoals(notAchievedGoals);
 		}

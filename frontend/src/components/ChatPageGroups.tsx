@@ -12,7 +12,7 @@ import ChatGroupProfile from "./ChatGroupProfile";
 import { selectChatDialogStore, selectChatStore } from "../redux/store";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
-import { selectConversation, toggleSidebar, updateChatActiveGroup, updateChatGroupChkPassInpState, updateChatPreActiveGroup } from "../redux/slices/chatSlice";
+import { selectConversation, toggleSidebar, updateChatActiveGroup, updateChatGroupChkPassInpState, updateChatPreActiveGroup, updateTmpGroup, updateNewGrpId } from "../redux/slices/chatSlice";
 import { enChatPrivacy, enChatType } from "../enums";
 import Cookies from 'js-cookie';
 import { updateChatDialogGroupInvite, updateChatDialogInpPasswd, updateChatDialogShwMsg } from "../redux/slices/chatDialogSlice";
@@ -21,6 +21,7 @@ import { fetchAllMembers, getMembers } from "../data/ChatData";
 import ChatGroupFormInputPasswd from "./ChatGroupFormInputPasswd";
 import ChatDialogShwMsg from "./ChatDialogShwMsg";
 import { getSocket } from "../utils/socketService";
+import React from "react";
 
 
 const ChatGroupElement = (group: Group) => {
@@ -28,61 +29,71 @@ const ChatGroupElement = (group: Group) => {
     const userId = Cookies.get('userId') ? Cookies.get('userId') : '';
     const chatStore = useSelector(selectChatStore);
     const chatDialogStore = useSelector(selectChatDialogStore)
-    const groupOwnerUserData = getUserById(chatStore.chatUsers, group.ownerId)
+    const groupOwnerUserData = getUserById(chatStore.chatUsers, group.ownerId);
+
     const socket = getSocket(userId);
 
-
-    const joinChannel = () => {
-
-        dispatch(selectConversation({ chatRoomId: group.channelId, chatType: enChatType.Group }))
-        dispatch(updateChatActiveGroup(chatStore.chatGroupList.filter((el: any) => {
-            if (el && (el.channelId == group.channelId)) {
+    const joinChannel = (currentGroupId: number) => {
+        dispatch(selectConversation({ chatRoomId: currentGroupId, chatType: enChatType.Group }))
+        dispatch(updateChatActiveGroup(chatStore.chatGroupList.filter((el: Group | null) => {
+            if (el && (el.channelId == currentGroupId)) {
                 return el;
             }
         })[0]));
     }
 
-
-
-    const HandleOnClick = async () => {
+    const HandleOnClick = () => {
         if (chatStore.chatSideBar.open) {
             dispatch(toggleSidebar());
         }
         dispatch(updateChatPreActiveGroup(group));
-        if (group.privacy == enChatPrivacy.PROTECTED && group.channelId != chatStore.chatActiveGroup?.channelId) {
-            dispatch(updateChatDialogInpPasswd(true))
+        if ((userId == groupOwnerUserData.id || group.channelId == chatStore.newGroupId) && group.privacy != enChatPrivacy.PROTECTED) {
+            dispatch(updateChatDialogShwMsg(false));
+            dispatch(updateNewGrpId(-1));
+            joinChannel(group.channelId);
+        }
+        else if (group.privacy == enChatPrivacy.PROTECTED && group.channelId != chatStore.chatActiveGroup?.channelId) {
+            dispatch(updateChatDialogInpPasswd(true));
+            dispatch(updateTmpGroup(group.channelId));
         }
         else if (group.privacy == enChatPrivacy.PRIVATE && group.channelId != chatStore.chatActiveGroup?.channelId) {
-            const allMembers = await fetchAllMembers();
-            const groupMembers = getMembers(allMembers, group.channelId)
-            const userGroupData = groupMembers.filter((el) => {
-                if (userId && parseInt(userId) == el.userId)
-                    return el;
-            })
-
-            userGroupData.length ? joinChannel()
-                : dispatch(updateChatDialogShwMsg(true))
+            const groupMembers = getMembers(chatStore.chatAllJoinReq, group.channelId);
+            const userGroupData = groupMembers.find((el: JoinGroup) => el && el.userId.toString() == userId);
+            console.log(userGroupData);
+            if (userGroupData) {
+                dispatch(updateChatDialogShwMsg(false));
+                joinChannel(group.channelId);
+            }
+            else {
+                dispatch(updateChatDialogShwMsg(true));
+            }
         }
-        else // group channel is public
+        else
         {
-            joinChannel()
+            joinChannel(group.channelId);
         }
 
     }
 
     useEffect(() => {
-    }, [chatStore.chatActiveGroup,
-    chatDialogStore.chatDialogInpPasswd,
-    chatStore.chatGroupUsrPassInp,
-    chatStore.chatActiveGroup,
-    chatStore.chatGroupMembers,
-    chatStore.chatGroupList]);
+
+    }, [
+        chatStore.chatActiveGroup,
+        chatDialogStore.chatDialogInpPasswd,
+        chatStore.chatGroupUsrPassInp,
+        chatStore.chatActiveGroup,
+        chatStore.chatGroupMembers,
+        chatStore.chatGroupList,
+        chatStore.chatAllJoinReq,
+        chatStore.chatUsers,
+        chatStore.userInfo
+    ]);
 
     useEffect(() => {
-        if (chatStore.chatGroupChkPassInpState)// true means that user have inputted passwd and submit form 
-        {
+        if (chatStore.chatGroupChkPassInpState.check && chatStore.chatGroupChkPassInpState.group == group.channelId) {
             socket.emit('verifyGroupPassword', { input: chatStore.chatGroupUsrPassInp, group: group.channelId });
             socket.once('verifyGroupPasswdSuccess', (verify: boolean) => {
+                console.log(verify);
                 if (verify) {
                     dispatch(selectConversation({ chatRoomId: group.channelId, chatType: enChatType.Group }))
                     dispatch(updateChatActiveGroup(chatStore.chatGroupList.filter((el: any) => {
@@ -91,14 +102,13 @@ const ChatGroupElement = (group: Group) => {
                         }
                     })[0]));
                     dispatch(updateChatDialogShwMsg(false)) // Dont Show error message
-
+                    dispatch(updateChatGroupChkPassInpState({ check: false, group: -1 }));
                 }
                 else {
                     dispatch(updateChatDialogShwMsg(true))
                     console.log("dialog, error, ", chatStore.chatGroupChkPassInpState, chatDialogStore.chatDialogShwMsg)
                 }
             });
-            dispatch(updateChatGroupChkPassInpState(false));
         }
 
         // },[]) 
@@ -155,7 +165,10 @@ const ChatPageGroups = (chatProp: ChatProps) => {
 
     useEffect(() => {
 
-    }, [chatStore.chatActiveGroup, chatStore.chatGroupList, chatStore.chatGroupMembers]);
+    }, [chatStore.chatActiveGroup,
+    chatStore.chatGroupList,
+    chatStore.chatGroupMembers,
+    chatStore.chatAllJoinReq]);
     // console.log("counting list - ", chatStore.chatGroupList.length)
 
     return (
@@ -203,10 +216,11 @@ const ChatPageGroups = (chatProp: ChatProps) => {
                             sx={{ flexGrow: 1, overflowY: "scroll", height: "100%" }}
                             spacing={0.5}
                         >
-                            {chatStore.chatGroupList.map((el) => {
+                            {chatStore.chatGroupList.map((el: Group | null) => {
                                 if (el)
                                     return (<ChatGroupElement key={el.channelId} {...el} />)
-                            })}
+                            })
+                            }
                         </Stack>
                     </Stack>
                 </Box>
@@ -222,6 +236,7 @@ const ChatPageGroups = (chatProp: ChatProps) => {
                 {/* show the contact profile on toggle */}
                 <Stack>
                     {chatStore.chatSideBar.open && <ChatGroupProfile />}
+                    {/* {!chatStore.chatSideBar.open && <></>} */}
                 </Stack>
             </Stack>
 

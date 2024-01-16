@@ -12,36 +12,37 @@ import { CreateGameDto } from './dto/create-game.dto';
 import { UpdateGameDto } from './dto/update-game.dto';
 import { Game } from './entities/game.entity';
 
-@Controller('pong/games')
+@Controller()
 export class GamesController {
   constructor(private readonly gamesService: GamesService) {}
 
-  @Post()
+  @Post('pong/games')
   create(@Body() createGameDto: CreateGameDto) {
     return this.gamesService.create(createGameDto);
   }
 
-  @Get()
+  @Get('pong/games')
   findAll() {
     return this.gamesService.findAll();
   }
 
-  @Get(':id')
+  @Get('pong/games/:id')
   findOne(@Param('id') id: string) {
     return this.gamesService.findOne(+id);
   }
 
-  // @Patch(':id')
-  // update(
-  //   @Param('id') id: string,
-  //   @Body() updateGameDto: UpdateGameDto
-  // ) {
-  //   const game: Game = { ...updateGameDto, id: +id }
-  //   return this.gamesService.update(game);
-  // }
+  @Get('pong/users/:id/games')
+  findUsersGame(@Param('id') userId: string) {
+    return this.gamesService.findUsersGame(+userId);
+  }
 
-  @Delete(':id')
+  @Delete('pong/games:id')
   remove(@Param('id') id: string) {
     return this.gamesService.remove(+id);
+  }
+
+  @Delete('pong/games')
+  removeAll() {
+    return this.gamesService.removeAll();
   }
 }

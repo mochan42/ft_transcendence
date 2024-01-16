@@ -25,15 +25,17 @@ export const getUserById = (users: User[], id: any) => {
 
 export const formatMessages = (users: User[], messages: Chat[], userId: any): ChatMessageProps[] => {
     let chats: ChatMessageProps[] = [];
-    messages.map((el) => {
-        const message: ChatMessageProps = {
-            user: (el.author == userId) ? Cookies.get('userName') + '' : getUserById(users, el.author).userNameLoc,
-            id: el.id,
-            message: el.message,
-            incoming: (el.author == userId) ? false : true,
-            timeOfSend: new Date,
-        };
-        chats.push(message);
+    messages.map((el: Chat) => {
+        if (el) {
+            const message: ChatMessageProps = {
+                user: (el.author == userId) ? Cookies.get('userName') + '' : getUserById(users, el.author).userNameLoc,
+                id: el.id,
+                message: el.message,
+                incoming: (el.author == userId) ? false : true,
+                timeOfSend: new Date,
+            };
+            chats.push(message);
+        }
     });
     return chats;
 }
@@ -70,18 +72,18 @@ const ChatConversation: React.FC<ChatProps> = ({ userId }) => {
     const [blockState, setBlockState] = useState<boolean>(false);
     const url_info = `${BACKEND_URL}/pong/users/` + userId;
 
-    const IsPriviledged = (): boolean => {
-        const chatType = chatStore.chatType;
-        if (chatType === enChatType.Group) {
-            const memberShip = userId && FindUserMemberShip(userId, chatStore.chatActiveGroup!.channelId);
-            if (!memberShip) return false;
-            if (memberShip.rights !== enChatMemberRights.PRIVILEDGED) return false;
-        }
-        return true;
-    }
+    // const IsPriviledged = (): boolean => {
+    //     const chatType = chatStore.chatType;
+    //     if (chatType === enChatType.Group) {
+    //         const memberShip = userId && FindUserMemberShip(userId, chatStore.chatActiveGroup!.channelId);
+    //         if (!memberShip) return false;
+    //         if (memberShip.rights !== enChatMemberRights.PRIVILEDGED) return false;
+    //     }
+    //     return true;
+    // }
 
     const IsLoggedUserBlockedInGroup = (): boolean => {
-        if (!userId) {
+        if (!userId || !chatStore.chatActiveGroup) {
             return true;
         }
         const memberShip = userId ? FindUserMemberShip(userId, chatStore.chatActiveGroup!.channelId) : null;

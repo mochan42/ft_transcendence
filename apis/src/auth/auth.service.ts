@@ -8,6 +8,8 @@ import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { StatService } from 'src/stat/stat.service';
 import { LOG_STATE } from 'src/APIS_CONSTS';
 import { JwtService } from '@nestjs/jwt';
+import { GoalsService } from 'src/goals/goals.service';
+import { promises } from 'dns';
 
 @Injectable()
 export class AuthService {
@@ -15,8 +17,11 @@ export class AuthService {
     private usersService: UsersService,
     private statService: StatService,
     private jwtService: JwtService,
+    private goalService: GoalsService
   ) {}
   async signin(authUserDto: AuthUserDto) {
+    let userStat;
+    const seedGoals = await this.goalService.feedGoals();
     const accessToken = await this.getFortyTwoAccessToken(authUserDto);
     if (!accessToken) {
       return { is2Fa: false, user: null };
@@ -38,10 +43,9 @@ export class AuthService {
     } else {
       signedUser = await this.usersService.create(pongUser);
       const defaultStat = { wins: 0, losses: 0, draws: 0 };
-      // firstTime creat user's stats.
-      await this.statService.create(signedUser.id, defaultStat);
+      userStat = await this.statService.create(signedUser.id, defaultStat);
     }
-
+    await Promise.all([seedGoals, userStat]);
     if (!signedUser.is2Fa) {
       const userAccessToken = await this.jwtService.signAsync(signedUser);
       return { is2Fa: false, access_token: userAccessToken, isFirstLogin: logTimes };

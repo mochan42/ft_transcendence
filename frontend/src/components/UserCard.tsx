@@ -24,7 +24,7 @@ const UserCard: React.FC<UserCardProps> = ({ userId }) => {
 				const response = await axios.get<User>(url_info, { headers });
 				if (response.status === 200) {
 					setUserInfo(response.data);
-					// console.log('Received User Info: ', response.data)
+					console.log('Received User Info: ', response.data)
 				}
 			}
 			catch (error) {
@@ -34,10 +34,8 @@ const UserCard: React.FC<UserCardProps> = ({ userId }) => {
 	}
 
 	useEffect(() => {
-		if (userInfo === null) {
-			getUserInfo();
-		}
-	});
+		getUserInfo();
+	}, [userId]);
 
 	return (
 		<div className="h-full bg-slate-900 rounded-lg p-12 flex flex-col justify-around gap-y-8">
@@ -53,7 +51,6 @@ const UserCard: React.FC<UserCardProps> = ({ userId }) => {
 					{userInfo?.userNameLoc}
 				</button>
 				<p>XP earned: {userInfo?.xp}</p>
-				{/* <p>Rank: {userInfo?.rank}</p> */}
 			</div>
 		</div>
 	);
