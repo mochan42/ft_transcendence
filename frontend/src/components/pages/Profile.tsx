@@ -6,13 +6,13 @@ import Friends from '../Friends';
 import Stats from '../Stats';
 import { User, ProfileProps, UserStats, UserAchievements, Goal, Friend } from '../../types';
 import EditProfile from '../EditProfile';
-
 import '../../css/profile.css';
 import { BACKEND_URL } from '../../data/Global';
 import { GameType } from '../../types';
 import { selectChatDialogStore, selectChatStore } from '../../redux/store';
 import { useDispatch, useSelector } from "react-redux";
 import { updateUserInfo } from '../../redux/slices/chatSlice';
+import robot from "../img/robot.svg"
 
 
 const Profile: React.FC<ProfileProps> = ({ userId, isAuth }) => {
@@ -131,17 +131,6 @@ const Profile: React.FC<ProfileProps> = ({ userId, isAuth }) => {
                     console.log('Error receiving Friends information: ', error);
                 }
             }
-            // if (usersInfo === null) {
-            //     try {
-            //         const response = await axios.get<User[]>(`${BACKEND_URL}/pong/users/`, { headers });
-            //         if (response.status === 200) {
-            //             setUsersInfo(response.data);
-            //         }
-            //     }
-            //     catch (error) {
-            //         console.log('Error fetching users infos', error);
-            //     }
-            // }
             if (userFriends === null && usersInfo) {
                 const usersFriends = usersInfo?.filter((user) =>
                     friends?.some((friend) => (friend.sender == user.id || friend.receiver == user.id) && user.id != userId)
@@ -169,7 +158,7 @@ const Profile: React.FC<ProfileProps> = ({ userId, isAuth }) => {
                 <div className='flex flex-col w-1/3 items-center gap-6 border-4 dark:border-slate-900'>
                     <img
                         className="h-2/5 w-2/5 rounded-full object-cover"
-                        src={(userInfo?.avatar) ?? 'https://www.svgrepo.com/show/170615/robot.svg'}
+                        src={(userInfo?.avatar) ?? robot}
                     />
                     <h1 className='text-2xl text-slate-900 font-extrabold dark:text-amber-300 drop-shadow-lg'>
                         {userInfo?.userNameLoc ?? 'unknown'}
@@ -294,7 +283,7 @@ const Profile: React.FC<ProfileProps> = ({ userId, isAuth }) => {
                                             </div>
                                         </div>
                                     </div>
-                                )) : <img className='h-40 w-40 rounded-lg' src='https://media0.giphy.com/media/KG4ST0tXOrt1yQRsv0/200.webp?cid=ecf05e4732is65t7ah6nvhvwst9hkjqv0c52bhfnilk0b9g0&ep=v1_stickers_search&rid=200.webp&ct=s' />}
+                                )) : <img className='h-40 w-40 rounded-lg' src='../img/desert1.png' />}
                                 <Button variant={'link'} onClick={() => setShowScreen('friends')}>
                                     more
                                 </Button>

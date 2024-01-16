@@ -35,9 +35,7 @@ const VictoryLoss: React.FC<VictoryLossProps> = ({ isVictory, userId, difficulty
 			const response = await axios.get<User>(url_user, { headers });
 			if (response.status === 200) {
 				const user = response.data;
-				console.log("User xp start: ", user.xp);
 				user.xp = user.xp + (isVictory ? 120 : 80);
-				console.log("User xp after: ", user.xp);
 				setUser(user);
 				setNewXp(user.xp);
 			}
@@ -47,9 +45,7 @@ const VictoryLoss: React.FC<VictoryLossProps> = ({ isVictory, userId, difficulty
 	}
 
 	const UpdateUserInfo = async () => {
-		console.log("Xp: ", newXp);
 		if (user) {
-			console.log("User.xp: ", user.xp);
 			const headers = {
 				'Content-Type': 'application/json',
 				'Authorization': `Bearer ${process.env.REACT_APP_SECRET}`
@@ -66,7 +62,7 @@ const VictoryLoss: React.FC<VictoryLossProps> = ({ isVictory, userId, difficulty
 				console.log('Error updating userInfo:', error);
 			}
 		} else {
-			console.log("ERROR: user isn't set!");
+			console.log("User isn't set yet!");
 		}
 
 	}

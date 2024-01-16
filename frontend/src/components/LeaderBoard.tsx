@@ -7,6 +7,7 @@ import { getSocket } from '../utils/socketService';
 import { BACKEND_URL } from "../data/Global";
 import UserCard from "./UserCard";
 import { Button } from "./ui/Button";
+import robot from "../img/robot.svg";
 
 
 interface LeaderboardProps {
@@ -97,7 +98,7 @@ const Leaderboard:React.FC<LeaderboardProps> =({ userId }) => {
 						className="flex items-center justify-around py-2 border-b border-slate-900"
 					>
 						<div className='flex justify-between gap-x-6 items-center'>
-							<img className='h-6 w-6 rounded-full' src={user.avatar != "" ? user.avatar : 'https://www.svgrepo.com/show/170615/robot.svg'}/>
+							<img className='h-6 w-6 rounded-full' src={user.avatar != "" ? user.avatar : robot}/>
 								<button className="text-lg mr-2 hover:underline" onClick={() => {setShowScreen(+user.id) }} >{user.userNameLoc}</button>
 						</div>
 						<span className="text-slate-300">{user.xp} points</span>

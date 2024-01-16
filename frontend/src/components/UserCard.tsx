@@ -3,6 +3,7 @@ import { User } from '../types';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { BACKEND_URL } from '../data/Global';
+import robot from "../img/robot.svg"
 
 interface UserCardProps {
   	userId: string | undefined | null;
@@ -42,7 +43,7 @@ const UserCard: React.FC<UserCardProps> = ({ userId }) => {
 			<div className="flex flex-col items-center justify-between flex-grow text-slate-200">
 				<img
 					className="h-40 w-40 rounded-full object-cover" // Nice feature would be to place a border like so: 'border-b-8 border-t-8 border-amber-400'
-					src={userInfo?.avatar ? userInfo.avatar : 'https://www.svgrepo.com/show/170615/robot.svg'}
+					src={userInfo?.avatar ? userInfo.avatar : robot}
 					alt="User Avatar"
 				/>
 				<button

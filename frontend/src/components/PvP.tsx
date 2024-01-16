@@ -82,9 +82,7 @@ const PvP: React.FC<PvPProps> = ({ setIsPause, isPause, setGameRef, includeBoost
 	}
 
 	const handleGameUpdate = (data: GameType) => {
-		console.log(".");
 		setGameObj(data);
-		// setIsPause(false);
 		setPaddle2Y(data.paddle2Y);
 		setBallX(data.ballX);
 		setBallY(data.ballY);
