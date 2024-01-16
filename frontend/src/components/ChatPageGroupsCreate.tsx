@@ -15,7 +15,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { selectChatStore } from "../redux/store";
 import { getSocket } from '../utils/socketService';
 import { enChatPrivacy } from '../enums';
-import { updateChatGroupCreateFormPasswdState, updateChatGroupMembers, updateChatGroups, updateChatAllJoinReq } from '../redux/slices/chatSlice';
+import { updateChatGroupCreateFormPasswdState, updateChatGroupMembers, updateChatGroups, updateChatAllJoinReq, updateNewGrpId } from '../redux/slices/chatSlice';
 import { TFormMember } from '../types';
 import { element } from 'prop-types';
 
@@ -109,7 +109,6 @@ const CreateGroupForm = (handleFormClose: THandler) => {
                 if (elt)
                     return elt.id;
             });
-            console.log("new members :", newMembers);
             const formatedData = {
                 ...data,
                 members: newMembers
@@ -121,8 +120,12 @@ const CreateGroupForm = (handleFormClose: THandler) => {
                 socket.emit('createChannel', formatedData);
             }
             socket.on('newChannel', (data: any) => {
+                console.log(data.members);
                 dispatch(updateChatGroups(data.groups));
                 dispatch(updateChatGroupMembers(data.members));
+                if (data.owner == userId) {
+                    dispatch(updateNewGrpId(formatedData.channelId));
+                }
                 dispatch(updateChatAllJoinReq(data.members));
             });
             handleFormClose.close(false);

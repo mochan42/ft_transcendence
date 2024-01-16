@@ -12,7 +12,8 @@ import { updateChatDialogProfileUserId, updateChatDialogShwProfile, updateChatDi
 import img42 from "../img/icon_42.png"
 import { getUserById } from './ChatConversation';
 import { getSocket } from '../utils/socketService';
-import { updateChatGroupMembers, updateChatAllJoinReq } from '../redux/slices/chatSlice';
+import { updateChatGroupMembers, updateChatAllJoinReq, updateNewGrpId } from '../redux/slices/chatSlice';
+import { ChatGroupMemberList, getMembers } from "../data/ChatData";
 
 
 const StyledChatBox = styled(Box)(({ theme }) => ({
@@ -30,12 +31,10 @@ const ChatGroupMemberProfileComp = (user: IUserData) => {
     const theme = useTheme();
     const chatStore = useSelector(selectChatStore);
     const dispatch = useDispatch();
-    const userId = (chatStore.userInfo) ? chatStore.userInfo.id : null;
-    const loggedUser = chatStore.chatGroupMembers.filter((el: JoinGroup) => {
-        if ((el && el.userId && userId) && (el.userId.toString()) == userId) {
-            return el;
-        }
-    })[0];
+    const userId = Cookies.get('userId') ? Cookies.get('userId') : '';
+    const groupMembers = chatStore.chatActiveGroup ? getMembers(chatStore.chatGroupMembers, chatStore.chatActiveGroup.channelId) : [];
+    const groupMemberNo = (chatStore.chatActiveGroup ? groupMembers.length : 0)
+    const loggedUser = groupMembers.filter((el: JoinGroup) => el && el.userId.toString() == userId)[0];
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -61,7 +60,6 @@ const ChatGroupMemberProfileComp = (user: IUserData) => {
     const handlePromote = (rank: string) => {
         if (user && user.memberJoin) {
             const joinGroup = { ...user.memberJoin, rank: rank }
-            console.log("joinGroup :", joinGroup);
             socket.emit('memberPromoteToggle', joinGroup);
             handleClose();
         }
@@ -178,7 +176,7 @@ export function IsUserInGroup(userId: string | undefined, group: Group | null): 
         return false;
     }
     let result = false
-    const groupMembers = chatStore.chatGroupMembers.filter(
+    const groupMembers = chatStore.chatAllJoinReq.filter(
         el => el.channelId == group.channelId)
 
     const memberResult = groupMembers.filter(el => {
@@ -368,9 +366,12 @@ const ChatGroupDialogRequestEntryComp = (args: TGroupRequestArgs) => {
             socket.once('acceptMemberSuccess', (data: any) => {
                 dispatch(updateChatGroupMembers(data.all));
                 dispatch(updateChatAllJoinReq(data.all));
+                if (loggedUserId && data.new.userId == loggedUserId) {
+                    dispatch(updateNewGrpId(data.new.channelId));
+                }
             });
-            dispatch(updateChatDialogGroupInvite(false));
         }
+        dispatch(updateChatDialogGroupInvite(false));
     }
 
     const denyRequest = (joinGroup: JoinGroup) => {
@@ -380,8 +381,8 @@ const ChatGroupDialogRequestEntryComp = (args: TGroupRequestArgs) => {
                 dispatch(updateChatGroupMembers(data.all));
                 dispatch(updateChatAllJoinReq(data.all));
             });
-            dispatch(updateChatDialogGroupInvite(false));
         }
+        dispatch(updateChatDialogGroupInvite(false));
     }
 
     useEffect(() => {

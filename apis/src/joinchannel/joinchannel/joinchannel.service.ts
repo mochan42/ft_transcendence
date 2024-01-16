@@ -50,4 +50,7 @@ export class JoinchannelService {
   async update(joinChannel: Joinchannel) {
     return await this.JoinchannelRepo.save(joinChannel);
   }
+  async createMultiple(candidates: CreateJoinchannelDto[]) {
+    return await this.JoinchannelRepo.save(candidates);
+  }
 }

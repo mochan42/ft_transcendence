@@ -438,14 +438,15 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
       return;
     }
     const user = await this.chatsService.getUserFromSocket(socket);
+    
     const channel: CreateChannelDto = {
       password: payload.passwd,
       title: payload.title,
       privacy: payload.privacy_state,
       ownerId: +user.id,
     };
-
     const newChannel = await this.channelsService.create(channel);
+
     const members = [...payload.members];
     if (members.length && newChannel) {
       const owner = {
@@ -455,27 +456,28 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
         rights: MEMBER_RIGHTS.PRIVILEDGED,
         status: MEMBER_STATUS.ACCEPTED,
       };
-      await this.joinchannelService.create(owner);
+      const memberOwner = await this.joinchannelService.create(owner);
+      await Promise.all([memberOwner]);
 
-      const joints = members.map(async (member) => {
-        const joinchannelDTo = {
+      const joints: CreateJoinchannelDto[] = members.map((member) => {
+        const joinchannelDTo: CreateJoinchannelDto = {
           userId: +member,
           channelId: newChannel.channelId,
           rank: MEMBER_RANK.MEMBER,
           rights: MEMBER_RIGHTS.PRIVILEDGED,
           status: MEMBER_STATUS.INVITE,
         };
-
-        return await this.joinchannelService.create(joinchannelDTo);
+        return joinchannelDTo;
       });
-      await Promise.all(joints);
+      const newMembers = await this.joinchannelService.createMultiple(joints);
+      await Promise.all([newMembers]);
     }
-
     const allMembers = await this.joinchannelService.findAll();
     const allChannels = await this.channelsService.findAll();
     this.server.emit('newChannel', {
       members: allMembers,
       groups: allChannels,
+      owner: newChannel.ownerId,
     });
   }
 
@@ -506,6 +508,7 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
     });
   }
 
+  // could check if no member, remove the group
   @SubscribeMessage('exitGroup')
   async handleExitGroup(
     @ConnectedSocket() socket: Socket,
@@ -514,10 +517,6 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const user = await this.chatsService.getUserFromSocket(socket);
     if (user) {
       const join = await this.joinchannelService.deleteJoin(user.id, +group);
-      //const remainMembers = await this.joinchannelService.findAGroupMembers(+group);
-      // if (!remainMembers) {
-      //    await this.chatsService.remove(+group);
-      // }
       const allMembers = await this.joinchannelService.findAll();
       this.server.emit('exitGroupSuccess', { new: join, all: allMembers });
     }
@@ -638,12 +637,12 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @MessageBody() joinGroup: Joinchannel,
   ) {
     const newMember = { ...joinGroup, status: MEMBER_STATUS.ACCEPTED };
-    const declinedJoinGroup = await this.joinchannelService.update(newMember);
-    await Promise.all([declinedJoinGroup]);
+    const acceptJoinGroup = await this.joinchannelService.update(newMember);
+    await Promise.all([acceptJoinGroup]);
     const allMembers = await this.joinchannelService.findAll();
-
+    await Promise.all([allMembers]);
     this.server.emit('acceptMemberSuccess', {
-      new: declinedJoinGroup,
+      new: acceptJoinGroup,
       all: allMembers,
     });
   }
@@ -656,6 +655,7 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
     );
     await Promise.all([unblock]);
     const allBlocks: Block[] = await this.friendsService.findAllBlock();
+    await Promise.all([allBlocks]);
     this.server.emit('unblockSuccess', allBlocks);
   }
 
@@ -664,6 +664,7 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const actor = await this.chatsService.getUserFromSocket(socket);
     await Promise.all([memberShip]);
     const allMembers = await this.joinchannelService.findAll();
+    await Promise.all([allMembers]);
     this.server.emit('memberMuteToggleSuccess', { new: memberShip, all: allMembers, actor: actor.id });
   }
   
@@ -691,6 +692,7 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const actor = await this.chatsService.getUserFromSocket(socket);
     await Promise.all([kicked, actor]);
     const allMembers = await this.joinchannelService.findAll();
+    await Promise.all([allMembers]);
     this.server.emit('kickMemberSuccess', { new: payload, all: allMembers, actor: actor.id});
   }
   /***********************GAME*********************** */

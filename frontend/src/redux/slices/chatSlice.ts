@@ -53,6 +53,7 @@ const initialState: IChatState = {
   chatPreActiveGroup: null,
   chatBlockedUsers: blockedUsersList, // update this list upon user login
   tmpGroup: -1,
+  newGroupId: -1,
   userInfo: null,
   // chatBlockedUsers: dummyBlockedUser // use for dev:  update this list upon user login
 };
@@ -146,6 +147,9 @@ const chatSlice = createSlice({
     updateTmpGroup: (state, action: PayloadAction<number>) => {
       state.tmpGroup = action.payload;
     },
+    updateNewGrpId: (state, action: PayloadAction<number>) => {
+      state.newGroupId = action.payload;
+    },
     updateUserInfo: (state, action: PayloadAction<User|null>) => {
       state.userInfo = action.payload;
     },
@@ -175,7 +179,8 @@ export const {
   updateChatBlockedUsers,
   updateTmpGroup,
   updateChatAllJoinReq,
-  updateUserInfo
+  updateUserInfo,
+  updateNewGrpId
 } = chatSlice.actions;
 export default chatSlice;
 

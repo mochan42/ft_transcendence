@@ -83,7 +83,7 @@ const ChatConversation: React.FC<ChatProps> = ({ userId }) => {
     // }
 
     const IsLoggedUserBlockedInGroup = (): boolean => {
-        if (!userId) {
+        if (!userId || !chatStore.chatActiveGroup) {
             return true;
         }
         const memberShip = userId ? FindUserMemberShip(userId, chatStore.chatActiveGroup!.channelId) : null;
